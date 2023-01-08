@@ -1,0 +1,103 @@
+# depslib dependency file v1.0
+1673155057 source:c:\rabbitmq-stream-c-client-main\src\main.c
+	<stdio.h>
+	<memory.h>
+	<string.h>
+	<conio.h>
+	"rmqsEnvironment.h"
+
+1673161186 c:\rabbitmq-stream-c-client-main\src\rmqsprotocol.h
+	<stdint.h>
+	"rmqsStream.h"
+
+1673160492 c:\rabbitmq-stream-c-client-main\src\rmqsnetwork.h
+	<stdint.h>
+	<sys/socket.h>
+
+1673113954 c:\rabbitmq-stream-c-client-main\src\rmqsstream.h
+	<stdint.h>
+	<stddef.h>
+
+1673153186 c:\rabbitmq-stream-c-client-main\src\rmqslist.h
+	<stdint.h>
+	<stddef.h>
+
+1673154286 source:c:\rabbitmq-stream-c-client-main\src\rmqslist.c
+	<memory.h>
+	"rmqsList.h"
+	"rmqsMemory.h"
+
+1673114728 c:\rabbitmq-stream-c-client-main\src\rmqsmemory.h
+	<stdlib.h>
+	<memory.h>
+
+1672810576 source:c:\rabbitmq-stream-c-client-main\src\rmqsmemory.c
+	"rmqsMemory.h"
+
+1673111269 source:c:\rabbitmq-stream-c-client-main\src\rmqsmutex.c
+	<memory.h>
+	<pthread.h>
+	"rmqsMutex.h"
+	"rmqsMemory.h"
+
+1672990703 c:\rabbitmq-stream-c-client-main\src\rmqsmutex.h
+	<stdint.h>
+	<windows.h>
+	<pthread.h>
+
+1673147650 source:c:\rabbitmq-stream-c-client-main\src\rmqsnetwork.c
+	<winsock2.h>
+	<unistd.h>
+	<netinet/in.h>
+	<netinet/tcp.h>
+	<errno.h>
+	<strings.h>
+	<netdb.h>
+	<fcntl.h>
+	"rmqsNetwork.h"
+
+1673161736 source:c:\rabbitmq-stream-c-client-main\src\rmqsprotocol.c
+	<string.h>
+	"rmqsEnvironment.h"
+	"rmqsProtocol.h"
+
+1673109826 source:c:\rabbitmq-stream-c-client-main\src\rmqsstream.c
+	<memory.h>
+	"rmqsStream.h"
+	"rmqsMemory.h"
+
+1673160710 source:c:\rabbitmq-stream-c-client-main\src\rmqsthread.c
+	<memory.h>
+	<unistd.h>
+	"rmqsThread.h"
+	"rmqsMemory.h"
+
+1673159960 c:\rabbitmq-stream-c-client-main\src\rmqsthread.h
+	<stdint.h>
+	<windows.h>
+	<pthread.h>
+
+1673152970 c:\rabbitmq-stream-c-client-main\src\rmqsenvironment.h
+	<stdint.h>
+	"rmqsList.h"
+	"rmqsProducer.h"
+
+1673161168 c:\rabbitmq-stream-c-client-main\src\rmqsproducer.h
+	<stdint.h>
+	"rmqsNetwork.h"
+	"rmqsProtocol.h"
+	"rmqsStream.h"
+	"rmqsThread.h"
+
+1673160692 source:c:\rabbitmq-stream-c-client-main\src\rmqsenvironment.c
+	"rmqsEnvironment.h"
+	"rmqsList.h"
+	"rmqsMemory.h"
+	"rmqsProtocol.h"
+
+1673161696 source:c:\rabbitmq-stream-c-client-main\src\rmqsproducer.c
+	<stdio.h>
+	"rmqsProducer.h"
+	"rmqsProtocol.h"
+	"rmqsMemory.h"
+
