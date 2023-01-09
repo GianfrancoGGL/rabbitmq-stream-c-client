@@ -25,7 +25,7 @@ rmqsEnvironment;
 //---------------------------------------------------------------------------
 rmqsEnvironment * rmqsEnvironmentCreate(void);
 void rmqsEnvironmentDestroy(rmqsEnvironment *Environment);
-rmqsProducer * rmqsEnvironmentProducerCreate(rmqsEnvironment *Environment, char *Host, uint16_t Port);
+rmqsProducer * rmqsEnvironmentProducerCreate(rmqsEnvironment *Environment, char *Host, uint16_t Port, void (*EventsCB)(rqmsProducerEvent, void *));
 void rmqsEnvironmentProducerDestroy(rmqsEnvironment *Environment, rmqsProducer *Producer);
 void rmqsEnvironmentProducerListDestroy(void *Producer);
 //---------------------------------------------------------------------------

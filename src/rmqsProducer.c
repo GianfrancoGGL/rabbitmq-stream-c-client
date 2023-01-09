@@ -5,7 +5,7 @@
 #include "rmqsProtocol.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsProducer * rmqsProducerCreate(void *Environment, char *Host, uint16_t Port)
+rmqsProducer * rmqsProducerCreate(void *Environment, char *Host, uint16_t Port, void (*EventsCB)(rqmsProducerEvent, void *))
 {
     rmqsProducer *Producer = (rmqsProducer *)rmqsAllocateMemory(sizeof(rmqsProducer));
 
@@ -14,6 +14,8 @@ rmqsProducer * rmqsProducerCreate(void *Environment, char *Host, uint16_t Port)
     Producer->Environment = Environment;
     strncpy(Producer->Host, Host, RMQS_MAX_HOSTNAME_LENGTH);
     Producer->Port = Port;
+    Producer->Status = rmqspsDisconnected;
+    Producer->EventsCB = EventsCB;
 
     //
     // Windows machine, initialize sockets
@@ -22,10 +24,8 @@ rmqsProducer * rmqsProducerCreate(void *Environment, char *Host, uint16_t Port)
     rmqsInitWinsock();
     #endif
 
-    Producer->Socket = rmqsSocketCreate();
-    rmqsSetTcpNoDelay(Producer->Socket);
-    rmqsSetSocketTimeouts(Producer->Socket, 5, 5);
-    rmqsSetKeepAlive(Producer->Socket);
+    Producer->Socket = rmqsInvalidSocket;
+    Producer->CorrelationId = 1;
 
     Producer->TxStream = rmqsStreamCreate();
     Producer->RxStream = rmqsStreamCreate();
@@ -41,6 +41,8 @@ void rmqsProducerDestroy(rmqsProducer *Producer)
     if (Producer->Socket != rmqsInvalidSocket)
     {
         rmqsSocketDestroy((rmqsSocket *)&Producer->Socket);
+        Producer->Status = rmqspsDisconnected;
+        Producer->EventsCB(rmqspeDisconnected, Producer);
     }
 
     rmqsThreadStop(Producer->ProducerThread);
@@ -61,6 +63,8 @@ void rmqsProducerDestroy(rmqsProducer *Producer)
 //---------------------------------------------------------------------------
 void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
 {
+    uint8_t ConnectionFailed = 0;
+
     rmqsProducer *Producer = (rmqsProducer *)Parameters;
     rmqsProperty Properties[6];
 
@@ -86,35 +90,59 @@ void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
 
     while (! *TerminateRequest)
     {
+        ConnectionFailed = 0;
+
         switch (Producer->Status)
         {
-            case rmqspsNotConnected:
-                if (rmqsConnect(Producer->Host, Producer->Port, Producer->Socket, 2000))
+            case rmqspsDisconnected:
+                Producer->Socket = rmqsSocketCreate();
+                rmqsSetTcpNoDelay(Producer->Socket);
+                rmqsSetSocketTimeouts(Producer->Socket, 5, 5);
+                rmqsSetKeepAlive(Producer->Socket);
+
+                if (rmqsSocketConnect(Producer->Host, Producer->Port, Producer->Socket, 2000))
                 {
-                    Producer->Status = rmqspsTcpConnected;
+                    Producer->Status = rmqspsConnected;
+                    Producer->EventsCB(rmqspeConnected, Producer);
+                }
+                else
+                {
+                    ConnectionFailed = 1;
+                    rmqsSocketDestroy((rmqsSocket *)&Producer->Socket);
                 }
 
                 break;
 
-            case rmqspsTcpConnected:
+            case rmqspsConnected:
                 if (rmqsPeerPropertiesRequest(Producer, Producer->CorrelationId++, 6, Properties) == rmqsrOK)
                 {
                     Producer->Status = rmqspsReady;
+                    Producer->EventsCB(rmqspeReady, Producer);
                 }
                 else
                 {
-                    Producer->Status = rmqspsNotConnected;
+                    ConnectionFailed = 1;
+                    rmqsSocketDestroy((rmqsSocket *)&Producer->Socket);
+                    Producer->Status = rmqspsDisconnected;
+                    Producer->EventsCB(rmqspeDisconnected, Producer);
                 }
 
                 break;
 
             case rmqspsReady:
                 Producer->Status = Producer->Status;
-                
+
                 break;
         }
 
-        rmqsThreadSleepEx(2, 5, TerminateRequest);
+        if (! ConnectionFailed)
+        {
+            rmqsThreadSleepEx(2, 1, TerminateRequest);
+        }
+        else
+        {
+            rmqsThreadSleepEx(2, 50, TerminateRequest);
+        }
     }
 }
 //---------------------------------------------------------------------------

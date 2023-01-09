@@ -27,7 +27,7 @@ void rmqsShutdownWinsock(void);
 rmqsSocket rmqsSocketCreate(void);
 void rmqsSocketDestroy(rmqsSocket *Socket);
 //---------------------------------------------------------------------------
-uint8_t rmqsConnect(const char *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs);
+uint8_t rmqsSocketConnect(const char *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs);
 //---------------------------------------------------------------------------
 void rmqsSetSocketTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeout, const uint32_t WriteTimeout);
 uint8_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t TxBufferSize, const uint32_t RxBufferSize);

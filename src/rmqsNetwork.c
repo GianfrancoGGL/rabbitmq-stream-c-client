@@ -22,6 +22,13 @@ typedef struct
     u_long keepaliveinterval;
 }
 TcpKeepAlive;
+#else
+#if !defined(SOL_TCP) && defined(IPPROTO_TCP)
+#define SOL_TCP IPPROTO_TCP
+#endif
+#if !defined(TCP_KEEPIDLE) && defined(TCP_KEEPALIVE)
+#define TCP_KEEPIDLE TCP_KEEPALIVE
+#endif
 #endif
 //---------------------------------------------------------------------------
 #ifdef __WIN32__
@@ -89,7 +96,7 @@ void rmqsSocketDestroy(rmqsSocket *Socket)
     *Socket = rmqsInvalidSocket;
 }
 //---------------------------------------------------------------------------
-uint8_t rmqsConnect(const char *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs)
+uint8_t rmqsSocketConnect(const char *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs)
 {
     uint8_t Connected = 0;
     struct hostent *pHost;
