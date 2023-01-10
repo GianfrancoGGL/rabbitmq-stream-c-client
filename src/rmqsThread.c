@@ -13,11 +13,11 @@ uint32_t rmqsThreadRoutine(uint32_t *ThreadData);
 void * rqmsThreadRoutine(void *ThreadData);
 #endif
 //--------------------------------------------------------------------------
-rmqsThread * rmqsThreadCreate(void (*ThreadRoutine)(void *, uint8_t *), void (*CancelIORoutine)(void *), void *Parameters)
+rmqsThread_t * rmqsThreadCreate(void (*ThreadRoutine)(void *, uint8_t *), void (*CancelIORoutine)(void *), void *Parameters)
 {
-    rmqsThread *Thread = (rmqsThread *)rmqsAllocateMemory(sizeof(rmqsThread));
+    rmqsThread_t *Thread = (rmqsThread_t *)rmqsAllocateMemory(sizeof(rmqsThread_t));
 
-    memset(Thread, 0, sizeof(rmqsThread));
+    memset(Thread, 0, sizeof(rmqsThread_t));
 
     Thread->ThreadRoutine = ThreadRoutine;
     Thread->CancelIORoutine = CancelIORoutine;
@@ -26,12 +26,12 @@ rmqsThread * rmqsThreadCreate(void (*ThreadRoutine)(void *, uint8_t *), void (*C
     return Thread;
 }
 //--------------------------------------------------------------------------
-void rmqsThreadDestroy(rmqsThread *Thread)
+void rmqsThreadDestroy(rmqsThread_t *Thread)
 {
     rmqsFreeMemory((void *)Thread);
 }
 //--------------------------------------------------------------------------
-void rmqsThreadStart(rmqsThread *Thread)
+void rmqsThreadStart(rmqsThread_t *Thread)
 {
     #ifdef __WIN32__
     DWORD ThreadId;
@@ -52,7 +52,7 @@ void rmqsThreadStart(rmqsThread *Thread)
     #endif
 }
 //--------------------------------------------------------------------------
-void rmqsThreadStop(rmqsThread *Thread)
+void rmqsThreadStop(rmqsThread_t *Thread)
 {
     if (Thread->ThreadHandle == 0)
     {
@@ -68,7 +68,7 @@ void rmqsThreadStop(rmqsThread *Thread)
 
     while (! Thread->Terminated)
     {
-        rmqsThreadSleep(500);
+        rmqsThreadSleep(50);
     }
 
     #ifdef __WIN32__
@@ -110,7 +110,7 @@ uint32_t rmqsThreadRoutine(uint32_t *ThreadData)
 void * rqmsThreadRoutine(void *ThreadData)
 #endif
 {
-    rmqsThread *Thread = (rmqsThread *)ThreadData;
+    rmqsThread_t *Thread = (rmqsThread_t *)ThreadData;
 
     Thread->ThreadRoutine(Thread->Parameters, &Thread->TerminateRequest);
     Thread->Terminated = 1;

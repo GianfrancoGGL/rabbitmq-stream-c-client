@@ -1,30 +1,34 @@
 //---------------------------------------------------------------------------
-#ifndef rmqsMutexH
-#define rmqsMutexH
+#ifndef rmqsTimerH
+#define rmqsTimerH
 //---------------------------------------------------------------------------
 #include <stdint.h>
 //---------------------------------------------------------------------------
 #ifdef __WIN32__
 #include <windows.h>
 #else
-#include <pthread.h>
+#include <unistd.h>
+#include <sys/time.h>
 #endif
 //---------------------------------------------------------------------------
 typedef struct
 {
-#ifdef __WIN32__
-    CRITICAL_SECTION CS;
-#else
-    pthread_mutex_t mutex;
-#endif
+    uint8_t Running;
+
+    uint32_t TimeStarted;
+
+    #ifdef __WIN32__
+    double PCFrequency;
+    int64_t CounterStart;
+    #endif
 }
-rmqsMutex_t;
+rmqsTimer_t;
 //---------------------------------------------------------------------------
-rmqsMutex_t * rmqsMutexCreate(void);
-void rmqsMutexDestroy(rmqsMutex_t *Mutex);
-void rmqsMutexLock(rmqsMutex_t *Mutex);
-void rmqsMutexUnlock(rmqsMutex_t *Mutex);
-uint8_t rmqsMutexTryLock(rmqsMutex_t *Mutex);
+rmqsTimer_t * rmqsTimerCreate(void);
+void rmqsTimerDestroy(rmqsTimer_t *Timer);
+void rmqsTimerStart(rmqsTimer_t *Timer);
+void rmqsTimerStop(rmqsTimer_t *Timer);
+uint32_t rmqsTimerGetTime(rmqsTimer_t *Timer);
+uint32_t rmqsTimerGetSystemClock(rmqsTimer_t *Timer);
 //---------------------------------------------------------------------------
 #endif
-//--------------------------------------------------------------------------

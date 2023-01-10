@@ -2,18 +2,17 @@
 #include <stdio.h>
 //---------------------------------------------------------------------------
 #include "rmqsProducer.h"
+#include "rmqsEnvironment.h"
 #include "rmqsProtocol.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsProducer * rmqsProducerCreate(void *Environment, char *Host, uint16_t Port, void (*EventsCB)(rqmsProducerEvent, void *))
+rmqsProducer_t * rmqsProducerCreate(void *Environment, void (*EventsCB)(rqmsProducerEvent, void *))
 {
-    rmqsProducer *Producer = (rmqsProducer *)rmqsAllocateMemory(sizeof(rmqsProducer));
+    rmqsProducer_t *Producer = (rmqsProducer_t *)rmqsAllocateMemory(sizeof(rmqsProducer_t));
 
-    memset(Producer, 0, sizeof(rmqsProducer));
+    memset(Producer, 0, sizeof(rmqsProducer_t));
 
     Producer->Environment = Environment;
-    strncpy(Producer->Host, Host, RMQS_MAX_HOSTNAME_LENGTH);
-    Producer->Port = Port;
     Producer->Status = rmqspsDisconnected;
     Producer->EventsCB = EventsCB;
 
@@ -25,7 +24,7 @@ rmqsProducer * rmqsProducerCreate(void *Environment, char *Host, uint16_t Port, 
     #endif
 
     Producer->Socket = rmqsInvalidSocket;
-    Producer->CorrelationId = 1;
+    Producer->CorrelationId = 0;
 
     Producer->TxStream = rmqsStreamCreate();
     Producer->RxStream = rmqsStreamCreate();
@@ -36,7 +35,7 @@ rmqsProducer * rmqsProducerCreate(void *Environment, char *Host, uint16_t Port, 
     return Producer;
 }
 //---------------------------------------------------------------------------
-void rmqsProducerDestroy(rmqsProducer *Producer)
+void rmqsProducerDestroy(rmqsProducer_t *Producer)
 {
     if (Producer->Socket != rmqsInvalidSocket)
     {
@@ -65,8 +64,12 @@ void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
 {
     uint8_t ConnectionFailed = 0;
 
-    rmqsProducer *Producer = (rmqsProducer *)Parameters;
-    rmqsProperty Properties[6];
+    rmqsProducer_t *Producer = (rmqsProducer_t *)Parameters;
+    rmqsEnvironment_t *Environment = Producer->Environment;
+    rmqsBroker_t *Broker;
+    rmqsProperty_t Properties[6];
+
+    Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Environment->BrokersList, 0);
 
     memset(Properties, 0, sizeof(Properties));
 
@@ -90,17 +93,27 @@ void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
 
     while (! *TerminateRequest)
     {
+        if (Broker == 0)
+        {
+            //
+            // Brokers list is empty!
+            //
+            rmqsThreadSleepEx(2, 1000, TerminateRequest);
+            continue;
+        }
+
         ConnectionFailed = 0;
 
         switch (Producer->Status)
         {
             case rmqspsDisconnected:
                 Producer->Socket = rmqsSocketCreate();
+
                 rmqsSetTcpNoDelay(Producer->Socket);
                 rmqsSetSocketTimeouts(Producer->Socket, 5, 5);
                 rmqsSetKeepAlive(Producer->Socket);
 
-                if (rmqsSocketConnect(Producer->Host, Producer->Port, Producer->Socket, 2000))
+                if (rmqsSocketConnect(Broker->Host, Broker->Port, Producer->Socket, 2000))
                 {
                     Producer->Status = rmqspsConnected;
                     Producer->EventsCB(rmqspeConnected, Producer);

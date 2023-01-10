@@ -28,21 +28,19 @@ rmqsProducerStatus;
 typedef struct
 {
     void *Environment; // This pointer is void because of a circular dependency of environment and producer structs
-    char Host[RMQS_MAX_HOSTNAME_LENGTH + 1];
-    uint16_t Port;
     rmqsProducerStatus Status;
     void (*EventsCB)(rqmsProducerEvent, void *);
     rmqsSocket Socket;
     rmqsCorrelationId CorrelationId;
-    rmqsStream *TxStream;
-    rmqsStream *RxStream;
+    rmqsStream_t *TxStream;
+    rmqsStream_t *RxStream;
     char RxSocketBuffer[1024];
-    rmqsThread *ProducerThread;
+    rmqsThread_t *ProducerThread;
 }
-rmqsProducer;
+rmqsProducer_t;
 //---------------------------------------------------------------------------
-rmqsProducer * rmqsProducerCreate(void *Environment, char *Host, uint16_t Port, void (*EventsCB)(rqmsProducerEvent, void *));
-void rmqsProducerDestroy(rmqsProducer *Producer);
+rmqsProducer_t * rmqsProducerCreate(void *Environment, void (*EventsCB)(rqmsProducerEvent, void *));
+void rmqsProducerDestroy(rmqsProducer_t *Producer);
 void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest);
 //---------------------------------------------------------------------------
 #endif

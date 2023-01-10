@@ -79,7 +79,7 @@ typedef struct
     char Key[RMQS_MAX_KEY_SIZE + 1]; // + 1 for the null terminator
     char Value[RMQS_MAX_VALUE_SIZE + 1]; // + 1 for the null terminator
 }
-rmqsProperty;
+rmqsProperty_t;
 //---------------------------------------------------------------------------
 #pragma pack(push,1)
 typedef struct
@@ -90,19 +90,19 @@ typedef struct
     uint32_t CorrelationId;
     uint16_t ResponseCode;
 }
-rmqsResponse;
+rmqsResponse_t;
 #pragma pack(pop)
 //---------------------------------------------------------------------------
 uint8_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
-rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelationId CorrelationId, uint32_t PropertiesCount, rmqsProperty *Properties);
-size_t rmqsAddInt8ToStream(rmqsStream *Stream, const int8_t Value);
-size_t rmqsAddUInt8ToStream(rmqsStream *Stream, const uint8_t Value);
-size_t rmqsAddInt16ToStream(rmqsStream *Stream, const int16_t Value, uint8_t IsLittleEndianMachine);
-size_t rmqsAddUInt16ToStream(rmqsStream *Stream, const uint16_t Value, uint8_t IsLittleEndianMachine);
-size_t rmqsAddInt32ToStream(rmqsStream *Stream, const int32_t Value, uint8_t IsLittleEndianMachine);
-size_t rmqsAddUInt32ToStream(rmqsStream *Stream, const uint32_t Value, uint8_t IsLittleEndianMachine);
-size_t rmqsAddStringToStream(rmqsStream *Stream, const char *Value, uint8_t IsLittleEndianMachine);
+rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelationId CorrelationId, uint32_t PropertiesCount, rmqsProperty_t *Properties);
+size_t rmqsAddInt8ToStream(rmqsStream_t *Stream, int8_t Value);
+size_t rmqsAddUInt8ToStream(rmqsStream_t *Stream, uint8_t Value);
+size_t rmqsAddInt16ToStream(rmqsStream_t *Stream, int16_t Value, uint8_t IsLittleEndianMachine);
+size_t rmqsAddUInt16ToStream(rmqsStream_t *Stream, uint16_t Value, uint8_t IsLittleEndianMachine);
+size_t rmqsAddInt32ToStream(rmqsStream_t *Stream, int32_t Value, uint8_t IsLittleEndianMachine);
+size_t rmqsAddUInt32ToStream(rmqsStream_t *Stream, uint32_t Value, uint8_t IsLittleEndianMachine);
+size_t rmqsAddStringToStream(rmqsStream_t *Stream, char *Value, uint8_t IsLittleEndianMachine);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

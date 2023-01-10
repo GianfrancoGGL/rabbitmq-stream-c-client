@@ -74,6 +74,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="rmqsThread.h" />
+		<Unit filename="rmqsTimer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="rmqsTimer.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

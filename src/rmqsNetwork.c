@@ -23,10 +23,10 @@ typedef struct
 }
 TcpKeepAlive;
 #else
-#if !defined(SOL_TCP) && defined(IPPROTO_TCP)
+#if ! defined(SOL_TCP) && defined(IPPROTO_TCP)
 #define SOL_TCP IPPROTO_TCP
 #endif
-#if !defined(TCP_KEEPIDLE) && defined(TCP_KEEPALIVE)
+#if ! defined(TCP_KEEPIDLE) && defined(TCP_KEEPALIVE)
 #define TCP_KEEPIDLE TCP_KEEPALIVE
 #endif
 #endif

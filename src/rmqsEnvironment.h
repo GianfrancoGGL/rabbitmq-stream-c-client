@@ -5,29 +5,33 @@
 #include <stdint.h>
 //---------------------------------------------------------------------------
 #include "rmqsList.h"
+#include "rmqsNetwork.h"
 #include "rmqsProducer.h"
+//---------------------------------------------------------------------------
+#define RMQS_BROKER_ITEMS_SEPARATOR    ","
+#define MQMS_BROKER_PORT_SEPARATOR     ":"
 //---------------------------------------------------------------------------
 typedef struct
 {
-    uint32_t Option1;
-    uint32_t Option2;
-    uint32_t Option3;
+    char Host[RMQS_MAX_HOSTNAME_LENGTH + 1];
+    uint16_t Port;
 }
-rqmsEnvironmentOptions;
+rmqsBroker_t;
 //---------------------------------------------------------------------------
 typedef struct
 {
     uint8_t IsLittleEndianMachine;
-    rqmsEnvironmentOptions Options;
-    rmqsList *Producers;
+    rmqsList_t *BrokersList;
+    rmqsList_t *ProducersList;
 }
-rmqsEnvironment;
+rmqsEnvironment_t;
 //---------------------------------------------------------------------------
-rmqsEnvironment * rmqsEnvironmentCreate(void);
-void rmqsEnvironmentDestroy(rmqsEnvironment *Environment);
-rmqsProducer * rmqsEnvironmentProducerCreate(rmqsEnvironment *Environment, char *Host, uint16_t Port, void (*EventsCB)(rqmsProducerEvent, void *));
-void rmqsEnvironmentProducerDestroy(rmqsEnvironment *Environment, rmqsProducer *Producer);
-void rmqsEnvironmentProducerListDestroy(void *Producer);
+rmqsEnvironment_t * rmqsEnvironmentCreate(char *BrokersList);
+void rmqsEnvironmentDestroy(rmqsEnvironment_t *Environment);
+rmqsProducer_t * rmqsEnvironmentProducerCreate(rmqsEnvironment_t *Environment, void (*EventsCB)(rqmsProducerEvent, void *));
+void rmqsEnvironmentProducerDestroy(rmqsEnvironment_t *Environment, rmqsProducer_t *Producer);
+void rmqsEnvironmentBrokersListDestroy(void *Broker);
+void rmqsEnvironmentProducersListDestroy(void *Producer);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

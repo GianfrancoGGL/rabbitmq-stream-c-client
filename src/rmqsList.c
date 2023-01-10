@@ -4,9 +4,9 @@
 #include "rmqsList.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsList * rmqsListCreate(void (*ClearDataCB)(void *))
+rmqsList_t * rmqsListCreate(void (*ClearDataCB)(void *))
 {
-    rmqsList *List = (rmqsList *)rmqsAllocateMemory(sizeof(rmqsList));
+    rmqsList_t *List = (rmqsList_t *)rmqsAllocateMemory(sizeof(rmqsList_t));
 
     List->First = 0;
     List->Count = 0;
@@ -15,7 +15,7 @@ rmqsList * rmqsListCreate(void (*ClearDataCB)(void *))
     return List;
 }
 //---------------------------------------------------------------------------
-void rmqsListDestroy(rmqsList *List)
+void rmqsListDestroy(rmqsList_t *List)
 {
     while (List->Count > 0)
     {
@@ -25,9 +25,9 @@ void rmqsListDestroy(rmqsList *List)
     rmqsFreeMemory((void *)List);
 }
 //---------------------------------------------------------------------------
-rmqsListNode * rmqsListAddBegin(rmqsList *List, void *Data)
+rmqsListNode_t * rmqsListAddBegin(rmqsList_t *List, void *Data)
 {
-    rmqsListNode *NewNode = (rmqsListNode *)rmqsAllocateMemory(sizeof(rmqsListNode));
+    rmqsListNode_t *NewNode = (rmqsListNode_t *)rmqsAllocateMemory(sizeof(rmqsListNode_t));
 
     NewNode->Data = Data;
 
@@ -47,10 +47,10 @@ rmqsListNode * rmqsListAddBegin(rmqsList *List, void *Data)
     return NewNode;
 }
 //---------------------------------------------------------------------------
-rmqsListNode * rmqsListAddEnd(rmqsList *List, void *Data)
+rmqsListNode_t * rmqsListAddEnd(rmqsList_t *List, void *Data)
 {
-    rmqsListNode *NewNode = (rmqsListNode *)rmqsAllocateMemory(sizeof(rmqsListNode));
-    rmqsListNode *Node;
+    rmqsListNode_t *NewNode = (rmqsListNode_t *)rmqsAllocateMemory(sizeof(rmqsListNode_t));
+    rmqsListNode_t *Node;
 
     NewNode->Data = Data,
     NewNode->Next = 0;
@@ -65,7 +65,7 @@ rmqsListNode * rmqsListAddEnd(rmqsList *List, void *Data)
 
         while (Node->Next != 0)
         {
-            Node = (rmqsListNode *)Node->Next;
+            Node = (rmqsListNode_t *)Node->Next;
         }
 
         Node->Next = NewNode;
@@ -76,9 +76,9 @@ rmqsListNode * rmqsListAddEnd(rmqsList *List, void *Data)
     return NewNode;
 }
 //---------------------------------------------------------------------------
-rmqsListNode * rmqsListAddPosition(rmqsList *List, size_t Position, void *Data)
+rmqsListNode_t * rmqsListAddPosition(rmqsList_t *List, size_t Position, void *Data)
 {
-    rmqsListNode *NewNode = (rmqsListNode *)rmqsAllocateMemory(sizeof(rmqsListNode));
+    rmqsListNode_t *NewNode = (rmqsListNode_t *)rmqsAllocateMemory(sizeof(rmqsListNode_t));
 
     NewNode->Data = Data,
     NewNode->Next = 0;
@@ -94,7 +94,7 @@ rmqsListNode * rmqsListAddPosition(rmqsList *List, size_t Position, void *Data)
     }
     else
     {
-        rmqsListNode *Node, *PrevNode;
+        rmqsListNode_t *Node, *PrevNode;
         size_t i;
 
         Node = PrevNode = List->First;
@@ -102,7 +102,7 @@ rmqsListNode * rmqsListAddPosition(rmqsList *List, size_t Position, void *Data)
         for (i = 0; i < Position; i++)
         {
             PrevNode = Node;
-            Node = (rmqsListNode *)Node->Next;
+            Node = (rmqsListNode_t *)Node->Next;
 
             if (Node == 0)
             {
@@ -119,9 +119,9 @@ rmqsListNode * rmqsListAddPosition(rmqsList *List, size_t Position, void *Data)
     return NewNode;
 }
 //---------------------------------------------------------------------------
-void rmqsListDeleteBegin(rmqsList *List)
+void rmqsListDeleteBegin(rmqsList_t *List)
 {
-    rmqsListNode *Node;
+    rmqsListNode_t *Node;
 
     if (List->First == 0)
     {
@@ -130,7 +130,7 @@ void rmqsListDeleteBegin(rmqsList *List)
 
     Node = List->First;
 
-    List->First = (rmqsListNode *)List->First->Next;
+    List->First = (rmqsListNode_t *)List->First->Next;
 
     if (List->ClearDataCB != 0)
     {
@@ -142,7 +142,7 @@ void rmqsListDeleteBegin(rmqsList *List)
     List->Count--;
 }
 //---------------------------------------------------------------------------
-void rmqsListDeleteEnd(rmqsList *List)
+void rmqsListDeleteEnd(rmqsList_t *List)
 {
     if (List->First == 0)
     {
@@ -151,9 +151,9 @@ void rmqsListDeleteEnd(rmqsList *List)
 
     if (List->First->Next == 0)
     {
-        rmqsListNode *Node = List->First;
+        rmqsListNode_t *Node = List->First;
 
-        List->First = (rmqsListNode *)Node->Next;
+        List->First = (rmqsListNode_t *)Node->Next;
 
         if (List->ClearDataCB != 0)
         {
@@ -164,7 +164,7 @@ void rmqsListDeleteEnd(rmqsList *List)
     }
     else
     {
-        rmqsListNode *Node, *PrevNode;
+        rmqsListNode_t *Node, *PrevNode;
 
         Node = List->First;
         PrevNode = 0;
@@ -172,7 +172,7 @@ void rmqsListDeleteEnd(rmqsList *List)
         while (Node->Next != 0)
         {
             PrevNode = Node;
-            Node = (rmqsListNode *)Node->Next;
+            Node = (rmqsListNode_t *)Node->Next;
         }
 
         PrevNode->Next = 0;
@@ -188,9 +188,9 @@ void rmqsListDeleteEnd(rmqsList *List)
     List->Count--;
 }
 //---------------------------------------------------------------------------
-void rmqsListDeleteData(rmqsList *List, void *Data)
+void rmqsListDeleteData(rmqsList_t *List, void *Data)
 {
-    rmqsListNode *Node;
+    rmqsListNode_t *Node;
     size_t Position = 0;
 
     Node = List->First;
@@ -213,13 +213,13 @@ void rmqsListDeleteData(rmqsList *List, void *Data)
             return;
         }
 
-        Node = (rmqsListNode *)Node->Next;
+        Node = (rmqsListNode_t *)Node->Next;
     }
 }
 //---------------------------------------------------------------------------
-void rmqsListDeletePosition(rmqsList *List, size_t Position)
+void rmqsListDeletePosition(rmqsList_t *List, size_t Position)
 {
-    rmqsListNode *Node;
+    rmqsListNode_t *Node;
 
     if (List->First == 0)
     {
@@ -232,7 +232,7 @@ void rmqsListDeletePosition(rmqsList *List, size_t Position)
     {
         Node = List->First;
 
-        List->First = (rmqsListNode *)Node->Next;
+        List->First = (rmqsListNode_t *)Node->Next;
 
         if (List->ClearDataCB != 0)
         {
@@ -245,13 +245,13 @@ void rmqsListDeletePosition(rmqsList *List, size_t Position)
     }
     else
     {
-        rmqsListNode *PrevNode;
+        rmqsListNode_t *PrevNode;
         size_t i;
 
         for (i = 0; i < Position; i++)
         {
             PrevNode = Node;
-            Node = (rmqsListNode *)Node->Next;
+            Node = (rmqsListNode_t *)Node->Next;
 
             if (Node == 0)
             {
@@ -272,9 +272,9 @@ void rmqsListDeletePosition(rmqsList *List, size_t Position)
     }
 }
 //---------------------------------------------------------------------------
-rmqsListNode * rmqsListSearchByData(rmqsList *List, void *Data)
+rmqsListNode_t * rmqsListSearchByData(rmqsList_t *List, void *Data)
 {
-    rmqsListNode *Node = List->First;
+    rmqsListNode_t *Node = List->First;
 
     if (Node == 0)
     {
@@ -288,16 +288,16 @@ rmqsListNode * rmqsListSearchByData(rmqsList *List, void *Data)
             return Node;
         }
 
-        Node = (rmqsListNode *)Node->Next;
+        Node = (rmqsListNode_t *)Node->Next;
     }
     while (Node != 0);
 
     return 0;
 }
 //---------------------------------------------------------------------------
-rmqsListNode * rmqsListSearchByPosition(rmqsList *List, size_t Position)
+rmqsListNode_t * rmqsListSearchByPosition(rmqsList_t *List, size_t Position)
 {
-    rmqsListNode *Node = List->First;
+    rmqsListNode_t *Node = List->First;
     size_t Count = 0;
 
     if (Node == 0)
@@ -312,11 +312,30 @@ rmqsListNode * rmqsListSearchByPosition(rmqsList *List, size_t Position)
             return Node;
         }
 
-        Node = (rmqsListNode *)Node->Next;
+        Node = (rmqsListNode_t *)Node->Next;
     }
     while (Node != 0);
 
     return 0;
+}
+//---------------------------------------------------------------------------
+void * rmqsListGetDataByPosition(rmqsList_t *List, size_t Position)
+{
+    rmqsListNode_t *Node = rmqsListSearchByPosition(List, Position);
+
+    if (Node)
+    {
+        return Node->Data;
+    }
+    else
+    {
+        return 0;
+    }
+}
+//---------------------------------------------------------------------------
+void rmqsGenericListDestroy(void *Data)
+{
+    rmqsFreeMemory(Data);
 }
 //---------------------------------------------------------------------------
 

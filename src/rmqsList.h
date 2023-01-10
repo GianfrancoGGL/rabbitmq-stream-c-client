@@ -10,30 +10,34 @@ typedef struct
     void *Data;
     void *Next;
 }
-rmqsListNode;
+rmqsListNode_t;
 //---------------------------------------------------------------------------
 typedef struct
 {
-    rmqsListNode *First;
+    rmqsListNode_t *First;
     size_t Count;
     void (*ClearDataCB)(void *);
 }
-rmqsList;
+rmqsList_t;
 //---------------------------------------------------------------------------
-rmqsList * rmqsListCreate(void (*ClearDataCB)(void *));
-void rmqsListDestroy(rmqsList *Stream);
+rmqsList_t * rmqsListCreate(void (*ClearDataCB)(void *));
+void rmqsListDestroy(rmqsList_t *Stream);
 //---------------------------------------------------------------------------
-rmqsListNode * rmqsListAddBegin(rmqsList *List, void *Data);
-rmqsListNode * rmqsListAddEnd(rmqsList *List, void *Data);
-rmqsListNode * rmqsListAddPosition(rmqsList *List, size_t Position, void *Data);
+rmqsListNode_t * rmqsListAddBegin(rmqsList_t *List, void *Data);
+rmqsListNode_t * rmqsListAddEnd(rmqsList_t *List, void *Data);
+rmqsListNode_t * rmqsListAddPosition(rmqsList_t *List, size_t Position, void *Data);
 //---------------------------------------------------------------------------
-void rmqsListDeleteBegin(rmqsList *List);
-void rmqsListDeleteEnd(rmqsList *List);
-void rmqsListDeleteData(rmqsList *List, void *Data);
-void rmqsListDeletePosition(rmqsList *List, size_t Position);
+void rmqsListDeleteBegin(rmqsList_t *List);
+void rmqsListDeleteEnd(rmqsList_t *List);
+void rmqsListDeleteData(rmqsList_t *List, void *Data);
+void rmqsListDeletePosition(rmqsList_t *List, size_t Position);
 //---------------------------------------------------------------------------
-rmqsListNode * rmqsListSearchByData(rmqsList *List, void *Data);
-rmqsListNode * rmqsListSearchByPosition(rmqsList *List, size_t Position);
+rmqsListNode_t * rmqsListSearchByData(rmqsList_t *List, void *Data);
+rmqsListNode_t * rmqsListSearchByPosition(rmqsList_t *List, size_t Position);
+//---------------------------------------------------------------------------
+void * rmqsListGetDataByPosition(rmqsList_t *List, size_t Position);
+//---------------------------------------------------------------------------
+void rmqsGenericListDestroy(void *Data);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

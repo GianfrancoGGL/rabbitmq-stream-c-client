@@ -6,7 +6,21 @@
 #include <conio.h>
 #endif
 //---------------------------------------------------------------------------
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 #include "rmqsEnvironment.h"
+#include "rmqsTimer.h"
+#ifdef __cplusplus
+}
+#endif
+#ifdef __cplusplus
+}
+#endif
+#ifdef __BORLANDC__
+#include "madExcept.h"
+#endif
 //---------------------------------------------------------------------------
 #ifdef __BORLANDC__
 #pragma comment(lib, "ws2_32.lib")
@@ -16,18 +30,65 @@ void ProducerEventsCallback(rqmsProducerEvent Event, void *EventData);
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    rmqsEnvironment *Environment;
-    rmqsProducer *Producer;
+    char *Brokers = "192.168.1.37:5552,192.168.1.37:5553";
+    rmqsEnvironment_t *Environment;
+    rmqsBroker_t *Broker;
+    rmqsProducer_t *Producer;
+    rmqsTimer_t *Timer;
+    uint32_t Time;
+    size_t i;
+
+    (void)argc;
+    (void)argv;
+
+    #ifdef __BORLANDC__
+    StartLeakChecking(false);
+    #endif
 
     printf("Creating environment...\r\n");
-    Environment = rmqsEnvironmentCreate();
+    Environment = rmqsEnvironmentCreate(Brokers);
     printf("Environment created\r\n");
 
+    printf("No of brokers defined: %d\r\n", (int)Environment->BrokersList->Count);
+
+    for (i = 0; i < Environment->BrokersList->Count; i++)
+    {
+        Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Environment->BrokersList, i);
+
+        printf("Broker %d: %s - %d\r\n", (int)(i + 1), Broker->Host, (int)Broker->Port);
+    }
+
     printf("Creating producer...\r\n");
-    Producer = rmqsEnvironmentProducerCreate(Environment, "192.168.1.37", 5552, ProducerEventsCallback);
+    Producer = rmqsEnvironmentProducerCreate(Environment, ProducerEventsCallback);
     printf("Producer created\r\n");
 
-    rmqsThreadSleep(10000);
+    #ifdef __WIN32__
+    printf("%09d\r\n", (int)GetTickCount());
+    #endif
+
+    Timer = rmqsTimerCreate();
+    rmqsTimerStart(Timer);
+
+    while (1)
+    {
+        Time = rmqsTimerGetTime(Timer);
+        printf("Time: %08d\r", Time);
+
+        if (Time > 10000)
+        {
+            break;
+        }
+
+        rmqsThreadSleep(100);
+    }
+
+    rmqsTimerDestroy(Timer);
+
+    printf("\n");
+
+    #ifdef __WIN32__
+    printf("%09d\r\n", (int)GetTickCount());
+    #endif
 
     printf("Destroying producer...\r\n");
     rmqsEnvironmentProducerDestroy(Environment, Producer);
@@ -44,6 +105,8 @@ int main(int argc, char * argv[])
 //---------------------------------------------------------------------------
 void ProducerEventsCallback(rqmsProducerEvent Event, void *EventData)
 {
+    (void)EventData;
+
     switch (Event)
     {
         case rmqspeConnected:

@@ -13,15 +13,15 @@ typedef struct
     uint32_t CurrentMemorySize;
     void *Data;
 }
-rmqsStream;
+rmqsStream_t;
 //---------------------------------------------------------------------------
-rmqsStream * rmqsStreamCreate(void);
-void rmqsStreamDestroy(rmqsStream *Stream);
-void rmqsStreamClear(rmqsStream *Stream, const uint8_t ResetMemoryBuffer);
-size_t rmqsStreamRead(rmqsStream *Stream, void *ReadBuffer, const size_t NrOfBytes);
-size_t rmqsStreamWrite(rmqsStream *Stream, void *WriteBuffer, const size_t NrOfBytes);
-void rmqsStreamMoveTo(rmqsStream *Stream, size_t Position);
-void rmqsStreamSetMemorySize(rmqsStream *Stream, const size_t RequiredMemorySize);
+rmqsStream_t * rmqsStreamCreate(void);
+void rmqsStreamDestroy(rmqsStream_t *Stream);
+void rmqsStreamClear(rmqsStream_t *Stream, const uint8_t ResetMemoryBuffer);
+size_t rmqsStreamRead(rmqsStream_t *Stream, void *ReadBuffer, size_t NrOfBytes);
+size_t rmqsStreamWrite(rmqsStream_t *Stream, void *WriteBuffer, size_t NrOfBytes);
+void rmqsStreamMoveTo(rmqsStream_t *Stream, size_t Position);
+void rmqsStreamSetMemorySize(rmqsStream_t *Stream, const size_t RequiredMemorySize);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

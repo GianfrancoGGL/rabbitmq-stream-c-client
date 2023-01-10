@@ -28,16 +28,16 @@ uint8_t rmqsIsLittleEndianMachine(void)
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelationId CorrelationId, uint32_t PropertiesCount, rmqsProperty *Properties)
+rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelationId CorrelationId, uint32_t PropertiesCount, rmqsProperty_t *Properties)
 {
-    rmqsProducer *ProducerObj = (rmqsProducer *)Producer;
-    rmqsEnvironment *Environment = (rmqsEnvironment *)ProducerObj->Environment;
+    rmqsProducer_t *ProducerObj = (rmqsProducer_t *)Producer;
+    rmqsEnvironment_t *Environment = (rmqsEnvironment_t *)ProducerObj->Environment;
     rmqsKey Key = rmqscPeerProperties;
     rmqsVersion Version = 1;
     uint32_t i, MapSize;
-    rmqsProperty *Property;
+    rmqsProperty_t *Property;
     int32_t RxResult;
-    rmqsResponse Response;
+    rmqsResponse_t Response;
 
     //
     // Calculate the map size
@@ -101,34 +101,22 @@ rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelation
         Response.ResponseCode = SwapUInt16(Response.ResponseCode);
     }
 
-    return Response.ResponseCode;
+    return (rmqsResponseCode)Response.ResponseCode;
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddInt8ToStream(rmqsStream *Stream, int8_t Value)
+size_t rmqsAddInt8ToStream(rmqsStream_t *Stream, int8_t Value)
 {
     rmqsStreamWrite(Stream, (void *)&Value, sizeof(Value));
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddUInt8ToStream(rmqsStream *Stream, uint8_t Value)
+size_t rmqsAddUInt8ToStream(rmqsStream_t *Stream, uint8_t Value)
 {
     rmqsStreamWrite(Stream, (void *)&Value, sizeof(Value));
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddInt16ToStream(rmqsStream *Stream, int16_t Value, uint8_t IsLittleEndianMachine)
-{
-    if (IsLittleEndianMachine)
-    {
-        Value = SwapUInt16(Value);
-    }
-
-    rmqsStreamWrite(Stream, (void *)&Value, sizeof(Value));
-
-    return sizeof(Value);
-}
-//---------------------------------------------------------------------------
-size_t rmqsAddUInt16ToStream(rmqsStream *Stream, uint16_t Value, uint8_t IsLittleEndianMachine)
+size_t rmqsAddInt16ToStream(rmqsStream_t *Stream, int16_t Value, uint8_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
@@ -140,7 +128,19 @@ size_t rmqsAddUInt16ToStream(rmqsStream *Stream, uint16_t Value, uint8_t IsLittl
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddInt32ToStream(rmqsStream *Stream, int32_t Value, uint8_t IsLittleEndianMachine)
+size_t rmqsAddUInt16ToStream(rmqsStream_t *Stream, uint16_t Value, uint8_t IsLittleEndianMachine)
+{
+    if (IsLittleEndianMachine)
+    {
+        Value = SwapUInt16(Value);
+    }
+
+    rmqsStreamWrite(Stream, (void *)&Value, sizeof(Value));
+
+    return sizeof(Value);
+}
+//---------------------------------------------------------------------------
+size_t rmqsAddInt32ToStream(rmqsStream_t *Stream, int32_t Value, uint8_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
@@ -152,7 +152,7 @@ size_t rmqsAddInt32ToStream(rmqsStream *Stream, int32_t Value, uint8_t IsLittleE
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddUInt32ToStream(rmqsStream *Stream, uint32_t Value, uint8_t IsLittleEndianMachine)
+size_t rmqsAddUInt32ToStream(rmqsStream_t *Stream, uint32_t Value, uint8_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
@@ -164,7 +164,7 @@ size_t rmqsAddUInt32ToStream(rmqsStream *Stream, uint32_t Value, uint8_t IsLittl
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddStringToStream(rmqsStream *Stream, const char *Value, uint8_t IsLittleEndianMachine)
+size_t rmqsAddStringToStream(rmqsStream_t *Stream, char *Value, uint8_t IsLittleEndianMachine)
 {
     rmqsStringLen StringLen;
     size_t BytesAdded;

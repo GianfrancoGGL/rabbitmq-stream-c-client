@@ -23,12 +23,12 @@ typedef struct
     uint8_t TerminateRequest;
     uint8_t Terminated;
 }
-rmqsThread;
+rmqsThread_t;
 //---------------------------------------------------------------------------
-rmqsThread * rmqsThreadCreate(void (*ThreadRoutine)(void *, uint8_t *), void (*CancelIORoutine)(void *), void *Parameters);
-void rmqsThreadDestroy(rmqsThread *Thread);
-void rmqsThreadStart(rmqsThread *Thread);
-void rmqsThreadStop(rmqsThread *Thread);
+rmqsThread_t * rmqsThreadCreate(void (*ThreadRoutine)(void *, uint8_t *), void (*CancelIORoutine)(void *), void *Parameters);
+void rmqsThreadDestroy(rmqsThread_t *Thread);
+void rmqsThreadStart(rmqsThread_t *Thread);
+void rmqsThreadStop(rmqsThread_t *Thread);
 void rmqsThreadSleep(uint32_t Milliseconds);
 void rmqsThreadSleepEx(uint32_t Milliseconds, size_t HowManyTimes, uint8_t *Abort);
 //---------------------------------------------------------------------------
