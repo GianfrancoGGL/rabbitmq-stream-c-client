@@ -5,6 +5,7 @@
 #include <stdint.h>
 //---------------------------------------------------------------------------
 #include "rmqsList.h"
+#include "rmqsLogger.h"
 #include "rmqsNetwork.h"
 #include "rmqsProducer.h"
 //---------------------------------------------------------------------------
@@ -23,10 +24,11 @@ typedef struct
     uint8_t IsLittleEndianMachine;
     rmqsList_t *BrokersList;
     rmqsList_t *ProducersList;
+    rmqsLogger_t *Logger;
 }
 rmqsEnvironment_t;
 //---------------------------------------------------------------------------
-rmqsEnvironment_t * rmqsEnvironmentCreate(char *BrokersList);
+rmqsEnvironment_t * rmqsEnvironmentCreate(char *BrokersList, uint8_t EnableLogging, char *LogFileName);
 void rmqsEnvironmentDestroy(rmqsEnvironment_t *Environment);
 rmqsProducer_t * rmqsEnvironmentProducerCreate(rmqsEnvironment_t *Environment, void (*EventsCB)(rqmsProducerEvent, void *));
 void rmqsEnvironmentProducerDestroy(rmqsEnvironment_t *Environment, rmqsProducer_t *Producer);

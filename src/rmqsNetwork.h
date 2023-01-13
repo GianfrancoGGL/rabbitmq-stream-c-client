@@ -29,7 +29,8 @@ void rmqsSocketDestroy(rmqsSocket *Socket);
 //---------------------------------------------------------------------------
 uint8_t rmqsSocketConnect(const char *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs);
 //---------------------------------------------------------------------------
-void rmqsSetSocketTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeout, const uint32_t WriteTimeout);
+void rmqsSetSocketReadTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeout);
+void rmqsSetSocketWriteTimeouts(const rmqsSocket Socket, const uint32_t WriteTimeout);
 uint8_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t TxBufferSize, const uint32_t RxBufferSize);
 uint8_t rmqsSetSocketBlocking(const rmqsSocket Socket);
 uint8_t rmqsSetSocketNonBlocking(const rmqsSocket Socket);

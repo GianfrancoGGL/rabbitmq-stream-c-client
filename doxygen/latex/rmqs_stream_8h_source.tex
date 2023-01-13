@@ -1,0 +1,33 @@
+\hypertarget{rmqs_stream_8h_source}{}\doxysection{rmqs\+Stream.\+h}
+\label{rmqs_stream_8h_source}\index{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsStream.h@{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsStream.h}}
+\mbox{\hyperlink{rmqs_stream_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ rmqsStreamH}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ rmqsStreamH}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <stddef.h>}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00008\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct}}
+\DoxyCodeLine{00009\ \{}
+\DoxyCodeLine{00010\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{structrmqs_stream__t_a72596719dba583a1de63b8b0c758ee82}{ChunkSize}};}
+\DoxyCodeLine{00011\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{structrmqs_stream__t_ad339655dcbf935f05ab0a92209d3bea2}{Size}};}
+\DoxyCodeLine{00012\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{structrmqs_stream__t_aec968fe8cdb88aff3296b952282eb416}{Position}};}
+\DoxyCodeLine{00013\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{structrmqs_stream__t_a0052c015ce20e7670885d0683865759b}{CurrentMemorySize}};}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keywordtype}{void}\ *\mbox{\hyperlink{structrmqs_stream__t_af364958c1e927f7f9ffbe76614005464}{Data}};}
+\DoxyCodeLine{00015\ \}}
+\DoxyCodeLine{00016\ \mbox{\hyperlink{structrmqs_stream__t}{rmqsStream\_t}};}
+\DoxyCodeLine{00017\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00018\ \mbox{\hyperlink{structrmqs_stream__t}{rmqsStream\_t}}\ *\ \mbox{\hyperlink{rmqs_stream_8h_a8947b787011d22136404008be15d4e71}{rmqsStreamCreate}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00019\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_stream_8h_ada686470da8343857907452b7aee3be5}{rmqsStreamDestroy}}(\mbox{\hyperlink{structrmqs_stream__t}{rmqsStream\_t}}\ *Stream);}
+\DoxyCodeLine{00020\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_stream_8h_ac81ca30df83a7a06afbe72e1dd25489e}{rmqsStreamClear}}(\mbox{\hyperlink{structrmqs_stream__t}{rmqsStream\_t}}\ *Stream,\ \textcolor{keyword}{const}\ uint8\_t\ ResetMemoryBuffer);}
+\DoxyCodeLine{00021\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{rmqs_stream_8h_a973a877f84e709b96fbdb81494db4ce7}{rmqsStreamRead}}(\mbox{\hyperlink{structrmqs_stream__t}{rmqsStream\_t}}\ *Stream,\ \textcolor{keywordtype}{void}\ *ReadBuffer,\ \textcolor{keywordtype}{size\_t}\ NrOfBytes);}
+\DoxyCodeLine{00022\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{rmqs_stream_8h_ae768346125a7b1e3657bdfacc0821929}{rmqsStreamWrite}}(\mbox{\hyperlink{structrmqs_stream__t}{rmqsStream\_t}}\ *Stream,\ \textcolor{keywordtype}{void}\ *WriteBuffer,\ \textcolor{keywordtype}{size\_t}\ NrOfBytes);}
+\DoxyCodeLine{00023\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_stream_8h_a65a02ca427e51568da58797551023af6}{rmqsStreamMoveTo}}(\mbox{\hyperlink{structrmqs_stream__t}{rmqsStream\_t}}\ *Stream,\ \textcolor{keywordtype}{size\_t}\ Position);}
+\DoxyCodeLine{00024\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_stream_8h_aa56f830a84fa244b9b946d3e1532172d}{rmqsStreamSetMemorySize}}(\mbox{\hyperlink{structrmqs_stream__t}{rmqsStream\_t}}\ *Stream,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ RequiredMemorySize);}
+\DoxyCodeLine{00025\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+
+\end{DoxyCode}

@@ -1,0 +1,115 @@
+\hypertarget{rmqs_list_8c}{}\doxysection{C\+:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqs\+List.c File Reference}
+\label{rmqs_list_8c}\index{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsList.c@{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsList.c}}
+{\ttfamily \#include $<$memory.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}rmqs\+List.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rmqs\+Memory.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$ \mbox{\hyperlink{rmqs_list_8c_a0577803c9e78cfd1a5387a03114e81ca}{rmqs\+List\+Create}} (void($\ast$Clear\+Data\+CB)(void $\ast$))
+\item 
+void \mbox{\hyperlink{rmqs_list_8c_a32563ef697125d2d0df89a7ea9c9d249}{rmqs\+List\+Destroy}} (\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$List)
+\item 
+\mbox{\hyperlink{structrmqs_list_node__t}{rmqs\+List\+Node\+\_\+t}} $\ast$ \mbox{\hyperlink{rmqs_list_8c_a76cfc71afb2b2eee8134cc875a89d355}{rmqs\+List\+Add\+Begin}} (\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$List, void $\ast$Data)
+\item 
+\mbox{\hyperlink{structrmqs_list_node__t}{rmqs\+List\+Node\+\_\+t}} $\ast$ \mbox{\hyperlink{rmqs_list_8c_ad3c93a62f610b95d18d66f6bcfc44a21}{rmqs\+List\+Add\+End}} (\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$List, void $\ast$Data)
+\item 
+\mbox{\hyperlink{structrmqs_list_node__t}{rmqs\+List\+Node\+\_\+t}} $\ast$ \mbox{\hyperlink{rmqs_list_8c_adde4d49be3ef6f6297b9ac5e5e54aa33}{rmqs\+List\+Add\+Position}} (\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$List, size\+\_\+t Position, void $\ast$Data)
+\item 
+void \mbox{\hyperlink{rmqs_list_8c_a09d2f8e419deb6709693461eed1d7c39}{rmqs\+List\+Delete\+Begin}} (\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$List)
+\item 
+void \mbox{\hyperlink{rmqs_list_8c_a493d98dc2f37388289cf6d31d6cb0338}{rmqs\+List\+Delete\+End}} (\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$List)
+\item 
+void \mbox{\hyperlink{rmqs_list_8c_a143c55c01d4faeefadb29d25b7f91faa}{rmqs\+List\+Delete\+Data}} (\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$List, void $\ast$Data)
+\item 
+void \mbox{\hyperlink{rmqs_list_8c_a1673a041e113af1bf4cb0336e2c2f190}{rmqs\+List\+Delete\+Position}} (\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$List, size\+\_\+t Position)
+\item 
+\mbox{\hyperlink{structrmqs_list_node__t}{rmqs\+List\+Node\+\_\+t}} $\ast$ \mbox{\hyperlink{rmqs_list_8c_ae4ee4563aa62a7c5a2f6e61609ca4f32}{rmqs\+List\+Search\+By\+Data}} (\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$List, void $\ast$Data)
+\item 
+\mbox{\hyperlink{structrmqs_list_node__t}{rmqs\+List\+Node\+\_\+t}} $\ast$ \mbox{\hyperlink{rmqs_list_8c_a0d68f394a6627f14c885be24af611a7a}{rmqs\+List\+Search\+By\+Position}} (\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$List, size\+\_\+t Position)
+\item 
+void $\ast$ \mbox{\hyperlink{rmqs_list_8c_acd2cea1f4cc36552e7e3547ed51ee81f}{rmqs\+List\+Get\+Data\+By\+Position}} (\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$List, size\+\_\+t Position)
+\item 
+void \mbox{\hyperlink{rmqs_list_8c_a989d563e3ac6875bb612724eb0af8864}{rmqs\+Generic\+List\+Destroy}} (void $\ast$Data)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{rmqs_list_8c_a989d563e3ac6875bb612724eb0af8864}\label{rmqs_list_8c_a989d563e3ac6875bb612724eb0af8864}} 
+\index{rmqsList.c@{rmqsList.c}!rmqsGenericListDestroy@{rmqsGenericListDestroy}}
+\index{rmqsGenericListDestroy@{rmqsGenericListDestroy}!rmqsList.c@{rmqsList.c}}
+\doxysubsubsection{\texorpdfstring{rmqsGenericListDestroy()}{rmqsGenericListDestroy()}}
+{\footnotesize\ttfamily void rmqs\+Generic\+List\+Destroy (\begin{DoxyParamCaption}\item[{void $\ast$}]{Data }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_list_8c_a76cfc71afb2b2eee8134cc875a89d355}\label{rmqs_list_8c_a76cfc71afb2b2eee8134cc875a89d355}} 
+\index{rmqsList.c@{rmqsList.c}!rmqsListAddBegin@{rmqsListAddBegin}}
+\index{rmqsListAddBegin@{rmqsListAddBegin}!rmqsList.c@{rmqsList.c}}
+\doxysubsubsection{\texorpdfstring{rmqsListAddBegin()}{rmqsListAddBegin()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_list_node__t}{rmqs\+List\+Node\+\_\+t}} $\ast$ rmqs\+List\+Add\+Begin (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$}]{List,  }\item[{void $\ast$}]{Data }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_list_8c_ad3c93a62f610b95d18d66f6bcfc44a21}\label{rmqs_list_8c_ad3c93a62f610b95d18d66f6bcfc44a21}} 
+\index{rmqsList.c@{rmqsList.c}!rmqsListAddEnd@{rmqsListAddEnd}}
+\index{rmqsListAddEnd@{rmqsListAddEnd}!rmqsList.c@{rmqsList.c}}
+\doxysubsubsection{\texorpdfstring{rmqsListAddEnd()}{rmqsListAddEnd()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_list_node__t}{rmqs\+List\+Node\+\_\+t}} $\ast$ rmqs\+List\+Add\+End (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$}]{List,  }\item[{void $\ast$}]{Data }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_list_8c_adde4d49be3ef6f6297b9ac5e5e54aa33}\label{rmqs_list_8c_adde4d49be3ef6f6297b9ac5e5e54aa33}} 
+\index{rmqsList.c@{rmqsList.c}!rmqsListAddPosition@{rmqsListAddPosition}}
+\index{rmqsListAddPosition@{rmqsListAddPosition}!rmqsList.c@{rmqsList.c}}
+\doxysubsubsection{\texorpdfstring{rmqsListAddPosition()}{rmqsListAddPosition()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_list_node__t}{rmqs\+List\+Node\+\_\+t}} $\ast$ rmqs\+List\+Add\+Position (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$}]{List,  }\item[{size\+\_\+t}]{Position,  }\item[{void $\ast$}]{Data }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_list_8c_a0577803c9e78cfd1a5387a03114e81ca}\label{rmqs_list_8c_a0577803c9e78cfd1a5387a03114e81ca}} 
+\index{rmqsList.c@{rmqsList.c}!rmqsListCreate@{rmqsListCreate}}
+\index{rmqsListCreate@{rmqsListCreate}!rmqsList.c@{rmqsList.c}}
+\doxysubsubsection{\texorpdfstring{rmqsListCreate()}{rmqsListCreate()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$ rmqs\+List\+Create (\begin{DoxyParamCaption}\item[{void($\ast$)(void $\ast$)}]{Clear\+Data\+CB }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_list_8c_a09d2f8e419deb6709693461eed1d7c39}\label{rmqs_list_8c_a09d2f8e419deb6709693461eed1d7c39}} 
+\index{rmqsList.c@{rmqsList.c}!rmqsListDeleteBegin@{rmqsListDeleteBegin}}
+\index{rmqsListDeleteBegin@{rmqsListDeleteBegin}!rmqsList.c@{rmqsList.c}}
+\doxysubsubsection{\texorpdfstring{rmqsListDeleteBegin()}{rmqsListDeleteBegin()}}
+{\footnotesize\ttfamily void rmqs\+List\+Delete\+Begin (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$}]{List }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_list_8c_a143c55c01d4faeefadb29d25b7f91faa}\label{rmqs_list_8c_a143c55c01d4faeefadb29d25b7f91faa}} 
+\index{rmqsList.c@{rmqsList.c}!rmqsListDeleteData@{rmqsListDeleteData}}
+\index{rmqsListDeleteData@{rmqsListDeleteData}!rmqsList.c@{rmqsList.c}}
+\doxysubsubsection{\texorpdfstring{rmqsListDeleteData()}{rmqsListDeleteData()}}
+{\footnotesize\ttfamily void rmqs\+List\+Delete\+Data (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$}]{List,  }\item[{void $\ast$}]{Data }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_list_8c_a493d98dc2f37388289cf6d31d6cb0338}\label{rmqs_list_8c_a493d98dc2f37388289cf6d31d6cb0338}} 
+\index{rmqsList.c@{rmqsList.c}!rmqsListDeleteEnd@{rmqsListDeleteEnd}}
+\index{rmqsListDeleteEnd@{rmqsListDeleteEnd}!rmqsList.c@{rmqsList.c}}
+\doxysubsubsection{\texorpdfstring{rmqsListDeleteEnd()}{rmqsListDeleteEnd()}}
+{\footnotesize\ttfamily void rmqs\+List\+Delete\+End (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$}]{List }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_list_8c_a1673a041e113af1bf4cb0336e2c2f190}\label{rmqs_list_8c_a1673a041e113af1bf4cb0336e2c2f190}} 
+\index{rmqsList.c@{rmqsList.c}!rmqsListDeletePosition@{rmqsListDeletePosition}}
+\index{rmqsListDeletePosition@{rmqsListDeletePosition}!rmqsList.c@{rmqsList.c}}
+\doxysubsubsection{\texorpdfstring{rmqsListDeletePosition()}{rmqsListDeletePosition()}}
+{\footnotesize\ttfamily void rmqs\+List\+Delete\+Position (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$}]{List,  }\item[{size\+\_\+t}]{Position }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_list_8c_a32563ef697125d2d0df89a7ea9c9d249}\label{rmqs_list_8c_a32563ef697125d2d0df89a7ea9c9d249}} 
+\index{rmqsList.c@{rmqsList.c}!rmqsListDestroy@{rmqsListDestroy}}
+\index{rmqsListDestroy@{rmqsListDestroy}!rmqsList.c@{rmqsList.c}}
+\doxysubsubsection{\texorpdfstring{rmqsListDestroy()}{rmqsListDestroy()}}
+{\footnotesize\ttfamily void rmqs\+List\+Destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$}]{List }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_list_8c_acd2cea1f4cc36552e7e3547ed51ee81f}\label{rmqs_list_8c_acd2cea1f4cc36552e7e3547ed51ee81f}} 
+\index{rmqsList.c@{rmqsList.c}!rmqsListGetDataByPosition@{rmqsListGetDataByPosition}}
+\index{rmqsListGetDataByPosition@{rmqsListGetDataByPosition}!rmqsList.c@{rmqsList.c}}
+\doxysubsubsection{\texorpdfstring{rmqsListGetDataByPosition()}{rmqsListGetDataByPosition()}}
+{\footnotesize\ttfamily void $\ast$ rmqs\+List\+Get\+Data\+By\+Position (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$}]{List,  }\item[{size\+\_\+t}]{Position }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_list_8c_ae4ee4563aa62a7c5a2f6e61609ca4f32}\label{rmqs_list_8c_ae4ee4563aa62a7c5a2f6e61609ca4f32}} 
+\index{rmqsList.c@{rmqsList.c}!rmqsListSearchByData@{rmqsListSearchByData}}
+\index{rmqsListSearchByData@{rmqsListSearchByData}!rmqsList.c@{rmqsList.c}}
+\doxysubsubsection{\texorpdfstring{rmqsListSearchByData()}{rmqsListSearchByData()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_list_node__t}{rmqs\+List\+Node\+\_\+t}} $\ast$ rmqs\+List\+Search\+By\+Data (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$}]{List,  }\item[{void $\ast$}]{Data }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_list_8c_a0d68f394a6627f14c885be24af611a7a}\label{rmqs_list_8c_a0d68f394a6627f14c885be24af611a7a}} 
+\index{rmqsList.c@{rmqsList.c}!rmqsListSearchByPosition@{rmqsListSearchByPosition}}
+\index{rmqsListSearchByPosition@{rmqsListSearchByPosition}!rmqsList.c@{rmqsList.c}}
+\doxysubsubsection{\texorpdfstring{rmqsListSearchByPosition()}{rmqsListSearchByPosition()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_list_node__t}{rmqs\+List\+Node\+\_\+t}} $\ast$ rmqs\+List\+Search\+By\+Position (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_list__t}{rmqs\+List\+\_\+t}} $\ast$}]{List,  }\item[{size\+\_\+t}]{Position }\end{DoxyParamCaption})}
+

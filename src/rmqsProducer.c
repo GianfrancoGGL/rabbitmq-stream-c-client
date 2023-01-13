@@ -28,6 +28,7 @@ rmqsProducer_t * rmqsProducerCreate(void *Environment, void (*EventsCB)(rqmsProd
 
     Producer->TxStream = rmqsStreamCreate();
     Producer->RxStream = rmqsStreamCreate();
+    Producer->RxStreamTempBuffer = rmqsStreamCreate();
 
     Producer->ProducerThread = rmqsThreadCreate(rmqsProducerThreadRoutine, 0, Producer);
     rmqsThreadStart(Producer->ProducerThread);
@@ -49,6 +50,7 @@ void rmqsProducerDestroy(rmqsProducer_t *Producer)
 
     rmqsStreamDestroy(Producer->TxStream);
     rmqsStreamDestroy(Producer->RxStream);
+    rmqsStreamDestroy(Producer->RxStreamTempBuffer);
 
     rmqsFreeMemory((void *)Producer);
 
@@ -62,7 +64,7 @@ void rmqsProducerDestroy(rmqsProducer_t *Producer)
 //---------------------------------------------------------------------------
 void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
 {
-    uint8_t ConnectionFailed = 0;
+    uint8_t ConnectionFailed;
 
     rmqsProducer_t *Producer = (rmqsProducer_t *)Parameters;
     rmqsEnvironment_t *Environment = Producer->Environment;
@@ -110,7 +112,7 @@ void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
                 Producer->Socket = rmqsSocketCreate();
 
                 rmqsSetTcpNoDelay(Producer->Socket);
-                rmqsSetSocketTimeouts(Producer->Socket, 5, 5);
+                rmqsSetSocketWriteTimeouts(Producer->Socket, 5);
                 rmqsSetKeepAlive(Producer->Socket);
 
                 if (rmqsSocketConnect(Broker->Host, Broker->Port, Producer->Socket, 2000))

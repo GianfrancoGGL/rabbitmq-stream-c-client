@@ -1,0 +1,55 @@
+\hypertarget{rmqs_mutex_8h}{}\doxysection{C\+:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqs\+Mutex.h File Reference}
+\label{rmqs_mutex_8h}\index{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsMutex.h@{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsMutex.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$pthread.\+h$>$}\newline
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structrmqs_mutex__t}{rmqs\+Mutex\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structrmqs_mutex__t}{rmqs\+Mutex\+\_\+t}} $\ast$ \mbox{\hyperlink{rmqs_mutex_8h_aab52fb564a5e4caca6e76689730b697d}{rmqs\+Mutex\+Create}} (void)
+\item 
+void \mbox{\hyperlink{rmqs_mutex_8h_a8603cedf72e6d9f5bc9d3f6eab839ca2}{rmqs\+Mutex\+Destroy}} (\mbox{\hyperlink{structrmqs_mutex__t}{rmqs\+Mutex\+\_\+t}} $\ast$Mutex)
+\item 
+void \mbox{\hyperlink{rmqs_mutex_8h_a24216c435d32e22cbe60351b6e8591e1}{rmqs\+Mutex\+Lock}} (\mbox{\hyperlink{structrmqs_mutex__t}{rmqs\+Mutex\+\_\+t}} $\ast$Mutex)
+\item 
+void \mbox{\hyperlink{rmqs_mutex_8h_a76d95df37ed83bfc9b912a9b87532ef4}{rmqs\+Mutex\+Unlock}} (\mbox{\hyperlink{structrmqs_mutex__t}{rmqs\+Mutex\+\_\+t}} $\ast$Mutex)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{rmqs_mutex_8h_abe2d5da58119e648aa9775aeff15d0f4}{rmqs\+Mutex\+Try\+Lock}} (\mbox{\hyperlink{structrmqs_mutex__t}{rmqs\+Mutex\+\_\+t}} $\ast$Mutex)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{rmqs_mutex_8h_aab52fb564a5e4caca6e76689730b697d}\label{rmqs_mutex_8h_aab52fb564a5e4caca6e76689730b697d}} 
+\index{rmqsMutex.h@{rmqsMutex.h}!rmqsMutexCreate@{rmqsMutexCreate}}
+\index{rmqsMutexCreate@{rmqsMutexCreate}!rmqsMutex.h@{rmqsMutex.h}}
+\doxysubsubsection{\texorpdfstring{rmqsMutexCreate()}{rmqsMutexCreate()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_mutex__t}{rmqs\+Mutex\+\_\+t}} $\ast$ rmqs\+Mutex\+Create (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_mutex_8h_a8603cedf72e6d9f5bc9d3f6eab839ca2}\label{rmqs_mutex_8h_a8603cedf72e6d9f5bc9d3f6eab839ca2}} 
+\index{rmqsMutex.h@{rmqsMutex.h}!rmqsMutexDestroy@{rmqsMutexDestroy}}
+\index{rmqsMutexDestroy@{rmqsMutexDestroy}!rmqsMutex.h@{rmqsMutex.h}}
+\doxysubsubsection{\texorpdfstring{rmqsMutexDestroy()}{rmqsMutexDestroy()}}
+{\footnotesize\ttfamily void rmqs\+Mutex\+Destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_mutex__t}{rmqs\+Mutex\+\_\+t}} $\ast$}]{Mutex }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_mutex_8h_a24216c435d32e22cbe60351b6e8591e1}\label{rmqs_mutex_8h_a24216c435d32e22cbe60351b6e8591e1}} 
+\index{rmqsMutex.h@{rmqsMutex.h}!rmqsMutexLock@{rmqsMutexLock}}
+\index{rmqsMutexLock@{rmqsMutexLock}!rmqsMutex.h@{rmqsMutex.h}}
+\doxysubsubsection{\texorpdfstring{rmqsMutexLock()}{rmqsMutexLock()}}
+{\footnotesize\ttfamily void rmqs\+Mutex\+Lock (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_mutex__t}{rmqs\+Mutex\+\_\+t}} $\ast$}]{Mutex }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_mutex_8h_abe2d5da58119e648aa9775aeff15d0f4}\label{rmqs_mutex_8h_abe2d5da58119e648aa9775aeff15d0f4}} 
+\index{rmqsMutex.h@{rmqsMutex.h}!rmqsMutexTryLock@{rmqsMutexTryLock}}
+\index{rmqsMutexTryLock@{rmqsMutexTryLock}!rmqsMutex.h@{rmqsMutex.h}}
+\doxysubsubsection{\texorpdfstring{rmqsMutexTryLock()}{rmqsMutexTryLock()}}
+{\footnotesize\ttfamily uint8\+\_\+t rmqs\+Mutex\+Try\+Lock (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_mutex__t}{rmqs\+Mutex\+\_\+t}} $\ast$}]{Mutex }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_mutex_8h_a76d95df37ed83bfc9b912a9b87532ef4}\label{rmqs_mutex_8h_a76d95df37ed83bfc9b912a9b87532ef4}} 
+\index{rmqsMutex.h@{rmqsMutex.h}!rmqsMutexUnlock@{rmqsMutexUnlock}}
+\index{rmqsMutexUnlock@{rmqsMutexUnlock}!rmqsMutex.h@{rmqsMutex.h}}
+\doxysubsubsection{\texorpdfstring{rmqsMutexUnlock()}{rmqsMutexUnlock()}}
+{\footnotesize\ttfamily void rmqs\+Mutex\+Unlock (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_mutex__t}{rmqs\+Mutex\+\_\+t}} $\ast$}]{Mutex }\end{DoxyParamCaption})}
+

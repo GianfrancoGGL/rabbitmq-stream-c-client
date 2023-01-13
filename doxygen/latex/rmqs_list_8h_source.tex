@@ -1,0 +1,49 @@
+\hypertarget{rmqs_list_8h_source}{}\doxysection{rmqs\+List.\+h}
+\label{rmqs_list_8h_source}\index{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsList.h@{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsList.h}}
+\mbox{\hyperlink{rmqs_list_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ rmqsListH}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ rmqsListH}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <stddef.h>}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00008\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct}}
+\DoxyCodeLine{00009\ \{}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keywordtype}{void}\ *\mbox{\hyperlink{structrmqs_list_node__t_a8d6fe3b082df7b75f80e45318b97269d}{Data}};}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keywordtype}{void}\ *\mbox{\hyperlink{structrmqs_list_node__t_ab6b810e6fcbd97471d5d2ed7a8e69bd4}{Next}};}
+\DoxyCodeLine{00012\ \}}
+\DoxyCodeLine{00013\ \mbox{\hyperlink{structrmqs_list_node__t}{rmqsListNode\_t}};}
+\DoxyCodeLine{00014\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00015\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct}}
+\DoxyCodeLine{00016\ \{}
+\DoxyCodeLine{00017\ \ \ \ \ \mbox{\hyperlink{structrmqs_list_node__t}{rmqsListNode\_t}}\ *\mbox{\hyperlink{structrmqs_list__t_a762bdd848a045ed33cc07efc20adf5d3}{First}};}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{structrmqs_list__t_af2916d04631369d02b0c639c394bf575}{Count}};}
+\DoxyCodeLine{00019\ \ \ \ \ void\ (*ClearDataCB)(\textcolor{keywordtype}{void}\ *);}
+\DoxyCodeLine{00020\ \}}
+\DoxyCodeLine{00021\ \mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}};}
+\DoxyCodeLine{00022\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00023\ \mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *\ \mbox{\hyperlink{rmqs_list_8h_a0577803c9e78cfd1a5387a03114e81ca}{rmqsListCreate}}(\textcolor{keywordtype}{void}\ (*ClearDataCB)(\textcolor{keywordtype}{void}\ *));}
+\DoxyCodeLine{00024\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_list_8h_aeee10773551b954b2c0826901ce70198}{rmqsListDestroy}}(\mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *Stream);}
+\DoxyCodeLine{00025\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00026\ \mbox{\hyperlink{structrmqs_list_node__t}{rmqsListNode\_t}}\ *\ \mbox{\hyperlink{rmqs_list_8h_a76cfc71afb2b2eee8134cc875a89d355}{rmqsListAddBegin}}(\mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *List,\ \textcolor{keywordtype}{void}\ *Data);}
+\DoxyCodeLine{00027\ \mbox{\hyperlink{structrmqs_list_node__t}{rmqsListNode\_t}}\ *\ \mbox{\hyperlink{rmqs_list_8h_ad3c93a62f610b95d18d66f6bcfc44a21}{rmqsListAddEnd}}(\mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *List,\ \textcolor{keywordtype}{void}\ *Data);}
+\DoxyCodeLine{00028\ \mbox{\hyperlink{structrmqs_list_node__t}{rmqsListNode\_t}}\ *\ \mbox{\hyperlink{rmqs_list_8h_adde4d49be3ef6f6297b9ac5e5e54aa33}{rmqsListAddPosition}}(\mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *List,\ \textcolor{keywordtype}{size\_t}\ Position,\ \textcolor{keywordtype}{void}\ *Data);}
+\DoxyCodeLine{00029\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00030\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_list_8h_a09d2f8e419deb6709693461eed1d7c39}{rmqsListDeleteBegin}}(\mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *List);}
+\DoxyCodeLine{00031\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_list_8h_a493d98dc2f37388289cf6d31d6cb0338}{rmqsListDeleteEnd}}(\mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *List);}
+\DoxyCodeLine{00032\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_list_8h_a143c55c01d4faeefadb29d25b7f91faa}{rmqsListDeleteData}}(\mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *List,\ \textcolor{keywordtype}{void}\ *Data);}
+\DoxyCodeLine{00033\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_list_8h_a1673a041e113af1bf4cb0336e2c2f190}{rmqsListDeletePosition}}(\mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *List,\ \textcolor{keywordtype}{size\_t}\ Position);}
+\DoxyCodeLine{00034\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00035\ \mbox{\hyperlink{structrmqs_list_node__t}{rmqsListNode\_t}}\ *\ \mbox{\hyperlink{rmqs_list_8h_ae4ee4563aa62a7c5a2f6e61609ca4f32}{rmqsListSearchByData}}(\mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *List,\ \textcolor{keywordtype}{void}\ *Data);}
+\DoxyCodeLine{00036\ \mbox{\hyperlink{structrmqs_list_node__t}{rmqsListNode\_t}}\ *\ \mbox{\hyperlink{rmqs_list_8h_a0d68f394a6627f14c885be24af611a7a}{rmqsListSearchByPosition}}(\mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *List,\ \textcolor{keywordtype}{size\_t}\ Position);}
+\DoxyCodeLine{00037\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00038\ \textcolor{keywordtype}{void}\ *\ \mbox{\hyperlink{rmqs_list_8h_acd2cea1f4cc36552e7e3547ed51ee81f}{rmqsListGetDataByPosition}}(\mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *List,\ \textcolor{keywordtype}{size\_t}\ Position);}
+\DoxyCodeLine{00039\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00040\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_list_8h_a989d563e3ac6875bb612724eb0af8864}{rmqsGenericListDestroy}}(\textcolor{keywordtype}{void}\ *Data);}
+\DoxyCodeLine{00041\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00043\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+
+\end{DoxyCode}

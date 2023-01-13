@@ -95,6 +95,8 @@ rmqsResponse_t;
 //---------------------------------------------------------------------------
 uint8_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
+void rmqsSendMessage(const void *Environment, const rmqsSocket Socket, const char *Data, size_t DataSize);
+uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char *RxBuffer, size_t RxBufferSize, rmqsStream_t *RxStream, rmqsStream_t *RxStreamTempBuffer, const uint32_t RxTimeout);
 rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelationId CorrelationId, uint32_t PropertiesCount, rmqsProperty_t *Properties);
 size_t rmqsAddInt8ToStream(rmqsStream_t *Stream, int8_t Value);
 size_t rmqsAddUInt8ToStream(rmqsStream_t *Stream, uint8_t Value);

@@ -1,0 +1,96 @@
+\hypertarget{rmqs_network_8c}{}\doxysection{C\+:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqs\+Network.c File Reference}
+\label{rmqs_network_8c}\index{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsNetwork.c@{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsNetwork.c}}
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$netinet/in.\+h$>$}\newline
+{\ttfamily \#include $<$netinet/tcp.\+h$>$}\newline
+{\ttfamily \#include $<$errno.\+h$>$}\newline
+{\ttfamily \#include $<$strings.\+h$>$}\newline
+{\ttfamily \#include $<$netdb.\+h$>$}\newline
+{\ttfamily \#include $<$fcntl.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}rmqs\+Network.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}} \mbox{\hyperlink{rmqs_network_8c_aa979f99e44db9fdb913b4d2176e3f911}{rmqs\+Socket\+Create}} (void)
+\item 
+void \mbox{\hyperlink{rmqs_network_8c_a846e9ca2b3f1ad0eec20c186f5715710}{rmqs\+Socket\+Destroy}} (\mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}} $\ast$Socket)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{rmqs_network_8c_a91e6a0d05a410f0c68c562705ef509a9}{rmqs\+Socket\+Connect}} (const char $\ast$Host, const uint16\+\_\+t Port, const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}} Socket, const uint32\+\_\+t Timeout\+Ms)
+\item 
+void \mbox{\hyperlink{rmqs_network_8c_affc48b3afbeaa74e222963e879bc50dc}{rmqs\+Set\+Socket\+Timeouts}} (const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}} Socket, const uint32\+\_\+t Read\+Timeout, const uint32\+\_\+t Write\+Timeout)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{rmqs_network_8c_a8f0ef4de891eb359ea072bd11ad74e2b}{rmqs\+Set\+Socket\+Tx\+Rx\+Buffers}} (const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}} Socket, const uint32\+\_\+t ul\+Tx\+Buffer\+Size, const uint32\+\_\+t ul\+Rx\+Buffer\+Size)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{rmqs_network_8c_a34cbb136d0663e2f9f149b842414bc85}{rmqs\+Set\+Socket\+Blocking}} (const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}} Socket)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{rmqs_network_8c_ae838eabe4e25d6dc0bc9e1d3b6ab3771}{rmqs\+Set\+Socket\+Non\+Blocking}} (const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}} Socket)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{rmqs_network_8c_a70c0503a8bc8d28aa17865a195ef4267}{rmqs\+Set\+Keep\+Alive}} (const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}} Socket)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{rmqs_network_8c_a59c73ed25576bddf42fcd00c26b430e2}{rmqs\+Set\+Tcp\+No\+Delay}} (const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}} Socket)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{rmqs_network_8c_ac1e73a66a50eb5e92c8fcbf2df1ebd3d}{rmqs\+Network\+Error}} (void)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{rmqs_network_8c_ac1e73a66a50eb5e92c8fcbf2df1ebd3d}\label{rmqs_network_8c_ac1e73a66a50eb5e92c8fcbf2df1ebd3d}} 
+\index{rmqsNetwork.c@{rmqsNetwork.c}!rmqsNetworkError@{rmqsNetworkError}}
+\index{rmqsNetworkError@{rmqsNetworkError}!rmqsNetwork.c@{rmqsNetwork.c}}
+\doxysubsubsection{\texorpdfstring{rmqsNetworkError()}{rmqsNetworkError()}}
+{\footnotesize\ttfamily uint8\+\_\+t rmqs\+Network\+Error (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_network_8c_a70c0503a8bc8d28aa17865a195ef4267}\label{rmqs_network_8c_a70c0503a8bc8d28aa17865a195ef4267}} 
+\index{rmqsNetwork.c@{rmqsNetwork.c}!rmqsSetKeepAlive@{rmqsSetKeepAlive}}
+\index{rmqsSetKeepAlive@{rmqsSetKeepAlive}!rmqsNetwork.c@{rmqsNetwork.c}}
+\doxysubsubsection{\texorpdfstring{rmqsSetKeepAlive()}{rmqsSetKeepAlive()}}
+{\footnotesize\ttfamily uint8\+\_\+t rmqs\+Set\+Keep\+Alive (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}}}]{Socket }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_network_8c_a34cbb136d0663e2f9f149b842414bc85}\label{rmqs_network_8c_a34cbb136d0663e2f9f149b842414bc85}} 
+\index{rmqsNetwork.c@{rmqsNetwork.c}!rmqsSetSocketBlocking@{rmqsSetSocketBlocking}}
+\index{rmqsSetSocketBlocking@{rmqsSetSocketBlocking}!rmqsNetwork.c@{rmqsNetwork.c}}
+\doxysubsubsection{\texorpdfstring{rmqsSetSocketBlocking()}{rmqsSetSocketBlocking()}}
+{\footnotesize\ttfamily uint8\+\_\+t rmqs\+Set\+Socket\+Blocking (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}}}]{Socket }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_network_8c_ae838eabe4e25d6dc0bc9e1d3b6ab3771}\label{rmqs_network_8c_ae838eabe4e25d6dc0bc9e1d3b6ab3771}} 
+\index{rmqsNetwork.c@{rmqsNetwork.c}!rmqsSetSocketNonBlocking@{rmqsSetSocketNonBlocking}}
+\index{rmqsSetSocketNonBlocking@{rmqsSetSocketNonBlocking}!rmqsNetwork.c@{rmqsNetwork.c}}
+\doxysubsubsection{\texorpdfstring{rmqsSetSocketNonBlocking()}{rmqsSetSocketNonBlocking()}}
+{\footnotesize\ttfamily uint8\+\_\+t rmqs\+Set\+Socket\+Non\+Blocking (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}}}]{Socket }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_network_8c_affc48b3afbeaa74e222963e879bc50dc}\label{rmqs_network_8c_affc48b3afbeaa74e222963e879bc50dc}} 
+\index{rmqsNetwork.c@{rmqsNetwork.c}!rmqsSetSocketTimeouts@{rmqsSetSocketTimeouts}}
+\index{rmqsSetSocketTimeouts@{rmqsSetSocketTimeouts}!rmqsNetwork.c@{rmqsNetwork.c}}
+\doxysubsubsection{\texorpdfstring{rmqsSetSocketTimeouts()}{rmqsSetSocketTimeouts()}}
+{\footnotesize\ttfamily void rmqs\+Set\+Socket\+Timeouts (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}}}]{Socket,  }\item[{const uint32\+\_\+t}]{Read\+Timeout,  }\item[{const uint32\+\_\+t}]{Write\+Timeout }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_network_8c_a8f0ef4de891eb359ea072bd11ad74e2b}\label{rmqs_network_8c_a8f0ef4de891eb359ea072bd11ad74e2b}} 
+\index{rmqsNetwork.c@{rmqsNetwork.c}!rmqsSetSocketTxRxBuffers@{rmqsSetSocketTxRxBuffers}}
+\index{rmqsSetSocketTxRxBuffers@{rmqsSetSocketTxRxBuffers}!rmqsNetwork.c@{rmqsNetwork.c}}
+\doxysubsubsection{\texorpdfstring{rmqsSetSocketTxRxBuffers()}{rmqsSetSocketTxRxBuffers()}}
+{\footnotesize\ttfamily uint8\+\_\+t rmqs\+Set\+Socket\+Tx\+Rx\+Buffers (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}}}]{Socket,  }\item[{const uint32\+\_\+t}]{ul\+Tx\+Buffer\+Size,  }\item[{const uint32\+\_\+t}]{ul\+Rx\+Buffer\+Size }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_network_8c_a59c73ed25576bddf42fcd00c26b430e2}\label{rmqs_network_8c_a59c73ed25576bddf42fcd00c26b430e2}} 
+\index{rmqsNetwork.c@{rmqsNetwork.c}!rmqsSetTcpNoDelay@{rmqsSetTcpNoDelay}}
+\index{rmqsSetTcpNoDelay@{rmqsSetTcpNoDelay}!rmqsNetwork.c@{rmqsNetwork.c}}
+\doxysubsubsection{\texorpdfstring{rmqsSetTcpNoDelay()}{rmqsSetTcpNoDelay()}}
+{\footnotesize\ttfamily uint8\+\_\+t rmqs\+Set\+Tcp\+No\+Delay (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}}}]{Socket }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_network_8c_a91e6a0d05a410f0c68c562705ef509a9}\label{rmqs_network_8c_a91e6a0d05a410f0c68c562705ef509a9}} 
+\index{rmqsNetwork.c@{rmqsNetwork.c}!rmqsSocketConnect@{rmqsSocketConnect}}
+\index{rmqsSocketConnect@{rmqsSocketConnect}!rmqsNetwork.c@{rmqsNetwork.c}}
+\doxysubsubsection{\texorpdfstring{rmqsSocketConnect()}{rmqsSocketConnect()}}
+{\footnotesize\ttfamily uint8\+\_\+t rmqs\+Socket\+Connect (\begin{DoxyParamCaption}\item[{const char $\ast$}]{Host,  }\item[{const uint16\+\_\+t}]{Port,  }\item[{const \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}}}]{Socket,  }\item[{const uint32\+\_\+t}]{Timeout\+Ms }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_network_8c_aa979f99e44db9fdb913b4d2176e3f911}\label{rmqs_network_8c_aa979f99e44db9fdb913b4d2176e3f911}} 
+\index{rmqsNetwork.c@{rmqsNetwork.c}!rmqsSocketCreate@{rmqsSocketCreate}}
+\index{rmqsSocketCreate@{rmqsSocketCreate}!rmqsNetwork.c@{rmqsNetwork.c}}
+\doxysubsubsection{\texorpdfstring{rmqsSocketCreate()}{rmqsSocketCreate()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}} rmqs\+Socket\+Create (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_network_8c_a846e9ca2b3f1ad0eec20c186f5715710}\label{rmqs_network_8c_a846e9ca2b3f1ad0eec20c186f5715710}} 
+\index{rmqsNetwork.c@{rmqsNetwork.c}!rmqsSocketDestroy@{rmqsSocketDestroy}}
+\index{rmqsSocketDestroy@{rmqsSocketDestroy}!rmqsNetwork.c@{rmqsNetwork.c}}
+\doxysubsubsection{\texorpdfstring{rmqsSocketDestroy()}{rmqsSocketDestroy()}}
+{\footnotesize\ttfamily void rmqs\+Socket\+Destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}} $\ast$}]{Socket }\end{DoxyParamCaption})}
+

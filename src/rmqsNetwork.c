@@ -1,10 +1,12 @@
 //---------------------------------------------------------------------------
+#include <stdio.h>
 #ifdef __WIN32__
 #include <winsock2.h>
 #else
 #include <unistd.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#include <arpa/inet.h>
 #include <errno.h>
 #include <strings.h>
 #include <netdb.h>
@@ -118,7 +120,14 @@ uint8_t rmqsSocketConnect(const char *Host, const uint16_t Port, const rmqsSocke
 
     pHost = (struct hostent *)gethostbyname(Host);
 
-    ServerAddress.sin_addr = *(struct in_addr *)pHost->h_addr;
+    if (pHost)
+    {
+        ServerAddress.sin_addr = *(struct in_addr *)pHost->h_addr;
+    }
+    else
+    {
+        ServerAddress.sin_addr.s_addr = inet_addr(Host);
+    }
 
     #ifdef __WIN32__
     rmqsSetSocketNonBlocking(Socket); // Socket set as nonblocking to set the connect timeout
@@ -162,24 +171,35 @@ uint8_t rmqsSocketConnect(const char *Host, const uint16_t Port, const rmqsSocke
     return Connected;
 }
 //---------------------------------------------------------------------------
-void rmqsSetSocketTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeout, const uint32_t WriteTimeout)
+void rmqsSetSocketReadTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeout)
 {
     #ifndef __WIN32__
-    struct timeval TVRead, TVWrite;
+    struct timeval TVRead;
     TVRead.tv_sec = 0;
     TVRead.tv_usec = ReadTimeout * 1000;
+
+    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (const int8_t *)&TVRead, sizeof(TVRead));
+    #else
+    DWORD dwRead;
+    dwRead = ReadTimeout;
+
+    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (const char *)&dwRead, sizeof(dwRead));
+    #endif
+}
+//--------------------------------------------------------------------------
+void rmqsSetSocketWriteTimeouts(const rmqsSocket Socket, const uint32_t WriteTimeout)
+{
+    #ifndef __WIN32__
+    struct timeval TVWrite;
 
     TVWrite.tv_sec = 0;
     TVWrite.tv_usec = WriteTimeout * 1000;
 
-    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (const int8_t *)&TVRead, sizeof(TVRead));
     setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (const int8_t *)&TVWrite, sizeof(TVWrite));
     #else
-    DWORD dwRead, dwWrite;
-    dwRead = ReadTimeout;
+    DWORD dwWrite;
     dwWrite = WriteTimeout;
 
-    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (const char *)&dwRead, sizeof(dwRead));
     setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (const char *)&dwWrite, sizeof(dwWrite));
     #endif
 }
@@ -315,7 +335,7 @@ uint8_t rmqsSetTcpNoDelay(const rmqsSocket Socket)
 //---------------------------------------------------------------------------
 uint8_t rmqsNetworkError(void)
 {
-    uint8_t Result = 0;
+    uint8_t Result;
 
     #ifdef __WIN32__
     unsigned long Error = GetLastError();

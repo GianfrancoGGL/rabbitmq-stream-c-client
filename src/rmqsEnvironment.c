@@ -6,7 +6,7 @@
 #include "rmqsMemory.h"
 #include "rmqsProtocol.h"
 //---------------------------------------------------------------------------
-rmqsEnvironment_t * rmqsEnvironmentCreate(char *BrokersList)
+rmqsEnvironment_t * rmqsEnvironmentCreate(char *BrokersList, uint8_t EnableLogging, char *LogFileName)
 {
     rmqsEnvironment_t *Environment = (rmqsEnvironment_t *)rmqsAllocateMemory(sizeof(rmqsEnvironment_t));
     char *BrokersCopyString, *BrokerCopyString;
@@ -83,6 +83,11 @@ rmqsEnvironment_t * rmqsEnvironmentCreate(char *BrokersList)
 
     rmqsFreeMemory(BrokersCopyString);
 
+    if (EnableLogging)
+    {
+        Environment->Logger = rmqsLoggerCreate(LogFileName, 0);
+    }
+
     return Environment;
 }
 //---------------------------------------------------------------------------
@@ -90,6 +95,11 @@ void rmqsEnvironmentDestroy(rmqsEnvironment_t *Environment)
 {
     rmqsListDestroy(Environment->BrokersList);
     rmqsListDestroy(Environment->ProducersList);
+
+    if (Environment->Logger != 0)
+    {
+        rmqsLoggerDestroy(Environment->Logger);
+    }
 
     rmqsFreeMemory((void *)Environment);
 }

@@ -1,0 +1,89 @@
+\hypertarget{structrmqs_producer__t}{}\doxysection{rmqs\+Producer\+\_\+t Struct Reference}
+\label{structrmqs_producer__t}\index{rmqsProducer\_t@{rmqsProducer\_t}}
+
+
+{\ttfamily \#include $<$rmqs\+Producer.\+h$>$}
+
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+void $\ast$ \mbox{\hyperlink{structrmqs_producer__t_a13f9dd413c8d87f381d042c19cba6eda}{Environment}}
+\item 
+\mbox{\hyperlink{rmqs_producer_8h_a91322292cbd6bcf35a4b0cd41a5cee57}{rmqs\+Producer\+Status}} \mbox{\hyperlink{structrmqs_producer__t_ae1dafeaea5f26d1a6493739c043fa7d2}{Status}}
+\item 
+void($\ast$ \mbox{\hyperlink{structrmqs_producer__t_a1dc9d6171236652a837d496c91e8a058}{Events\+CB}} )(\mbox{\hyperlink{rmqs_producer_8h_a0fb553205959e40706ad61a510ff02cf}{rqms\+Producer\+Event}}, void $\ast$)
+\item 
+\mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}} \mbox{\hyperlink{structrmqs_producer__t_aad8549247771e25e1428b61ae371668f}{Socket}}
+\item 
+\mbox{\hyperlink{rmqs_protocol_8h_a9f1e7f86d3a4d7bc369ed8d858c35c30}{rmqs\+Correlation\+Id}} \mbox{\hyperlink{structrmqs_producer__t_a465293c9ca41d414a4d485f40e8defa2}{Correlation\+Id}}
+\item 
+\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$ \mbox{\hyperlink{structrmqs_producer__t_ac09083a9ec96b704df701ad1cead8912}{Tx\+Stream}}
+\item 
+\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$ \mbox{\hyperlink{structrmqs_producer__t_ad0a0b972207d2963c57e505283eb7416}{Rx\+Stream}}
+\item 
+char \mbox{\hyperlink{structrmqs_producer__t_a117186e0db51165710ccfcd52d0eaf35}{Rx\+Socket\+Buffer}} \mbox{[}1024\mbox{]}
+\item 
+\mbox{\hyperlink{structrmqs_thread__t}{rmqs\+Thread\+\_\+t}} $\ast$ \mbox{\hyperlink{structrmqs_producer__t_adf4cc1d271f0460680c10685c34c8cd8}{Producer\+Thread}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{structrmqs_producer__t_a465293c9ca41d414a4d485f40e8defa2}\label{structrmqs_producer__t_a465293c9ca41d414a4d485f40e8defa2}} 
+\index{rmqsProducer\_t@{rmqsProducer\_t}!CorrelationId@{CorrelationId}}
+\index{CorrelationId@{CorrelationId}!rmqsProducer\_t@{rmqsProducer\_t}}
+\doxysubsubsection{\texorpdfstring{CorrelationId}{CorrelationId}}
+{\footnotesize\ttfamily \mbox{\hyperlink{rmqs_protocol_8h_a9f1e7f86d3a4d7bc369ed8d858c35c30}{rmqs\+Correlation\+Id}} rmqs\+Producer\+\_\+t\+::\+Correlation\+Id}
+
+\mbox{\Hypertarget{structrmqs_producer__t_a13f9dd413c8d87f381d042c19cba6eda}\label{structrmqs_producer__t_a13f9dd413c8d87f381d042c19cba6eda}} 
+\index{rmqsProducer\_t@{rmqsProducer\_t}!Environment@{Environment}}
+\index{Environment@{Environment}!rmqsProducer\_t@{rmqsProducer\_t}}
+\doxysubsubsection{\texorpdfstring{Environment}{Environment}}
+{\footnotesize\ttfamily void$\ast$ rmqs\+Producer\+\_\+t\+::\+Environment}
+
+\mbox{\Hypertarget{structrmqs_producer__t_a1dc9d6171236652a837d496c91e8a058}\label{structrmqs_producer__t_a1dc9d6171236652a837d496c91e8a058}} 
+\index{rmqsProducer\_t@{rmqsProducer\_t}!EventsCB@{EventsCB}}
+\index{EventsCB@{EventsCB}!rmqsProducer\_t@{rmqsProducer\_t}}
+\doxysubsubsection{\texorpdfstring{EventsCB}{EventsCB}}
+{\footnotesize\ttfamily void($\ast$ rmqs\+Producer\+\_\+t\+::\+Events\+CB) (\mbox{\hyperlink{rmqs_producer_8h_a0fb553205959e40706ad61a510ff02cf}{rqms\+Producer\+Event}}, void $\ast$)}
+
+\mbox{\Hypertarget{structrmqs_producer__t_adf4cc1d271f0460680c10685c34c8cd8}\label{structrmqs_producer__t_adf4cc1d271f0460680c10685c34c8cd8}} 
+\index{rmqsProducer\_t@{rmqsProducer\_t}!ProducerThread@{ProducerThread}}
+\index{ProducerThread@{ProducerThread}!rmqsProducer\_t@{rmqsProducer\_t}}
+\doxysubsubsection{\texorpdfstring{ProducerThread}{ProducerThread}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_thread__t}{rmqs\+Thread\+\_\+t}}$\ast$ rmqs\+Producer\+\_\+t\+::\+Producer\+Thread}
+
+\mbox{\Hypertarget{structrmqs_producer__t_a117186e0db51165710ccfcd52d0eaf35}\label{structrmqs_producer__t_a117186e0db51165710ccfcd52d0eaf35}} 
+\index{rmqsProducer\_t@{rmqsProducer\_t}!RxSocketBuffer@{RxSocketBuffer}}
+\index{RxSocketBuffer@{RxSocketBuffer}!rmqsProducer\_t@{rmqsProducer\_t}}
+\doxysubsubsection{\texorpdfstring{RxSocketBuffer}{RxSocketBuffer}}
+{\footnotesize\ttfamily char rmqs\+Producer\+\_\+t\+::\+Rx\+Socket\+Buffer\mbox{[}1024\mbox{]}}
+
+\mbox{\Hypertarget{structrmqs_producer__t_ad0a0b972207d2963c57e505283eb7416}\label{structrmqs_producer__t_ad0a0b972207d2963c57e505283eb7416}} 
+\index{rmqsProducer\_t@{rmqsProducer\_t}!RxStream@{RxStream}}
+\index{RxStream@{RxStream}!rmqsProducer\_t@{rmqsProducer\_t}}
+\doxysubsubsection{\texorpdfstring{RxStream}{RxStream}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}}$\ast$ rmqs\+Producer\+\_\+t\+::\+Rx\+Stream}
+
+\mbox{\Hypertarget{structrmqs_producer__t_aad8549247771e25e1428b61ae371668f}\label{structrmqs_producer__t_aad8549247771e25e1428b61ae371668f}} 
+\index{rmqsProducer\_t@{rmqsProducer\_t}!Socket@{Socket}}
+\index{Socket@{Socket}!rmqsProducer\_t@{rmqsProducer\_t}}
+\doxysubsubsection{\texorpdfstring{Socket}{Socket}}
+{\footnotesize\ttfamily \mbox{\hyperlink{rmqs_network_8h_a5d6ba7daacb1e6fbd1f646323e2e731e}{rmqs\+Socket}} rmqs\+Producer\+\_\+t\+::\+Socket}
+
+\mbox{\Hypertarget{structrmqs_producer__t_ae1dafeaea5f26d1a6493739c043fa7d2}\label{structrmqs_producer__t_ae1dafeaea5f26d1a6493739c043fa7d2}} 
+\index{rmqsProducer\_t@{rmqsProducer\_t}!Status@{Status}}
+\index{Status@{Status}!rmqsProducer\_t@{rmqsProducer\_t}}
+\doxysubsubsection{\texorpdfstring{Status}{Status}}
+{\footnotesize\ttfamily \mbox{\hyperlink{rmqs_producer_8h_a91322292cbd6bcf35a4b0cd41a5cee57}{rmqs\+Producer\+Status}} rmqs\+Producer\+\_\+t\+::\+Status}
+
+\mbox{\Hypertarget{structrmqs_producer__t_ac09083a9ec96b704df701ad1cead8912}\label{structrmqs_producer__t_ac09083a9ec96b704df701ad1cead8912}} 
+\index{rmqsProducer\_t@{rmqsProducer\_t}!TxStream@{TxStream}}
+\index{TxStream@{TxStream}!rmqsProducer\_t@{rmqsProducer\_t}}
+\doxysubsubsection{\texorpdfstring{TxStream}{TxStream}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}}$\ast$ rmqs\+Producer\+\_\+t\+::\+Tx\+Stream}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/rabbitmq-\/stream-\/c-\/client-\/main/src/\mbox{\hyperlink{rmqs_producer_8h}{rmqs\+Producer.\+h}}\end{DoxyCompactItemize}

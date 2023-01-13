@@ -28,6 +28,103 @@ uint8_t rmqsIsLittleEndianMachine(void)
     }
 }
 //---------------------------------------------------------------------------
+void rmqsSendMessage(const void *Environment, const rmqsSocket Socket, const char *Data, size_t DataSize)
+{
+    rmqsEnvironment_t *EnvironmentObj = (rmqsEnvironment_t *)Environment;
+
+    if (EnvironmentObj->Logger)
+    {
+        rmqsLoggerRegisterDump(EnvironmentObj->Logger, (void *)Data, DataSize, "TX", 0);
+    }
+
+    send(Socket, (const char *)Data, DataSize, 0);
+}
+//---------------------------------------------------------------------------
+uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char *RxBuffer, size_t RxBufferSize, rmqsStream_t *RxStream, rmqsStream_t *RxStreamTempBuffer, const uint32_t RxTimeout)
+{
+    rmqsEnvironment_t *EnvironmentObj = (rmqsEnvironment_t *)Environment;
+    uint8_t MessageReceived = 0;
+    int32_t RxBytes;
+    uint32_t MessageSize;
+
+    //
+    // Tries to extract the message from the already received bytes, if not enough, read
+    // again from the socket
+    //
+    while (1)
+    {
+        //
+        // Unprocessed bytes saved in the temp stream are processed now
+        //
+        if (RxStreamTempBuffer->Size > 0)
+        {
+            rmqsStreamWrite(RxStream, RxStreamTempBuffer->Data, RxStreamTempBuffer->Size);
+            rmqsStreamClear(RxStreamTempBuffer, 0);
+        }
+
+        //
+        // Is the message length (4 bytes) arrived?
+        //
+        if (RxStream->Size >= sizeof(uint32_t))
+        {
+            //
+            // Message length is once stored in the Tag1 field and eventually with the correct endianness
+            //
+            MessageSize = *(uint32_t *)RxStream->Data;
+
+            if (EnvironmentObj->IsLittleEndianMachine)
+            {
+                MessageSize = SwapUInt32(MessageSize);
+            }
+
+            //
+            // The number of bytes to wait is the one stored in the 4 bytes of the length + the length itself
+            //
+            MessageSize += sizeof(uint32_t);
+
+            if (RxStream->Size >= MessageSize)
+            {
+                //
+                // Message completed!
+                //
+                MessageReceived = 1;
+
+                if (EnvironmentObj->Logger)
+                {
+                    rmqsLoggerRegisterDump(EnvironmentObj->Logger, (void *)RxStream->Data, RxStream->Size, "RX", 0);
+                }
+
+                //
+                // Store the extra bytes in the rx buffer stream
+                //
+                rmqsStreamWrite(RxStreamTempBuffer, (void *)((char *)RxStream->Data + MessageSize), RxStream->Size - MessageSize);
+            }
+        }
+
+        if (MessageReceived)
+        {
+            break;
+        }
+
+        rmqsSetSocketReadTimeouts(Socket, RxTimeout);
+
+        RxBytes = recv(Socket, RxBuffer, RxBufferSize, 0);
+
+        if (RxBytes <= 0)
+        {
+            break;
+        }
+
+        rmqsStreamWrite(RxStream, RxBuffer, RxBytes);
+
+        //
+        // New loop to extract the message from the receive stream
+        //
+    }
+
+    return MessageReceived;
+}
+//---------------------------------------------------------------------------
 rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelationId CorrelationId, uint32_t PropertiesCount, rmqsProperty_t *Properties)
 {
     rmqsProducer_t *ProducerObj = (rmqsProducer_t *)Producer;
@@ -36,8 +133,7 @@ rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelation
     rmqsVersion Version = 1;
     uint32_t i, MapSize;
     rmqsProperty_t *Property;
-    int32_t RxResult;
-    rmqsResponse_t Response;
+    rmqsResponse_t *Response;
 
     //
     // Calculate the map size
@@ -86,22 +182,27 @@ rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelation
     rmqsStreamMoveTo(ProducerObj->TxStream, 0);
     rmqsAddUInt32ToStream(ProducerObj->TxStream, ProducerObj->TxStream->Size - sizeof(rmqsSize), Environment->IsLittleEndianMachine);
 
-    send(ProducerObj->Socket, (const char *)ProducerObj->TxStream->Data, ProducerObj->TxStream->Size, 0);
+    rmqsSendMessage(ProducerObj->Environment, ProducerObj->Socket, (const char *)ProducerObj->TxStream->Data, ProducerObj->TxStream->Size);
 
-    memset(&Response, 0, sizeof(Response));
-
-    RxResult = recv(ProducerObj->Socket, (char *)&Response, sizeof(Response), 0);
-
-    if (RxResult == sizeof(Response) && Environment->IsLittleEndianMachine)
+    if (rmqsWaitMessage(ProducerObj->Environment, ProducerObj->Socket, ProducerObj->RxSocketBuffer, sizeof(ProducerObj->RxSocketBuffer), ProducerObj->RxStream, ProducerObj->RxStreamTempBuffer, 1000))
     {
-        Response.Size = SwapUInt32(Response.Size);
-        Response.Key = SwapUInt16((Response.Key & 0x7FFF));
-        Response.Version = SwapUInt16(Response.Version);
-        Response.CorrelationId = SwapUInt32(Response.CorrelationId);
-        Response.ResponseCode = SwapUInt16(Response.ResponseCode);
-    }
+        Response = (rmqsResponse_t *)ProducerObj->RxStream->Data;
 
-    return (rmqsResponseCode)Response.ResponseCode;
+        if (Environment->IsLittleEndianMachine)
+        {
+            Response->Size = SwapUInt32(Response->Size);
+            Response->Key = SwapUInt16((Response->Key & 0x7FFF));
+            Response->Version = SwapUInt16(Response->Version);
+            Response->CorrelationId = SwapUInt32(Response->CorrelationId);
+            Response->ResponseCode = SwapUInt16(Response->ResponseCode);
+        }
+        
+        return Response->ResponseCode;
+    }
+    else
+    {
+        return rmqsrNoReply;
+    }
 }
 //---------------------------------------------------------------------------
 size_t rmqsAddInt8ToStream(rmqsStream_t *Stream, int8_t Value)

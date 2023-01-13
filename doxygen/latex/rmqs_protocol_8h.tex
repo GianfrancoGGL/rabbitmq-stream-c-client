@@ -1,0 +1,443 @@
+\hypertarget{rmqs_protocol_8h}{}\doxysection{C\+:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqs\+Protocol.h File Reference}
+\label{rmqs_protocol_8h}\index{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsProtocol.h@{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsProtocol.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}rmqs\+Stream.\+h\char`\"{}}\newline
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structrmqs_property__t}{rmqs\+Property\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structrmqs_response__t}{rmqs\+Response\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{rmqs_protocol_8h_a6c1d3d1780a68aa17c9ad682ed10bb4a}{RMQS\+\_\+\+MAX\+\_\+\+KEY\+\_\+\+SIZE}}~64
+\item 
+\#define \mbox{\hyperlink{rmqs_protocol_8h_a1085614e5593820763b93718a2ef02a5}{RMQS\+\_\+\+MAX\+\_\+\+VALUE\+\_\+\+SIZE}}~128
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef uint32\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a6083589d4f180aedce64d6e63593998f}{rmqs\+Size}}
+\item 
+typedef uint16\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a66126e594948909c589b5e9d18fdca50}{rmqs\+Key}}
+\item 
+typedef uint16\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_ad97c47c31011a75a5c74d2d4b269aa5d}{rmqs\+Version}}
+\item 
+typedef uint32\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a9f1e7f86d3a4d7bc369ed8d858c35c30}{rmqs\+Correlation\+Id}}
+\item 
+typedef uint8\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_ade8db272b4bc5dc857cde956a8401c64}{rmqs\+Publisher\+Id}}
+\item 
+typedef int16\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a3b39404751492fb91a7d5b0a91edeb16}{rmqs\+String\+Len}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975}{rmqs\+Command}} \{ \newline
+\mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975aa4dbc3797ad72f8b157133fce0c4ac54}{rmqsc\+Declare\+Publisher}} = 0x01
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975afe688f5db16f58734a7d9b1f81cbe673}{rmqsc\+Publish}} = 0x02
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a7abe6c8ded1516383116f87a85dfb5b8}{rmqsc\+Publish\+Confirm}} = 0x03
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a760baf2ffa4d39d20e044422744c9c4b}{rmqsc\+Publish\+Error}} = 0x04
+, \newline
+\mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ab9e5516feb95f882a768d234eb66943b}{rmqsc\+Query\+Publisher\+Sequence}} = 0x05
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a049da15cf699e8712259dd8c14c8c219}{rmqsc\+Delete\+Publisher}} = 0x06
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ada77c67aa3d179055a368b344c58088d}{rmqsc\+Subscribe}} = 0x07
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a17400efba1e17cda742efa83193aa65c}{rmqsc\+Deliver}} = 0x08
+, \newline
+\mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975abe0c2895b3a1b6785c1b7006598e5e02}{rmqsc\+Credit}} = 0x09
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a7fbbb6dd30f9d744672255b5c963fe1d}{rmqsc\+Store\+Offset}} = 0x0A
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a1f21033bbb30c3ee466f67aa82631ef5}{rmqsc\+Query\+Offset}} = 0x0B
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a21296d342a493b4bfe36fc8942aa7c12}{rmqsc\+Unsubscribe}} = 0x0C
+, \newline
+\mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a74d6df33d991e821eca7d477954715df}{rmqsc\+Create}} = 0x0D
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975abbbcddd32b1c73a5df306a6d88f7a160}{rmqsc\+Delete}} = 0x0E
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a0575eac4fb602e09dbf38b6e0d37be4e}{rmqsc\+Metadata}} = 0x0F
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ade7ab4146931dcb2af7d4264d8c4f380}{rmqsc\+Metadata\+Update}} = 0x10
+, \newline
+\mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a1f37115bea578fffed197451a3ed4951}{rmqsc\+Peer\+Properties}} = 0x11
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a6a94307e3b5f5ab656c5fc5ea135e5c3}{rmqsc\+Sasl\+Handshake}} = 0x12
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a184e4f894278d21c6c89db1a5cb775bc}{rmqsc\+Sasl\+Authenticate}} = 0x13
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975aff65a03adad2dffc0cee0805d0c1d69a}{rmqsc\+Tune}} = 0x14
+, \newline
+\mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975adcb49790ce12529ef9a5cd919ef7e6d1}{rmqsc\+Open}} = 0x15
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ab2d4ca5b88f2ee161c76c95fc423dbd9}{rmqsc\+Close}} = 0x16
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a863e93452c02438b1c142d0829eae431}{rmqsc\+Heartbeat}} = 0x17
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a918fe2e7bd49198fe767e5436f1e7136}{rmqsc\+Route}} = 0x18
+, \newline
+\mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ab1b656db67d4ead6575a0d0d3ab5d7d0}{rmqsc\+Partitions}} = 0x19
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975aa281cffa0e2d570066469f2eede99140}{rmqsc\+Consumer\+Update}} = 0x1A
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975acead03f4ab598d7b4f8081ce99fbd197}{rmqsc\+Exchange\+Command\+Versions}} = 0x1B
+, \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975addce01613e61cf6f7148ead5a1730e37}{rmqsc\+Stream\+Stats}} = 0x1C
+ \}
+\item 
+enum \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2}{rmqs\+Response\+Code}} \{ \newline
+\mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a72244a485ddb45aba049925864e24e31}{rmqsr\+No\+Reply}} = 0x00
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a4bc02e5cb2971217db43027ee62ca903}{rmqsr\+OK}} = 0x01
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a3cc8de37fce7877b7dafdccb169b5676}{rmqsr\+Stream\+Does\+Not\+Exist}} = 0x02
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a1faa8fcb799df0d1c82568f0ef8c78e0}{rmqsr\+Subscription\+IDAlready\+Exists}} = 0x03
+, \newline
+\mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a16008399cc346a62687c4f0bf3b9b885}{rmqsr\+Subscription\+IDDoes\+Not\+Exist}} = 0x04
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a6b190bf7f86324d376155f3abc8951d2}{rmqsr\+Stream\+Already\+Exists}} = 0x05
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a30ab1bb900e6da66ce59e25f8d575833}{rmqsr\+Stream\+Not\+Available}} = 0x06
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a55135cf7fde3da8961699436799871e2}{rmqsr\+SASLMechanism\+Not\+Supported}} = 0x07
+, \newline
+\mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2ae94d7859ba569296fca3bc2212ca166f}{rmqsr\+Authentication\+Failure}} = 0x08
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a0ba5acbae3283c7101210983dc264ac9}{rmqsr\+SASLError}} = 0x09
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2ae2291d422883665a0ab367934250102e}{rmqsr\+SASLChallenge}} = 0x0A
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a29493015f150b91a8da1b7908d42a91b}{rmqsr\+SASLAuthentication\+Failure\+Loopback}} = 0x0B
+, \newline
+\mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a8caf1459d9af08d476e36f13ec5ea8d3}{rmqsr\+Virtual\+Host\+Access\+Failure}} = 0x0C
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2ad61e7557893f712433d95cc8b0c7ffe8}{rmqsr\+Unknown\+Frame}} = 0x0D
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2af826f9b6e2b40d921ccb50e07ceeb11c}{rmqsr\+Frame\+Too\+Large}} = 0x0E
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2aa3f442d345b8f6700c5f58ecec40d7af}{rmqsr\+Internal\+Error}} = 0x0F
+, \newline
+\mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2abf85a74672ffa75c7deb8ebd23dae697}{rmqsr\+Access\+Refused}} = 0x10
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2afb74a3d895129645506e3dce2519095f}{rmqsr\+Precondition\+Failed}} = 0x11
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a479ff4ef31d238bdde0b89ebc2928e47}{rmqsr\+Publisher\+Does\+Not\+Exist}} = 0x12
+, \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a41c96da6816923a462cd5cee09ca6a1f}{rmqsr\+No\+Offset}} = 0x13
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a2e1ae40935b6eaec2a907cae7c0e0daf}{rmqs\+Is\+Little\+Endian\+Machine}} (void)
+\item 
+\mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2}{rmqs\+Response\+Code}} \mbox{\hyperlink{rmqs_protocol_8h_a2922b14173753b8fcbdcff766911017e}{rmqs\+Peer\+Properties\+Request}} (const void $\ast$Producer, \mbox{\hyperlink{rmqs_protocol_8h_a9f1e7f86d3a4d7bc369ed8d858c35c30}{rmqs\+Correlation\+Id}} Correlation\+Id, uint32\+\_\+t Properties\+Count, \mbox{\hyperlink{structrmqs_property__t}{rmqs\+Property\+\_\+t}} $\ast$Properties)
+\item 
+size\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a13da9210c783e2f2f4b49fc2731eb68b}{rmqs\+Add\+Int8\+To\+Stream}} (\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$Stream, int8\+\_\+t Value)
+\item 
+size\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_aec67876c48c8410dc7bc04657add6338}{rmqs\+Add\+UInt8\+To\+Stream}} (\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$Stream, uint8\+\_\+t Value)
+\item 
+size\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_ae7b574e3b4fc51b8cba481b5705f8166}{rmqs\+Add\+Int16\+To\+Stream}} (\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$Stream, int16\+\_\+t Value, uint8\+\_\+t Is\+Little\+Endian\+Machine)
+\item 
+size\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a198cc1f713f40270206c0cf3bc12fd6d}{rmqs\+Add\+UInt16\+To\+Stream}} (\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$Stream, uint16\+\_\+t Value, uint8\+\_\+t Is\+Little\+Endian\+Machine)
+\item 
+size\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a2a19606fbea61f83ead82c0ed99f2018}{rmqs\+Add\+Int32\+To\+Stream}} (\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$Stream, int32\+\_\+t Value, uint8\+\_\+t Is\+Little\+Endian\+Machine)
+\item 
+size\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a4b9bbdc1d6f81caec5b73b7241e26b0e}{rmqs\+Add\+UInt32\+To\+Stream}} (\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$Stream, uint32\+\_\+t Value, uint8\+\_\+t Is\+Little\+Endian\+Machine)
+\item 
+size\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a2692889049a8358f23936e1adf1440de}{rmqs\+Add\+String\+To\+Stream}} (\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$Stream, char $\ast$Value, uint8\+\_\+t Is\+Little\+Endian\+Machine)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{rmqs_protocol_8h_a6c1d3d1780a68aa17c9ad682ed10bb4a}\label{rmqs_protocol_8h_a6c1d3d1780a68aa17c9ad682ed10bb4a}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!RMQS\_MAX\_KEY\_SIZE@{RMQS\_MAX\_KEY\_SIZE}}
+\index{RMQS\_MAX\_KEY\_SIZE@{RMQS\_MAX\_KEY\_SIZE}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{RMQS\_MAX\_KEY\_SIZE}{RMQS\_MAX\_KEY\_SIZE}}
+{\footnotesize\ttfamily \#define RMQS\+\_\+\+MAX\+\_\+\+KEY\+\_\+\+SIZE~64}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_a1085614e5593820763b93718a2ef02a5}\label{rmqs_protocol_8h_a1085614e5593820763b93718a2ef02a5}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!RMQS\_MAX\_VALUE\_SIZE@{RMQS\_MAX\_VALUE\_SIZE}}
+\index{RMQS\_MAX\_VALUE\_SIZE@{RMQS\_MAX\_VALUE\_SIZE}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{RMQS\_MAX\_VALUE\_SIZE}{RMQS\_MAX\_VALUE\_SIZE}}
+{\footnotesize\ttfamily \#define RMQS\+\_\+\+MAX\+\_\+\+VALUE\+\_\+\+SIZE~128}
+
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{rmqs_protocol_8h_a9f1e7f86d3a4d7bc369ed8d858c35c30}\label{rmqs_protocol_8h_a9f1e7f86d3a4d7bc369ed8d858c35c30}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsCorrelationId@{rmqsCorrelationId}}
+\index{rmqsCorrelationId@{rmqsCorrelationId}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsCorrelationId}{rmqsCorrelationId}}
+{\footnotesize\ttfamily typedef uint32\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a9f1e7f86d3a4d7bc369ed8d858c35c30}{rmqs\+Correlation\+Id}}}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_a66126e594948909c589b5e9d18fdca50}\label{rmqs_protocol_8h_a66126e594948909c589b5e9d18fdca50}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsKey@{rmqsKey}}
+\index{rmqsKey@{rmqsKey}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsKey}{rmqsKey}}
+{\footnotesize\ttfamily typedef uint16\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a66126e594948909c589b5e9d18fdca50}{rmqs\+Key}}}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_ade8db272b4bc5dc857cde956a8401c64}\label{rmqs_protocol_8h_ade8db272b4bc5dc857cde956a8401c64}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsPublisherId@{rmqsPublisherId}}
+\index{rmqsPublisherId@{rmqsPublisherId}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsPublisherId}{rmqsPublisherId}}
+{\footnotesize\ttfamily typedef uint8\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_ade8db272b4bc5dc857cde956a8401c64}{rmqs\+Publisher\+Id}}}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_a6083589d4f180aedce64d6e63593998f}\label{rmqs_protocol_8h_a6083589d4f180aedce64d6e63593998f}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsSize@{rmqsSize}}
+\index{rmqsSize@{rmqsSize}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsSize}{rmqsSize}}
+{\footnotesize\ttfamily typedef uint32\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a6083589d4f180aedce64d6e63593998f}{rmqs\+Size}}}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_a3b39404751492fb91a7d5b0a91edeb16}\label{rmqs_protocol_8h_a3b39404751492fb91a7d5b0a91edeb16}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsStringLen@{rmqsStringLen}}
+\index{rmqsStringLen@{rmqsStringLen}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsStringLen}{rmqsStringLen}}
+{\footnotesize\ttfamily typedef int16\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_a3b39404751492fb91a7d5b0a91edeb16}{rmqs\+String\+Len}}}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_ad97c47c31011a75a5c74d2d4b269aa5d}\label{rmqs_protocol_8h_ad97c47c31011a75a5c74d2d4b269aa5d}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsVersion@{rmqsVersion}}
+\index{rmqsVersion@{rmqsVersion}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsVersion}{rmqsVersion}}
+{\footnotesize\ttfamily typedef uint16\+\_\+t \mbox{\hyperlink{rmqs_protocol_8h_ad97c47c31011a75a5c74d2d4b269aa5d}{rmqs\+Version}}}
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsCommand@{rmqsCommand}}
+\index{rmqsCommand@{rmqsCommand}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsCommand}{rmqsCommand}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975}{rmqs\+Command}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscDeclarePublisher@{rmqscDeclarePublisher}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscDeclarePublisher@{rmqscDeclarePublisher}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975aa4dbc3797ad72f8b157133fce0c4ac54}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975aa4dbc3797ad72f8b157133fce0c4ac54}} 
+rmqsc\+Declare\+Publisher&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscPublish@{rmqscPublish}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscPublish@{rmqscPublish}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975afe688f5db16f58734a7d9b1f81cbe673}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975afe688f5db16f58734a7d9b1f81cbe673}} 
+rmqsc\+Publish&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscPublishConfirm@{rmqscPublishConfirm}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscPublishConfirm@{rmqscPublishConfirm}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a7abe6c8ded1516383116f87a85dfb5b8}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a7abe6c8ded1516383116f87a85dfb5b8}} 
+rmqsc\+Publish\+Confirm&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscPublishError@{rmqscPublishError}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscPublishError@{rmqscPublishError}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a760baf2ffa4d39d20e044422744c9c4b}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a760baf2ffa4d39d20e044422744c9c4b}} 
+rmqsc\+Publish\+Error&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscQueryPublisherSequence@{rmqscQueryPublisherSequence}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscQueryPublisherSequence@{rmqscQueryPublisherSequence}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ab9e5516feb95f882a768d234eb66943b}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ab9e5516feb95f882a768d234eb66943b}} 
+rmqsc\+Query\+Publisher\+Sequence&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscDeletePublisher@{rmqscDeletePublisher}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscDeletePublisher@{rmqscDeletePublisher}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a049da15cf699e8712259dd8c14c8c219}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a049da15cf699e8712259dd8c14c8c219}} 
+rmqsc\+Delete\+Publisher&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscSubscribe@{rmqscSubscribe}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscSubscribe@{rmqscSubscribe}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ada77c67aa3d179055a368b344c58088d}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ada77c67aa3d179055a368b344c58088d}} 
+rmqsc\+Subscribe&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscDeliver@{rmqscDeliver}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscDeliver@{rmqscDeliver}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a17400efba1e17cda742efa83193aa65c}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a17400efba1e17cda742efa83193aa65c}} 
+rmqsc\+Deliver&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscCredit@{rmqscCredit}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscCredit@{rmqscCredit}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975abe0c2895b3a1b6785c1b7006598e5e02}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975abe0c2895b3a1b6785c1b7006598e5e02}} 
+rmqsc\+Credit&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscStoreOffset@{rmqscStoreOffset}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscStoreOffset@{rmqscStoreOffset}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a7fbbb6dd30f9d744672255b5c963fe1d}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a7fbbb6dd30f9d744672255b5c963fe1d}} 
+rmqsc\+Store\+Offset&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscQueryOffset@{rmqscQueryOffset}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscQueryOffset@{rmqscQueryOffset}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a1f21033bbb30c3ee466f67aa82631ef5}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a1f21033bbb30c3ee466f67aa82631ef5}} 
+rmqsc\+Query\+Offset&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscUnsubscribe@{rmqscUnsubscribe}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscUnsubscribe@{rmqscUnsubscribe}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a21296d342a493b4bfe36fc8942aa7c12}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a21296d342a493b4bfe36fc8942aa7c12}} 
+rmqsc\+Unsubscribe&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscCreate@{rmqscCreate}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscCreate@{rmqscCreate}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a74d6df33d991e821eca7d477954715df}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a74d6df33d991e821eca7d477954715df}} 
+rmqsc\+Create&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscDelete@{rmqscDelete}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscDelete@{rmqscDelete}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975abbbcddd32b1c73a5df306a6d88f7a160}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975abbbcddd32b1c73a5df306a6d88f7a160}} 
+rmqsc\+Delete&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscMetadata@{rmqscMetadata}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscMetadata@{rmqscMetadata}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a0575eac4fb602e09dbf38b6e0d37be4e}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a0575eac4fb602e09dbf38b6e0d37be4e}} 
+rmqsc\+Metadata&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscMetadataUpdate@{rmqscMetadataUpdate}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscMetadataUpdate@{rmqscMetadataUpdate}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ade7ab4146931dcb2af7d4264d8c4f380}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ade7ab4146931dcb2af7d4264d8c4f380}} 
+rmqsc\+Metadata\+Update&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscPeerProperties@{rmqscPeerProperties}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscPeerProperties@{rmqscPeerProperties}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a1f37115bea578fffed197451a3ed4951}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a1f37115bea578fffed197451a3ed4951}} 
+rmqsc\+Peer\+Properties&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscSaslHandshake@{rmqscSaslHandshake}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscSaslHandshake@{rmqscSaslHandshake}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a6a94307e3b5f5ab656c5fc5ea135e5c3}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a6a94307e3b5f5ab656c5fc5ea135e5c3}} 
+rmqsc\+Sasl\+Handshake&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscSaslAuthenticate@{rmqscSaslAuthenticate}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscSaslAuthenticate@{rmqscSaslAuthenticate}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a184e4f894278d21c6c89db1a5cb775bc}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a184e4f894278d21c6c89db1a5cb775bc}} 
+rmqsc\+Sasl\+Authenticate&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscTune@{rmqscTune}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscTune@{rmqscTune}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975aff65a03adad2dffc0cee0805d0c1d69a}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975aff65a03adad2dffc0cee0805d0c1d69a}} 
+rmqsc\+Tune&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscOpen@{rmqscOpen}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscOpen@{rmqscOpen}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975adcb49790ce12529ef9a5cd919ef7e6d1}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975adcb49790ce12529ef9a5cd919ef7e6d1}} 
+rmqsc\+Open&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscClose@{rmqscClose}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscClose@{rmqscClose}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ab2d4ca5b88f2ee161c76c95fc423dbd9}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ab2d4ca5b88f2ee161c76c95fc423dbd9}} 
+rmqsc\+Close&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscHeartbeat@{rmqscHeartbeat}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscHeartbeat@{rmqscHeartbeat}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a863e93452c02438b1c142d0829eae431}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a863e93452c02438b1c142d0829eae431}} 
+rmqsc\+Heartbeat&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscRoute@{rmqscRoute}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscRoute@{rmqscRoute}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a918fe2e7bd49198fe767e5436f1e7136}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975a918fe2e7bd49198fe767e5436f1e7136}} 
+rmqsc\+Route&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscPartitions@{rmqscPartitions}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscPartitions@{rmqscPartitions}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ab1b656db67d4ead6575a0d0d3ab5d7d0}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975ab1b656db67d4ead6575a0d0d3ab5d7d0}} 
+rmqsc\+Partitions&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscConsumerUpdate@{rmqscConsumerUpdate}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscConsumerUpdate@{rmqscConsumerUpdate}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975aa281cffa0e2d570066469f2eede99140}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975aa281cffa0e2d570066469f2eede99140}} 
+rmqsc\+Consumer\+Update&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscExchangeCommandVersions@{rmqscExchangeCommandVersions}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscExchangeCommandVersions@{rmqscExchangeCommandVersions}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975acead03f4ab598d7b4f8081ce99fbd197}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975acead03f4ab598d7b4f8081ce99fbd197}} 
+rmqsc\+Exchange\+Command\+Versions&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqscStreamStats@{rmqscStreamStats}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqscStreamStats@{rmqscStreamStats}}}\mbox{\Hypertarget{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975addce01613e61cf6f7148ead5a1730e37}\label{rmqs_protocol_8h_aed62688bd5ffe8e2b265e9ea4c31a975addce01613e61cf6f7148ead5a1730e37}} 
+rmqsc\+Stream\+Stats&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsResponseCode@{rmqsResponseCode}}
+\index{rmqsResponseCode@{rmqsResponseCode}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsResponseCode}{rmqsResponseCode}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2}{rmqs\+Response\+Code}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrNoReply@{rmqsrNoReply}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrNoReply@{rmqsrNoReply}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a72244a485ddb45aba049925864e24e31}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a72244a485ddb45aba049925864e24e31}} 
+rmqsr\+No\+Reply&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrOK@{rmqsrOK}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrOK@{rmqsrOK}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a4bc02e5cb2971217db43027ee62ca903}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a4bc02e5cb2971217db43027ee62ca903}} 
+rmqsr\+OK&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrStreamDoesNotExist@{rmqsrStreamDoesNotExist}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrStreamDoesNotExist@{rmqsrStreamDoesNotExist}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a3cc8de37fce7877b7dafdccb169b5676}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a3cc8de37fce7877b7dafdccb169b5676}} 
+rmqsr\+Stream\+Does\+Not\+Exist&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrSubscriptionIDAlreadyExists@{rmqsrSubscriptionIDAlreadyExists}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrSubscriptionIDAlreadyExists@{rmqsrSubscriptionIDAlreadyExists}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a1faa8fcb799df0d1c82568f0ef8c78e0}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a1faa8fcb799df0d1c82568f0ef8c78e0}} 
+rmqsr\+Subscription\+IDAlready\+Exists&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrSubscriptionIDDoesNotExist@{rmqsrSubscriptionIDDoesNotExist}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrSubscriptionIDDoesNotExist@{rmqsrSubscriptionIDDoesNotExist}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a16008399cc346a62687c4f0bf3b9b885}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a16008399cc346a62687c4f0bf3b9b885}} 
+rmqsr\+Subscription\+IDDoes\+Not\+Exist&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrStreamAlreadyExists@{rmqsrStreamAlreadyExists}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrStreamAlreadyExists@{rmqsrStreamAlreadyExists}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a6b190bf7f86324d376155f3abc8951d2}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a6b190bf7f86324d376155f3abc8951d2}} 
+rmqsr\+Stream\+Already\+Exists&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrStreamNotAvailable@{rmqsrStreamNotAvailable}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrStreamNotAvailable@{rmqsrStreamNotAvailable}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a30ab1bb900e6da66ce59e25f8d575833}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a30ab1bb900e6da66ce59e25f8d575833}} 
+rmqsr\+Stream\+Not\+Available&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrSASLMechanismNotSupported@{rmqsrSASLMechanismNotSupported}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrSASLMechanismNotSupported@{rmqsrSASLMechanismNotSupported}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a55135cf7fde3da8961699436799871e2}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a55135cf7fde3da8961699436799871e2}} 
+rmqsr\+SASLMechanism\+Not\+Supported&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrAuthenticationFailure@{rmqsrAuthenticationFailure}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrAuthenticationFailure@{rmqsrAuthenticationFailure}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2ae94d7859ba569296fca3bc2212ca166f}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2ae94d7859ba569296fca3bc2212ca166f}} 
+rmqsr\+Authentication\+Failure&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrSASLError@{rmqsrSASLError}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrSASLError@{rmqsrSASLError}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a0ba5acbae3283c7101210983dc264ac9}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a0ba5acbae3283c7101210983dc264ac9}} 
+rmqsr\+SASLError&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrSASLChallenge@{rmqsrSASLChallenge}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrSASLChallenge@{rmqsrSASLChallenge}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2ae2291d422883665a0ab367934250102e}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2ae2291d422883665a0ab367934250102e}} 
+rmqsr\+SASLChallenge&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrSASLAuthenticationFailureLoopback@{rmqsrSASLAuthenticationFailureLoopback}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrSASLAuthenticationFailureLoopback@{rmqsrSASLAuthenticationFailureLoopback}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a29493015f150b91a8da1b7908d42a91b}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a29493015f150b91a8da1b7908d42a91b}} 
+rmqsr\+SASLAuthentication\+Failure\+Loopback&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrVirtualHostAccessFailure@{rmqsrVirtualHostAccessFailure}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrVirtualHostAccessFailure@{rmqsrVirtualHostAccessFailure}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a8caf1459d9af08d476e36f13ec5ea8d3}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a8caf1459d9af08d476e36f13ec5ea8d3}} 
+rmqsr\+Virtual\+Host\+Access\+Failure&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrUnknownFrame@{rmqsrUnknownFrame}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrUnknownFrame@{rmqsrUnknownFrame}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2ad61e7557893f712433d95cc8b0c7ffe8}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2ad61e7557893f712433d95cc8b0c7ffe8}} 
+rmqsr\+Unknown\+Frame&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrFrameTooLarge@{rmqsrFrameTooLarge}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrFrameTooLarge@{rmqsrFrameTooLarge}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2af826f9b6e2b40d921ccb50e07ceeb11c}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2af826f9b6e2b40d921ccb50e07ceeb11c}} 
+rmqsr\+Frame\+Too\+Large&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrInternalError@{rmqsrInternalError}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrInternalError@{rmqsrInternalError}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2aa3f442d345b8f6700c5f58ecec40d7af}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2aa3f442d345b8f6700c5f58ecec40d7af}} 
+rmqsr\+Internal\+Error&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrAccessRefused@{rmqsrAccessRefused}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrAccessRefused@{rmqsrAccessRefused}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2abf85a74672ffa75c7deb8ebd23dae697}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2abf85a74672ffa75c7deb8ebd23dae697}} 
+rmqsr\+Access\+Refused&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrPreconditionFailed@{rmqsrPreconditionFailed}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrPreconditionFailed@{rmqsrPreconditionFailed}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2afb74a3d895129645506e3dce2519095f}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2afb74a3d895129645506e3dce2519095f}} 
+rmqsr\+Precondition\+Failed&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrPublisherDoesNotExist@{rmqsrPublisherDoesNotExist}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrPublisherDoesNotExist@{rmqsrPublisherDoesNotExist}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a479ff4ef31d238bdde0b89ebc2928e47}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a479ff4ef31d238bdde0b89ebc2928e47}} 
+rmqsr\+Publisher\+Does\+Not\+Exist&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{rmqsrNoOffset@{rmqsrNoOffset}!rmqsProtocol.h@{rmqsProtocol.h}}\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsrNoOffset@{rmqsrNoOffset}}}\mbox{\Hypertarget{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a41c96da6816923a462cd5cee09ca6a1f}\label{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2a41c96da6816923a462cd5cee09ca6a1f}} 
+rmqsr\+No\+Offset&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{rmqs_protocol_8h_ae7b574e3b4fc51b8cba481b5705f8166}\label{rmqs_protocol_8h_ae7b574e3b4fc51b8cba481b5705f8166}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsAddInt16ToStream@{rmqsAddInt16ToStream}}
+\index{rmqsAddInt16ToStream@{rmqsAddInt16ToStream}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsAddInt16ToStream()}{rmqsAddInt16ToStream()}}
+{\footnotesize\ttfamily size\+\_\+t rmqs\+Add\+Int16\+To\+Stream (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$}]{Stream,  }\item[{int16\+\_\+t}]{Value,  }\item[{uint8\+\_\+t}]{Is\+Little\+Endian\+Machine }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_a2a19606fbea61f83ead82c0ed99f2018}\label{rmqs_protocol_8h_a2a19606fbea61f83ead82c0ed99f2018}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsAddInt32ToStream@{rmqsAddInt32ToStream}}
+\index{rmqsAddInt32ToStream@{rmqsAddInt32ToStream}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsAddInt32ToStream()}{rmqsAddInt32ToStream()}}
+{\footnotesize\ttfamily size\+\_\+t rmqs\+Add\+Int32\+To\+Stream (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$}]{Stream,  }\item[{int32\+\_\+t}]{Value,  }\item[{uint8\+\_\+t}]{Is\+Little\+Endian\+Machine }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_a13da9210c783e2f2f4b49fc2731eb68b}\label{rmqs_protocol_8h_a13da9210c783e2f2f4b49fc2731eb68b}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsAddInt8ToStream@{rmqsAddInt8ToStream}}
+\index{rmqsAddInt8ToStream@{rmqsAddInt8ToStream}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsAddInt8ToStream()}{rmqsAddInt8ToStream()}}
+{\footnotesize\ttfamily size\+\_\+t rmqs\+Add\+Int8\+To\+Stream (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$}]{Stream,  }\item[{int8\+\_\+t}]{Value }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_a2692889049a8358f23936e1adf1440de}\label{rmqs_protocol_8h_a2692889049a8358f23936e1adf1440de}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsAddStringToStream@{rmqsAddStringToStream}}
+\index{rmqsAddStringToStream@{rmqsAddStringToStream}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsAddStringToStream()}{rmqsAddStringToStream()}}
+{\footnotesize\ttfamily size\+\_\+t rmqs\+Add\+String\+To\+Stream (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$}]{Stream,  }\item[{char $\ast$}]{Value,  }\item[{uint8\+\_\+t}]{Is\+Little\+Endian\+Machine }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_a198cc1f713f40270206c0cf3bc12fd6d}\label{rmqs_protocol_8h_a198cc1f713f40270206c0cf3bc12fd6d}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsAddUInt16ToStream@{rmqsAddUInt16ToStream}}
+\index{rmqsAddUInt16ToStream@{rmqsAddUInt16ToStream}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsAddUInt16ToStream()}{rmqsAddUInt16ToStream()}}
+{\footnotesize\ttfamily size\+\_\+t rmqs\+Add\+UInt16\+To\+Stream (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$}]{Stream,  }\item[{uint16\+\_\+t}]{Value,  }\item[{uint8\+\_\+t}]{Is\+Little\+Endian\+Machine }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_a4b9bbdc1d6f81caec5b73b7241e26b0e}\label{rmqs_protocol_8h_a4b9bbdc1d6f81caec5b73b7241e26b0e}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsAddUInt32ToStream@{rmqsAddUInt32ToStream}}
+\index{rmqsAddUInt32ToStream@{rmqsAddUInt32ToStream}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsAddUInt32ToStream()}{rmqsAddUInt32ToStream()}}
+{\footnotesize\ttfamily size\+\_\+t rmqs\+Add\+UInt32\+To\+Stream (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$}]{Stream,  }\item[{uint32\+\_\+t}]{Value,  }\item[{uint8\+\_\+t}]{Is\+Little\+Endian\+Machine }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_aec67876c48c8410dc7bc04657add6338}\label{rmqs_protocol_8h_aec67876c48c8410dc7bc04657add6338}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsAddUInt8ToStream@{rmqsAddUInt8ToStream}}
+\index{rmqsAddUInt8ToStream@{rmqsAddUInt8ToStream}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsAddUInt8ToStream()}{rmqsAddUInt8ToStream()}}
+{\footnotesize\ttfamily size\+\_\+t rmqs\+Add\+UInt8\+To\+Stream (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_stream__t}{rmqs\+Stream\+\_\+t}} $\ast$}]{Stream,  }\item[{uint8\+\_\+t}]{Value }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_a2e1ae40935b6eaec2a907cae7c0e0daf}\label{rmqs_protocol_8h_a2e1ae40935b6eaec2a907cae7c0e0daf}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsIsLittleEndianMachine@{rmqsIsLittleEndianMachine}}
+\index{rmqsIsLittleEndianMachine@{rmqsIsLittleEndianMachine}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsIsLittleEndianMachine()}{rmqsIsLittleEndianMachine()}}
+{\footnotesize\ttfamily uint8\+\_\+t rmqs\+Is\+Little\+Endian\+Machine (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_protocol_8h_a2922b14173753b8fcbdcff766911017e}\label{rmqs_protocol_8h_a2922b14173753b8fcbdcff766911017e}} 
+\index{rmqsProtocol.h@{rmqsProtocol.h}!rmqsPeerPropertiesRequest@{rmqsPeerPropertiesRequest}}
+\index{rmqsPeerPropertiesRequest@{rmqsPeerPropertiesRequest}!rmqsProtocol.h@{rmqsProtocol.h}}
+\doxysubsubsection{\texorpdfstring{rmqsPeerPropertiesRequest()}{rmqsPeerPropertiesRequest()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{rmqs_protocol_8h_a6affffa07440f7c1aeae1f284fee15e2}{rmqs\+Response\+Code}} rmqs\+Peer\+Properties\+Request (\begin{DoxyParamCaption}\item[{const void $\ast$}]{Producer,  }\item[{\mbox{\hyperlink{rmqs_protocol_8h_a9f1e7f86d3a4d7bc369ed8d858c35c30}{rmqs\+Correlation\+Id}}}]{Correlation\+Id,  }\item[{uint32\+\_\+t}]{Properties\+Count,  }\item[{\mbox{\hyperlink{structrmqs_property__t}{rmqs\+Property\+\_\+t}} $\ast$}]{Properties }\end{DoxyParamCaption})}
+

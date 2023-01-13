@@ -1,0 +1,63 @@
+\hypertarget{rmqs_thread_8h}{}\doxysection{C\+:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqs\+Thread.h File Reference}
+\label{rmqs_thread_8h}\index{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsThread.h@{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsThread.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$pthread.\+h$>$}\newline
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structrmqs_thread__t}{rmqs\+Thread\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structrmqs_thread__t}{rmqs\+Thread\+\_\+t}} $\ast$ \mbox{\hyperlink{rmqs_thread_8h_a34948070be257276de792773259e694a}{rmqs\+Thread\+Create}} (void($\ast$Thread\+Routine)(void $\ast$, uint8\+\_\+t $\ast$), void($\ast$Cancel\+IORoutine)(void $\ast$), void $\ast$Parameters)
+\item 
+void \mbox{\hyperlink{rmqs_thread_8h_a5b6b2145fe44a137713cf7a8721ed6bd}{rmqs\+Thread\+Destroy}} (\mbox{\hyperlink{structrmqs_thread__t}{rmqs\+Thread\+\_\+t}} $\ast$Thread)
+\item 
+void \mbox{\hyperlink{rmqs_thread_8h_ac73e94f0c92d049477ec0199137597b8}{rmqs\+Thread\+Start}} (\mbox{\hyperlink{structrmqs_thread__t}{rmqs\+Thread\+\_\+t}} $\ast$Thread)
+\item 
+void \mbox{\hyperlink{rmqs_thread_8h_aeef82051149b45f956ba6e5ff97c38bb}{rmqs\+Thread\+Stop}} (\mbox{\hyperlink{structrmqs_thread__t}{rmqs\+Thread\+\_\+t}} $\ast$Thread)
+\item 
+void \mbox{\hyperlink{rmqs_thread_8h_a2e5e5146f0073140c407a3d9eaf43309}{rmqs\+Thread\+Sleep}} (uint32\+\_\+t Milliseconds)
+\item 
+void \mbox{\hyperlink{rmqs_thread_8h_a74c29708bd285b7eb3695b73ad5ea72a}{rmqs\+Thread\+Sleep\+Ex}} (uint32\+\_\+t Milliseconds, size\+\_\+t How\+Many\+Times, uint8\+\_\+t $\ast$Abort)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{rmqs_thread_8h_a34948070be257276de792773259e694a}\label{rmqs_thread_8h_a34948070be257276de792773259e694a}} 
+\index{rmqsThread.h@{rmqsThread.h}!rmqsThreadCreate@{rmqsThreadCreate}}
+\index{rmqsThreadCreate@{rmqsThreadCreate}!rmqsThread.h@{rmqsThread.h}}
+\doxysubsubsection{\texorpdfstring{rmqsThreadCreate()}{rmqsThreadCreate()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_thread__t}{rmqs\+Thread\+\_\+t}} $\ast$ rmqs\+Thread\+Create (\begin{DoxyParamCaption}\item[{void($\ast$)(void $\ast$, uint8\+\_\+t $\ast$)}]{Thread\+Routine,  }\item[{void($\ast$)(void $\ast$)}]{Cancel\+IORoutine,  }\item[{void $\ast$}]{Parameters }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_thread_8h_a5b6b2145fe44a137713cf7a8721ed6bd}\label{rmqs_thread_8h_a5b6b2145fe44a137713cf7a8721ed6bd}} 
+\index{rmqsThread.h@{rmqsThread.h}!rmqsThreadDestroy@{rmqsThreadDestroy}}
+\index{rmqsThreadDestroy@{rmqsThreadDestroy}!rmqsThread.h@{rmqsThread.h}}
+\doxysubsubsection{\texorpdfstring{rmqsThreadDestroy()}{rmqsThreadDestroy()}}
+{\footnotesize\ttfamily void rmqs\+Thread\+Destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_thread__t}{rmqs\+Thread\+\_\+t}} $\ast$}]{Thread }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_thread_8h_a2e5e5146f0073140c407a3d9eaf43309}\label{rmqs_thread_8h_a2e5e5146f0073140c407a3d9eaf43309}} 
+\index{rmqsThread.h@{rmqsThread.h}!rmqsThreadSleep@{rmqsThreadSleep}}
+\index{rmqsThreadSleep@{rmqsThreadSleep}!rmqsThread.h@{rmqsThread.h}}
+\doxysubsubsection{\texorpdfstring{rmqsThreadSleep()}{rmqsThreadSleep()}}
+{\footnotesize\ttfamily void rmqs\+Thread\+Sleep (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{Milliseconds }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_thread_8h_a74c29708bd285b7eb3695b73ad5ea72a}\label{rmqs_thread_8h_a74c29708bd285b7eb3695b73ad5ea72a}} 
+\index{rmqsThread.h@{rmqsThread.h}!rmqsThreadSleepEx@{rmqsThreadSleepEx}}
+\index{rmqsThreadSleepEx@{rmqsThreadSleepEx}!rmqsThread.h@{rmqsThread.h}}
+\doxysubsubsection{\texorpdfstring{rmqsThreadSleepEx()}{rmqsThreadSleepEx()}}
+{\footnotesize\ttfamily void rmqs\+Thread\+Sleep\+Ex (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{Milliseconds,  }\item[{size\+\_\+t}]{How\+Many\+Times,  }\item[{uint8\+\_\+t $\ast$}]{Abort }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_thread_8h_ac73e94f0c92d049477ec0199137597b8}\label{rmqs_thread_8h_ac73e94f0c92d049477ec0199137597b8}} 
+\index{rmqsThread.h@{rmqsThread.h}!rmqsThreadStart@{rmqsThreadStart}}
+\index{rmqsThreadStart@{rmqsThreadStart}!rmqsThread.h@{rmqsThread.h}}
+\doxysubsubsection{\texorpdfstring{rmqsThreadStart()}{rmqsThreadStart()}}
+{\footnotesize\ttfamily void rmqs\+Thread\+Start (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_thread__t}{rmqs\+Thread\+\_\+t}} $\ast$}]{Thread }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_thread_8h_aeef82051149b45f956ba6e5ff97c38bb}\label{rmqs_thread_8h_aeef82051149b45f956ba6e5ff97c38bb}} 
+\index{rmqsThread.h@{rmqsThread.h}!rmqsThreadStop@{rmqsThreadStop}}
+\index{rmqsThreadStop@{rmqsThreadStop}!rmqsThread.h@{rmqsThread.h}}
+\doxysubsubsection{\texorpdfstring{rmqsThreadStop()}{rmqsThreadStop()}}
+{\footnotesize\ttfamily void rmqs\+Thread\+Stop (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_thread__t}{rmqs\+Thread\+\_\+t}} $\ast$}]{Thread }\end{DoxyParamCaption})}
+

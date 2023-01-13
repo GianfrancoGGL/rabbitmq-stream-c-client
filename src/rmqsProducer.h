@@ -9,6 +9,8 @@
 #include "rmqsStream.h"
 #include "rmqsThread.h"
 //---------------------------------------------------------------------------
+#define RMQS_PRODUCER_RX_BUFFER_SIZE      1024
+//---------------------------------------------------------------------------
 typedef enum
 {
     rmqspeDisconnected = 0,
@@ -34,7 +36,8 @@ typedef struct
     rmqsCorrelationId CorrelationId;
     rmqsStream_t *TxStream;
     rmqsStream_t *RxStream;
-    char RxSocketBuffer[1024];
+    rmqsStream_t *RxStreamTempBuffer;
+    char RxSocketBuffer[RMQS_PRODUCER_RX_BUFFER_SIZE];
     rmqsThread_t *ProducerThread;
 }
 rmqsProducer_t;

@@ -1,0 +1,89 @@
+\hypertarget{rmqs_environment_8h}{}\doxysection{C\+:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqs\+Environment.h File Reference}
+\label{rmqs_environment_8h}\index{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsEnvironment.h@{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsEnvironment.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}rmqs\+List.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rmqs\+Network.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rmqs\+Producer.\+h\char`\"{}}\newline
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structrmqs_broker__t}{rmqs\+Broker\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structrmqs_environment__t}{rmqs\+Environment\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{rmqs_environment_8h_a6a437fc7e9061ce561fd6678cdee8a12}{RMQS\+\_\+\+BROKER\+\_\+\+ITEMS\+\_\+\+SEPARATOR}}~\char`\"{},\char`\"{}
+\item 
+\#define \mbox{\hyperlink{rmqs_environment_8h_ac51c04610af3d8dc73d94754dde9ec09}{MQMS\+\_\+\+BROKER\+\_\+\+PORT\+\_\+\+SEPARATOR}}~\char`\"{}\+:\char`\"{}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structrmqs_environment__t}{rmqs\+Environment\+\_\+t}} $\ast$ \mbox{\hyperlink{rmqs_environment_8h_ace0527cbb319ac91f4528a8394747be7}{rmqs\+Environment\+Create}} (char $\ast$Brokers\+List)
+\item 
+void \mbox{\hyperlink{rmqs_environment_8h_a51649761db636e1b79206186c8be1f23}{rmqs\+Environment\+Destroy}} (\mbox{\hyperlink{structrmqs_environment__t}{rmqs\+Environment\+\_\+t}} $\ast$Environment)
+\item 
+\mbox{\hyperlink{structrmqs_producer__t}{rmqs\+Producer\+\_\+t}} $\ast$ \mbox{\hyperlink{rmqs_environment_8h_acd3e79ebde9094c0cea4cacaa05dfa69}{rmqs\+Environment\+Producer\+Create}} (\mbox{\hyperlink{structrmqs_environment__t}{rmqs\+Environment\+\_\+t}} $\ast$Environment, void($\ast$Events\+CB)(\mbox{\hyperlink{rmqs_producer_8h_a0fb553205959e40706ad61a510ff02cf}{rqms\+Producer\+Event}}, void $\ast$))
+\item 
+void \mbox{\hyperlink{rmqs_environment_8h_a835d7727a94a278e7b4d8ac1310de449}{rmqs\+Environment\+Producer\+Destroy}} (\mbox{\hyperlink{structrmqs_environment__t}{rmqs\+Environment\+\_\+t}} $\ast$Environment, \mbox{\hyperlink{structrmqs_producer__t}{rmqs\+Producer\+\_\+t}} $\ast$Producer)
+\item 
+void \mbox{\hyperlink{rmqs_environment_8h_a2106b7696085e61fc4df90b7426e8780}{rmqs\+Environment\+Brokers\+List\+Destroy}} (void $\ast$Broker)
+\item 
+void \mbox{\hyperlink{rmqs_environment_8h_a676ff2667db103b07a34d1f11a8fcf78}{rmqs\+Environment\+Producers\+List\+Destroy}} (void $\ast$Producer)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{rmqs_environment_8h_ac51c04610af3d8dc73d94754dde9ec09}\label{rmqs_environment_8h_ac51c04610af3d8dc73d94754dde9ec09}} 
+\index{rmqsEnvironment.h@{rmqsEnvironment.h}!MQMS\_BROKER\_PORT\_SEPARATOR@{MQMS\_BROKER\_PORT\_SEPARATOR}}
+\index{MQMS\_BROKER\_PORT\_SEPARATOR@{MQMS\_BROKER\_PORT\_SEPARATOR}!rmqsEnvironment.h@{rmqsEnvironment.h}}
+\doxysubsubsection{\texorpdfstring{MQMS\_BROKER\_PORT\_SEPARATOR}{MQMS\_BROKER\_PORT\_SEPARATOR}}
+{\footnotesize\ttfamily \#define MQMS\+\_\+\+BROKER\+\_\+\+PORT\+\_\+\+SEPARATOR~\char`\"{}\+:\char`\"{}}
+
+\mbox{\Hypertarget{rmqs_environment_8h_a6a437fc7e9061ce561fd6678cdee8a12}\label{rmqs_environment_8h_a6a437fc7e9061ce561fd6678cdee8a12}} 
+\index{rmqsEnvironment.h@{rmqsEnvironment.h}!RMQS\_BROKER\_ITEMS\_SEPARATOR@{RMQS\_BROKER\_ITEMS\_SEPARATOR}}
+\index{RMQS\_BROKER\_ITEMS\_SEPARATOR@{RMQS\_BROKER\_ITEMS\_SEPARATOR}!rmqsEnvironment.h@{rmqsEnvironment.h}}
+\doxysubsubsection{\texorpdfstring{RMQS\_BROKER\_ITEMS\_SEPARATOR}{RMQS\_BROKER\_ITEMS\_SEPARATOR}}
+{\footnotesize\ttfamily \#define RMQS\+\_\+\+BROKER\+\_\+\+ITEMS\+\_\+\+SEPARATOR~\char`\"{},\char`\"{}}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{rmqs_environment_8h_a2106b7696085e61fc4df90b7426e8780}\label{rmqs_environment_8h_a2106b7696085e61fc4df90b7426e8780}} 
+\index{rmqsEnvironment.h@{rmqsEnvironment.h}!rmqsEnvironmentBrokersListDestroy@{rmqsEnvironmentBrokersListDestroy}}
+\index{rmqsEnvironmentBrokersListDestroy@{rmqsEnvironmentBrokersListDestroy}!rmqsEnvironment.h@{rmqsEnvironment.h}}
+\doxysubsubsection{\texorpdfstring{rmqsEnvironmentBrokersListDestroy()}{rmqsEnvironmentBrokersListDestroy()}}
+{\footnotesize\ttfamily void rmqs\+Environment\+Brokers\+List\+Destroy (\begin{DoxyParamCaption}\item[{void $\ast$}]{Broker }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_environment_8h_ace0527cbb319ac91f4528a8394747be7}\label{rmqs_environment_8h_ace0527cbb319ac91f4528a8394747be7}} 
+\index{rmqsEnvironment.h@{rmqsEnvironment.h}!rmqsEnvironmentCreate@{rmqsEnvironmentCreate}}
+\index{rmqsEnvironmentCreate@{rmqsEnvironmentCreate}!rmqsEnvironment.h@{rmqsEnvironment.h}}
+\doxysubsubsection{\texorpdfstring{rmqsEnvironmentCreate()}{rmqsEnvironmentCreate()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_environment__t}{rmqs\+Environment\+\_\+t}} $\ast$ rmqs\+Environment\+Create (\begin{DoxyParamCaption}\item[{char $\ast$}]{Brokers\+List }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_environment_8h_a51649761db636e1b79206186c8be1f23}\label{rmqs_environment_8h_a51649761db636e1b79206186c8be1f23}} 
+\index{rmqsEnvironment.h@{rmqsEnvironment.h}!rmqsEnvironmentDestroy@{rmqsEnvironmentDestroy}}
+\index{rmqsEnvironmentDestroy@{rmqsEnvironmentDestroy}!rmqsEnvironment.h@{rmqsEnvironment.h}}
+\doxysubsubsection{\texorpdfstring{rmqsEnvironmentDestroy()}{rmqsEnvironmentDestroy()}}
+{\footnotesize\ttfamily void rmqs\+Environment\+Destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_environment__t}{rmqs\+Environment\+\_\+t}} $\ast$}]{Environment }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_environment_8h_acd3e79ebde9094c0cea4cacaa05dfa69}\label{rmqs_environment_8h_acd3e79ebde9094c0cea4cacaa05dfa69}} 
+\index{rmqsEnvironment.h@{rmqsEnvironment.h}!rmqsEnvironmentProducerCreate@{rmqsEnvironmentProducerCreate}}
+\index{rmqsEnvironmentProducerCreate@{rmqsEnvironmentProducerCreate}!rmqsEnvironment.h@{rmqsEnvironment.h}}
+\doxysubsubsection{\texorpdfstring{rmqsEnvironmentProducerCreate()}{rmqsEnvironmentProducerCreate()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_producer__t}{rmqs\+Producer\+\_\+t}} $\ast$ rmqs\+Environment\+Producer\+Create (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_environment__t}{rmqs\+Environment\+\_\+t}} $\ast$}]{Environment,  }\item[{void($\ast$)(\mbox{\hyperlink{rmqs_producer_8h_a0fb553205959e40706ad61a510ff02cf}{rqms\+Producer\+Event}}, void $\ast$)}]{Events\+CB }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_environment_8h_a835d7727a94a278e7b4d8ac1310de449}\label{rmqs_environment_8h_a835d7727a94a278e7b4d8ac1310de449}} 
+\index{rmqsEnvironment.h@{rmqsEnvironment.h}!rmqsEnvironmentProducerDestroy@{rmqsEnvironmentProducerDestroy}}
+\index{rmqsEnvironmentProducerDestroy@{rmqsEnvironmentProducerDestroy}!rmqsEnvironment.h@{rmqsEnvironment.h}}
+\doxysubsubsection{\texorpdfstring{rmqsEnvironmentProducerDestroy()}{rmqsEnvironmentProducerDestroy()}}
+{\footnotesize\ttfamily void rmqs\+Environment\+Producer\+Destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_environment__t}{rmqs\+Environment\+\_\+t}} $\ast$}]{Environment,  }\item[{\mbox{\hyperlink{structrmqs_producer__t}{rmqs\+Producer\+\_\+t}} $\ast$}]{Producer }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_environment_8h_a676ff2667db103b07a34d1f11a8fcf78}\label{rmqs_environment_8h_a676ff2667db103b07a34d1f11a8fcf78}} 
+\index{rmqsEnvironment.h@{rmqsEnvironment.h}!rmqsEnvironmentProducersListDestroy@{rmqsEnvironmentProducersListDestroy}}
+\index{rmqsEnvironmentProducersListDestroy@{rmqsEnvironmentProducersListDestroy}!rmqsEnvironment.h@{rmqsEnvironment.h}}
+\doxysubsubsection{\texorpdfstring{rmqsEnvironmentProducersListDestroy()}{rmqsEnvironmentProducersListDestroy()}}
+{\footnotesize\ttfamily void rmqs\+Environment\+Producers\+List\+Destroy (\begin{DoxyParamCaption}\item[{void $\ast$}]{Producer }\end{DoxyParamCaption})}
+

@@ -30,5 +30,7 @@ void rmqsTimerStart(rmqsTimer_t *Timer);
 void rmqsTimerStop(rmqsTimer_t *Timer);
 uint32_t rmqsTimerGetTime(rmqsTimer_t *Timer);
 uint32_t rmqsTimerGetSystemClock(rmqsTimer_t *Timer);
+void rmqsGetCurrentDateTime(uint16_t *Year, uint8_t *Month, uint8_t *Day, uint8_t *Hour, uint8_t *Minute, uint8_t *Second);
+void rmqsGetCurrentDateTimeString(char *String, size_t Size);
 //---------------------------------------------------------------------------
 #endif

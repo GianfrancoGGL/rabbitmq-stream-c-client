@@ -15,9 +15,6 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-#ifdef __cplusplus
-}
-#endif
 #ifdef __BORLANDC__
 #include "madExcept.h"
 #endif
@@ -30,12 +27,11 @@ void ProducerEventsCallback(rqmsProducerEvent Event, void *EventData);
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char *Brokers = "192.168.1.37:5552,192.168.1.37:5553";
+    char *Brokers = "192.168.56.1:5552,192.168.1.37:5553";
     rmqsEnvironment_t *Environment;
     rmqsBroker_t *Broker;
     rmqsProducer_t *Producer;
     rmqsTimer_t *Timer;
-    uint32_t Time;
     size_t i;
 
     (void)argc;
@@ -46,7 +42,7 @@ int main(int argc, char * argv[])
     #endif
 
     printf("Creating environment...\r\n");
-    Environment = rmqsEnvironmentCreate(Brokers);
+    Environment = rmqsEnvironmentCreate(Brokers, 1, "C:\\TEMP\\CommLog.txt");
     printf("Environment created\r\n");
 
     printf("No of brokers defined: %d\r\n", (int)Environment->BrokersList->Count);
@@ -62,33 +58,17 @@ int main(int argc, char * argv[])
     Producer = rmqsEnvironmentProducerCreate(Environment, ProducerEventsCallback);
     printf("Producer created\r\n");
 
-    #ifdef __WIN32__
-    printf("%09d\r\n", (int)GetTickCount());
-    #endif
+    printf("Running for 10 seconds\r\n");
 
     Timer = rmqsTimerCreate();
     rmqsTimerStart(Timer);
 
-    while (1)
+    while (rmqsTimerGetTime(Timer) < 10000)
     {
-        Time = rmqsTimerGetTime(Timer);
-        printf("Time: %08d\r", Time);
-
-        if (Time > 10000)
-        {
-            break;
-        }
-
         rmqsThreadSleep(100);
     }
 
     rmqsTimerDestroy(Timer);
-
-    printf("\n");
-
-    #ifdef __WIN32__
-    printf("%09d\r\n", (int)GetTickCount());
-    #endif
 
     printf("Destroying producer...\r\n");
     rmqsEnvironmentProducerDestroy(Environment, Producer);

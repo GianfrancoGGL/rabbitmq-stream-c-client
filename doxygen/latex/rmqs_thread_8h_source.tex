@@ -1,0 +1,42 @@
+\hypertarget{rmqs_thread_8h_source}{}\doxysection{rmqs\+Thread.\+h}
+\label{rmqs_thread_8h_source}\index{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsThread.h@{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsThread.h}}
+\mbox{\hyperlink{rmqs_thread_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ rmqsThreadH}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ rmqsThreadH}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#ifdef\ \_\_WIN32\_\_}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <windows.h>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <pthread.h>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct}}
+\DoxyCodeLine{00014\ \{}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\ \ \ \ \#ifdef\ \_\_WIN32\_\_}}
+\DoxyCodeLine{00016\ \ \ \ \ HANDLE\ ThreadHandle;}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\ \ \ \ \#else}}
+\DoxyCodeLine{00018\ \ \ \ \ pthread\_t\ \mbox{\hyperlink{structrmqs_thread__t_a5dfd34d79450763cf9f61d6897372fa6}{ThreadHandle}};}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\ \ \ \ \#endif}}
+\DoxyCodeLine{00020\ \ \ \ \ void\ (*ThreadRoutine)(\textcolor{keywordtype}{void}\ *,\ uint8\_t\ *);}
+\DoxyCodeLine{00021\ \ \ \ \ void\ (*CancelIORoutine)(\textcolor{keywordtype}{void}\ *);}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{void}\ *\mbox{\hyperlink{structrmqs_thread__t_a77499762b53d3cd97b16dca1ec2e73fd}{Parameters}};}
+\DoxyCodeLine{00023\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structrmqs_thread__t_aa30210f249c2f6e6032f408f8845289c}{TerminateRequest}};}
+\DoxyCodeLine{00024\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structrmqs_thread__t_aa9271b7af3a445542968c59e93895603}{Terminated}};}
+\DoxyCodeLine{00025\ \}}
+\DoxyCodeLine{00026\ \mbox{\hyperlink{structrmqs_thread__t}{rmqsThread\_t}};}
+\DoxyCodeLine{00027\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00028\ \mbox{\hyperlink{structrmqs_thread__t}{rmqsThread\_t}}\ *\ \mbox{\hyperlink{rmqs_thread_8h_a34948070be257276de792773259e694a}{rmqsThreadCreate}}(\textcolor{keywordtype}{void}\ (*ThreadRoutine)(\textcolor{keywordtype}{void}\ *,\ uint8\_t\ *),\ \textcolor{keywordtype}{void}\ (*CancelIORoutine)(\textcolor{keywordtype}{void}\ *),\ \textcolor{keywordtype}{void}\ *Parameters);}
+\DoxyCodeLine{00029\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_thread_8h_a5b6b2145fe44a137713cf7a8721ed6bd}{rmqsThreadDestroy}}(\mbox{\hyperlink{structrmqs_thread__t}{rmqsThread\_t}}\ *Thread);}
+\DoxyCodeLine{00030\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_thread_8h_ac73e94f0c92d049477ec0199137597b8}{rmqsThreadStart}}(\mbox{\hyperlink{structrmqs_thread__t}{rmqsThread\_t}}\ *Thread);}
+\DoxyCodeLine{00031\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_thread_8h_aeef82051149b45f956ba6e5ff97c38bb}{rmqsThreadStop}}(\mbox{\hyperlink{structrmqs_thread__t}{rmqsThread\_t}}\ *Thread);}
+\DoxyCodeLine{00032\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_thread_8h_a2e5e5146f0073140c407a3d9eaf43309}{rmqsThreadSleep}}(uint32\_t\ Milliseconds);}
+\DoxyCodeLine{00033\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_thread_8h_a74c29708bd285b7eb3695b73ad5ea72a}{rmqsThreadSleepEx}}(uint32\_t\ Milliseconds,\ \textcolor{keywordtype}{size\_t}\ HowManyTimes,\ uint8\_t\ *Abort);}
+\DoxyCodeLine{00034\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00036\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+
+\end{DoxyCode}

@@ -46,6 +46,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="rmqsList.h" />
+		<Unit filename="rmqsLogger.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="rmqsLogger.h" />
 		<Unit filename="rmqsMemory.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -79,6 +83,15 @@
 		</Unit>
 		<Unit filename="rmqsTimer.h" />
 		<Extensions>
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
 			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>

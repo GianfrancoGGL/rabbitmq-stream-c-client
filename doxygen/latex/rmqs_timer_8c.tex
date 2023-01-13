@@ -1,0 +1,60 @@
+\hypertarget{rmqs_timer_8c}{}\doxysection{C\+:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqs\+Timer.c File Reference}
+\label{rmqs_timer_8c}\index{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsTimer.c@{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsTimer.c}}
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include $<$limits.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}rmqs\+Timer.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rmqs\+Memory.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structrmqs_timer__t}{rmqs\+Timer\+\_\+t}} $\ast$ \mbox{\hyperlink{rmqs_timer_8c_ad3c60956db84299847277e737c28d7e4}{rmqs\+Timer\+Create}} (void)
+\item 
+void \mbox{\hyperlink{rmqs_timer_8c_a8c55e40e5aeba56be9d24d6149878b65}{rmqs\+Timer\+Destroy}} (\mbox{\hyperlink{structrmqs_timer__t}{rmqs\+Timer\+\_\+t}} $\ast$Timer)
+\item 
+void \mbox{\hyperlink{rmqs_timer_8c_a5d2777aa334f0bf57c5ab9031f542f2c}{rmqs\+Timer\+Start}} (\mbox{\hyperlink{structrmqs_timer__t}{rmqs\+Timer\+\_\+t}} $\ast$Timer)
+\item 
+void \mbox{\hyperlink{rmqs_timer_8c_a71fa486d04e51582c4a2f6b541b17a05}{rmqs\+Timer\+Stop}} (\mbox{\hyperlink{structrmqs_timer__t}{rmqs\+Timer\+\_\+t}} $\ast$Timer)
+\item 
+uint32\+\_\+t \mbox{\hyperlink{rmqs_timer_8c_a79f6b432ebcadaea28e4a91552650993}{rmqs\+Timer\+Get\+Time}} (\mbox{\hyperlink{structrmqs_timer__t}{rmqs\+Timer\+\_\+t}} $\ast$Timer)
+\item 
+uint32\+\_\+t \mbox{\hyperlink{rmqs_timer_8c_aad2cfcc84cdf8bbb9597fccf2608819c}{rmqs\+Timer\+Get\+System\+Clock}} (\mbox{\hyperlink{structrmqs_timer__t}{rmqs\+Timer\+\_\+t}} $\ast$Timer)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{rmqs_timer_8c_ad3c60956db84299847277e737c28d7e4}\label{rmqs_timer_8c_ad3c60956db84299847277e737c28d7e4}} 
+\index{rmqsTimer.c@{rmqsTimer.c}!rmqsTimerCreate@{rmqsTimerCreate}}
+\index{rmqsTimerCreate@{rmqsTimerCreate}!rmqsTimer.c@{rmqsTimer.c}}
+\doxysubsubsection{\texorpdfstring{rmqsTimerCreate()}{rmqsTimerCreate()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structrmqs_timer__t}{rmqs\+Timer\+\_\+t}} $\ast$ rmqs\+Timer\+Create (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_timer_8c_a8c55e40e5aeba56be9d24d6149878b65}\label{rmqs_timer_8c_a8c55e40e5aeba56be9d24d6149878b65}} 
+\index{rmqsTimer.c@{rmqsTimer.c}!rmqsTimerDestroy@{rmqsTimerDestroy}}
+\index{rmqsTimerDestroy@{rmqsTimerDestroy}!rmqsTimer.c@{rmqsTimer.c}}
+\doxysubsubsection{\texorpdfstring{rmqsTimerDestroy()}{rmqsTimerDestroy()}}
+{\footnotesize\ttfamily void rmqs\+Timer\+Destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_timer__t}{rmqs\+Timer\+\_\+t}} $\ast$}]{Timer }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_timer_8c_aad2cfcc84cdf8bbb9597fccf2608819c}\label{rmqs_timer_8c_aad2cfcc84cdf8bbb9597fccf2608819c}} 
+\index{rmqsTimer.c@{rmqsTimer.c}!rmqsTimerGetSystemClock@{rmqsTimerGetSystemClock}}
+\index{rmqsTimerGetSystemClock@{rmqsTimerGetSystemClock}!rmqsTimer.c@{rmqsTimer.c}}
+\doxysubsubsection{\texorpdfstring{rmqsTimerGetSystemClock()}{rmqsTimerGetSystemClock()}}
+{\footnotesize\ttfamily uint32\+\_\+t rmqs\+Timer\+Get\+System\+Clock (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_timer__t}{rmqs\+Timer\+\_\+t}} $\ast$}]{Timer }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_timer_8c_a79f6b432ebcadaea28e4a91552650993}\label{rmqs_timer_8c_a79f6b432ebcadaea28e4a91552650993}} 
+\index{rmqsTimer.c@{rmqsTimer.c}!rmqsTimerGetTime@{rmqsTimerGetTime}}
+\index{rmqsTimerGetTime@{rmqsTimerGetTime}!rmqsTimer.c@{rmqsTimer.c}}
+\doxysubsubsection{\texorpdfstring{rmqsTimerGetTime()}{rmqsTimerGetTime()}}
+{\footnotesize\ttfamily uint32\+\_\+t rmqs\+Timer\+Get\+Time (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_timer__t}{rmqs\+Timer\+\_\+t}} $\ast$}]{Timer }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_timer_8c_a5d2777aa334f0bf57c5ab9031f542f2c}\label{rmqs_timer_8c_a5d2777aa334f0bf57c5ab9031f542f2c}} 
+\index{rmqsTimer.c@{rmqsTimer.c}!rmqsTimerStart@{rmqsTimerStart}}
+\index{rmqsTimerStart@{rmqsTimerStart}!rmqsTimer.c@{rmqsTimer.c}}
+\doxysubsubsection{\texorpdfstring{rmqsTimerStart()}{rmqsTimerStart()}}
+{\footnotesize\ttfamily void rmqs\+Timer\+Start (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_timer__t}{rmqs\+Timer\+\_\+t}} $\ast$}]{Timer }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{rmqs_timer_8c_a71fa486d04e51582c4a2f6b541b17a05}\label{rmqs_timer_8c_a71fa486d04e51582c4a2f6b541b17a05}} 
+\index{rmqsTimer.c@{rmqsTimer.c}!rmqsTimerStop@{rmqsTimerStop}}
+\index{rmqsTimerStop@{rmqsTimerStop}!rmqsTimer.c@{rmqsTimer.c}}
+\doxysubsubsection{\texorpdfstring{rmqsTimerStop()}{rmqsTimerStop()}}
+{\footnotesize\ttfamily void rmqs\+Timer\+Stop (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structrmqs_timer__t}{rmqs\+Timer\+\_\+t}} $\ast$}]{Timer }\end{DoxyParamCaption})}
+

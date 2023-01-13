@@ -1,0 +1,43 @@
+\hypertarget{rmqs_environment_8h_source}{}\doxysection{rmqs\+Environment.\+h}
+\label{rmqs_environment_8h_source}\index{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsEnvironment.h@{C:/rabbitmq-\/stream-\/c-\/client-\/main/src/rmqsEnvironment.h}}
+\mbox{\hyperlink{rmqs_environment_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ rmqsEnvironmentH}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ rmqsEnvironmentH}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{rmqs_list_8h}{rmqsList.h}}"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{rmqs_network_8h}{rmqsNetwork.h}}"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{rmqs_producer_8h}{rmqsProducer.h}}"{}}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#define\ RMQS\_BROKER\_ITEMS\_SEPARATOR\ \ \ \ "{},"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#define\ MQMS\_BROKER\_PORT\_SEPARATOR\ \ \ \ \ "{}:"{}}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00014\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct}}
+\DoxyCodeLine{00015\ \{}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{char}\ Host[\mbox{\hyperlink{rmqs_network_8h_aea5e083a5fcdf95a43029b2815a28133}{RMQS\_MAX\_HOSTNAME\_LENGTH}}\ +\ 1];}
+\DoxyCodeLine{00017\ \ \ \ \ uint16\_t\ \mbox{\hyperlink{structrmqs_broker__t_a8ca9f1035f63e961a13c1092d55ff48a}{Port}};}
+\DoxyCodeLine{00018\ \}}
+\DoxyCodeLine{00019\ \mbox{\hyperlink{structrmqs_broker__t}{rmqsBroker\_t}};}
+\DoxyCodeLine{00020\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00021\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct}}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structrmqs_environment__t_ad38a267c8a817877d563ee32aae577a9}{IsLittleEndianMachine}};}
+\DoxyCodeLine{00024\ \ \ \ \ \mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *\mbox{\hyperlink{structrmqs_environment__t_aa2c3d3393f2d353ce70345067bd82fc4}{BrokersList}};}
+\DoxyCodeLine{00025\ \ \ \ \ \mbox{\hyperlink{structrmqs_list__t}{rmqsList\_t}}\ *\mbox{\hyperlink{structrmqs_environment__t_ad585b953ba21abce6cd542cbef00e310}{ProducersList}};}
+\DoxyCodeLine{00026\ \}}
+\DoxyCodeLine{00027\ \mbox{\hyperlink{structrmqs_environment__t}{rmqsEnvironment\_t}};}
+\DoxyCodeLine{00028\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00029\ \mbox{\hyperlink{structrmqs_environment__t}{rmqsEnvironment\_t}}\ *\ \mbox{\hyperlink{rmqs_environment_8h_ace0527cbb319ac91f4528a8394747be7}{rmqsEnvironmentCreate}}(\textcolor{keywordtype}{char}\ *BrokersList);}
+\DoxyCodeLine{00030\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_environment_8h_a51649761db636e1b79206186c8be1f23}{rmqsEnvironmentDestroy}}(\mbox{\hyperlink{structrmqs_environment__t}{rmqsEnvironment\_t}}\ *Environment);}
+\DoxyCodeLine{00031\ \mbox{\hyperlink{structrmqs_producer__t}{rmqsProducer\_t}}\ *\ \mbox{\hyperlink{rmqs_environment_8h_acd3e79ebde9094c0cea4cacaa05dfa69}{rmqsEnvironmentProducerCreate}}(\mbox{\hyperlink{structrmqs_environment__t}{rmqsEnvironment\_t}}\ *Environment,\ \textcolor{keywordtype}{void}\ (*EventsCB)(\mbox{\hyperlink{rmqs_producer_8h_a0fb553205959e40706ad61a510ff02cf}{rqmsProducerEvent}},\ \textcolor{keywordtype}{void}\ *));}
+\DoxyCodeLine{00032\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_environment_8h_a835d7727a94a278e7b4d8ac1310de449}{rmqsEnvironmentProducerDestroy}}(\mbox{\hyperlink{structrmqs_environment__t}{rmqsEnvironment\_t}}\ *Environment,\ \mbox{\hyperlink{structrmqs_producer__t}{rmqsProducer\_t}}\ *Producer);}
+\DoxyCodeLine{00033\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_environment_8h_a2106b7696085e61fc4df90b7426e8780}{rmqsEnvironmentBrokersListDestroy}}(\textcolor{keywordtype}{void}\ *Broker);}
+\DoxyCodeLine{00034\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{rmqs_environment_8h_a676ff2667db103b07a34d1f11a8fcf78}{rmqsEnvironmentProducersListDestroy}}(\textcolor{keywordtype}{void}\ *Producer);}
+\DoxyCodeLine{00035\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00037\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+
+\end{DoxyCode}
