@@ -37,7 +37,7 @@ typedef struct
     rmqsStream_t *TxStream;
     rmqsStream_t *RxStream;
     rmqsStream_t *RxStreamTempBuffer;
-    char RxSocketBuffer[RMQS_PRODUCER_RX_BUFFER_SIZE];
+    char_t RxSocketBuffer[RMQS_PRODUCER_RX_BUFFER_SIZE];
     rmqsThread_t *ProducerThread;
 }
 rmqsProducer_t;

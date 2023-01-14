@@ -2,6 +2,7 @@
 #include <memory.h>
 //---------------------------------------------------------------------------
 #include "rmqsStream.h"
+#include "rmqsGlobal.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
 rmqsStream_t * rmqsStreamCreate(void)
@@ -41,7 +42,7 @@ void rmqsStreamClear(rmqsStream_t *Stream, const uint8_t ResetMemoryBuffer)
 //---------------------------------------------------------------------------
 size_t rmqsStreamRead(rmqsStream_t *Stream, void *ReadBuffer, size_t NrOfBytes)
 {
-    char *p;
+    char_t *p;
 
     if (Stream->Position >= Stream->Size || NrOfBytes == 0)
     {
@@ -53,7 +54,7 @@ size_t rmqsStreamRead(rmqsStream_t *Stream, void *ReadBuffer, size_t NrOfBytes)
         NrOfBytes -= (Stream->Size - Stream->Position);
     }
 
-    p = (char *)Stream->Data + Stream->Position;
+    p = (char_t *)Stream->Data + Stream->Position;
 
     memcpy(ReadBuffer, (void *)p, NrOfBytes);
 
@@ -64,7 +65,7 @@ size_t rmqsStreamRead(rmqsStream_t *Stream, void *ReadBuffer, size_t NrOfBytes)
 //---------------------------------------------------------------------------
 size_t rmqsStreamWrite(rmqsStream_t *Stream, void *WriteBuffer, const size_t NrOfBytes)
 {
-    char *p;
+    char_t *p;
 
     if (NrOfBytes == 0)
     {
@@ -73,7 +74,7 @@ size_t rmqsStreamWrite(rmqsStream_t *Stream, void *WriteBuffer, const size_t NrO
 
     rmqsStreamSetMemorySize(Stream, Stream->Position + NrOfBytes);
 
-    p = (char *)Stream->Data + Stream->Position;
+    p = (char_t *)Stream->Data + Stream->Position;
 
     memcpy(p, WriteBuffer, NrOfBytes);
 

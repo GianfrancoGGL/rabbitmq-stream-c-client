@@ -2,19 +2,20 @@
 #include <string.h>
 //---------------------------------------------------------------------------
 #include "rmqsEnvironment.h"
+#include "rmqsMemory.h"
 #include "rmqsProtocol.h"
 //---------------------------------------------------------------------------
 #define SwapUInt16(x) ((uint16_t)(x >> 8) & (uint16_t)0x00FF) | ((uint16_t)(x << 8) & (uint16_t)0xFF00)
 #define SwapUInt32(x) ((x >> 24) & 0x000000FF) | ((x >> 8) & 0x0000FF00) | ((x << 8) & 0x00FF0000) | ((x << 24) & 0xFF000000)
 //---------------------------------------------------------------------------
-#define RMQS_NULL_STRING_LENGTH    -1
+#define RMQS_NULL_STRING_LENGTH    0
 //---------------------------------------------------------------------------
 uint8_t rmqsIsLittleEndianMachine(void)
 {
     union
     {
         uint32_t i;
-        char c[4];
+        char_t c[4];
     }
     bint = {0x01020304};
 
@@ -28,7 +29,7 @@ uint8_t rmqsIsLittleEndianMachine(void)
     }
 }
 //---------------------------------------------------------------------------
-void rmqsSendMessage(const void *Environment, const rmqsSocket Socket, const char *Data, size_t DataSize)
+void rmqsSendMessage(const void *Environment, const rmqsSocket Socket, const char_t *Data, size_t DataSize)
 {
     rmqsEnvironment_t *EnvironmentObj = (rmqsEnvironment_t *)Environment;
 
@@ -37,15 +38,17 @@ void rmqsSendMessage(const void *Environment, const rmqsSocket Socket, const cha
         rmqsLoggerRegisterDump(EnvironmentObj->Logger, (void *)Data, DataSize, "TX", 0);
     }
 
-    send(Socket, (const char *)Data, DataSize, 0);
+    send(Socket, (const char_t *)Data, DataSize, 0);
 }
 //---------------------------------------------------------------------------
-uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char *RxBuffer, size_t RxBufferSize, rmqsStream_t *RxStream, rmqsStream_t *RxStreamTempBuffer, const uint32_t RxTimeout)
+uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char_t *RxBuffer, size_t RxBufferSize, rmqsStream_t *RxStream, rmqsStream_t *RxStreamTempBuffer, const uint32_t RxTimeout)
 {
     rmqsEnvironment_t *EnvironmentObj = (rmqsEnvironment_t *)Environment;
     uint8_t MessageReceived = 0;
     int32_t RxBytes;
     uint32_t MessageSize;
+
+    rmqsStreamClear(RxStream, 0);
 
     //
     // Tries to extract the message from the already received bytes, if not enough, read
@@ -97,7 +100,7 @@ uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char *
                 //
                 // Store the extra bytes in the rx buffer stream
                 //
-                rmqsStreamWrite(RxStreamTempBuffer, (void *)((char *)RxStream->Data + MessageSize), RxStream->Size - MessageSize);
+                rmqsStreamWrite(RxStreamTempBuffer, (void *)((char_t *)RxStream->Data + MessageSize), RxStream->Size - MessageSize);
             }
         }
 
@@ -182,7 +185,7 @@ rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelation
     rmqsStreamMoveTo(ProducerObj->TxStream, 0);
     rmqsAddUInt32ToStream(ProducerObj->TxStream, ProducerObj->TxStream->Size - sizeof(rmqsSize), Environment->IsLittleEndianMachine);
 
-    rmqsSendMessage(ProducerObj->Environment, ProducerObj->Socket, (const char *)ProducerObj->TxStream->Data, ProducerObj->TxStream->Size);
+    rmqsSendMessage(ProducerObj->Environment, ProducerObj->Socket, (const char_t *)ProducerObj->TxStream->Data, ProducerObj->TxStream->Size);
 
     if (rmqsWaitMessage(ProducerObj->Environment, ProducerObj->Socket, ProducerObj->RxSocketBuffer, sizeof(ProducerObj->RxSocketBuffer), ProducerObj->RxStream, ProducerObj->RxStreamTempBuffer, 1000))
     {
@@ -191,12 +194,108 @@ rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelation
         if (Environment->IsLittleEndianMachine)
         {
             Response->Size = SwapUInt32(Response->Size);
-            Response->Key = SwapUInt16((Response->Key & 0x7FFF));
+            Response->Key = SwapUInt16(Response->Key);
+            Response->Key &= 0x7FFF;
             Response->Version = SwapUInt16(Response->Version);
             Response->CorrelationId = SwapUInt32(Response->CorrelationId);
             Response->ResponseCode = SwapUInt16(Response->ResponseCode);
         }
-        
+
+        if (Response->Key != rmqscPeerProperties)
+        {
+            return rmqsrWrongReply;
+        }
+
+        return Response->ResponseCode;
+    }
+    else
+    {
+        return rmqsrNoReply;
+    }
+}
+//---------------------------------------------------------------------------
+rmqsResponseCode rmqsrmqscSaslHandshakeRequest(const void *Producer, rmqsCorrelationId CorrelationId, uint8_t *PlainAuthSupported)
+{
+    rmqsProducer_t *ProducerObj = (rmqsProducer_t *)Producer;
+    rmqsEnvironment_t *Environment = (rmqsEnvironment_t *)ProducerObj->Environment;
+    rmqsKey Key = rmqscSaslHandshake;
+    rmqsVersion Version = 1;
+    rmqsResponseWithData_t *Response;
+    uint16_t MechanismNo;
+    char_t *Data;
+    uint16_t *StringLen;
+    char_t *String;
+
+    *PlainAuthSupported = 0; // By default assume that the PLAIN auth is not supported
+
+    rmqsStreamClear(ProducerObj->TxStream, 0);
+
+    rmqsAddUInt32ToStream(ProducerObj->TxStream, 0, Environment->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToStream(ProducerObj->TxStream, Key, Environment->IsLittleEndianMachine);
+    rmqsAddUInt16ToStream(ProducerObj->TxStream, Version, Environment->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(ProducerObj->TxStream, CorrelationId, Environment->IsLittleEndianMachine);
+
+    //
+    // Moves to the beginning of the stream and writes the total message body size
+    //
+    rmqsStreamMoveTo(ProducerObj->TxStream, 0);
+    rmqsAddUInt32ToStream(ProducerObj->TxStream, ProducerObj->TxStream->Size - sizeof(rmqsSize), Environment->IsLittleEndianMachine);
+
+    rmqsSendMessage(ProducerObj->Environment, ProducerObj->Socket, (const char_t *)ProducerObj->TxStream->Data, ProducerObj->TxStream->Size);
+
+    if (rmqsWaitMessage(ProducerObj->Environment, ProducerObj->Socket, ProducerObj->RxSocketBuffer, sizeof(ProducerObj->RxSocketBuffer), ProducerObj->RxStream, ProducerObj->RxStreamTempBuffer, 1000))
+    {
+        Response = (rmqsResponseWithData_t *)ProducerObj->RxStream->Data;
+
+        if (Environment->IsLittleEndianMachine)
+        {
+            Response->Size = SwapUInt32(Response->Size);
+            Response->Key = SwapUInt16(Response->Key);
+            Response->Key &= 0x7FFF;
+            Response->Version = SwapUInt16(Response->Version);
+            Response->CorrelationId = SwapUInt32(Response->CorrelationId);
+            Response->ResponseCode = SwapUInt16(Response->ResponseCode);
+            Response->NoOfMechanisms = SwapUInt16(Response->NoOfMechanisms);
+        }
+
+         if (Response->Key != rmqscSaslHandshake)
+        {
+            return rmqsrWrongReply;
+        }
+
+        if (Response->NoOfMechanisms > 0)
+        {
+            Data = (char_t *)ProducerObj->RxStream->Data + sizeof(rmqsResponseWithData_t);
+
+            for (MechanismNo = 1; MechanismNo <= Response->NoOfMechanisms; MechanismNo++)
+            {
+                StringLen = (uint16_t *)Data;
+
+                if (Environment->IsLittleEndianMachine)
+                {
+                    *StringLen = SwapUInt16(*StringLen);
+                }
+
+                Data += sizeof(uint16_t);
+
+                if (*StringLen > 0)
+                {
+                    String = rmqsAllocateMemory(*StringLen + 1);
+                    memset(String, 0, *StringLen + 1);
+                    strncpy(String, (char_t *)Data, *StringLen);
+
+                    if (! strcmp(String, "PLAIN"))
+                    {
+                        *PlainAuthSupported = 1;
+                    }
+
+                    rmqsFreeMemory(String);
+
+                    Data += *StringLen;
+                }
+            }
+        }
+
         return Response->ResponseCode;
     }
     else
@@ -265,7 +364,7 @@ size_t rmqsAddUInt32ToStream(rmqsStream_t *Stream, uint32_t Value, uint8_t IsLit
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddStringToStream(rmqsStream_t *Stream, char *Value, uint8_t IsLittleEndianMachine)
+size_t rmqsAddStringToStream(rmqsStream_t *Stream, char_t *Value, uint8_t IsLittleEndianMachine)
 {
     rmqsStringLen StringLen;
     size_t BytesAdded;

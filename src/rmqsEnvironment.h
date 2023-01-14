@@ -14,7 +14,7 @@
 //---------------------------------------------------------------------------
 typedef struct
 {
-    char Host[RMQS_MAX_HOSTNAME_LENGTH + 1];
+    char_t Host[RMQS_MAX_HOSTNAME_LENGTH + 1];
     uint16_t Port;
 }
 rmqsBroker_t;
@@ -28,7 +28,7 @@ typedef struct
 }
 rmqsEnvironment_t;
 //---------------------------------------------------------------------------
-rmqsEnvironment_t * rmqsEnvironmentCreate(char *BrokersList, uint8_t EnableLogging, char *LogFileName);
+rmqsEnvironment_t * rmqsEnvironmentCreate(char_t *BrokersList, uint8_t EnableLogging, char_t *LogFileName);
 void rmqsEnvironmentDestroy(rmqsEnvironment_t *Environment);
 rmqsProducer_t * rmqsEnvironmentProducerCreate(rmqsEnvironment_t *Environment, void (*EventsCB)(rqmsProducerEvent, void *));
 void rmqsEnvironmentProducerDestroy(rmqsEnvironment_t *Environment, rmqsProducer_t *Producer);

@@ -7,6 +7,8 @@
 #include <sys/socket.h>
 #endif
 //---------------------------------------------------------------------------
+#include "rmqsGlobal.h"
+//---------------------------------------------------------------------------
 #define RMQS_MAX_HOSTNAME_LENGTH     255
 //---------------------------------------------------------------------------
 #ifdef __WIN32__
@@ -27,7 +29,7 @@ void rmqsShutdownWinsock(void);
 rmqsSocket rmqsSocketCreate(void);
 void rmqsSocketDestroy(rmqsSocket *Socket);
 //---------------------------------------------------------------------------
-uint8_t rmqsSocketConnect(const char *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs);
+uint8_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs);
 //---------------------------------------------------------------------------
 void rmqsSetSocketReadTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeout);
 void rmqsSetSocketWriteTimeouts(const rmqsSocket Socket, const uint32_t WriteTimeout);

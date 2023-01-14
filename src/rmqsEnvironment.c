@@ -6,12 +6,12 @@
 #include "rmqsMemory.h"
 #include "rmqsProtocol.h"
 //---------------------------------------------------------------------------
-rmqsEnvironment_t * rmqsEnvironmentCreate(char *BrokersList, uint8_t EnableLogging, char *LogFileName)
+rmqsEnvironment_t * rmqsEnvironmentCreate(char_t *BrokersList, uint8_t EnableLogging, char_t *LogFileName)
 {
     rmqsEnvironment_t *Environment = (rmqsEnvironment_t *)rmqsAllocateMemory(sizeof(rmqsEnvironment_t));
-    char *BrokersCopyString, *BrokerCopyString;
+    char_t *BrokersCopyString, *BrokerCopyString;
     rmqsList_t *TempBrokersList;
-    char *BrokerItemString, *BrokerFieldString;
+    char_t *BrokerItemString, *BrokerFieldString;
     rmqsBroker_t *Broker;
     size_t i;
 
@@ -37,7 +37,7 @@ rmqsEnvironment_t * rmqsEnvironmentCreate(char *BrokersList, uint8_t EnableLoggi
     //
     // strtok modifies the string for which is used, then a copy of the original brokers list is created
     //
-    BrokersCopyString = (char *)rmqsAllocateMemory(strlen(BrokersList) + 1);
+    BrokersCopyString = (char_t *)rmqsAllocateMemory(strlen(BrokersList) + 1);
     strcpy(BrokersCopyString, BrokersList);
 
     //
@@ -49,7 +49,7 @@ rmqsEnvironment_t * rmqsEnvironmentCreate(char *BrokersList, uint8_t EnableLoggi
 
     while (BrokerItemString != 0)
     {
-        BrokerCopyString = (char *)rmqsAllocateMemory(strlen(BrokerItemString) + 1);
+        BrokerCopyString = (char_t *)rmqsAllocateMemory(strlen(BrokerItemString) + 1);
         strcpy(BrokerCopyString, BrokerItemString);
 
         rmqsListAddEnd(TempBrokersList, BrokerCopyString);
@@ -62,7 +62,7 @@ rmqsEnvironment_t * rmqsEnvironmentCreate(char *BrokersList, uint8_t EnableLoggi
         Broker = (rmqsBroker_t *)rmqsAllocateMemory(sizeof(rmqsBroker_t));
         memset(Broker, 0, sizeof(rmqsBroker_t));
 
-        BrokerFieldString = strtok((char *)rmqsListGetDataByPosition(TempBrokersList, i), MQMS_BROKER_PORT_SEPARATOR);
+        BrokerFieldString = strtok((char_t *)rmqsListGetDataByPosition(TempBrokersList, i), MQMS_BROKER_PORT_SEPARATOR);
         strncpy(Broker->Host, BrokerFieldString, RMQS_MAX_HOSTNAME_LENGTH);
 
         BrokerFieldString = strtok(0, MQMS_BROKER_PORT_SEPARATOR);

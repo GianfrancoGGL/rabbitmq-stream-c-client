@@ -1,17 +1,19 @@
 //---------------------------------------------------------------------------
 #include <ctype.h>
+#include <stdint.h>
 //---------------------------------------------------------------------------
 #include "rmqsLogger.h"
+#include "rmqsGlobal.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
 #define BYTES_TO_DUMP_PER_ROW  16
 #define LOG_SEPARATOR          "=========================================================================="
 //---------------------------------------------------------------------------
-rmqsLogger_t * rmqsLoggerCreate(char *FileName, uint8_t AppendToFile)
+rmqsLogger_t * rmqsLoggerCreate(char_t *FileName, uint8_t AppendToFile)
 {
     rmqsLogger_t *Logger = (rmqsLogger_t *)rmqsAllocateMemory(sizeof(rmqsLogger_t));
 
-    Logger->FileName = (char *)rmqsAllocateMemory(strlen(FileName) + 1);
+    Logger->FileName = (char_t *)rmqsAllocateMemory(strlen(FileName) + 1);
     strcpy(Logger->FileName, FileName);
 
     Logger->AppendToFile = AppendToFile;
@@ -38,9 +40,9 @@ void rmqsLoggerDestroy(rmqsLogger_t *Logger)
     rmqsFreeMemory((void *)Logger);
 }
 //---------------------------------------------------------------------------
-void rmqsLoggerRegisterLog(rmqsLogger_t *Logger, char *Message, char *Comment)
+void rmqsLoggerRegisterLog(rmqsLogger_t *Logger, char_t *Message, char_t *Comment)
 {
-    char DateTimeString[20], TimeSinceLastLog[10];
+    char_t DateTimeString[20], TimeSinceLastLog[10];
     size_t i;
 
     rmqsMutexLock(Logger->Mutex);
@@ -74,14 +76,14 @@ void rmqsLoggerRegisterLog(rmqsLogger_t *Logger, char *Message, char *Comment)
     rmqsMutexUnlock(Logger->Mutex);
 }
 //---------------------------------------------------------------------------
-void rmqsLoggerRegisterDump(rmqsLogger_t *Logger, void *Data, size_t DataLen, char *Comment1, char *Comment2)
+void rmqsLoggerRegisterDump(rmqsLogger_t *Logger, void *Data, size_t DataLen, char_t *Comment1, char_t *Comment2)
 {
-    char DateTimeString[20], TimeSinceLastLog[10];
-    unsigned char *Pointer = (unsigned char *)Data;
-    unsigned char Byte;
+    char_t DateTimeString[20], TimeSinceLastLog[10];
+    uchar_t *Pointer = (uchar_t *)Data;
+    uchar_t Byte;
     size_t i, TotalBytesWritten = 0, RowBytesWritten = 0;
-    char Temp[32];
-    char AsciiVals[BYTES_TO_DUMP_PER_ROW][2], HexVals[BYTES_TO_DUMP_PER_ROW][4];
+    char_t Temp[32];
+    char_t AsciiVals[BYTES_TO_DUMP_PER_ROW][2], HexVals[BYTES_TO_DUMP_PER_ROW][4];
 
     rmqsMutexLock(Logger->Mutex);
 

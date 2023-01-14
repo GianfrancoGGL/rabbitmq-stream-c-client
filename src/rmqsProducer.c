@@ -24,7 +24,7 @@ rmqsProducer_t * rmqsProducerCreate(void *Environment, void (*EventsCB)(rqmsProd
     #endif
 
     Producer->Socket = rmqsInvalidSocket;
-    Producer->CorrelationId = 0;
+    Producer->CorrelationId = 1;
 
     Producer->TxStream = rmqsStreamCreate();
     Producer->RxStream = rmqsStreamCreate();
@@ -70,6 +70,7 @@ void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
     rmqsEnvironment_t *Environment = Producer->Environment;
     rmqsBroker_t *Broker;
     rmqsProperty_t Properties[6];
+    uint8_t PlainAuthSupported;
 
     Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Environment->BrokersList, 0);
 
@@ -131,10 +132,14 @@ void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
             case rmqspsConnected:
                 if (rmqsPeerPropertiesRequest(Producer, Producer->CorrelationId++, 6, Properties) == rmqsrOK)
                 {
-                    Producer->Status = rmqspsReady;
-                    Producer->EventsCB(rmqspeReady, Producer);
+                    if (rmqsrmqscSaslHandshakeRequest(Producer, Producer->CorrelationId++, &PlainAuthSupported) == rmqsrOK)
+                    {
+                        Producer->Status = rmqspsReady;
+                        Producer->EventsCB(rmqspeReady, Producer);
+                    }
                 }
-                else
+
+                if (Producer->Status != rmqspsReady)
                 {
                     ConnectionFailed = 1;
                     rmqsSocketDestroy((rmqsSocket *)&Producer->Socket);

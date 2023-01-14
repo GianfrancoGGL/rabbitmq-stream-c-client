@@ -114,7 +114,7 @@ void rmqsGetCurrentDateTime(uint16_t *Year, uint8_t *Month, uint8_t *Day, uint8_
     #endif
 }
 //---------------------------------------------------------------------------
-void rmqsGetCurrentDateTimeString(char *String, size_t Size)
+void rmqsGetCurrentDateTimeString(char_t *String, size_t Size)
 {
     uint16_t Year;
     uint8_t Month, Day, Hour, Minute, Second;

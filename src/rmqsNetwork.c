@@ -98,7 +98,7 @@ void rmqsSocketDestroy(rmqsSocket *Socket)
     *Socket = rmqsInvalidSocket;
 }
 //---------------------------------------------------------------------------
-uint8_t rmqsSocketConnect(const char *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs)
+uint8_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs)
 {
     uint8_t Connected = 0;
     struct hostent *pHost;
@@ -183,7 +183,7 @@ void rmqsSetSocketReadTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeo
     DWORD dwRead;
     dwRead = ReadTimeout;
 
-    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (const char *)&dwRead, sizeof(dwRead));
+    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (const char_t *)&dwRead, sizeof(dwRead));
     #endif
 }
 //--------------------------------------------------------------------------
@@ -200,7 +200,7 @@ void rmqsSetSocketWriteTimeouts(const rmqsSocket Socket, const uint32_t WriteTim
     DWORD dwWrite;
     dwWrite = WriteTimeout;
 
-    setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (const char *)&dwWrite, sizeof(dwWrite));
+    setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (const char_t *)&dwWrite, sizeof(dwWrite));
     #endif
 }
 //--------------------------------------------------------------------------
@@ -208,12 +208,12 @@ uint8_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t ulTxBuf
 {
     uint8_t Result = 1;
 
-    if (setsockopt(Socket, SOL_SOCKET, SO_SNDBUF, (const char *)&ulTxBufferSize, sizeof(uint32_t)) == -1)
+    if (setsockopt(Socket, SOL_SOCKET, SO_SNDBUF, (const char_t *)&ulTxBufferSize, sizeof(uint32_t)) == -1)
     {
         Result = 0;
     }
 
-    if (setsockopt(Socket, SOL_SOCKET, SO_RCVBUF, (const char *)&ulRxBufferSize, sizeof(uint32_t)) == -1)
+    if (setsockopt(Socket, SOL_SOCKET, SO_RCVBUF, (const char_t *)&ulRxBufferSize, sizeof(uint32_t)) == -1)
     {
         Result = 0;
     }
@@ -325,7 +325,7 @@ uint8_t rmqsSetTcpNoDelay(const rmqsSocket Socket)
 {
     int32_t iNoTcpDelayOptVal = 1, iNoTcpDelayOptValLen = sizeof(iNoTcpDelayOptVal);
 
-    if (setsockopt(Socket, IPPROTO_TCP, TCP_NODELAY, (const char *)&iNoTcpDelayOptVal, (rmqsSocketLen)iNoTcpDelayOptValLen) == -1)
+    if (setsockopt(Socket, IPPROTO_TCP, TCP_NODELAY, (const char_t *)&iNoTcpDelayOptVal, (rmqsSocketLen)iNoTcpDelayOptValLen) == -1)
     {
         return 0;
     }

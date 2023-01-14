@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1673351054 source:c:\rabbitmq-stream-c-client-main\src\main.c
+1673556856 source:c:\rabbitmq-stream-c-client-main\src\main.c
 	<stdio.h>
 	<memory.h>
 	<string.h>
@@ -8,15 +8,16 @@
 	"rmqsTimer.h"
 	"madExcept.h"
 
-1673349735 c:\rabbitmq-stream-c-client-main\src\rmqsprotocol.h
+1673664760 c:\rabbitmq-stream-c-client-main\src\rmqsprotocol.h
 	<stdint.h>
 	"rmqsStream.h"
 
-1673349723 c:\rabbitmq-stream-c-client-main\src\rmqsnetwork.h
+1673658746 c:\rabbitmq-stream-c-client-main\src\rmqsnetwork.h
 	<stdint.h>
 	<sys/socket.h>
+	"rmqsGlobal.h"
 
-1673299256 c:\rabbitmq-stream-c-client-main\src\rmqsstream.h
+1673551442 c:\rabbitmq-stream-c-client-main\src\rmqsstream.h
 	<stdint.h>
 	<stddef.h>
 
@@ -24,7 +25,7 @@
 	<stdint.h>
 	<stddef.h>
 
-1673349764 source:c:\rabbitmq-stream-c-client-main\src\rmqslist.c
+1673300576 source:c:\rabbitmq-stream-c-client-main\src\rmqslist.c
 	<memory.h>
 	"rmqsList.h"
 	"rmqsMemory.h"
@@ -47,25 +48,29 @@
 	<windows.h>
 	<pthread.h>
 
-1673349712 source:c:\rabbitmq-stream-c-client-main\src\rmqsnetwork.c
+1673658480 source:c:\rabbitmq-stream-c-client-main\src\rmqsnetwork.c
+	<stdio.h>
 	<winsock2.h>
 	<unistd.h>
 	<netinet/in.h>
 	<netinet/tcp.h>
+	<arpa/inet.h>
 	<errno.h>
 	<strings.h>
 	<netdb.h>
 	<fcntl.h>
 	"rmqsNetwork.h"
 
-1673349741 source:c:\rabbitmq-stream-c-client-main\src\rmqsprotocol.c
+1673665258 source:c:\rabbitmq-stream-c-client-main\src\rmqsprotocol.c
 	<string.h>
 	"rmqsEnvironment.h"
+	"rmqsMemory.h"
 	"rmqsProtocol.h"
 
-1673349777 source:c:\rabbitmq-stream-c-client-main\src\rmqsstream.c
+1673658772 source:c:\rabbitmq-stream-c-client-main\src\rmqsstream.c
 	<memory.h>
 	"rmqsStream.h"
+	"rmqsGlobal.h"
 	"rmqsMemory.h"
 
 1673279238 source:c:\rabbitmq-stream-c-client-main\src\rmqsthread.c
@@ -79,42 +84,60 @@
 	<windows.h>
 	<pthread.h>
 
-1673349690 c:\rabbitmq-stream-c-client-main\src\rmqsenvironment.h
+1673658472 c:\rabbitmq-stream-c-client-main\src\rmqsenvironment.h
 	<stdint.h>
 	"rmqsList.h"
+	"rmqsLogger.h"
 	"rmqsNetwork.h"
 	"rmqsProducer.h"
 
-1673349769 c:\rabbitmq-stream-c-client-main\src\rmqsproducer.h
+1673658494 c:\rabbitmq-stream-c-client-main\src\rmqsproducer.h
 	<stdint.h>
 	"rmqsNetwork.h"
 	"rmqsProtocol.h"
 	"rmqsStream.h"
 	"rmqsThread.h"
 
-1673349697 source:c:\rabbitmq-stream-c-client-main\src\rmqsenvironment.c
+1673658462 source:c:\rabbitmq-stream-c-client-main\src\rmqsenvironment.c
 	<string.h>
 	"rmqsEnvironment.h"
 	"rmqsList.h"
 	"rmqsMemory.h"
 	"rmqsProtocol.h"
 
-1673349749 source:c:\rabbitmq-stream-c-client-main\src\rmqsproducer.c
+1673664798 source:c:\rabbitmq-stream-c-client-main\src\rmqsproducer.c
 	<stdio.h>
 	"rmqsProducer.h"
 	"rmqsEnvironment.h"
 	"rmqsProtocol.h"
 	"rmqsMemory.h"
 
-1673345148 c:\rabbitmq-stream-c-client-main\src\rmqstimer.h
+1673659002 c:\rabbitmq-stream-c-client-main\src\rmqstimer.h
 	<stdint.h>
 	<windows.h>
 	<unistd.h>
 	<sys/time.h>
+	"rmqsGlobal.h"
 
-1673345816 source:c:\rabbitmq-stream-c-client-main\src\rmqstimer.c
+1673658556 source:c:\rabbitmq-stream-c-client-main\src\rmqstimer.c
 	<time.h>
+	<stdio.h>
 	<limits.h>
 	"rmqsTimer.h"
+	"rmqsMemory.h"
+
+1673658572 c:\rabbitmq-stream-c-client-main\src\rmqslogger.h
+	<stdint.h>
+	<stdio.h>
+	"rmqsMutex.h"
+	"rmqsTimer.h"
+
+1673658814 c:\rabbitmq-stream-c-client-main\src\rmqsglobal.h
+
+1673658794 source:c:\rabbitmq-stream-c-client-main\src\rmqslogger.c
+	<ctype.h>
+	<stdint.h>
+	"rmqsLogger.h"
+	"rmqsGlobal.h"
 	"rmqsMemory.h"
 

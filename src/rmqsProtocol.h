@@ -60,7 +60,8 @@ typedef enum
     rmqsrAccessRefused = 0x10,
     rmqsrPreconditionFailed = 0x11,
     rmqsrPublisherDoesNotExist = 0x12,
-    rmqsrNoOffset = 0x13
+    rmqsrNoOffset = 0x13,
+    rmqsrWrongReply = 0xFF
 }
 rmqsResponseCode;
 //---------------------------------------------------------------------------
@@ -76,12 +77,13 @@ typedef int16_t rmqsStringLen;
 //---------------------------------------------------------------------------
 typedef struct
 {
-    char Key[RMQS_MAX_KEY_SIZE + 1]; // + 1 for the null terminator
-    char Value[RMQS_MAX_VALUE_SIZE + 1]; // + 1 for the null terminator
+    char_t Key[RMQS_MAX_KEY_SIZE + 1]; // + 1 for the null terminator
+    char_t Value[RMQS_MAX_VALUE_SIZE + 1]; // + 1 for the null terminator
 }
 rmqsProperty_t;
 //---------------------------------------------------------------------------
 #pragma pack(push,1)
+//---------------------------------------------------------------------------
 typedef struct
 {
     uint32_t Size;
@@ -91,20 +93,34 @@ typedef struct
     uint16_t ResponseCode;
 }
 rmqsResponse_t;
+//---------------------------------------------------------------------------
+typedef struct
+{
+    uint32_t Size;
+    uint16_t Key;
+    uint16_t Version;
+    uint32_t CorrelationId;
+    uint16_t ResponseCode;
+    uint16_t Unknown;
+    uint16_t NoOfMechanisms;
+}
+rmqsResponseWithData_t;
+//---------------------------------------------------------------------------
 #pragma pack(pop)
 //---------------------------------------------------------------------------
 uint8_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
-void rmqsSendMessage(const void *Environment, const rmqsSocket Socket, const char *Data, size_t DataSize);
-uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char *RxBuffer, size_t RxBufferSize, rmqsStream_t *RxStream, rmqsStream_t *RxStreamTempBuffer, const uint32_t RxTimeout);
+void rmqsSendMessage(const void *Environment, const rmqsSocket Socket, const char_t *Data, size_t DataSize);
+uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char_t *RxBuffer, size_t RxBufferSize, rmqsStream_t *RxStream, rmqsStream_t *RxStreamTempBuffer, const uint32_t RxTimeout);
 rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelationId CorrelationId, uint32_t PropertiesCount, rmqsProperty_t *Properties);
+rmqsResponseCode rmqsrmqscSaslHandshakeRequest(const void *Producer, rmqsCorrelationId CorrelationId, uint8_t *PlainAuthSupported);
 size_t rmqsAddInt8ToStream(rmqsStream_t *Stream, int8_t Value);
 size_t rmqsAddUInt8ToStream(rmqsStream_t *Stream, uint8_t Value);
 size_t rmqsAddInt16ToStream(rmqsStream_t *Stream, int16_t Value, uint8_t IsLittleEndianMachine);
 size_t rmqsAddUInt16ToStream(rmqsStream_t *Stream, uint16_t Value, uint8_t IsLittleEndianMachine);
 size_t rmqsAddInt32ToStream(rmqsStream_t *Stream, int32_t Value, uint8_t IsLittleEndianMachine);
 size_t rmqsAddUInt32ToStream(rmqsStream_t *Stream, uint32_t Value, uint8_t IsLittleEndianMachine);
-size_t rmqsAddStringToStream(rmqsStream_t *Stream, char *Value, uint8_t IsLittleEndianMachine);
+size_t rmqsAddStringToStream(rmqsStream_t *Stream, char_t *Value, uint8_t IsLittleEndianMachine);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

@@ -10,7 +10,7 @@
 //---------------------------------------------------------------------------
 typedef struct
 {
-    char *FileName;
+    char_t *FileName;
     uint8_t AppendToFile;
     FILE *File;
     rmqsMutex_t *Mutex;
@@ -18,10 +18,10 @@ typedef struct
 }
 rmqsLogger_t;
 //---------------------------------------------------------------------------
-rmqsLogger_t * rmqsLoggerCreate(char *FileName, uint8_t AppendToFile);
+rmqsLogger_t * rmqsLoggerCreate(char_t *FileName, uint8_t AppendToFile);
 void rmqsLoggerDestroy(rmqsLogger_t *Logger);
-void rmqsLoggerRegisterLog(rmqsLogger_t *Logger, char *Message, char *Comment);
-void rmqsLoggerRegisterDump(rmqsLogger_t *Logger, void *Data, size_t DataLen, char *Comment1, char *Comment2);
+void rmqsLoggerRegisterLog(rmqsLogger_t *Logger, char_t *Message, char_t *Comment);
+void rmqsLoggerRegisterDump(rmqsLogger_t *Logger, void *Data, size_t DataLen, char_t *Comment1, char_t *Comment2);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------
