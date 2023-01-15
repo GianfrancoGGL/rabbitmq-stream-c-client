@@ -50,6 +50,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="rmqsLogger.h" />
+		<Unit filename="rmqsMemBuffer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="rmqsMemBuffer.h" />
 		<Unit filename="rmqsMemory.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -70,10 +74,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="rmqsProtocol.h" />
-		<Unit filename="rmqsStream.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="rmqsStream.h" />
 		<Unit filename="rmqsThread.c">
 			<Option compilerVar="CC" />
 		</Unit>

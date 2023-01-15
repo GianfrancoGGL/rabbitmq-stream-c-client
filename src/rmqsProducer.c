@@ -26,9 +26,9 @@ rmqsProducer_t * rmqsProducerCreate(void *Environment, void (*EventsCB)(rqmsProd
     Producer->Socket = rmqsInvalidSocket;
     Producer->CorrelationId = 1;
 
-    Producer->TxStream = rmqsStreamCreate();
-    Producer->RxStream = rmqsStreamCreate();
-    Producer->RxStreamTempBuffer = rmqsStreamCreate();
+    Producer->TxStream = rmqsMemBufferCreate();
+    Producer->RxStream = rmqsMemBufferCreate();
+    Producer->RxStreamTempBuffer = rmqsMemBufferCreate();
 
     Producer->ProducerThread = rmqsThreadCreate(rmqsProducerThreadRoutine, 0, Producer);
     rmqsThreadStart(Producer->ProducerThread);
@@ -48,9 +48,9 @@ void rmqsProducerDestroy(rmqsProducer_t *Producer)
     rmqsThreadStop(Producer->ProducerThread);
     rmqsThreadDestroy(Producer->ProducerThread);
 
-    rmqsStreamDestroy(Producer->TxStream);
-    rmqsStreamDestroy(Producer->RxStream);
-    rmqsStreamDestroy(Producer->RxStreamTempBuffer);
+    rmqsMemBufferDestroy(Producer->TxStream);
+    rmqsMemBufferDestroy(Producer->RxStream);
+    rmqsMemBufferDestroy(Producer->RxStreamTempBuffer);
 
     rmqsFreeMemory((void *)Producer);
 
@@ -134,8 +134,11 @@ void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
                 {
                     if (rmqsrmqscSaslHandshakeRequest(Producer, Producer->CorrelationId++, &PlainAuthSupported) == rmqsrOK)
                     {
-                        Producer->Status = rmqspsReady;
-                        Producer->EventsCB(rmqspeReady, Producer);
+                        if (PlainAuthSupported && rmqsrmqscSaslAuthenticateRequest(Producer, Producer->CorrelationId++, "PLAIN", "guest", "guest") == rmqsrOK)
+                        {
+                            Producer->Status = rmqspsReady;
+                            Producer->EventsCB(rmqspeReady, Producer);
+                        }                            
                     }
                 }
 

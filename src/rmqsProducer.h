@@ -6,7 +6,7 @@
 //---------------------------------------------------------------------------
 #include "rmqsNetwork.h"
 #include "rmqsProtocol.h"
-#include "rmqsStream.h"
+#include "rmqsMemBuffer.h"
 #include "rmqsThread.h"
 //---------------------------------------------------------------------------
 #define RMQS_PRODUCER_RX_BUFFER_SIZE      1024
@@ -34,9 +34,9 @@ typedef struct
     void (*EventsCB)(rqmsProducerEvent, void *);
     rmqsSocket Socket;
     rmqsCorrelationId CorrelationId;
-    rmqsStream_t *TxStream;
-    rmqsStream_t *RxStream;
-    rmqsStream_t *RxStreamTempBuffer;
+    rmqsMemBuffer_t *TxStream;
+    rmqsMemBuffer_t *RxStream;
+    rmqsMemBuffer_t *RxStreamTempBuffer;
     char_t RxSocketBuffer[RMQS_PRODUCER_RX_BUFFER_SIZE];
     rmqsThread_t *ProducerThread;
 }

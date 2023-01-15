@@ -4,7 +4,7 @@
 //---------------------------------------------------------------------------
 #include <stdint.h>
 //---------------------------------------------------------------------------
-#include "rmqsStream.h"
+#include "rmqsMemBuffer.h"
 //---------------------------------------------------------------------------
 typedef enum
 {
@@ -71,6 +71,7 @@ typedef uint16_t rmqsVersion;
 typedef uint32_t rmqsCorrelationId;
 typedef uint8_t rmqsPublisherId;
 typedef int16_t rmqsStringLen;
+typedef int32_t rmqsDataLen;
 //---------------------------------------------------------------------------
 #define RMQS_MAX_KEY_SIZE     64
 #define RMQS_MAX_VALUE_SIZE  128
@@ -111,16 +112,19 @@ rmqsResponseWithData_t;
 uint8_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
 void rmqsSendMessage(const void *Environment, const rmqsSocket Socket, const char_t *Data, size_t DataSize);
-uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char_t *RxBuffer, size_t RxBufferSize, rmqsStream_t *RxStream, rmqsStream_t *RxStreamTempBuffer, const uint32_t RxTimeout);
+uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char_t *RxBuffer, size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout);
 rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelationId CorrelationId, uint32_t PropertiesCount, rmqsProperty_t *Properties);
 rmqsResponseCode rmqsrmqscSaslHandshakeRequest(const void *Producer, rmqsCorrelationId CorrelationId, uint8_t *PlainAuthSupported);
-size_t rmqsAddInt8ToStream(rmqsStream_t *Stream, int8_t Value);
-size_t rmqsAddUInt8ToStream(rmqsStream_t *Stream, uint8_t Value);
-size_t rmqsAddInt16ToStream(rmqsStream_t *Stream, int16_t Value, uint8_t IsLittleEndianMachine);
-size_t rmqsAddUInt16ToStream(rmqsStream_t *Stream, uint16_t Value, uint8_t IsLittleEndianMachine);
-size_t rmqsAddInt32ToStream(rmqsStream_t *Stream, int32_t Value, uint8_t IsLittleEndianMachine);
-size_t rmqsAddUInt32ToStream(rmqsStream_t *Stream, uint32_t Value, uint8_t IsLittleEndianMachine);
-size_t rmqsAddStringToStream(rmqsStream_t *Stream, char_t *Value, uint8_t IsLittleEndianMachine);
+rmqsResponseCode rmqsrmqscSaslAuthenticateRequest(const void *Producer, rmqsCorrelationId CorrelationId, char_t *Mechanism, char_t *Username, char_t *Password);
+//---------------------------------------------------------------------------
+size_t rmqsAddInt8ToStream(rmqsMemBuffer_t *Stream, int8_t Value);
+size_t rmqsAddUInt8ToStream(rmqsMemBuffer_t *Stream, uint8_t Value);
+size_t rmqsAddInt16ToStream(rmqsMemBuffer_t *Stream, int16_t Value, uint8_t IsLittleEndianMachine);
+size_t rmqsAddUInt16ToStream(rmqsMemBuffer_t *Stream, uint16_t Value, uint8_t IsLittleEndianMachine);
+size_t rmqsAddInt32ToStream(rmqsMemBuffer_t *Stream, int32_t Value, uint8_t IsLittleEndianMachine);
+size_t rmqsAddUInt32ToStream(rmqsMemBuffer_t *Stream, uint32_t Value, uint8_t IsLittleEndianMachine);
+size_t rmqsAddStringToStream(rmqsMemBuffer_t *Stream, char_t *Value, uint8_t IsLittleEndianMachine);
+size_t rmqsAddBytesToStream(rmqsMemBuffer_t *Stream, void *Value, size_t ValueLength, uint8_t IsLittleEndianMachine);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

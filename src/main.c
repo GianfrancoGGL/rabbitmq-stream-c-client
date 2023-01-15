@@ -27,7 +27,7 @@ void ProducerEventsCallback(rqmsProducerEvent Event, void *EventData);
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char *Brokers = "192.168.56.1:5552,192.168.1.37:5553";
+    char *Brokers = "localhost:5552";
     rmqsEnvironment_t *Environment;
     rmqsBroker_t *Broker;
     rmqsProducer_t *Producer;
@@ -38,7 +38,9 @@ int main(int argc, char * argv[])
     (void)argv;
 
     #ifdef __BORLANDC__
+    /*
     StartLeakChecking(false);
+    */
     #endif
 
     printf("Creating environment...\r\n");

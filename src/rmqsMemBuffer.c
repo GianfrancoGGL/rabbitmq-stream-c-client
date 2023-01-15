@@ -1,22 +1,22 @@
 //---------------------------------------------------------------------------
 #include <memory.h>
 //---------------------------------------------------------------------------
-#include "rmqsStream.h"
+#include "rmqsMemBuffer.h"
 #include "rmqsGlobal.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsStream_t * rmqsStreamCreate(void)
+rmqsMemBuffer_t * rmqsMemBufferCreate(void)
 {
-    rmqsStream_t *Stream = (rmqsStream_t *)rmqsAllocateMemory(sizeof(rmqsStream_t));
+    rmqsMemBuffer_t *Stream = (rmqsMemBuffer_t *)rmqsAllocateMemory(sizeof(rmqsMemBuffer_t));
 
-    memset(Stream, 0, sizeof(rmqsStream_t));
+    memset(Stream, 0, sizeof(rmqsMemBuffer_t));
 
     Stream->ChunkSize = 1024;
 
     return Stream;
 }
 //---------------------------------------------------------------------------
-void rmqsStreamDestroy(rmqsStream_t *Stream)
+void rmqsMemBufferDestroy(rmqsMemBuffer_t *Stream)
 {
     if (Stream->Data)
     {
@@ -26,7 +26,7 @@ void rmqsStreamDestroy(rmqsStream_t *Stream)
     rmqsFreeMemory((void *)Stream);
 }
 //---------------------------------------------------------------------------
-void rmqsStreamClear(rmqsStream_t *Stream, const uint8_t ResetMemoryBuffer)
+void rmqsMemBufferClear(rmqsMemBuffer_t *Stream, const uint8_t ResetMemoryBuffer)
 {
     Stream->Size = 0;
     Stream->Position = 0;
@@ -40,7 +40,7 @@ void rmqsStreamClear(rmqsStream_t *Stream, const uint8_t ResetMemoryBuffer)
     }
 }
 //---------------------------------------------------------------------------
-size_t rmqsStreamRead(rmqsStream_t *Stream, void *ReadBuffer, size_t NrOfBytes)
+size_t rmqsMemBufferRead(rmqsMemBuffer_t *Stream, void *ReadBuffer, size_t NrOfBytes)
 {
     char_t *p;
 
@@ -63,7 +63,7 @@ size_t rmqsStreamRead(rmqsStream_t *Stream, void *ReadBuffer, size_t NrOfBytes)
     return NrOfBytes;
 }
 //---------------------------------------------------------------------------
-size_t rmqsStreamWrite(rmqsStream_t *Stream, void *WriteBuffer, const size_t NrOfBytes)
+size_t rmqsMemBufferWrite(rmqsMemBuffer_t *Stream, void *WriteBuffer, const size_t NrOfBytes)
 {
     char_t *p;
 
@@ -72,7 +72,7 @@ size_t rmqsStreamWrite(rmqsStream_t *Stream, void *WriteBuffer, const size_t NrO
         return 0;
     }
 
-    rmqsStreamSetMemorySize(Stream, Stream->Position + NrOfBytes);
+    rmqsMemBufferSetMemorySize(Stream, Stream->Position + NrOfBytes);
 
     p = (char_t *)Stream->Data + Stream->Position;
 
@@ -88,7 +88,7 @@ size_t rmqsStreamWrite(rmqsStream_t *Stream, void *WriteBuffer, const size_t NrO
     return Stream->Position;
 }
 //---------------------------------------------------------------------------
-void rmqsStreamMoveTo(rmqsStream_t *Stream, size_t Position)
+void rmqsMemBufferMoveTo(rmqsMemBuffer_t *Stream, size_t Position)
 {
     if (Position >= Stream->Size)
     {
@@ -98,7 +98,7 @@ void rmqsStreamMoveTo(rmqsStream_t *Stream, size_t Position)
     Stream->Position = Position;
 }
 //---------------------------------------------------------------------------
-void rmqsStreamSetMemorySize(rmqsStream_t *Stream, const size_t RequiredMemorySize)
+void rmqsMemBufferSetMemorySize(rmqsMemBuffer_t *Stream, const size_t RequiredMemorySize)
 {
     size_t MemoryToAllocateSize;
 
