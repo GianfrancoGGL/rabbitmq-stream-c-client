@@ -31,9 +31,11 @@ typedef struct
 {
     void *Environment; // This pointer is void because of a circular dependency of environment and producer structs
     rmqsProducerStatus Status;
+    uint32_t FrameMax;
+    uint32_t Heartbeat;
     void (*EventsCB)(rqmsProducerEvent, void *);
     rmqsSocket Socket;
-    rmqsCorrelationId CorrelationId;
+    rmqsCorrelationId_t CorrelationId;
     rmqsMemBuffer_t *TxStream;
     rmqsMemBuffer_t *RxStream;
     rmqsMemBuffer_t *RxStreamTempBuffer;
@@ -45,6 +47,7 @@ rmqsProducer_t;
 rmqsProducer_t * rmqsProducerCreate(void *Environment, void (*EventsCB)(rqmsProducerEvent, void *));
 void rmqsProducerDestroy(rmqsProducer_t *Producer);
 void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest);
+uint8_t rqmsProducerLogin(rmqsProducer_t *Producer, rmqsProperty_t *Properties);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

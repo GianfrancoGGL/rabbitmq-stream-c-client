@@ -6,6 +6,9 @@
 //---------------------------------------------------------------------------
 #include "rmqsMemBuffer.h"
 //---------------------------------------------------------------------------
+#define SwapUInt16(x) ((uint16_t)(x >> 8) & (uint16_t)0x00FF) | ((uint16_t)(x << 8) & (uint16_t)0xFF00)
+#define SwapUInt32(x) ((x >> 24) & 0x000000FF) | ((x >> 8) & 0x0000FF00) | ((x << 8) & 0x00FF0000) | ((x << 24) & 0xFF000000)
+//---------------------------------------------------------------------------
 typedef enum
 {
     rmqscDeclarePublisher = 0x01,
@@ -65,16 +68,17 @@ typedef enum
 }
 rmqsResponseCode;
 //---------------------------------------------------------------------------
-typedef uint32_t rmqsSize;
-typedef uint16_t rmqsKey;
-typedef uint16_t rmqsVersion;
-typedef uint32_t rmqsCorrelationId;
-typedef uint8_t rmqsPublisherId;
-typedef int16_t rmqsStringLen;
-typedef int32_t rmqsDataLen;
+typedef uint32_t rmqsSize_t;
+typedef uint16_t rmqsKey_t;
+typedef uint16_t rmqsVersion_t;
+typedef uint32_t rmqsCorrelationId_t;
+typedef uint8_t rmqsPublisherId_t;
+typedef int16_t rmqsStringLen_t;
+typedef int32_t rmqsDataLen_t;
 //---------------------------------------------------------------------------
-#define RMQS_MAX_KEY_SIZE     64
-#define RMQS_MAX_VALUE_SIZE  128
+#define RMQS_MAX_KEY_SIZE        64
+#define RMQS_MAX_VALUE_SIZE     128
+#define RMQS_PLAIN_PROTOCOL  "PLAIN"
 //---------------------------------------------------------------------------
 typedef struct
 {
@@ -87,9 +91,9 @@ rmqsProperty_t;
 //---------------------------------------------------------------------------
 typedef struct
 {
-    uint32_t Size;
-    uint16_t Key;
-    uint16_t Version;
+    rmqsSize_t Size;
+    rmqsKey_t Key;
+    rmqsVersion_t Version;
     uint32_t CorrelationId;
     uint16_t ResponseCode;
 }
@@ -97,15 +101,25 @@ rmqsResponse_t;
 //---------------------------------------------------------------------------
 typedef struct
 {
-    uint32_t Size;
-    uint16_t Key;
-    uint16_t Version;
+    rmqsSize_t Size;
+    rmqsKey_t Key;
+    rmqsVersion_t Version;
     uint32_t CorrelationId;
     uint16_t ResponseCode;
     uint16_t Unknown;
     uint16_t NoOfMechanisms;
 }
-rmqsResponseWithData_t;
+rmqsResponseHandshakeRequest_t;
+//---------------------------------------------------------------------------
+typedef struct
+{
+    rmqsSize_t Size;
+    rmqsKey_t Key;
+    rmqsVersion_t Version;
+    uint32_t FrameMax;
+    uint32_t Heartbeat;
+}
+rmqsTuneRequest_t;
 //---------------------------------------------------------------------------
 #pragma pack(pop)
 //---------------------------------------------------------------------------
@@ -113,9 +127,9 @@ uint8_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
 void rmqsSendMessage(const void *Environment, const rmqsSocket Socket, const char_t *Data, size_t DataSize);
 uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char_t *RxBuffer, size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout);
-rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelationId CorrelationId, uint32_t PropertiesCount, rmqsProperty_t *Properties);
-rmqsResponseCode rmqsrmqscSaslHandshakeRequest(const void *Producer, rmqsCorrelationId CorrelationId, uint8_t *PlainAuthSupported);
-rmqsResponseCode rmqsrmqscSaslAuthenticateRequest(const void *Producer, rmqsCorrelationId CorrelationId, char_t *Mechanism, char_t *Username, char_t *Password);
+rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelationId_t CorrelationId, uint32_t PropertiesCount, rmqsProperty_t *Properties);
+rmqsResponseCode rmqsSaslHandshakeRequest(const void *Producer, rmqsCorrelationId_t CorrelationId, uint8_t *PlainAuthSupported);
+rmqsResponseCode rmqsSaslAuthenticateRequest(const void *Producer, rmqsCorrelationId_t CorrelationId, const char_t *Mechanism, const char_t *Username, const char_t *Password);
 //---------------------------------------------------------------------------
 size_t rmqsAddInt8ToStream(rmqsMemBuffer_t *Stream, int8_t Value);
 size_t rmqsAddUInt8ToStream(rmqsMemBuffer_t *Stream, uint8_t Value);

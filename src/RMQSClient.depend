@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1673660772 source:c:\rabbitmq-stream-c-client-main\src\main.c
+1673816209 source:c:\rabbitmq-stream-c-client-main\src\main.c
 	<stdio.h>
 	<memory.h>
 	<string.h>
@@ -8,7 +8,7 @@
 	"rmqsTimer.h"
 	"madExcept.h"
 
-1673806014 c:\rabbitmq-stream-c-client-main\src\rmqsprotocol.h
+1673815170 c:\rabbitmq-stream-c-client-main\src\rmqsprotocol.h
 	<stdint.h>
 	"rmqsMemBuffer.h"
 
@@ -61,7 +61,7 @@
 	<fcntl.h>
 	"rmqsNetwork.h"
 
-1673808547 source:c:\rabbitmq-stream-c-client-main\src\rmqsprotocol.c
+1673815258 source:c:\rabbitmq-stream-c-client-main\src\rmqsprotocol.c
 	<string.h>
 	"rmqsEnvironment.h"
 	"rmqsMemory.h"
@@ -84,28 +84,28 @@
 	<windows.h>
 	<pthread.h>
 
-1673658472 c:\rabbitmq-stream-c-client-main\src\rmqsenvironment.h
+1673811092 c:\rabbitmq-stream-c-client-main\src\rmqsenvironment.h
 	<stdint.h>
 	"rmqsList.h"
 	"rmqsLogger.h"
 	"rmqsNetwork.h"
 	"rmqsProducer.h"
 
-1673805624 c:\rabbitmq-stream-c-client-main\src\rmqsproducer.h
+1673815738 c:\rabbitmq-stream-c-client-main\src\rmqsproducer.h
 	<stdint.h>
 	"rmqsNetwork.h"
 	"rmqsProtocol.h"
 	"rmqsMemBuffer.h"
 	"rmqsThread.h"
 
-1673658462 source:c:\rabbitmq-stream-c-client-main\src\rmqsenvironment.c
+1673811114 source:c:\rabbitmq-stream-c-client-main\src\rmqsenvironment.c
 	<string.h>
 	"rmqsEnvironment.h"
 	"rmqsList.h"
 	"rmqsMemory.h"
 	"rmqsProtocol.h"
 
-1673805654 source:c:\rabbitmq-stream-c-client-main\src\rmqsproducer.c
+1673815822 source:c:\rabbitmq-stream-c-client-main\src\rmqsproducer.c
 	<stdio.h>
 	"rmqsProducer.h"
 	"rmqsEnvironment.h"

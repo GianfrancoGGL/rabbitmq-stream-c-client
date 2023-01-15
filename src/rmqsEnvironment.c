@@ -6,7 +6,7 @@
 #include "rmqsMemory.h"
 #include "rmqsProtocol.h"
 //---------------------------------------------------------------------------
-rmqsEnvironment_t * rmqsEnvironmentCreate(char_t *BrokersList, uint8_t EnableLogging, char_t *LogFileName)
+rmqsEnvironment_t * rmqsEnvironmentCreate(char_t *BrokersList, const char_t *Username, const char_t *Password, uint8_t EnableLogging, char_t *LogFileName)
 {
     rmqsEnvironment_t *Environment = (rmqsEnvironment_t *)rmqsAllocateMemory(sizeof(rmqsEnvironment_t));
     char_t *BrokersCopyString, *BrokerCopyString;
@@ -21,6 +21,12 @@ rmqsEnvironment_t * rmqsEnvironmentCreate(char_t *BrokersList, uint8_t EnableLog
     // Check whether the client is running on a big or little endian machine
     //
     Environment->IsLittleEndianMachine = rmqsIsLittleEndianMachine();
+
+    //
+    // Save username and password in the environment variable
+    //
+    strncpy((char_t *)Environment->Username, Username, RMQS_MAX_USERNAME_LENGTH);
+    strncpy((char_t *)Environment->Password, Password, RMQS_MAX_PASSWORD_LENGTH);
 
     //
     // Create the brokers and producers list
@@ -62,10 +68,10 @@ rmqsEnvironment_t * rmqsEnvironmentCreate(char_t *BrokersList, uint8_t EnableLog
         Broker = (rmqsBroker_t *)rmqsAllocateMemory(sizeof(rmqsBroker_t));
         memset(Broker, 0, sizeof(rmqsBroker_t));
 
-        BrokerFieldString = strtok((char_t *)rmqsListGetDataByPosition(TempBrokersList, i), MQMS_BROKER_PORT_SEPARATOR);
+        BrokerFieldString = strtok((char_t *)rmqsListGetDataByPosition(TempBrokersList, i), RMQS_BROKER_PORT_SEPARATOR);
         strncpy(Broker->Host, BrokerFieldString, RMQS_MAX_HOSTNAME_LENGTH);
 
-        BrokerFieldString = strtok(0, MQMS_BROKER_PORT_SEPARATOR);
+        BrokerFieldString = strtok(0, RMQS_BROKER_PORT_SEPARATOR);
 
         if (BrokerFieldString)
         {

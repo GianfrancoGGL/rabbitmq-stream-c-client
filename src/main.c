@@ -44,7 +44,7 @@ int main(int argc, char * argv[])
     #endif
 
     printf("Creating environment...\r\n");
-    Environment = rmqsEnvironmentCreate(Brokers, 1, "C:\\TEMP\\CommLog.txt");
+    Environment = rmqsEnvironmentCreate(Brokers, "gian", "ggi", 1, "C:\\TEMP\\CommLog.txt");
     printf("Environment created\r\n");
 
     printf("No of brokers defined: %d\r\n", (int)Environment->BrokersList->Count);

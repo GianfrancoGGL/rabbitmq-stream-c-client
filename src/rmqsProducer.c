@@ -14,6 +14,8 @@ rmqsProducer_t * rmqsProducerCreate(void *Environment, void (*EventsCB)(rqmsProd
 
     Producer->Environment = Environment;
     Producer->Status = rmqspsDisconnected;
+    Producer->FrameMax = 0;
+    Producer->Heartbeat = 0;
     Producer->EventsCB = EventsCB;
 
     //
@@ -42,6 +44,8 @@ void rmqsProducerDestroy(rmqsProducer_t *Producer)
     {
         rmqsSocketDestroy((rmqsSocket *)&Producer->Socket);
         Producer->Status = rmqspsDisconnected;
+        Producer->FrameMax = 0;
+        Producer->Heartbeat = 0;
         Producer->EventsCB(rmqspeDisconnected, Producer);
     }
 
@@ -68,9 +72,8 @@ void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
 
     rmqsProducer_t *Producer = (rmqsProducer_t *)Parameters;
     rmqsEnvironment_t *Environment = Producer->Environment;
-    rmqsBroker_t *Broker;
     rmqsProperty_t Properties[6];
-    uint8_t PlainAuthSupported;
+    rmqsBroker_t *Broker;
 
     Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Environment->BrokersList, 0);
 
@@ -119,6 +122,8 @@ void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
                 if (rmqsSocketConnect(Broker->Host, Broker->Port, Producer->Socket, 2000))
                 {
                     Producer->Status = rmqspsConnected;
+                    Producer->FrameMax = 0;
+                    Producer->Heartbeat = 0;
                     Producer->EventsCB(rmqspeConnected, Producer);
                 }
                 else
@@ -130,23 +135,18 @@ void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
                 break;
 
             case rmqspsConnected:
-                if (rmqsPeerPropertiesRequest(Producer, Producer->CorrelationId++, 6, Properties) == rmqsrOK)
+                if (rqmsProducerLogin(Producer, Properties))
                 {
-                    if (rmqsrmqscSaslHandshakeRequest(Producer, Producer->CorrelationId++, &PlainAuthSupported) == rmqsrOK)
-                    {
-                        if (PlainAuthSupported && rmqsrmqscSaslAuthenticateRequest(Producer, Producer->CorrelationId++, "PLAIN", "guest", "guest") == rmqsrOK)
-                        {
-                            Producer->Status = rmqspsReady;
-                            Producer->EventsCB(rmqspeReady, Producer);
-                        }                            
-                    }
+                    Producer->Status = rmqspsReady;
+                    Producer->EventsCB(rmqspeReady, Producer);
                 }
-
-                if (Producer->Status != rmqspsReady)
+                else
                 {
                     ConnectionFailed = 1;
                     rmqsSocketDestroy((rmqsSocket *)&Producer->Socket);
                     Producer->Status = rmqspsDisconnected;
+                    Producer->FrameMax = 0;
+                    Producer->Heartbeat = 0;
                     Producer->EventsCB(rmqspeDisconnected, Producer);
                 }
 
@@ -169,3 +169,61 @@ void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
     }
 }
 //---------------------------------------------------------------------------
+uint8_t rqmsProducerLogin(rmqsProducer_t *Producer, rmqsProperty_t *Properties)
+{
+    rmqsEnvironment_t *Environment = Producer->Environment;
+    uint8_t PlainAuthSupported;
+    rmqsTuneRequest_t *TuneRequest;
+
+    //
+    // Once connected, send the peer properties request
+    //
+    if (rmqsPeerPropertiesRequest(Producer, Producer->CorrelationId++, 6, Properties) != rmqsrOK)
+    {
+        return 0;
+    }
+
+    //
+    // Then the SASL handshake request
+    //
+    if (rmqsSaslHandshakeRequest(Producer, Producer->CorrelationId++, &PlainAuthSupported) != rmqsrOK)
+    {
+        return 0;
+    }
+
+    //
+    // Next, the authenticate request, based on the supported mechanism
+    //
+    if (! PlainAuthSupported || rmqsSaslAuthenticateRequest(Producer, Producer->CorrelationId++, RMQS_PLAIN_PROTOCOL, (const char_t *)Environment->Username, (const char_t *)Environment->Password) != rmqsrOK)
+    {
+        return 0;
+    }
+
+    //
+    // Wait for the tune message sent by the server after the authentication
+    //
+    if (! rmqsWaitMessage(Producer->Environment, Producer->Socket, Producer->RxSocketBuffer, sizeof(Producer->RxSocketBuffer), Producer->RxStream, Producer->RxStreamTempBuffer, 1000))
+    {
+        return 0;
+    }
+
+    if (Producer->RxStream->Size != sizeof(rmqsTuneRequest_t))
+    {
+        return 0;
+    }
+
+    TuneRequest = (rmqsTuneRequest_t *)Producer->RxStream->Data;
+
+    if (Environment->IsLittleEndianMachine)
+    {
+        TuneRequest->Size = SwapUInt32(TuneRequest->Size);
+        TuneRequest->Key = SwapUInt16(TuneRequest->Key);
+        TuneRequest->Version = SwapUInt16(TuneRequest->Version);
+        TuneRequest->FrameMax = Producer->FrameMax = SwapUInt32(TuneRequest->FrameMax);
+        TuneRequest->Heartbeat = Producer->Heartbeat = SwapUInt16(TuneRequest->Heartbeat);
+    }
+
+    return 1;
+}
+//---------------------------------------------------------------------------
+
