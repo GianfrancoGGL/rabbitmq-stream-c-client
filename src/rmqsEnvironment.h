@@ -35,7 +35,7 @@ rmqsEnvironment_t;
 //---------------------------------------------------------------------------
 rmqsEnvironment_t * rmqsEnvironmentCreate(char_t *BrokersList, const char_t *Username, const char_t *Password, uint8_t EnableLogging, char_t *LogFileName);
 void rmqsEnvironmentDestroy(rmqsEnvironment_t *Environment);
-rmqsProducer_t * rmqsEnvironmentProducerCreate(rmqsEnvironment_t *Environment, void (*EventsCB)(rqmsProducerEvent, void *));
+rmqsProducer_t * rmqsEnvironmentProducerCreate(rmqsEnvironment_t *Environment, const char_t *HostName, uint8_t PublisherId, const char_t *PublisherReference, void (*EventsCB)(rqmsClientEvent, void *));
 void rmqsEnvironmentProducerDestroy(rmqsEnvironment_t *Environment, rmqsProducer_t *Producer);
 void rmqsEnvironmentBrokersListDestroy(void *Broker);
 void rmqsEnvironmentProducersListDestroy(void *Producer);

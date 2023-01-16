@@ -127,9 +127,6 @@ uint8_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
 void rmqsSendMessage(const void *Environment, const rmqsSocket Socket, const char_t *Data, size_t DataSize);
 uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char_t *RxBuffer, size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout);
-rmqsResponseCode rmqsPeerPropertiesRequest(const void *Producer, rmqsCorrelationId_t CorrelationId, uint32_t PropertiesCount, rmqsProperty_t *Properties);
-rmqsResponseCode rmqsSaslHandshakeRequest(const void *Producer, rmqsCorrelationId_t CorrelationId, uint8_t *PlainAuthSupported);
-rmqsResponseCode rmqsSaslAuthenticateRequest(const void *Producer, rmqsCorrelationId_t CorrelationId, const char_t *Mechanism, const char_t *Username, const char_t *Password);
 //---------------------------------------------------------------------------
 size_t rmqsAddInt8ToStream(rmqsMemBuffer_t *Stream, int8_t Value);
 size_t rmqsAddUInt8ToStream(rmqsMemBuffer_t *Stream, uint8_t Value);
@@ -137,7 +134,7 @@ size_t rmqsAddInt16ToStream(rmqsMemBuffer_t *Stream, int16_t Value, uint8_t IsLi
 size_t rmqsAddUInt16ToStream(rmqsMemBuffer_t *Stream, uint16_t Value, uint8_t IsLittleEndianMachine);
 size_t rmqsAddInt32ToStream(rmqsMemBuffer_t *Stream, int32_t Value, uint8_t IsLittleEndianMachine);
 size_t rmqsAddUInt32ToStream(rmqsMemBuffer_t *Stream, uint32_t Value, uint8_t IsLittleEndianMachine);
-size_t rmqsAddStringToStream(rmqsMemBuffer_t *Stream, char_t *Value, uint8_t IsLittleEndianMachine);
+size_t rmqsAddStringToStream(rmqsMemBuffer_t *Stream, const char_t *Value, uint8_t IsLittleEndianMachine);
 size_t rmqsAddBytesToStream(rmqsMemBuffer_t *Stream, void *Value, size_t ValueLength, uint8_t IsLittleEndianMachine);
 //---------------------------------------------------------------------------
 #endif

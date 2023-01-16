@@ -29,7 +29,7 @@ rmqsEnvironment_t * rmqsEnvironmentCreate(char_t *BrokersList, const char_t *Use
     strncpy((char_t *)Environment->Password, Password, RMQS_MAX_PASSWORD_LENGTH);
 
     //
-    // Create the brokers and producers list
+    // Create the brokers and client list
     //
     Environment->BrokersList = rmqsListCreate(rmqsEnvironmentBrokersListDestroy);
     Environment->ProducersList = rmqsListCreate(rmqsEnvironmentProducersListDestroy);
@@ -110,9 +110,9 @@ void rmqsEnvironmentDestroy(rmqsEnvironment_t *Environment)
     rmqsFreeMemory((void *)Environment);
 }
 //---------------------------------------------------------------------------
-rmqsProducer_t * rmqsEnvironmentProducerCreate(rmqsEnvironment_t *Environment, void (*EventsCB)(rqmsProducerEvent, void *))
+rmqsProducer_t * rmqsEnvironmentProducerCreate(rmqsEnvironment_t *Environment, const char_t *HostName, uint8_t PublisherId, const char_t *PublisherReference, void (*EventsCB)(rqmsClientEvent, void *))
 {
-    rmqsProducer_t *Producer = rmqsProducerCreate(Environment, EventsCB);
+    rmqsProducer_t *Producer = rmqsProducerCreate(Environment, HostName, PublisherId, PublisherReference, EventsCB);
 
     rmqsListAddEnd(Environment->ProducersList, Producer);
 

@@ -23,11 +23,11 @@ extern "C"
 #pragma comment(lib, "ws2_32.lib")
 #endif
 //---------------------------------------------------------------------------
-void ProducerEventsCallback(rqmsProducerEvent Event, void *EventData);
+void ProducerEventsCallback(rqmsClientEvent Event, void *EventData);
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char *Brokers = "localhost:5552";
+    char *Brokers = "192.168.56.1:5552,192.168.1.37:5553";
     rmqsEnvironment_t *Environment;
     rmqsBroker_t *Broker;
     rmqsProducer_t *Producer;
@@ -38,9 +38,7 @@ int main(int argc, char * argv[])
     (void)argv;
 
     #ifdef __BORLANDC__
-    /*
     StartLeakChecking(false);
-    */
     #endif
 
     printf("Creating environment...\r\n");
@@ -56,8 +54,8 @@ int main(int argc, char * argv[])
         printf("Broker %d: %s - %d\r\n", (int)(i + 1), Broker->Host, (int)Broker->Port);
     }
 
-    printf("Creating producer...\r\n");
-    Producer = rmqsEnvironmentProducerCreate(Environment, ProducerEventsCallback);
+    printf("Creating client...\r\n");
+    Producer = rmqsEnvironmentProducerCreate(Environment, "/", 1, "Publisher", ProducerEventsCallback);
     printf("Producer created\r\n");
 
     printf("Running for 10 seconds\r\n");
@@ -65,14 +63,14 @@ int main(int argc, char * argv[])
     Timer = rmqsTimerCreate();
     rmqsTimerStart(Timer);
 
-    while (rmqsTimerGetTime(Timer) < 10000)
+    while (rmqsTimerGetTime(Timer) < 30000)
     {
         rmqsThreadSleep(100);
     }
 
     rmqsTimerDestroy(Timer);
 
-    printf("Destroying producer...\r\n");
+    printf("Destroying client...\r\n");
     rmqsEnvironmentProducerDestroy(Environment, Producer);
     printf("Producer destroyed\r\n");
 
@@ -85,21 +83,21 @@ int main(int argc, char * argv[])
     return 0;
 }
 //---------------------------------------------------------------------------
-void ProducerEventsCallback(rqmsProducerEvent Event, void *EventData)
+void ProducerEventsCallback(rqmsClientEvent Event, void *EventData)
 {
     (void)EventData;
 
     switch (Event)
     {
-        case rmqspeConnected:
+        case rmqsceConnected:
             printf("Producer connected\r\n");
             break;
 
-        case rmqspeDisconnected:
+        case rmqsceDisconnected:
             printf("Producer disconnected\r\n");
             break;
 
-        case rmqspeReady:
+        case rmqsceReady:
             printf("Producer ready\r\n");
             break;
     }

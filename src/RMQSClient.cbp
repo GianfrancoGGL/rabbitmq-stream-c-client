@@ -38,6 +38,10 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="rmqsClient.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="rmqsClient.h" />
 		<Unit filename="rmqsEnvironment.c">
 			<Option compilerVar="CC" />
 		</Unit>

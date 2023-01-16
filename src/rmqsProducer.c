@@ -3,227 +3,94 @@
 //---------------------------------------------------------------------------
 #include "rmqsProducer.h"
 #include "rmqsEnvironment.h"
-#include "rmqsProtocol.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsProducer_t * rmqsProducerCreate(void *Environment, void (*EventsCB)(rqmsProducerEvent, void *))
+rmqsProducer_t * rmqsProducerCreate(void *Environment, const char_t *HostName, uint8_t PublisherId, const char_t *PublisherReference, void (*EventsCB)(rqmsClientEvent, void *Producer))
 {
     rmqsProducer_t *Producer = (rmqsProducer_t *)rmqsAllocateMemory(sizeof(rmqsProducer_t));
 
     memset(Producer, 0, sizeof(rmqsProducer_t));
 
-    Producer->Environment = Environment;
-    Producer->Status = rmqspsDisconnected;
-    Producer->FrameMax = 0;
-    Producer->Heartbeat = 0;
-    Producer->EventsCB = EventsCB;
-
-    //
-    // Windows machine, initialize sockets
-    //
-    #ifdef __WIN32__
-    rmqsInitWinsock();
-    #endif
-
-    Producer->Socket = rmqsInvalidSocket;
-    Producer->CorrelationId = 1;
-
-    Producer->TxStream = rmqsMemBufferCreate();
-    Producer->RxStream = rmqsMemBufferCreate();
-    Producer->RxStreamTempBuffer = rmqsMemBufferCreate();
-
-    Producer->ProducerThread = rmqsThreadCreate(rmqsProducerThreadRoutine, 0, Producer);
-    rmqsThreadStart(Producer->ProducerThread);
+    Producer->Client = rmqsClientCreate(Environment, HostName, EventsCB, Producer, rmqsProducerHandlerCB);
+    Producer->PublisherId = PublisherId;
+    strncpy(Producer->PublisherReference, PublisherReference, RMQS_MAX_PUBLISHER_REFERENCE_LENGTH);
 
     return Producer;
 }
 //---------------------------------------------------------------------------
 void rmqsProducerDestroy(rmqsProducer_t *Producer)
 {
-    if (Producer->Socket != rmqsInvalidSocket)
-    {
-        rmqsSocketDestroy((rmqsSocket *)&Producer->Socket);
-        Producer->Status = rmqspsDisconnected;
-        Producer->FrameMax = 0;
-        Producer->Heartbeat = 0;
-        Producer->EventsCB(rmqspeDisconnected, Producer);
-    }
-
-    rmqsThreadStop(Producer->ProducerThread);
-    rmqsThreadDestroy(Producer->ProducerThread);
-
-    rmqsMemBufferDestroy(Producer->TxStream);
-    rmqsMemBufferDestroy(Producer->RxStream);
-    rmqsMemBufferDestroy(Producer->RxStreamTempBuffer);
+    rmqsClientDestroy(Producer->Client);
 
     rmqsFreeMemory((void *)Producer);
-
-    //
-    // Windows machine, shutdown sockets
-    //
-    #ifdef __WIN32__
-    rmqsShutdownWinsock();
-    #endif
 }
 //---------------------------------------------------------------------------
-void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
+void rmqsProducerHandlerCB(void *Client)
 {
-    uint8_t ConnectionFailed;
+    (void)Client;
+    
+    /*
+    rmqsProducer_t *ProducerObj = (rmqsProducer_t *)Client;
+    rmqsResponseCode Response;
 
-    rmqsProducer_t *Producer = (rmqsProducer_t *)Parameters;
-    rmqsEnvironment_t *Environment = Producer->Environment;
-    rmqsProperty_t Properties[6];
-    rmqsBroker_t *Broker;
+    Response = rmqsDeclarePublisher(ProducerObj, "SYNERP_RESULTS");
+    Response = Response;
+    */
 
-    Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Environment->BrokersList, 0);
-
-    memset(Properties, 0, sizeof(Properties));
-
-    strncpy(Properties[0].Key, "connection_name", RMQS_MAX_KEY_SIZE);
-    strncpy(Properties[0].Value, "c-stream-locator", RMQS_MAX_VALUE_SIZE);
-
-    strncpy(Properties[1].Key, "product", RMQS_MAX_KEY_SIZE);
-    strncpy(Properties[1].Value, "RabbitMQ Stream", RMQS_MAX_VALUE_SIZE);
-
-    strncpy(Properties[2].Key, "copyright", RMQS_MAX_KEY_SIZE);
-    strncpy(Properties[2].Value, "Copyright (c) Undefined", RMQS_MAX_VALUE_SIZE);
-
-    strncpy(Properties[3].Key, "information", RMQS_MAX_KEY_SIZE);
-    strncpy(Properties[3].Value, "Licensed under the MPL 2.0. See https://www.rabbitmq.com/", RMQS_MAX_VALUE_SIZE);
-
-    strncpy(Properties[4].Key, "version", RMQS_MAX_KEY_SIZE);
-    strncpy(Properties[4].Value, "1.0", RMQS_MAX_VALUE_SIZE);
-
-    strncpy(Properties[5].Key, "platform", RMQS_MAX_KEY_SIZE);
-    strncpy(Properties[5].Value, "C", RMQS_MAX_VALUE_SIZE);
-
-    while (! *TerminateRequest)
-    {
-        if (Broker == 0)
-        {
-            //
-            // Brokers list is empty!
-            //
-            rmqsThreadSleepEx(2, 1000, TerminateRequest);
-            continue;
-        }
-
-        ConnectionFailed = 0;
-
-        switch (Producer->Status)
-        {
-            case rmqspsDisconnected:
-                Producer->Socket = rmqsSocketCreate();
-
-                rmqsSetTcpNoDelay(Producer->Socket);
-                rmqsSetSocketWriteTimeouts(Producer->Socket, 5);
-                rmqsSetKeepAlive(Producer->Socket);
-
-                if (rmqsSocketConnect(Broker->Host, Broker->Port, Producer->Socket, 2000))
-                {
-                    Producer->Status = rmqspsConnected;
-                    Producer->FrameMax = 0;
-                    Producer->Heartbeat = 0;
-                    Producer->EventsCB(rmqspeConnected, Producer);
-                }
-                else
-                {
-                    ConnectionFailed = 1;
-                    rmqsSocketDestroy((rmqsSocket *)&Producer->Socket);
-                }
-
-                break;
-
-            case rmqspsConnected:
-                if (rqmsProducerLogin(Producer, Properties))
-                {
-                    Producer->Status = rmqspsReady;
-                    Producer->EventsCB(rmqspeReady, Producer);
-                }
-                else
-                {
-                    ConnectionFailed = 1;
-                    rmqsSocketDestroy((rmqsSocket *)&Producer->Socket);
-                    Producer->Status = rmqspsDisconnected;
-                    Producer->FrameMax = 0;
-                    Producer->Heartbeat = 0;
-                    Producer->EventsCB(rmqspeDisconnected, Producer);
-                }
-
-                break;
-
-            case rmqspsReady:
-                Producer->Status = Producer->Status;
-
-                break;
-        }
-
-        if (! ConnectionFailed)
-        {
-            rmqsThreadSleepEx(2, 1, TerminateRequest);
-        }
-        else
-        {
-            rmqsThreadSleepEx(2, 50, TerminateRequest);
-        }
-    }
+    rmqsThreadSleep(10);
 }
 //---------------------------------------------------------------------------
-uint8_t rqmsProducerLogin(rmqsProducer_t *Producer, rmqsProperty_t *Properties)
+rmqsResponseCode rmqsDeclarePublisher(rmqsProducer_t *Producer, const char_t *Stream)
 {
-    rmqsEnvironment_t *Environment = Producer->Environment;
-    uint8_t PlainAuthSupported;
-    rmqsTuneRequest_t *TuneRequest;
+    rmqsClient_t *Client = Producer->Client;
+    rmqsEnvironment_t *Environment = (rmqsEnvironment_t *)Client->Environment;
+    rmqsKey_t Key = rmqscDeclarePublisher;
+    rmqsVersion_t Version = 1;
+    rmqsResponse_t *Response;
+
+    rmqsMemBufferClear(Client->TxStream, 0);
+
+    rmqsAddUInt32ToStream(Client->TxStream, 0, Environment->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToStream(Client->TxStream, Key, Environment->IsLittleEndianMachine);
+    rmqsAddUInt16ToStream(Client->TxStream, Version, Environment->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, Client->CorrelationId++, Environment->IsLittleEndianMachine);
+    rmqsAddUInt8ToStream(Client->TxStream, Producer->PublisherId);
+    rmqsAddStringToStream(Client->TxStream, Producer->PublisherReference, Environment->IsLittleEndianMachine);
+    rmqsAddStringToStream(Client->TxStream, Stream, Environment->IsLittleEndianMachine);
 
     //
-    // Once connected, send the peer properties request
+    // Moves to the beginning of the stream and writes the total message body size
     //
-    if (rmqsPeerPropertiesRequest(Producer, Producer->CorrelationId++, 6, Properties) != rmqsrOK)
+    rmqsMemBufferMoveTo(Client->TxStream, 0);
+    rmqsAddUInt32ToStream(Client->TxStream, Client->TxStream->Size - sizeof(rmqsSize_t), Environment->IsLittleEndianMachine);
+
+    rmqsSendMessage(Client->Environment, Client->Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
+
+    if (rmqsWaitMessage(Client->Environment, Client->Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
     {
-        return 0;
-    }
+        Response = (rmqsResponse_t *)Client->RxStream->Data;
 
-    //
-    // Then the SASL handshake request
-    //
-    if (rmqsSaslHandshakeRequest(Producer, Producer->CorrelationId++, &PlainAuthSupported) != rmqsrOK)
+        if (Environment->IsLittleEndianMachine)
+        {
+            Response->Size = SwapUInt32(Response->Size);
+            Response->Key = SwapUInt16(Response->Key);
+            Response->Key &= 0x7FFF;
+            Response->Version = SwapUInt16(Response->Version);
+            Response->CorrelationId = SwapUInt32(Response->CorrelationId);
+            Response->ResponseCode = SwapUInt16(Response->ResponseCode);
+        }
+
+        if (Response->Key != rmqscDeclarePublisher)
+        {
+            return rmqsrWrongReply;
+        }
+
+        return Response->ResponseCode;
+    }
+    else
     {
-        return 0;
+        return rmqsrNoReply;
     }
-
-    //
-    // Next, the authenticate request, based on the supported mechanism
-    //
-    if (! PlainAuthSupported || rmqsSaslAuthenticateRequest(Producer, Producer->CorrelationId++, RMQS_PLAIN_PROTOCOL, (const char_t *)Environment->Username, (const char_t *)Environment->Password) != rmqsrOK)
-    {
-        return 0;
-    }
-
-    //
-    // Wait for the tune message sent by the server after the authentication
-    //
-    if (! rmqsWaitMessage(Producer->Environment, Producer->Socket, Producer->RxSocketBuffer, sizeof(Producer->RxSocketBuffer), Producer->RxStream, Producer->RxStreamTempBuffer, 1000))
-    {
-        return 0;
-    }
-
-    if (Producer->RxStream->Size != sizeof(rmqsTuneRequest_t))
-    {
-        return 0;
-    }
-
-    TuneRequest = (rmqsTuneRequest_t *)Producer->RxStream->Data;
-
-    if (Environment->IsLittleEndianMachine)
-    {
-        TuneRequest->Size = SwapUInt32(TuneRequest->Size);
-        TuneRequest->Key = SwapUInt16(TuneRequest->Key);
-        TuneRequest->Version = SwapUInt16(TuneRequest->Version);
-        TuneRequest->FrameMax = Producer->FrameMax = SwapUInt32(TuneRequest->FrameMax);
-        TuneRequest->Heartbeat = Producer->Heartbeat = SwapUInt16(TuneRequest->Heartbeat);
-    }
-
-    return 1;
 }
 //---------------------------------------------------------------------------
 

@@ -4,50 +4,22 @@
 //---------------------------------------------------------------------------
 #include <stdint.h>
 //---------------------------------------------------------------------------
-#include "rmqsNetwork.h"
-#include "rmqsProtocol.h"
-#include "rmqsMemBuffer.h"
-#include "rmqsThread.h"
+#include "rmqsClient.h"
 //---------------------------------------------------------------------------
-#define RMQS_PRODUCER_RX_BUFFER_SIZE      1024
-//---------------------------------------------------------------------------
-typedef enum
-{
-    rmqspeDisconnected = 0,
-    rmqspeConnected,
-    rmqspeReady
-}
-rqmsProducerEvent;
-//---------------------------------------------------------------------------
-typedef enum
-{
-    rmqspsDisconnected = 0,
-    rmqspsConnected,
-    rmqspsReady
-}
-rmqsProducerStatus;
+#define RMQS_MAX_PUBLISHER_REFERENCE_LENGTH    256
 //---------------------------------------------------------------------------
 typedef struct
 {
-    void *Environment; // This pointer is void because of a circular dependency of environment and producer structs
-    rmqsProducerStatus Status;
-    uint32_t FrameMax;
-    uint32_t Heartbeat;
-    void (*EventsCB)(rqmsProducerEvent, void *);
-    rmqsSocket Socket;
-    rmqsCorrelationId_t CorrelationId;
-    rmqsMemBuffer_t *TxStream;
-    rmqsMemBuffer_t *RxStream;
-    rmqsMemBuffer_t *RxStreamTempBuffer;
-    char_t RxSocketBuffer[RMQS_PRODUCER_RX_BUFFER_SIZE];
-    rmqsThread_t *ProducerThread;
+    rmqsClient_t *Client;
+    uint8_t PublisherId;
+    char_t PublisherReference[RMQS_MAX_PUBLISHER_REFERENCE_LENGTH + 1];
+    void (*EventsCB)(rqmsClientEvent, void *);
 }
 rmqsProducer_t;
 //---------------------------------------------------------------------------
-rmqsProducer_t * rmqsProducerCreate(void *Environment, void (*EventsCB)(rqmsProducerEvent, void *));
+rmqsProducer_t * rmqsProducerCreate(void *Environment, const char_t *HostName, uint8_t PublisherId, const char_t *PublisherReference, void (*EventsCB)(rqmsClientEvent, void *));
 void rmqsProducerDestroy(rmqsProducer_t *Producer);
-void rmqsProducerThreadRoutine(void *Parameters, uint8_t *TerminateRequest);
-uint8_t rqmsProducerLogin(rmqsProducer_t *Producer, rmqsProperty_t *Properties);
-//---------------------------------------------------------------------------
+void rmqsProducerHandlerCB(void *Producer);
+rmqsResponseCode rmqsDeclarePublisher(rmqsProducer_t *Producer, const char_t *Stream);
 #endif
-//--------------------------------------------------------------------------
+//---------------------------------------------------------------------------
