@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <stddef.h>
 //---------------------------------------------------------------------------
+#include "rmqsGlobal.h"
+//---------------------------------------------------------------------------
 typedef struct
 {
     uint32_t ChunkSize;
@@ -17,7 +19,7 @@ rmqsMemBuffer_t;
 //---------------------------------------------------------------------------
 rmqsMemBuffer_t * rmqsMemBufferCreate(void);
 void rmqsMemBufferDestroy(rmqsMemBuffer_t *Stream);
-void rmqsMemBufferClear(rmqsMemBuffer_t *Stream, const uint8_t ResetMemoryBuffer);
+void rmqsMemBufferClear(rmqsMemBuffer_t *Stream, const bool_t ResetMemoryBuffer);
 size_t rmqsMemBufferRead(rmqsMemBuffer_t *Stream, void *ReadBuffer, size_t NrOfBytes);
 size_t rmqsMemBufferWrite(rmqsMemBuffer_t *Stream, void *WriteBuffer, size_t NrOfBytes);
 void rmqsMemBufferMoveTo(rmqsMemBuffer_t *Stream, size_t Position);

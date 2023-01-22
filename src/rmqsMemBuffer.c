@@ -26,7 +26,7 @@ void rmqsMemBufferDestroy(rmqsMemBuffer_t *Stream)
     rmqsFreeMemory((void *)Stream);
 }
 //---------------------------------------------------------------------------
-void rmqsMemBufferClear(rmqsMemBuffer_t *Stream, const uint8_t ResetMemoryBuffer)
+void rmqsMemBufferClear(rmqsMemBuffer_t *Stream, const bool_t ResetMemoryBuffer)
 {
     Stream->Size = 0;
     Stream->Position = 0;

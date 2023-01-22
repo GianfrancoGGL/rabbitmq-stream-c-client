@@ -35,17 +35,32 @@
 		<Linker>
 			<Add library="ws2_32" />
 		</Linker>
+		<Unit filename="RMQSClient.cbp" />
+		<Unit filename="RMQSClient.depend" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="rmqsBroker.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="rmqsBroker.h" />
 		<Unit filename="rmqsClient.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="rmqsClient.h" />
-		<Unit filename="rmqsEnvironment.c">
+		<Unit filename="rmqsClientConfiguration.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="rmqsEnvironment.h" />
+		<Unit filename="rmqsClientConfiguration.h" />
+		<Unit filename="rmqsError.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="rmqsError.h" />
+		<Unit filename="rmqsGlobal.h" />
+		<Unit filename="rmqsLib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="rmqsLib.h" />
 		<Unit filename="rmqsList.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -62,6 +77,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="rmqsMemory.h" />
+		<Unit filename="rmqsMessage.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="rmqsMessage.h" />
 		<Unit filename="rmqsMutex.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -4,7 +4,7 @@
 //---------------------------------------------------------------------------
 #include <stdint.h>
 //---------------------------------------------------------------------------
-#ifdef __WIN32__
+#if _WIN32 || _WIN64
 #include <windows.h>
 #else
 #include <unistd.h>
@@ -15,11 +15,11 @@
 //---------------------------------------------------------------------------
 typedef struct
 {
-    uint8_t Running;
+    bool_t Running;
 
     uint32_t TimeStarted;
 
-    #ifdef __WIN32__
+    #if _WIN32 || _WIN64
     double PCFrequency;
     int64_t CounterStart;
     #endif

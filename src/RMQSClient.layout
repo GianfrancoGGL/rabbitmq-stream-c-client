@@ -1,35 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
-	<ActiveTarget name="Release" />
-	<File name="rmqsEnvironment.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="527" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="rmqsProducer.c" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4059" topLine="71" />
-		</Cursor>
-	</File>
-	<File name="main.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1295" topLine="37" />
-		</Cursor>
-	</File>
-	<File name="rmqsProducer.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1283" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="rmqsLogger.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3821" topLine="102" />
-		</Cursor>
-	</File>
+	<ActiveTarget name="Debug" />
 	<File name="rmqsThread.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="2332" topLine="52" />
+		</Cursor>
+	</File>
+	<File name="rmqsNetwork.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="238" topLine="2" />
 		</Cursor>
 	</File>
 	<File name="rmqsList.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -37,9 +17,49 @@
 			<Cursor1 position="386" topLine="11" />
 		</Cursor>
 	</File>
-	<File name="rmqsProtocol.c" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rmqsLogger.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="7156" topLine="187" />
+			<Cursor1 position="3821" topLine="102" />
+		</Cursor>
+	</File>
+	<File name="rmqsGlobal.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="520" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="rmqsClientConfiguration.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1024" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="main.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1456" topLine="24" />
+		</Cursor>
+	</File>
+	<File name="rmqsProducer.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="924" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="rmqsNetwork.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5188" topLine="188" />
+		</Cursor>
+	</File>
+	<File name="rmqsProtocol.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4774" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="rmqsProducer.c" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2408" topLine="54" />
+		</Cursor>
+	</File>
+	<File name="rmqsError.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="651" topLine="5" />
 		</Cursor>
 	</File>
 	<File name="rmqsThread.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -47,19 +67,24 @@
 			<Cursor1 position="572" topLine="5" />
 		</Cursor>
 	</File>
-	<File name="rmqsProtocol.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rmqsError.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="0" />
+			<Cursor1 position="843" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="rmqsNetwork.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rmqsClient.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="222" topLine="0" />
+			<Cursor1 position="693" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="rmqsNetwork.c" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rmqsBroker.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="865" topLine="28" />
+			<Cursor1 position="2061" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="rmqsProtocol.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1639" topLine="20" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

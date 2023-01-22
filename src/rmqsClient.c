@@ -2,31 +2,23 @@
 #include <stdio.h>
 //---------------------------------------------------------------------------
 #include "rmqsClient.h"
-#include "rmqsEnvironment.h"
+#include "rmqsBroker.h"
+#include "rmqsClientConfiguration.h"
 #include "rmqsProtocol.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsClient_t * rmqsClientCreate(void *Environment, const char_t *HostName, void (*EventsCB)(rqmsClientEvent, void *), void *OwnerObject, void (*HandlerCB)(void *))
+rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, const char_t *Hostname, void (*EventsCallback)(rqmsClientEvent, void *), void *ParentObject, void (*HandlerCallback)(void *))
 {
     rmqsClient_t *Client = (rmqsClient_t *)rmqsAllocateMemory(sizeof(rmqsClient_t));
 
     memset(Client, 0, sizeof(rmqsClient_t));
 
-    Client->Environment = Environment;
-    strncpy(Client->HostName, HostName, RMQS_CLIENT_HOSTNAME_MAX_SIZE);
+    Client->ClientConfiguration = ClientConfiguration;
+    strncpy(Client->Hostname, Hostname, RMQS_CLIENT_HOSTNAME_MAX_SIZE);
     Client->Status = rmqscsDisconnected;
-    Client->FrameMax = 0;
-    Client->Heartbeat = 0;
-    Client->EventsCB = EventsCB;
-    Client->OwnerObject = OwnerObject;
-    Client->HandlerCB = HandlerCB;
-
-    //
-    // Windows machine, initialize sockets
-    //
-    #ifdef __WIN32__
-    rmqsInitWinsock();
-    #endif
+    Client->EventsCallback = EventsCallback;
+    Client->ParentObject = ParentObject;
+    Client->HandlerCallback = HandlerCallback;
 
     Client->Socket = rmqsInvalidSocket;
     Client->CorrelationId = 1;
@@ -47,9 +39,7 @@ void rmqsClientDestroy(rmqsClient_t *Client)
     {
         rmqsSocketDestroy((rmqsSocket *)&Client->Socket);
         Client->Status = rmqscsDisconnected;
-        Client->FrameMax = 0;
-        Client->Heartbeat = 0;
-        Client->EventsCB(rmqsceDisconnected, Client);
+        Client->EventsCallback(rmqsceDisconnected, Client);
     }
 
     rmqsThreadStop(Client->ClientThread);
@@ -60,24 +50,14 @@ void rmqsClientDestroy(rmqsClient_t *Client)
     rmqsMemBufferDestroy(Client->RxStreamTempBuffer);
 
     rmqsFreeMemory((void *)Client);
-
-    //
-    // Windows machine, shutdown sockets
-    //
-    #ifdef __WIN32__
-    rmqsShutdownWinsock();
-    #endif
 }
 //---------------------------------------------------------------------------
-void rmqsClientThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
+void rmqsClientThreadRoutine(void *Parameters, bool_t *TerminateRequest)
 {
     rmqsClient_t *Client = (rmqsClient_t *)Parameters;
-    rmqsEnvironment_t *Environment = Client->Environment;
+    rmqsBroker_t *Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Client->ClientConfiguration->BrokerList, 0);
     rmqsProperty_t Properties[6];
-    rmqsBroker_t *Broker;
-    uint8_t ConnectionFailed;
-
-    Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Environment->BrokersList, 0);
+    bool_t ConnectionFailed;
 
     memset(Properties, 0, sizeof(Properties));
 
@@ -121,12 +101,10 @@ void rmqsClientThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
                 rmqsSetSocketWriteTimeouts(Client->Socket, 5);
                 rmqsSetKeepAlive(Client->Socket);
 
-                if (rmqsSocketConnect(Broker->Host, Broker->Port, Client->Socket, 2000))
+                if (rmqsSocketConnect(Broker->Hostname, Broker->Port, Client->Socket, 2000))
                 {
                     Client->Status = rmqscsConnected;
-                    Client->FrameMax = 0;
-                    Client->Heartbeat = 0;
-                    Client->EventsCB(rmqsceConnected, Client);
+                    Client->EventsCallback(rmqsceConnected, Client);
                 }
                 else
                 {
@@ -140,22 +118,20 @@ void rmqsClientThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
                 if (rqmsClientLogin(Client, Properties))
                 {
                     Client->Status = rmqscsReady;
-                    Client->EventsCB(rmqsceReady, Client);
+                    Client->EventsCallback(rmqsceReady, Client);
                 }
                 else
                 {
                     ConnectionFailed = 1;
                     rmqsSocketDestroy((rmqsSocket *)&Client->Socket);
                     Client->Status = rmqscsDisconnected;
-                    Client->FrameMax = 0;
-                    Client->Heartbeat = 0;
-                    Client->EventsCB(rmqsceDisconnected, Client);
+                    Client->EventsCallback(rmqsceDisconnected, Client);
                 }
 
                 break;
 
             case rmqscsReady:
-                Client->HandlerCB(Client->OwnerObject);
+                Client->HandlerCallback(Client->ParentObject);
 
                 break;
         }
@@ -171,10 +147,10 @@ void rmqsClientThreadRoutine(void *Parameters, uint8_t *TerminateRequest)
     }
 }
 //---------------------------------------------------------------------------
-uint8_t rqmsClientLogin(rmqsClient_t *Client, rmqsProperty_t *Properties)
+bool_t rqmsClientLogin(rmqsClient_t *Client, rmqsProperty_t *Properties)
 {
-    rmqsEnvironment_t *Environment = Client->Environment;
-    uint8_t PlainAuthSupported;
+    rmqsBroker_t *Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Client->ClientConfiguration->BrokerList, 0);
+    bool_t PlainAuthSupported;
     rmqsTuneRequest_t TuneRequest, TuneResponse;
 
     //
@@ -196,7 +172,7 @@ uint8_t rqmsClientLogin(rmqsClient_t *Client, rmqsProperty_t *Properties)
     //
     // Next, the authenticate request, based on the supported mechanism
     //
-    if (! PlainAuthSupported || rmqsSaslAuthenticateRequest(Client, RMQS_PLAIN_PROTOCOL, (const char_t *)Environment->Username, (const char_t *)Environment->Password) != rmqsrOK)
+    if (! PlainAuthSupported || rmqsSaslAuthenticateRequest(Client, RMQS_PLAIN_PROTOCOL, (const char_t *)Broker->Username, (const char_t *)Broker->Password) != rmqsrOK)
     {
         return 0;
     }
@@ -204,7 +180,7 @@ uint8_t rqmsClientLogin(rmqsClient_t *Client, rmqsProperty_t *Properties)
     //
     // Wait for the tune message sent by the server after the authentication
     //
-    if (! rmqsWaitMessage(Environment, Client->Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
+    if (! rmqsWaitMessage(Client->ClientConfiguration, Client->Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
     {
         return 0;
     }
@@ -220,13 +196,13 @@ uint8_t rqmsClientLogin(rmqsClient_t *Client, rmqsProperty_t *Properties)
     memcpy(&TuneRequest, Client->RxStream->Data, sizeof(rmqsTuneRequest_t));
     memcpy(&TuneResponse, Client->RxStream->Data, sizeof(rmqsTuneRequest_t));
 
-    if (Environment->IsLittleEndianMachine)
+    if (Client->ClientConfiguration->IsLittleEndianMachine)
     {
         TuneRequest.Size = SwapUInt32(TuneRequest.Size);
         TuneRequest.Key = SwapUInt16(TuneRequest.Key);
         TuneRequest.Version = SwapUInt16(TuneRequest.Version);
-        TuneRequest.FrameMax = Client->FrameMax = SwapUInt32(TuneRequest.FrameMax);
-        TuneRequest.Heartbeat = Client->Heartbeat = SwapUInt16(TuneRequest.Heartbeat);
+        TuneRequest.FrameMax = Client->ClientMaxFrameSize = SwapUInt32(TuneRequest.FrameMax);
+        TuneRequest.Heartbeat = Client->ClientHeartbeat = SwapUInt16(TuneRequest.Heartbeat);
     }
 
     if (TuneRequest.Key != rmqscTune)
@@ -237,12 +213,12 @@ uint8_t rqmsClientLogin(rmqsClient_t *Client, rmqsProperty_t *Properties)
     //
     // Confirm the tune sending the response
     //
-    rmqsSendMessage(Environment, Client->Socket, (const char_t *)&TuneResponse, sizeof(rmqsTuneRequest_t));
+    rmqsSendMessage(Client->ClientConfiguration, Client->Socket, (const char_t *)&TuneResponse, sizeof(rmqsTuneRequest_t));
 
     //
     // Finally, issue the open request
     //
-    if (rmqsOpenRequest(Client, Client->HostName) != rmqsrOK)
+    if (rmqsOpenRequest(Client, Client->Hostname) != rmqsrOK)
     {
         return 0;
     }
@@ -252,9 +228,8 @@ uint8_t rqmsClientLogin(rmqsClient_t *Client, rmqsProperty_t *Properties)
 //---------------------------------------------------------------------------
 rmqsResponseCode rmqsPeerPropertiesRequest(rmqsClient_t *Client, uint32_t PropertiesCount, rmqsProperty_t *Properties)
 {
-    rmqsEnvironment_t *Environment = Client->Environment;
-    rmqsKey_t Key = rmqscPeerProperties;
-    rmqsVersion_t Version = 1;
+    uint16_t Key = rmqscPeerProperties;
+    uint16_t Version = 1;
     uint32_t i, MapSize;
     rmqsProperty_t *Property;
     rmqsResponse_t *Response;
@@ -282,37 +257,37 @@ rmqsResponseCode rmqsPeerPropertiesRequest(rmqsClient_t *Client, uint32_t Proper
 
     rmqsMemBufferClear(Client->TxStream, 0);
 
-    rmqsAddUInt32ToStream(Client->TxStream, 0, Environment->IsLittleEndianMachine); // Size is zero for now
-    rmqsAddUInt16ToStream(Client->TxStream, Key, Environment->IsLittleEndianMachine);
-    rmqsAddUInt16ToStream(Client->TxStream, Version, Environment->IsLittleEndianMachine);
-    rmqsAddUInt32ToStream(Client->TxStream, Client->CorrelationId++, Environment->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToStream(Client->TxStream, Key, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToStream(Client->TxStream, Version, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, Client->CorrelationId++, Client->ClientConfiguration->IsLittleEndianMachine);
 
     //
     // Encode the map
     //
-    rmqsAddUInt32ToStream(Client->TxStream, MapSize, Environment->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, MapSize, Client->ClientConfiguration->IsLittleEndianMachine);
 
     for (i = 0; i < PropertiesCount; i++)
     {
         Property = &Properties[i];
 
-        rmqsAddStringToStream(Client->TxStream, Property->Key, Environment->IsLittleEndianMachine);
-        rmqsAddStringToStream(Client->TxStream, Property->Value, Environment->IsLittleEndianMachine);
+        rmqsAddStringToStream(Client->TxStream, Property->Key, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToStream(Client->TxStream, Property->Value, Client->ClientConfiguration->IsLittleEndianMachine);
     }
 
     //
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsMemBufferMoveTo(Client->TxStream, 0);
-    rmqsAddUInt32ToStream(Client->TxStream, Client->TxStream->Size - sizeof(rmqsSize_t), Environment->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, Client->TxStream->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
 
-    rmqsSendMessage(Environment, Client->Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
+    rmqsSendMessage(Client->ClientConfiguration, Client->Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
 
-    if (rmqsWaitMessage(Environment, Client->Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
+    if (rmqsWaitMessage(Client->ClientConfiguration, Client->Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
     {
         Response = (rmqsResponse_t *)Client->RxStream->Data;
 
-        if (Environment->IsLittleEndianMachine)
+        if (Client->ClientConfiguration->IsLittleEndianMachine)
         {
             Response->Size = SwapUInt32(Response->Size);
             Response->Key = SwapUInt16(Response->Key);
@@ -335,11 +310,10 @@ rmqsResponseCode rmqsPeerPropertiesRequest(rmqsClient_t *Client, uint32_t Proper
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode rmqsSaslHandshakeRequest(rmqsClient_t *Client, uint8_t *PlainAuthSupported)
+rmqsResponseCode rmqsSaslHandshakeRequest(rmqsClient_t *Client, bool_t *PlainAuthSupported)
 {
-    rmqsEnvironment_t *Environment = Client->Environment;
-    rmqsKey_t Key = rmqscSaslHandshake;
-    rmqsVersion_t Version = 1;
+    uint16_t Key = rmqscSaslHandshake;
+    uint16_t Version = 1;
     rmqsResponseHandshakeRequest_t *Response;
     uint16_t MechanismNo;
     char_t *Data;
@@ -350,24 +324,24 @@ rmqsResponseCode rmqsSaslHandshakeRequest(rmqsClient_t *Client, uint8_t *PlainAu
 
     rmqsMemBufferClear(Client->TxStream, 0);
 
-    rmqsAddUInt32ToStream(Client->TxStream, 0, Environment->IsLittleEndianMachine); // Size is zero for now
-    rmqsAddUInt16ToStream(Client->TxStream, Key, Environment->IsLittleEndianMachine);
-    rmqsAddUInt16ToStream(Client->TxStream, Version, Environment->IsLittleEndianMachine);
-    rmqsAddUInt32ToStream(Client->TxStream, Client->CorrelationId++, Environment->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToStream(Client->TxStream, Key, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToStream(Client->TxStream, Version, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, Client->CorrelationId++, Client->ClientConfiguration->IsLittleEndianMachine);
 
     //
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsMemBufferMoveTo(Client->TxStream, 0);
-    rmqsAddUInt32ToStream(Client->TxStream, Client->TxStream->Size - sizeof(rmqsSize_t), Environment->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, Client->TxStream->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
 
-    rmqsSendMessage(Environment, Client->Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
+    rmqsSendMessage(Client->ClientConfiguration, Client->Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
 
-    if (rmqsWaitMessage(Environment, Client->Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
+    if (rmqsWaitMessage(Client->ClientConfiguration, Client->Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
     {
         Response = (rmqsResponseHandshakeRequest_t *)Client->RxStream->Data;
 
-        if (Environment->IsLittleEndianMachine)
+        if (Client->ClientConfiguration->IsLittleEndianMachine)
         {
             Response->Size = SwapUInt32(Response->Size);
             Response->Key = SwapUInt16(Response->Key);
@@ -391,7 +365,7 @@ rmqsResponseCode rmqsSaslHandshakeRequest(rmqsClient_t *Client, uint8_t *PlainAu
             {
                 StringLen = (uint16_t *)Data;
 
-                if (Environment->IsLittleEndianMachine)
+                if (Client->ClientConfiguration->IsLittleEndianMachine)
                 {
                     *StringLen = SwapUInt16(*StringLen);
                 }
@@ -426,31 +400,30 @@ rmqsResponseCode rmqsSaslHandshakeRequest(rmqsClient_t *Client, uint8_t *PlainAu
 //---------------------------------------------------------------------------
 rmqsResponseCode rmqsSaslAuthenticateRequest(rmqsClient_t *Client, const char_t *Mechanism, const char_t *Username, const char_t *Password)
 {
-    rmqsEnvironment_t *Environment = Client->Environment;
-    rmqsKey_t Key = rmqscSaslAuthenticate;
-    rmqsVersion_t Version = 1;
+    uint16_t Key = rmqscSaslAuthenticate;
+    uint16_t Version = 1;
     rmqsResponse_t *Response;
     char_t *OpaqueData;
     size_t UsernameLen, PasswordLen, OpaqueDataLen;
 
     rmqsMemBufferClear(Client->TxStream, 0);
 
-    rmqsAddUInt32ToStream(Client->TxStream, 0, Environment->IsLittleEndianMachine); // Size is zero for now
-    rmqsAddUInt16ToStream(Client->TxStream, Key, Environment->IsLittleEndianMachine);
-    rmqsAddUInt16ToStream(Client->TxStream, Version, Environment->IsLittleEndianMachine);
-    rmqsAddUInt32ToStream(Client->TxStream, Client->CorrelationId++, Environment->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToStream(Client->TxStream, Key, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToStream(Client->TxStream, Version, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, Client->CorrelationId++, Client->ClientConfiguration->IsLittleEndianMachine);
 
-    rmqsAddStringToStream(Client->TxStream, (char_t *)Mechanism, Environment->IsLittleEndianMachine);
+    rmqsAddStringToStream(Client->TxStream, (char_t *)Mechanism, Client->ClientConfiguration->IsLittleEndianMachine);
 
     UsernameLen = strlen(Username);
     PasswordLen = strlen(Password);
-    OpaqueDataLen = UsernameLen + PasswordLen + 2; // +1 because there must be NULL before username and password
+    OpaqueDataLen = UsernameLen + PasswordLen + 2; // +1 because there must be 0 before username and password
     OpaqueData = rmqsAllocateMemory(OpaqueDataLen);
     memset(OpaqueData, 0, OpaqueDataLen);
     memcpy(OpaqueData + 1, Username, UsernameLen);
     memcpy(OpaqueData + UsernameLen + 2, Password, PasswordLen);
 
-    rmqsAddBytesToStream(Client->TxStream, OpaqueData, OpaqueDataLen, Environment->IsLittleEndianMachine);
+    rmqsAddBytesToStream(Client->TxStream, OpaqueData, OpaqueDataLen, Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsFreeMemory(OpaqueData);
 
@@ -458,15 +431,15 @@ rmqsResponseCode rmqsSaslAuthenticateRequest(rmqsClient_t *Client, const char_t 
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsMemBufferMoveTo(Client->TxStream, 0);
-    rmqsAddUInt32ToStream(Client->TxStream, Client->TxStream->Size - sizeof(rmqsSize_t), Environment->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, Client->TxStream->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
 
-    rmqsSendMessage(Environment, Client->Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
+    rmqsSendMessage(Client->ClientConfiguration, Client->Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
 
-    if (rmqsWaitMessage(Environment, Client->Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
+    if (rmqsWaitMessage(Client->ClientConfiguration, Client->Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
     {
         Response = (rmqsResponse_t *)Client->RxStream->Data;
 
-        if (Environment->IsLittleEndianMachine)
+        if (Client->ClientConfiguration->IsLittleEndianMachine)
         {
             Response->Size = SwapUInt32(Response->Size);
             Response->Key = SwapUInt16(Response->Key);
@@ -489,34 +462,33 @@ rmqsResponseCode rmqsSaslAuthenticateRequest(rmqsClient_t *Client, const char_t 
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode rmqsOpenRequest(rmqsClient_t *Client, const char_t *HostName)
+rmqsResponseCode rmqsOpenRequest(rmqsClient_t *Client, const char_t *Hostname)
 {
-    rmqsEnvironment_t *Environment = (rmqsEnvironment_t *)Client->Environment;
-    rmqsKey_t Key = rmqscOpen;
-    rmqsVersion_t Version = 1;
+    uint16_t Key = rmqscOpen;
+    uint16_t Version = 1;
     rmqsResponse_t *Response;
 
     rmqsMemBufferClear(Client->TxStream, 0);
 
-    rmqsAddUInt32ToStream(Client->TxStream, 0, Environment->IsLittleEndianMachine); // Size is zero for now
-    rmqsAddUInt16ToStream(Client->TxStream, Key, Environment->IsLittleEndianMachine);
-    rmqsAddUInt16ToStream(Client->TxStream, Version, Environment->IsLittleEndianMachine);
-    rmqsAddUInt32ToStream(Client->TxStream, Client->CorrelationId++, Environment->IsLittleEndianMachine);
-    rmqsAddStringToStream(Client->TxStream, HostName, Environment->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToStream(Client->TxStream, Key, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToStream(Client->TxStream, Version, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, Client->CorrelationId++, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToStream(Client->TxStream, Hostname, Client->ClientConfiguration->IsLittleEndianMachine);
 
     //
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsMemBufferMoveTo(Client->TxStream, 0);
-    rmqsAddUInt32ToStream(Client->TxStream, Client->TxStream->Size - sizeof(rmqsSize_t), Environment->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, Client->TxStream->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
 
-    rmqsSendMessage(Environment, Client->Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
+    rmqsSendMessage(Client->ClientConfiguration, Client->Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
 
-    if (rmqsWaitMessage(Environment, Client->Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
+    if (rmqsWaitMessage(Client->ClientConfiguration, Client->Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
     {
         Response = (rmqsResponse_t *)Client->RxStream->Data;
 
-        if (Environment->IsLittleEndianMachine)
+        if (Client->ClientConfiguration->IsLittleEndianMachine)
         {
             Response->Size = SwapUInt32(Response->Size);
             Response->Key = SwapUInt16(Response->Key);

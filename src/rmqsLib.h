@@ -1,23 +1,13 @@
 //---------------------------------------------------------------------------
-#ifndef rmqsGlobalH
-#define rmqsGlobalH
+#ifndef rmqsLibH
+#define rmqsLibH
 //---------------------------------------------------------------------------
-typedef char char_t;
-typedef unsigned char uchar_t;
-typedef unsigned char bool_t;
+#include <stdint.h>
 //---------------------------------------------------------------------------
-#ifndef __cplusplus
-#ifndef true
-#define true   1
-#endif
-#ifndef false
-#define false  0
-#endif
-#endif
-#ifndef min
-#define min(x, y) (x < y ? x : y)
-#endif
+#include "rmqsGlobal.h"
 //---------------------------------------------------------------------------
-#define RQMS_MAX_HOSTNAME_LENGTH      256
+bool_t rmqsStringContainsSpace(const char_t *String);
+bool_t rmqsStringContainsCtrlChar(const char_t *String);
+void rmqsConvertToLower(char_t *String);
 //---------------------------------------------------------------------------
 #endif

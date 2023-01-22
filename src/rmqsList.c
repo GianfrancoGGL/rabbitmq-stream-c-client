@@ -4,15 +4,20 @@
 #include "rmqsList.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsList_t * rmqsListCreate(void (*ClearDataCB)(void *))
+rmqsList_t * rmqsListCreate(void (*ClearDataCallback)(void *))
 {
     rmqsList_t *List = (rmqsList_t *)rmqsAllocateMemory(sizeof(rmqsList_t));
 
     List->First = 0;
     List->Count = 0;
-    List->ClearDataCB = ClearDataCB;
+    List->ClearDataCallback = ClearDataCallback;
 
     return List;
+}
+//---------------------------------------------------------------------------
+rmqsList_t * rmqsListGenericCreate(void)
+{
+    return rmqsListCreate(rmqListGenericDestroyCallcack);
 }
 //---------------------------------------------------------------------------
 void rmqsListDestroy(rmqsList_t *List)
@@ -132,9 +137,9 @@ void rmqsListDeleteBegin(rmqsList_t *List)
 
     List->First = (rmqsListNode_t *)List->First->Next;
 
-    if (List->ClearDataCB != 0)
+    if (List->ClearDataCallback != 0)
     {
-        List->ClearDataCB(Node->Data);
+        List->ClearDataCallback(Node->Data);
     }
 
     rmqsFreeMemory(Node);
@@ -155,9 +160,9 @@ void rmqsListDeleteEnd(rmqsList_t *List)
 
         List->First = (rmqsListNode_t *)Node->Next;
 
-        if (List->ClearDataCB != 0)
+        if (List->ClearDataCallback != 0)
         {
-            List->ClearDataCB(Node->Data);
+            List->ClearDataCallback(Node->Data);
         }
 
         rmqsFreeMemory(Node);
@@ -177,9 +182,9 @@ void rmqsListDeleteEnd(rmqsList_t *List)
 
         PrevNode->Next = 0;
 
-        if (List->ClearDataCB != 0)
+        if (List->ClearDataCallback != 0)
         {
-            List->ClearDataCB(Node->Data);
+            List->ClearDataCallback(Node->Data);
         }
 
         rmqsFreeMemory(Node);
@@ -234,9 +239,9 @@ void rmqsListDeletePosition(rmqsList_t *List, size_t Position)
 
         List->First = (rmqsListNode_t *)Node->Next;
 
-        if (List->ClearDataCB != 0)
+        if (List->ClearDataCallback != 0)
         {
-            List->ClearDataCB(Node->Data);
+            List->ClearDataCallback(Node->Data);
         }
 
         rmqsFreeMemory(Node);
@@ -261,9 +266,9 @@ void rmqsListDeletePosition(rmqsList_t *List, size_t Position)
 
         PrevNode->Next = Node->Next;
 
-        if (List->ClearDataCB != 0)
+        if (List->ClearDataCallback != 0)
         {
-            List->ClearDataCB(Node->Data);
+            List->ClearDataCallback(Node->Data);
         }
 
         rmqsFreeMemory(Node);
@@ -333,7 +338,7 @@ void * rmqsListGetDataByPosition(rmqsList_t *List, size_t Position)
     }
 }
 //---------------------------------------------------------------------------
-void rmqsGenericListDestroy(void *Data)
+void rmqListGenericDestroyCallcack(void *Data)
 {
     rmqsFreeMemory(Data);
 }

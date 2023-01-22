@@ -22,7 +22,7 @@ void rmqsTimerDestroy(rmqsTimer_t *Timer)
 //---------------------------------------------------------------------------
 void rmqsTimerStart(rmqsTimer_t *Timer)
 {
-    #ifdef __WIN32__
+    #if _WIN32 || _WIN64
     LARGE_INTEGER LI;
 
     QueryPerformanceFrequency(&LI);
@@ -55,7 +55,7 @@ uint32_t rmqsTimerGetTime(rmqsTimer_t *Timer)
 //---------------------------------------------------------------------------
 uint32_t rmqsTimerGetSystemClock(rmqsTimer_t *Timer)
 {
-    #ifdef __WIN32__
+    #if _WIN32 || _WIN64
     LARGE_INTEGER LI;
 
     if (! Timer->Running)
@@ -87,7 +87,7 @@ uint32_t rmqsTimerGetSystemClock(rmqsTimer_t *Timer)
 //---------------------------------------------------------------------------
 void rmqsGetCurrentDateTime(uint16_t *Year, uint8_t *Month, uint8_t *Day, uint8_t *Hour, uint8_t *Minute, uint8_t *Second)
 {
-    #ifdef __WIN32__
+    #if _WIN32 || _WIN64
     SYSTEMTIME SystemTime;
 
     GetLocalTime(&SystemTime);

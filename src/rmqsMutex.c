@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
 #include <memory.h>
-#ifndef __WIN32__
+#if ! _WIN32 || _WIN64
 #include <pthread.h>
 #endif
 //---------------------------------------------------------------------------
@@ -11,7 +11,7 @@ rmqsMutex_t * rmqsMutexCreate(void)
 {
     rmqsMutex_t *Mutex = (rmqsMutex_t *)rmqsAllocateMemory(sizeof(rmqsMutex_t));
 
-    #ifdef __WIN32__
+    #if _WIN32 || _WIN64
     InitializeCriticalSection((LPCRITICAL_SECTION)&Mutex->CS);
     #else
     pthread_mutex_init(&Mutex->mutex, 0);
@@ -22,7 +22,7 @@ rmqsMutex_t * rmqsMutexCreate(void)
 //---------------------------------------------------------------------------
 void rmqsMutexDestroy(rmqsMutex_t *Mutex)
 {
-    #ifdef __WIN32__
+    #if _WIN32 || _WIN64
     DeleteCriticalSection((LPCRITICAL_SECTION)&Mutex->CS);
     #else
     pthread_mutex_destroy(&Mutex->mutex);
@@ -33,7 +33,7 @@ void rmqsMutexDestroy(rmqsMutex_t *Mutex)
 //---------------------------------------------------------------------------
 void rmqsMutexLock(rmqsMutex_t *Mutex)
 {
-    #ifdef __WIN32__
+    #if _WIN32 || _WIN64
     EnterCriticalSection((LPCRITICAL_SECTION)&Mutex->CS);
     #else
     pthread_mutex_lock(&Mutex->mutex);
@@ -42,16 +42,16 @@ void rmqsMutexLock(rmqsMutex_t *Mutex)
 //---------------------------------------------------------------------------
 void rmqsMutexUnlock(rmqsMutex_t *Mutex)
 {
-    #ifdef __WIN32__
+    #if _WIN32 || _WIN64
     LeaveCriticalSection((LPCRITICAL_SECTION)&Mutex->CS);
     #else
     pthread_mutex_unlock(&Mutex->mutex);
     #endif
 }
 //---------------------------------------------------------------------------
-uint8_t rmqsMutexTryLock(rmqsMutex_t *Mutex)
+bool_t rmqsMutexTryLock(rmqsMutex_t *Mutex)
 {
-    #ifdef __WIN32__
+    #if _WIN32 || _WIN64
     if (TryEnterCriticalSection((LPCRITICAL_SECTION)&Mutex->CS))
     {
         return 1;

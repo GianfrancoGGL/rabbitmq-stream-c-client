@@ -4,33 +4,35 @@
 //--------------------------------------------------------------------------
 #include <stdint.h>
 //--------------------------------------------------------------------------
-#ifdef __WIN32__
+#if _WIN32 || _WIN64
 #include <windows.h>
 #else
 #include <pthread.h>
 #endif
 //--------------------------------------------------------------------------
+#include "rmqsGlobal.h"
+//--------------------------------------------------------------------------
 typedef struct
 {
-    #ifdef __WIN32__
+    #if _WIN32 || _WIN64
     HANDLE ThreadHandle;
     #else
     pthread_t ThreadHandle;
     #endif
-    void (*ThreadRoutine)(void *, uint8_t *);
+    void (*ThreadRoutine)(void *, bool_t *);
     void (*CancelIORoutine)(void *);
     void *Parameters;
-    uint8_t TerminateRequest;
-    uint8_t Terminated;
+    bool_t TerminateRequest;
+    bool_t Terminated;
 }
 rmqsThread_t;
 //---------------------------------------------------------------------------
-rmqsThread_t * rmqsThreadCreate(void (*ThreadRoutine)(void *, uint8_t *), void (*CancelIORoutine)(void *), void *Parameters);
+rmqsThread_t * rmqsThreadCreate(void (*ThreadRoutine)(void *, bool_t *), void (*CancelIORoutine)(void *), void *Parameters);
 void rmqsThreadDestroy(rmqsThread_t *Thread);
 void rmqsThreadStart(rmqsThread_t *Thread);
 void rmqsThreadStop(rmqsThread_t *Thread);
 void rmqsThreadSleep(uint32_t Milliseconds);
-void rmqsThreadSleepEx(uint32_t Milliseconds, size_t HowManyTimes, uint8_t *Abort);
+void rmqsThreadSleepEx(uint32_t Milliseconds, size_t HowManyTimes, bool_t *Abort);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

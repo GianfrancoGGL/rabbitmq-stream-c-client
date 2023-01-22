@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
 #include <stdio.h>
-#ifdef __WIN32__
+#if _WIN32 || _WIN64
 #include <winsock2.h>
 #else
 #include <unistd.h>
@@ -15,7 +15,7 @@
 //---------------------------------------------------------------------------
 #include "rmqsNetwork.h"
 //---------------------------------------------------------------------------
-#ifdef __WIN32__
+#if _WIN32 || _WIN64
 #define SIO_KEEPALIVE_VALS _WSAIOW(IOC_VENDOR,4)
 typedef struct
 {
@@ -33,7 +33,7 @@ TcpKeepAlive;
 #endif
 #endif
 //---------------------------------------------------------------------------
-#ifdef __WIN32__
+#if _WIN32 || _WIN64
 int32_t rmqsInitWinsock(void)
 {
     WSADATA wsaData;
@@ -73,7 +73,7 @@ int32_t rmqsInitWinsock(void)
 }
 #endif
 //---------------------------------------------------------------------------
-#ifdef __WIN32__
+#if _WIN32 || _WIN64
 void rmqsShutdownWinsock(void)
 {
     WSACleanup();
@@ -87,23 +87,23 @@ rmqsSocket rmqsSocketCreate(void)
 //---------------------------------------------------------------------------
 void rmqsSocketDestroy(rmqsSocket *Socket)
 {
-    #ifndef __WIN32__
-    shutdown(*Socket, SHUT_RDWR);
-    close(*Socket);
-    #else
+    #if _WIN32 || _WIN64
     shutdown(*Socket, SD_BOTH);
     closesocket(*Socket);
+    #else
+    shutdown(*Socket, SHUT_RDWR);
+    close(*Socket);
     #endif
 
     *Socket = rmqsInvalidSocket;
 }
 //---------------------------------------------------------------------------
-uint8_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs)
+bool_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs)
 {
-    uint8_t Connected = 0;
+    bool_t Connected = 0;
     struct hostent *pHost;
     struct sockaddr_in ServerAddress;
-    #ifdef __WIN32__
+    #if _WIN32 || _WIN64
     fd_set FDS;
     TIMEVAL Timeout;
     int32_t Result;
@@ -112,10 +112,10 @@ uint8_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSoc
     ServerAddress.sin_family = AF_INET;
     ServerAddress.sin_port = htons(Port);
 
-    #ifndef __WIN32__
-    bzero(&(ServerAddress.sin_zero), 8);
-    #else
+    #if _WIN32 || _WIN64
     memset(ServerAddress.sin_zero, 0, 8);
+    #else
+    bzero(&(ServerAddress.sin_zero), 8);
     #endif
 
     pHost = (struct hostent *)gethostbyname(Host);
@@ -129,7 +129,7 @@ uint8_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSoc
         ServerAddress.sin_addr.s_addr = inet_addr(Host);
     }
 
-    #ifdef __WIN32__
+    #if _WIN32 || _WIN64
     rmqsSetSocketNonBlocking(Socket); // Socket set as nonblocking to set the connect timeout
 
     if (connect(Socket, (struct sockaddr *)&ServerAddress, sizeof(struct sockaddr)) == SOCKET_ERROR)
@@ -173,29 +173,29 @@ uint8_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSoc
 //---------------------------------------------------------------------------
 void rmqsSetSocketReadTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeout)
 {
-    #ifndef __WIN32__
+    #if _WIN32 || _WIN64
+    DWORD dwRead;
+    dwRead = ReadTimeout;
+
+    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (const char_t *)&dwRead, sizeof(dwRead));
+    #else
     struct timeval TVRead;
     TVRead.tv_sec = 0;
     TVRead.tv_usec = ReadTimeout * 1000;
 
     setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (const int8_t *)&TVRead, sizeof(TVRead));
-    #else
-    DWORD dwRead;
-    dwRead = ReadTimeout;
-
-    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (const char_t *)&dwRead, sizeof(dwRead));
     #endif
 }
 //--------------------------------------------------------------------------
 void rmqsSetSocketWriteTimeouts(const rmqsSocket Socket, const uint32_t WriteTimeout)
 {
-    #ifndef __WIN32__
+    #if ! _WIN32 || _WIN64
     struct timeval TVWrite;
 
     TVWrite.tv_sec = 0;
     TVWrite.tv_usec = WriteTimeout * 1000;
 
-    setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (const int8_t *)&TVWrite, sizeof(TVWrite));
+    setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (const char_t *)&TVWrite, (int)sizeof(TVWrite));
     #else
     DWORD dwWrite;
     dwWrite = WriteTimeout;
@@ -204,9 +204,9 @@ void rmqsSetSocketWriteTimeouts(const rmqsSocket Socket, const uint32_t WriteTim
     #endif
 }
 //--------------------------------------------------------------------------
-uint8_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t ulTxBufferSize, const uint32_t ulRxBufferSize)
+bool_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t ulTxBufferSize, const uint32_t ulRxBufferSize)
 {
-    uint8_t Result = 1;
+    bool_t Result = 1;
 
     if (setsockopt(Socket, SOL_SOCKET, SO_SNDBUF, (const char_t *)&ulTxBufferSize, sizeof(uint32_t)) == -1)
     {
@@ -221,9 +221,16 @@ uint8_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t ulTxBuf
     return Result;
 }
 //---------------------------------------------------------------------------
-uint8_t rmqsSetSocketBlocking(const rmqsSocket Socket)
+bool_t rmqsSetSocketBlocking(const rmqsSocket Socket)
 {
-    #ifndef __WIN32__
+    #if _WIN32 || _WIN64
+    unsigned long ulNonBlocking = 0;
+
+    if (ioctlsocket(Socket, FIONBIO, &ulNonBlocking) == -1)
+    {
+        return 0;
+    }
+    #else
     int32_t Flags;
 
     Flags = fcntl(Socket, F_GETFL, 0);
@@ -232,21 +239,21 @@ uint8_t rmqsSetSocketBlocking(const rmqsSocket Socket)
     {
         return 0;
     }
-    #else
-    unsigned long ulNonBlocking = 0;
-
-    if (ioctlsocket(Socket, FIONBIO, &ulNonBlocking) == -1)
-    {
-        return 0;
-    }
     #endif
 
     return 1;
 }
 //---------------------------------------------------------------------------
-uint8_t rmqsSetSocketNonBlocking(const rmqsSocket Socket)
+bool_t rmqsSetSocketNonBlocking(const rmqsSocket Socket)
 {
-    #ifndef __WIN32__
+    #if _WIN32 || _WIN64
+    unsigned long ulNonBlocking = 1;
+
+    if (ioctlsocket(Socket, FIONBIO, &ulNonBlocking) == -1)
+    {
+        return 0;
+    }
+    #else
     int32_t Flags;
 
     Flags = fcntl(Socket, F_GETFL, 0);
@@ -255,21 +262,30 @@ uint8_t rmqsSetSocketNonBlocking(const rmqsSocket Socket)
     {
         return 0;
     }
-    #else
-    unsigned long ulNonBlocking = 1;
-
-    if (ioctlsocket(Socket, FIONBIO, &ulNonBlocking) == -1)
-    {
-        return 0;
-    }
     #endif
 
     return 1;
 }
 //--------------------------------------------------------------------------
-uint8_t rmqsSetKeepAlive(const rmqsSocket Socket)
+bool_t rmqsSetKeepAlive(const rmqsSocket Socket)
 {
-    #ifndef __WIN32__
+    #if _WIN32 || _WIN64
+    TcpKeepAlive Alive;
+    DWORD dwBytesReturned;
+
+    Alive.onoff = TRUE;
+    Alive.keepalivetime = 5000;
+    Alive.keepaliveinterval = 1000;
+
+    if (WSAIoctl(Socket, SIO_KEEPALIVE_VALS, &Alive, sizeof(Alive), 0, 0, &dwBytesReturned, 0, 0) == 0)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+    #else
     int32_t OptVal;
     socklen_t OptValLen = sizeof(OptVal);
 
@@ -302,26 +318,10 @@ uint8_t rmqsSetKeepAlive(const rmqsSocket Socket)
     }
 
     return 1;
-    #else
-    TcpKeepAlive Alive;
-    DWORD dwBytesReturned;
-
-    Alive.onoff = TRUE;
-    Alive.keepalivetime = 5000;
-    Alive.keepaliveinterval = 1000;
-
-    if (WSAIoctl(Socket, SIO_KEEPALIVE_VALS, &Alive, sizeof(Alive), 0, 0, &dwBytesReturned, 0, 0) == 0)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
     #endif
 }
 //---------------------------------------------------------------------------
-uint8_t rmqsSetTcpNoDelay(const rmqsSocket Socket)
+bool_t rmqsSetTcpNoDelay(const rmqsSocket Socket)
 {
     int32_t iNoTcpDelayOptVal = 1, iNoTcpDelayOptValLen = sizeof(iNoTcpDelayOptVal);
 
@@ -333,11 +333,11 @@ uint8_t rmqsSetTcpNoDelay(const rmqsSocket Socket)
     return 1;
 }
 //---------------------------------------------------------------------------
-uint8_t rmqsNetworkError(void)
+bool_t rmqsNetworkError(void)
 {
-    uint8_t Result;
+    bool_t Result;
 
-    #ifdef __WIN32__
+    #if _WIN32 || _WIN64
     unsigned long Error = GetLastError();
 
     if (Error == WSAECONNRESET || Error == WSAENETDOWN || Error == WSAENETUNREACH || Error == WSAENETRESET)

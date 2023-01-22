@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <memory.h>
 #include <string.h>
-#ifdef __WIN32__
+#if _WIN32
 #include <conio.h>
 #endif
 //---------------------------------------------------------------------------
@@ -10,8 +10,11 @@
 extern "C"
 {
 #endif
-#include "rmqsEnvironment.h"
-#include "rmqsTimer.h"
+#include "rmqsClientConfiguration.h"
+#include "rmqsBroker.h"
+#include "rmqsProducer.h"
+#include "rmqsThread.h"
+#include "rmqsError.h"
 #ifdef __cplusplus
 }
 #endif
@@ -23,62 +26,69 @@ extern "C"
 #pragma comment(lib, "ws2_32.lib")
 #endif
 //---------------------------------------------------------------------------
+#define ROW_SEPARATOR "============================================================================"
+
 void ProducerEventsCallback(rqmsClientEvent Event, void *EventData);
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char *Brokers = "192.168.56.1:5552,192.168.1.37:5553";
-    rmqsEnvironment_t *Environment;
+    char *BrokerList = "rabbitmq-stream://guest:guest@localhost:5552"; // "rabbitmq-stream://guest:guest@169.254.190.108:5522/a-vhost1;rabbitmq-stream+tls://user2:pass2@host2:5521/a-vhost2";
+    rmqsClientConfiguration_t *ClientConfiguration;
+    char Error[RMQS_ERR_MAX_STRING_LENGTH];
     rmqsBroker_t *Broker;
     rmqsProducer_t *Producer;
     rmqsTimer_t *Timer;
+    uint32_t SleepTime = 10;
     size_t i;
 
     (void)argc;
     (void)argv;
 
-    #ifdef __BORLANDC__
-    StartLeakChecking(false);
-    #endif
+    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, false, 0, Error, sizeof(Error));
 
-    printf("Creating environment...\r\n");
-    Environment = rmqsEnvironmentCreate(Brokers, "gian", "ggi", 1, "C:\\TEMP\\CommLog.txt");
-    printf("Environment created\r\n");
-
-    printf("No of brokers defined: %d\r\n", (int)Environment->BrokersList->Count);
-
-    for (i = 0; i < Environment->BrokersList->Count; i++)
+    if (ClientConfiguration == 0)
     {
-        Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Environment->BrokersList, i);
+        printf("rmqsClientConfigurationCreate - Error: %s\r\n\r\n", Error);
+    }
+    else
+    {
+        printf("%s\r\nNo of brokers defined: %d\r\n%s\r\n", ROW_SEPARATOR, (int32_t)ClientConfiguration->BrokerList->Count, ROW_SEPARATOR);
 
-        printf("Broker %d: %s - %d\r\n", (int)(i + 1), Broker->Host, (int)Broker->Port);
+        for (i = 0; i < ClientConfiguration->BrokerList->Count; i++)
+        {
+            Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(ClientConfiguration->BrokerList, i);
+
+            printf("%d - Host: %s - Port: %d - User: %s - Pass: %s\r\nSchema: %s - VHost: %s - TLS: %d\r\n%s\r\n", (int)(i + 1),
+                   Broker->Hostname, (int)Broker->Port, Broker->Username, Broker->Password,
+                   Broker->DBSchema, Broker->VirtualHost, Broker->UseTLS ? 1 : 0, ROW_SEPARATOR);
+        }
     }
 
     printf("Creating client...\r\n");
-    Producer = rmqsEnvironmentProducerCreate(Environment, "/", 1, "Publisher", ProducerEventsCallback);
+    Producer = rmqsProducerCreate(ClientConfiguration, RMQS_BROKER_DEFAULT_VHOST, 1, "Publisher", ProducerEventsCallback);
     printf("Producer created\r\n");
 
-    printf("Running for 10 seconds\r\n");
+    printf("Running for %u seconds\r\n", SleepTime);
 
     Timer = rmqsTimerCreate();
     rmqsTimerStart(Timer);
 
-    while (rmqsTimerGetTime(Timer) < 30000)
+    while (rmqsTimerGetTime(Timer) < (SleepTime * 1000))
     {
         rmqsThreadSleep(100);
     }
 
     rmqsTimerDestroy(Timer);
 
-    printf("Destroying client...\r\n");
-    rmqsEnvironmentProducerDestroy(Environment, Producer);
+    printf("Destroying producer...\r\n");
+    rmqsProducerDestroy(Producer);
     printf("Producer destroyed\r\n");
 
-    printf("Destroying environment...\r\n");
-    rmqsEnvironmentDestroy(Environment);
-    printf("Environment destroyed\r\n");
+    printf("Destroying configuration...\r\n");
+    rmqsClientConfigurationDestroy(ClientConfiguration);
+    printf("Client configuration destroyed\r\n");
 
-    rmqsThreadSleep(5000);
+    rmqsThreadSleep(2000);
 
     return 0;
 }
@@ -103,4 +113,3 @@ void ProducerEventsCallback(rqmsClientEvent Event, void *EventData)
     }
 }
 //---------------------------------------------------------------------------
-

@@ -3,7 +3,7 @@
 #define rmqsNetworkH
 //---------------------------------------------------------------------------
 #include <stdint.h>
-#ifndef __WIN32__
+#if ! __WIN32__
 #include <sys/socket.h>
 #endif
 //---------------------------------------------------------------------------
@@ -11,7 +11,7 @@
 //---------------------------------------------------------------------------
 #define RMQS_MAX_HOSTNAME_LENGTH     255
 //---------------------------------------------------------------------------
-#ifdef __WIN32__
+#if _WIN32 || _WIN64
 typedef uint32_t rmqsSocket;
 typedef int32_t rmqsSocketLen;
 #define rmqsInvalidSocket 0
@@ -21,7 +21,7 @@ typedef socklen_t rmqsSocketLen;
 #define rmqsInvalidSocket -1
 #endif
 //---------------------------------------------------------------------------
-#ifdef __WIN32__
+#if _WIN32 || _WIN64
 int32_t rmqsInitWinsock(void);
 void rmqsShutdownWinsock(void);
 #endif
@@ -29,17 +29,17 @@ void rmqsShutdownWinsock(void);
 rmqsSocket rmqsSocketCreate(void);
 void rmqsSocketDestroy(rmqsSocket *Socket);
 //---------------------------------------------------------------------------
-uint8_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs);
+bool_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs);
 //---------------------------------------------------------------------------
 void rmqsSetSocketReadTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeout);
 void rmqsSetSocketWriteTimeouts(const rmqsSocket Socket, const uint32_t WriteTimeout);
-uint8_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t TxBufferSize, const uint32_t RxBufferSize);
-uint8_t rmqsSetSocketBlocking(const rmqsSocket Socket);
-uint8_t rmqsSetSocketNonBlocking(const rmqsSocket Socket);
-uint8_t rmqsSetKeepAlive(const rmqsSocket Socket);
-uint8_t rmqsSetTcpNoDelay(const rmqsSocket Socket);
+bool_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t TxBufferSize, const uint32_t RxBufferSize);
+bool_t rmqsSetSocketBlocking(const rmqsSocket Socket);
+bool_t rmqsSetSocketNonBlocking(const rmqsSocket Socket);
+bool_t rmqsSetKeepAlive(const rmqsSocket Socket);
+bool_t rmqsSetTcpNoDelay(const rmqsSocket Socket);
 //---------------------------------------------------------------------------
-uint8_t rmqsNetworkError(void);
+bool_t rmqsNetworkError(void);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

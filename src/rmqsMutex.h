@@ -4,15 +4,17 @@
 //---------------------------------------------------------------------------
 #include <stdint.h>
 //---------------------------------------------------------------------------
-#ifdef __WIN32__
+#if _WIN32 || _WIN64
 #include <windows.h>
 #else
 #include <pthread.h>
 #endif
 //---------------------------------------------------------------------------
+#include "rmqsGlobal.h"
+//---------------------------------------------------------------------------
 typedef struct
 {
-#ifdef __WIN32__
+#if _WIN32 || _WIN64
     CRITICAL_SECTION CS;
 #else
     pthread_mutex_t mutex;
@@ -24,7 +26,7 @@ rmqsMutex_t * rmqsMutexCreate(void);
 void rmqsMutexDestroy(rmqsMutex_t *Mutex);
 void rmqsMutexLock(rmqsMutex_t *Mutex);
 void rmqsMutexUnlock(rmqsMutex_t *Mutex);
-uint8_t rmqsMutexTryLock(rmqsMutex_t *Mutex);
+bool_t rmqsMutexTryLock(rmqsMutex_t *Mutex);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

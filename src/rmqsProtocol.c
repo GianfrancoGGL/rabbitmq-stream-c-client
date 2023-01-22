@@ -1,14 +1,14 @@
 //---------------------------------------------------------------------------
 #include <string.h>
 //---------------------------------------------------------------------------
-#include "rmqsEnvironment.h"
+#include "rmqsClientConfiguration.h"
 #include "rmqsMemory.h"
 #include "rmqsProtocol.h"
 //---------------------------------------------------------------------------
 #define RMQS_NULL_STRING_LENGTH    -1
 #define RMQS_EMPTY_DATA_LENGTH     -1
 //---------------------------------------------------------------------------
-uint8_t rmqsIsLittleEndianMachine(void)
+bool_t rmqsIsLittleEndianMachine(void)
 {
     union
     {
@@ -27,22 +27,22 @@ uint8_t rmqsIsLittleEndianMachine(void)
     }
 }
 //---------------------------------------------------------------------------
-void rmqsSendMessage(const void *Environment, const rmqsSocket Socket, const char_t *Data, size_t DataSize)
+void rmqsSendMessage(const void *ClientConfiguration, const rmqsSocket Socket, const char_t *Data, size_t DataSize)
 {
-    rmqsEnvironment_t *EnvironmentObj = (rmqsEnvironment_t *)Environment;
+    rmqsClientConfiguration_t *ConfigurationObj = (rmqsClientConfiguration_t *)ClientConfiguration;
 
-    if (EnvironmentObj->Logger)
+    if (ConfigurationObj->Logger)
     {
-        rmqsLoggerRegisterDump(EnvironmentObj->Logger, (void *)Data, DataSize, "TX", 0);
+        rmqsLoggerRegisterDump(ConfigurationObj->Logger, (void *)Data, DataSize, "TX", 0);
     }
 
     send(Socket, (const char_t *)Data, DataSize, 0);
 }
 //---------------------------------------------------------------------------
-uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char_t *RxBuffer, size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout)
+bool_t rmqsWaitMessage(const void *ClientConfiguration, const rmqsSocket Socket, char_t *RxBuffer, size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout)
 {
-    rmqsEnvironment_t *EnvironmentObj = (rmqsEnvironment_t *)Environment;
-    uint8_t MessageReceived = 0;
+    rmqsClientConfiguration_t *ConfigurationObj = (rmqsClientConfiguration_t *)ClientConfiguration;
+    bool_t MessageReceived = 0;
     int32_t RxBytes;
     uint32_t MessageSize;
 
@@ -73,7 +73,7 @@ uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char_t
             //
             MessageSize = *(uint32_t *)RxStream->Data;
 
-            if (EnvironmentObj->IsLittleEndianMachine)
+            if (ConfigurationObj->IsLittleEndianMachine)
             {
                 MessageSize = SwapUInt32(MessageSize);
             }
@@ -90,9 +90,9 @@ uint8_t rmqsWaitMessage(const void *Environment, const rmqsSocket Socket, char_t
                 //
                 MessageReceived = 1;
 
-                if (EnvironmentObj->Logger)
+                if (ConfigurationObj->Logger)
                 {
-                    rmqsLoggerRegisterDump(EnvironmentObj->Logger, (void *)RxStream->Data, RxStream->Size, "RX", 0);
+                    rmqsLoggerRegisterDump(ConfigurationObj->Logger, (void *)RxStream->Data, RxStream->Size, "RX", 0);
                 }
 
                 //
@@ -138,7 +138,7 @@ size_t rmqsAddUInt8ToStream(rmqsMemBuffer_t *Stream, uint8_t Value)
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddInt16ToStream(rmqsMemBuffer_t *Stream, int16_t Value, uint8_t IsLittleEndianMachine)
+size_t rmqsAddInt16ToStream(rmqsMemBuffer_t *Stream, int16_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
@@ -150,7 +150,7 @@ size_t rmqsAddInt16ToStream(rmqsMemBuffer_t *Stream, int16_t Value, uint8_t IsLi
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddUInt16ToStream(rmqsMemBuffer_t *Stream, uint16_t Value, uint8_t IsLittleEndianMachine)
+size_t rmqsAddUInt16ToStream(rmqsMemBuffer_t *Stream, uint16_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
@@ -162,7 +162,7 @@ size_t rmqsAddUInt16ToStream(rmqsMemBuffer_t *Stream, uint16_t Value, uint8_t Is
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddInt32ToStream(rmqsMemBuffer_t *Stream, int32_t Value, uint8_t IsLittleEndianMachine)
+size_t rmqsAddInt32ToStream(rmqsMemBuffer_t *Stream, int32_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
@@ -174,7 +174,7 @@ size_t rmqsAddInt32ToStream(rmqsMemBuffer_t *Stream, int32_t Value, uint8_t IsLi
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddUInt32ToStream(rmqsMemBuffer_t *Stream, uint32_t Value, uint8_t IsLittleEndianMachine)
+size_t rmqsAddUInt32ToStream(rmqsMemBuffer_t *Stream, uint32_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
@@ -186,9 +186,33 @@ size_t rmqsAddUInt32ToStream(rmqsMemBuffer_t *Stream, uint32_t Value, uint8_t Is
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddStringToStream(rmqsMemBuffer_t *Stream, const char_t *Value, uint8_t IsLittleEndianMachine)
+size_t rmqsAddInt64ToStream(rmqsMemBuffer_t *Stream, int64_t Value, bool_t IsLittleEndianMachine)
 {
-    rmqsStringLen_t StringLen;
+    if (IsLittleEndianMachine)
+    {
+        Value = SwapUInt64(Value);
+    }
+
+    rmqsMemBufferWrite(Stream, (void *)&Value, sizeof(Value));
+
+    return sizeof(Value);
+}
+//---------------------------------------------------------------------------
+size_t rmqsAddUInt64ToStream(rmqsMemBuffer_t *Stream, uint64_t Value, bool_t IsLittleEndianMachine)
+{
+    if (IsLittleEndianMachine)
+    {
+        Value = SwapUInt64(Value);
+    }
+
+    rmqsMemBufferWrite(Stream, (void *)&Value, sizeof(Value));
+
+    return sizeof(Value);
+}
+//---------------------------------------------------------------------------
+size_t rmqsAddStringToStream(rmqsMemBuffer_t *Stream, const char_t *Value, bool_t IsLittleEndianMachine)
+{
+    int16_t StringLen;
     size_t BytesAdded;
 
     if (Value == 0 || *Value == 0)
@@ -212,9 +236,9 @@ size_t rmqsAddStringToStream(rmqsMemBuffer_t *Stream, const char_t *Value, uint8
     return BytesAdded;
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddBytesToStream(rmqsMemBuffer_t *Stream, void *Value, size_t ValueLength, uint8_t IsLittleEndianMachine)
+size_t rmqsAddBytesToStream(rmqsMemBuffer_t *Stream, void *Value, size_t ValueLength, bool_t IsLittleEndianMachine)
 {
-    rmqsDataLen_t DataLen;
+    int32_t DataLen;
     size_t BytesAdded;
 
     if (ValueLength == 0)
@@ -223,7 +247,7 @@ size_t rmqsAddBytesToStream(rmqsMemBuffer_t *Stream, void *Value, size_t ValueLe
     }
     else
     {
-        DataLen = (rmqsDataLen_t)ValueLength;
+        DataLen = (int32_t)ValueLength;
     }
 
     rmqsAddInt32ToStream(Stream, DataLen, IsLittleEndianMachine);
