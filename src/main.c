@@ -10,11 +10,12 @@
 extern "C"
 {
 #endif
-#include "rmqsClientConfiguration.h"
-#include "rmqsBroker.h"
-#include "rmqsProducer.h"
-#include "rmqsThread.h"
-#include "rmqsError.h"
+#include "rawClient/rmqsClientConfiguration.h"
+#include "rawClient/rmqsBroker.h"
+#include "rawClient/rmqsProducer.h"
+#include "rawClient/rmqsMemory.h"
+#include "rawClient/rmqsThread.h"
+#include "rawClient/rmqsError.h"
 #ifdef __cplusplus
 }
 #endif
@@ -27,22 +28,47 @@ extern "C"
 #endif
 //---------------------------------------------------------------------------
 #define ROW_SEPARATOR "============================================================================"
-
-void ProducerEventsCallback(rqmsClientEvent Event, void *EventData);
+#define MESSAGE_COUNT  1000000
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char *BrokerList = "rabbitmq-stream://guest:guest@localhost:5552"; // "rabbitmq-stream://guest:guest@169.254.190.108:5522/a-vhost1;rabbitmq-stream+tls://user2:pass2@host2:5521/a-vhost2";
+    char *BrokerList = "rabbitmq-stream://guest:guest@localhost:5552";
     rmqsClientConfiguration_t *ClientConfiguration;
     char Error[RMQS_ERR_MAX_STRING_LENGTH];
     rmqsBroker_t *Broker;
     rmqsProducer_t *Producer;
-    rmqsTimer_t *Timer;
+    rmqsTimer_t *WaitingTimer, *PerformanceTimer;
+    rmqsSocket Socket;
+    rmqsProperty_t Properties[6];
+    rmqsMessage_t **MessageBatch;
     uint32_t SleepTime = 10;
     size_t i;
 
     (void)argc;
     (void)argv;
+
+    //
+    // Fill the client properties
+    //
+    memset(Properties, 0, sizeof(Properties));
+
+    strncpy(Properties[0].Key, "connection_name", RMQS_MAX_KEY_SIZE);
+    strncpy(Properties[0].Value, "c-stream-locator", RMQS_MAX_VALUE_SIZE);
+
+    strncpy(Properties[1].Key, "product", RMQS_MAX_KEY_SIZE);
+    strncpy(Properties[1].Value, "RabbitMQ Stream", RMQS_MAX_VALUE_SIZE);
+
+    strncpy(Properties[2].Key, "copyright", RMQS_MAX_KEY_SIZE);
+    strncpy(Properties[2].Value, "Copyright (c) Undefined", RMQS_MAX_VALUE_SIZE);
+
+    strncpy(Properties[3].Key, "information", RMQS_MAX_KEY_SIZE);
+    strncpy(Properties[3].Value, "Licensed under the MPL 2.0. See https://www.rabbitmq.com/", RMQS_MAX_VALUE_SIZE);
+
+    strncpy(Properties[4].Key, "version", RMQS_MAX_KEY_SIZE);
+    strncpy(Properties[4].Value, "1.0", RMQS_MAX_VALUE_SIZE);
+
+    strncpy(Properties[5].Key, "platform", RMQS_MAX_KEY_SIZE);
+    strncpy(Properties[5].Value, "C", RMQS_MAX_VALUE_SIZE);
 
     ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, false, 0, Error, sizeof(Error));
 
@@ -65,20 +91,76 @@ int main(int argc, char * argv[])
     }
 
     printf("Creating client...\r\n");
-    Producer = rmqsProducerCreate(ClientConfiguration, RMQS_BROKER_DEFAULT_VHOST, 1, "Publisher", ProducerEventsCallback);
+    Producer = rmqsProducerCreate(ClientConfiguration, 1, "Publisher");
     printf("Producer created\r\n");
 
     printf("Running for %u seconds\r\n", SleepTime);
 
-    Timer = rmqsTimerCreate();
-    rmqsTimerStart(Timer);
+    Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(ClientConfiguration->BrokerList, 0);
 
-    while (rmqsTimerGetTime(Timer) < (SleepTime * 1000))
+    if (Broker)
+    {
+        Socket = rmqsSocketCreate();
+
+        if (rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
+        {
+            printf("Connected to %s\r\n", Broker->Hostname);
+
+            if (rqmsClientLogin(Producer->Client, Socket, Broker->VirtualHost, Properties, 6))
+            {
+                printf("Logged in to %s\r\n", Broker->Hostname);
+
+                if (rmqsDeclarePublisher(Producer, Socket, "SYNERP_RESULTS"))
+                {
+                    MessageBatch = (rmqsMessage_t **)rmqsAllocateMemory(sizeof(rmqsProducer_t) * MESSAGE_COUNT);
+
+                    for (i = 0; i < MESSAGE_COUNT; i++)
+                    {
+                        MessageBatch[i] = rmqsMessageCreate(i + 1, "Hello world!", 12, 0);
+                    }
+
+                    PerformanceTimer = rmqsTimerCreate();
+                    rmqsTimerStart(PerformanceTimer);
+
+                    rmqsPublishBatch(Producer, Socket, MessageBatch, MESSAGE_COUNT);
+
+                    printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT, rmqsTimerGetTime(PerformanceTimer));
+
+                    rmqsTimerDestroy(PerformanceTimer);
+
+                    for (i = 0; i < MESSAGE_COUNT; i++)
+                    {
+                        rmqsMessageDestroy(MessageBatch[i]);
+                    }
+
+                    rmqsFreeMemory(MessageBatch);
+                }
+
+            }
+            else
+            {
+                printf("Cannot login to %s\r\n", Broker->Hostname);
+            }
+        }
+        else
+        {
+            printf("Cannot connect to %s\r\n", Broker->Hostname);
+        }
+
+        rmqsSocketDestroy(&Socket);
+    }
+
+    WaitingTimer = rmqsTimerCreate();
+    rmqsTimerStart(WaitingTimer);
+
+    printf("Waiting %d seconds\r\n", SleepTime);
+
+    while (rmqsTimerGetTime(WaitingTimer) < (SleepTime * 1000))
     {
         rmqsThreadSleep(100);
     }
 
-    rmqsTimerDestroy(Timer);
+    rmqsTimerDestroy(WaitingTimer);
 
     printf("Destroying producer...\r\n");
     rmqsProducerDestroy(Producer);
@@ -91,25 +173,5 @@ int main(int argc, char * argv[])
     rmqsThreadSleep(2000);
 
     return 0;
-}
-//---------------------------------------------------------------------------
-void ProducerEventsCallback(rqmsClientEvent Event, void *EventData)
-{
-    (void)EventData;
-
-    switch (Event)
-    {
-        case rmqsceConnected:
-            printf("Producer connected\r\n");
-            break;
-
-        case rmqsceDisconnected:
-            printf("Producer disconnected\r\n");
-            break;
-
-        case rmqsceReady:
-            printf("Producer ready\r\n");
-            break;
-    }
 }
 //---------------------------------------------------------------------------

@@ -5,7 +5,7 @@
 #include "rmqsClientConfiguration.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsProducer_t * rmqsProducerCreate(rmqsClientConfiguration_t *ClientConfiguration, const char_t *HostName, uint8_t PublisherId, const char_t *PublisherReference, void (*EventsCallback)(rqmsClientEvent, void *Producer))
+rmqsProducer_t * rmqsProducerCreate(rmqsClientConfiguration_t *ClientConfiguration, const uint8_t PublisherId, const char_t *PublisherReference)
 {
     rmqsProducer_t *Producer = (rmqsProducer_t *)rmqsAllocateMemory(sizeof(rmqsProducer_t));
 
@@ -13,7 +13,7 @@ rmqsProducer_t * rmqsProducerCreate(rmqsClientConfiguration_t *ClientConfigurati
 
     Producer->PublisherId = PublisherId;
     strncpy(Producer->PublisherReference, PublisherReference, RMQS_MAX_PUBLISHER_REFERENCE_LENGTH);
-    Producer->Client = rmqsClientCreate(ClientConfiguration, HostName, EventsCallback, Producer, rmqsProducerHandlerCallback);
+    Producer->Client = rmqsClientCreate(ClientConfiguration, Producer);
 
     return Producer;
 }
@@ -25,53 +25,7 @@ void rmqsProducerDestroy(rmqsProducer_t *Producer)
     rmqsFreeMemory((void *)Producer);
 }
 //---------------------------------------------------------------------------
-#define MESSAGE_COUNT    1000000
-//---------------------------------------------------------------------------
-void rmqsProducerHandlerCallback(void *Client)
-{
-    static bool_t FirstTime = true;
-
-    if (FirstTime)
-    {
-        rmqsProducer_t *ProducerObj = (rmqsProducer_t *)Client;
-        rmqsMessage_t **MessageBatch;
-        rmqsResponseCode Response;
-        rmqsTimer_t *Timer;
-        size_t i;
-
-        MessageBatch = rmqsAllocateMemory(sizeof(rmqsProducer_t) * MESSAGE_COUNT);
-
-        Response = rmqsDeclarePublisher(ProducerObj, "SYNERP_RESULTS");
-        Response = Response;
-
-        for (i = 0; i < MESSAGE_COUNT; i++)
-        {
-            MessageBatch[i] = rmqsMessageCreate(i + 1, "Hello world!", 12, 0);
-        }
-
-        Timer = rmqsTimerCreate();
-        rmqsTimerStart(Timer);
-
-        rmqsPublishBatch(ProducerObj, MessageBatch, MESSAGE_COUNT);
-
-        printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT, rmqsTimerGetTime(Timer));
-
-        rmqsTimerDestroy(Timer);
-
-        for (i = 0; i < MESSAGE_COUNT; i++)
-        {
-            rmqsMessageDestroy(MessageBatch[i]);
-        }
-
-        rmqsFreeMemory(MessageBatch);
-
-        FirstTime = false;
-    }
-
-    rmqsThreadSleep(10);
-}
-//---------------------------------------------------------------------------
-rmqsResponseCode rmqsDeclarePublisher(rmqsProducer_t *Producer, const char_t *Stream)
+rmqsResponseCode rmqsDeclarePublisher(rmqsProducer_t *Producer, const rmqsSocket Socket, const char_t *StreamName)
 {
     rmqsClient_t *Client = Producer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -87,7 +41,7 @@ rmqsResponseCode rmqsDeclarePublisher(rmqsProducer_t *Producer, const char_t *St
     rmqsAddUInt32ToStream(Client->TxStream, Client->CorrelationId++, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt8ToStream(Client->TxStream, Producer->PublisherId);
     rmqsAddStringToStream(Client->TxStream, Producer->PublisherReference, ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddStringToStream(Client->TxStream, Stream, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToStream(Client->TxStream, StreamName, ClientConfiguration->IsLittleEndianMachine);
 
     //
     // Moves to the beginning of the stream and writes the total message body size
@@ -95,9 +49,9 @@ rmqsResponseCode rmqsDeclarePublisher(rmqsProducer_t *Producer, const char_t *St
     rmqsMemBufferMoveTo(Client->TxStream, 0);
     rmqsAddUInt32ToStream(Client->TxStream, Client->TxStream->Size - sizeof(uint32_t), ClientConfiguration->IsLittleEndianMachine);
 
-    rmqsSendMessage(Client->ClientConfiguration, Client->Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
+    rmqsSendMessage(Client->ClientConfiguration, Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
 
-    if (rmqsWaitMessage(Client->ClientConfiguration, Client->Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
+    if (rmqsWaitMessage(Client->ClientConfiguration, Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
     {
         Response = (rmqsResponse_t *)Client->RxStream->Data;
 
@@ -124,7 +78,7 @@ rmqsResponseCode rmqsDeclarePublisher(rmqsProducer_t *Producer, const char_t *St
     }
 }
 //---------------------------------------------------------------------------
-void rmqsPublish(rmqsProducer_t *Producer, rmqsMessage_t *Message)
+void rmqsPublish(rmqsProducer_t *Producer, const rmqsSocket Socket, rmqsMessage_t *Message)
 {
     rmqsClient_t *Client = Producer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -147,10 +101,10 @@ void rmqsPublish(rmqsProducer_t *Producer, rmqsMessage_t *Message)
     rmqsMemBufferMoveTo(Client->TxStream, 0);
     rmqsAddUInt32ToStream(Client->TxStream, Client->TxStream->Size - sizeof(uint32_t), ClientConfiguration->IsLittleEndianMachine);
 
-    rmqsSendMessage(Client->ClientConfiguration, Client->Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
+    rmqsSendMessage(Client->ClientConfiguration, Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
 }
 //---------------------------------------------------------------------------
-void rmqsPublishBatch(rmqsProducer_t *Producer, rmqsMessage_t *Messages[], size_t MessageCount)
+void rmqsPublishBatch(rmqsProducer_t *Producer, const rmqsSocket Socket, rmqsMessage_t *Messages[], const size_t MessageCount)
 {
     rmqsClient_t *Client = Producer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -167,7 +121,7 @@ void rmqsPublishBatch(rmqsProducer_t *Producer, rmqsMessage_t *Messages[], size_
     rmqsAddUInt8ToStream(Client->TxStream, Producer->PublisherId);
     rmqsAddUInt32ToStream(Client->TxStream, MessageCount, ClientConfiguration->IsLittleEndianMachine); // Message count
 
-    for (i = 0; i < MessageCount; ++i)
+    for (i = 0; i < MessageCount; i++)
     {
         Message = Messages[i];
 
@@ -181,7 +135,7 @@ void rmqsPublishBatch(rmqsProducer_t *Producer, rmqsMessage_t *Messages[], size_
     rmqsMemBufferMoveTo(Client->TxStream, 0);
     rmqsAddUInt32ToStream(Client->TxStream, Client->TxStream->Size - sizeof(uint32_t), ClientConfiguration->IsLittleEndianMachine);
 
-    rmqsSendMessage(Client->ClientConfiguration, Client->Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
+    rmqsSendMessage(Client->ClientConfiguration, Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
 }
 //---------------------------------------------------------------------------
 

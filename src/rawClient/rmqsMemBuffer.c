@@ -131,4 +131,3 @@ void rmqsMemBufferSetMemorySize(rmqsMemBuffer_t *Stream, const size_t RequiredMe
     Stream->CurrentMemorySize = MemoryToAllocateSize;
 }
 //---------------------------------------------------------------------------
-

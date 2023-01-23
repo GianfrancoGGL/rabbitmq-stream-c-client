@@ -31,8 +31,8 @@ rmqsThread_t * rmqsThreadCreate(void (*ThreadRoutine)(void *, bool_t *), void (*
 void rmqsThreadDestroy(rmqsThread_t *Thread);
 void rmqsThreadStart(rmqsThread_t *Thread);
 void rmqsThreadStop(rmqsThread_t *Thread);
-void rmqsThreadSleep(uint32_t Milliseconds);
-void rmqsThreadSleepEx(uint32_t Milliseconds, size_t HowManyTimes, bool_t *Abort);
+void rmqsThreadSleep(const uint32_t Milliseconds);
+void rmqsThreadSleepEx(const uint32_t Milliseconds, const size_t HowManyTimes, const bool_t *Abort);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

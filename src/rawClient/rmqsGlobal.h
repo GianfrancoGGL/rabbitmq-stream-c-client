@@ -5,6 +5,7 @@
 typedef char char_t;
 typedef unsigned char uchar_t;
 typedef unsigned char bool_t;
+typedef double double_t;
 //---------------------------------------------------------------------------
 #ifndef __cplusplus
 #ifndef true

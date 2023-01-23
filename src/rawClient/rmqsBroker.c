@@ -178,7 +178,7 @@ bool_t rmqsBrokerParse(rmqsBroker_t *Broker, const char_t *BrokerString, char_t 
     }
     else
     {
-        strncpy(PortString, BrokerString, min(Token - BrokerString, sizeof(PortString) - 1));
+        strncpy(PortString, BrokerString, min((size_t)(Token - BrokerString), sizeof(PortString) - 1));
         Broker->Port = (uint16_t)atoi(PortString);
 
         BrokerString = Token + strlen(RMQS_BROKER_PORT_SEPARATOR);

@@ -20,7 +20,7 @@ typedef struct
     uint32_t TimeStarted;
 
     #if _WIN32 || _WIN64
-    double PCFrequency;
+    double_t PCFrequency;
     int64_t CounterStart;
     #endif
 }
@@ -33,6 +33,6 @@ void rmqsTimerStop(rmqsTimer_t *Timer);
 uint32_t rmqsTimerGetTime(rmqsTimer_t *Timer);
 uint32_t rmqsTimerGetSystemClock(rmqsTimer_t *Timer);
 void rmqsGetCurrentDateTime(uint16_t *Year, uint8_t *Month, uint8_t *Day, uint8_t *Hour, uint8_t *Minute, uint8_t *Second);
-void rmqsGetCurrentDateTimeString(char_t *String, size_t Size);
+void rmqsGetCurrentDateTimeString(char_t *String, const size_t Size);
 //---------------------------------------------------------------------------
 #endif

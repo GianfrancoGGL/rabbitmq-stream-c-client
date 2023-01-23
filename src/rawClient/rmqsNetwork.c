@@ -195,7 +195,7 @@ void rmqsSetSocketWriteTimeouts(const rmqsSocket Socket, const uint32_t WriteTim
     TVWrite.tv_sec = 0;
     TVWrite.tv_usec = WriteTimeout * 1000;
 
-    setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (const char_t *)&TVWrite, (int)sizeof(TVWrite));
+    setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (const char_t *)&TVWrite, (int32_t)sizeof(TVWrite));
     #else
     DWORD dwWrite;
     dwWrite = WriteTimeout;

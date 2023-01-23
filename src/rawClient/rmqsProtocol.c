@@ -39,7 +39,7 @@ void rmqsSendMessage(const void *ClientConfiguration, const rmqsSocket Socket, c
     send(Socket, (const char_t *)Data, DataSize, 0);
 }
 //---------------------------------------------------------------------------
-bool_t rmqsWaitMessage(const void *ClientConfiguration, const rmqsSocket Socket, char_t *RxBuffer, size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout)
+bool_t rmqsWaitMessage(const void *ClientConfiguration, const rmqsSocket Socket, char_t *RxBuffer, const size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout)
 {
     rmqsClientConfiguration_t *ConfigurationObj = (rmqsClientConfiguration_t *)ClientConfiguration;
     bool_t MessageReceived = 0;

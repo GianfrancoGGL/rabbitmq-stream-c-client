@@ -126,8 +126,8 @@ rmqsTuneRequest_t;
 //---------------------------------------------------------------------------
 bool_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
-void rmqsSendMessage(const void *ClientConfiguration, const rmqsSocket Socket, const char_t *Data, size_t DataSize);
-bool_t rmqsWaitMessage(const void *ClientConfiguration, const rmqsSocket Socket, char_t *RxBuffer, size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout);
+void rmqsSendMessage(const void *ClientConfiguration, const rmqsSocket Socket, const char_t *Data, const size_t DataSize);
+bool_t rmqsWaitMessage(const void *ClientConfiguration, const rmqsSocket Socket, char_t *RxBuffer, const size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout);
 //---------------------------------------------------------------------------
 size_t rmqsAddInt8ToStream(rmqsMemBuffer_t *Stream, int8_t Value);
 size_t rmqsAddUInt8ToStream(rmqsMemBuffer_t *Stream, uint8_t Value);

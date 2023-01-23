@@ -8,7 +8,7 @@
 #include "rmqsMemory.h"
 //--------------------------------------------------------------------------
 #if _WIN32 || _WIN64
-uint32_t rmqsThreadRoutine(uint32_t *ThreadData);
+uint32_t rmqsThreadRoutine(const uint32_t *ThreadData);
 #else
 void * rqmsThreadRoutine(void *ThreadData);
 #endif
@@ -80,7 +80,7 @@ void rmqsThreadStop(rmqsThread_t *Thread)
     Thread->Terminated = 1;
 }
 //--------------------------------------------------------------------------
-void rmqsThreadSleep(uint32_t Milliseconds)
+void rmqsThreadSleep(const uint32_t Milliseconds)
 {
     #if _WIN32 || _WIN64
     Sleep(Milliseconds);
@@ -89,7 +89,7 @@ void rmqsThreadSleep(uint32_t Milliseconds)
     #endif
 }
 //--------------------------------------------------------------------------
-void rmqsThreadSleepEx(uint32_t Milliseconds, size_t HowManyTimes, bool_t *Abort)
+void rmqsThreadSleepEx(const uint32_t Milliseconds, const size_t HowManyTimes, const bool_t *Abort)
 {
     size_t i;
 
@@ -105,7 +105,7 @@ void rmqsThreadSleepEx(uint32_t Milliseconds, size_t HowManyTimes, bool_t *Abort
 }
 //--------------------------------------------------------------------------
 #if _WIN32 || _WIN64
-uint32_t rmqsThreadRoutine(uint32_t *ThreadData)
+uint32_t rmqsThreadRoutine(const uint32_t *ThreadData)
 #else
 void * rqmsThreadRoutine(void *ThreadData)
 #endif

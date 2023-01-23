@@ -27,7 +27,7 @@ void rmqsTimerStart(rmqsTimer_t *Timer)
 
     QueryPerformanceFrequency(&LI);
 
-    Timer->PCFrequency = (double)LI.QuadPart / 1000.0;
+    Timer->PCFrequency = (double_t)LI.QuadPart / 1000.0;
 
     QueryPerformanceCounter(&LI);
 
@@ -65,14 +65,7 @@ uint32_t rmqsTimerGetSystemClock(rmqsTimer_t *Timer)
 
     QueryPerformanceCounter(&LI);
 
-    if (Timer->PCFrequency != 0.0)
-    {
-        return (uint32_t) (double)((LI.QuadPart - Timer->CounterStart) / Timer->PCFrequency);
-    }
-    else
-    {
-        return 0;
-    }
+    return (uint32_t)(double_t)((LI.QuadPart - Timer->CounterStart) / Timer->PCFrequency);
     #else
     struct timespec TS;
     uint32_t TheTick;
@@ -114,7 +107,7 @@ void rmqsGetCurrentDateTime(uint16_t *Year, uint8_t *Month, uint8_t *Day, uint8_
     #endif
 }
 //---------------------------------------------------------------------------
-void rmqsGetCurrentDateTimeString(char_t *String, size_t Size)
+void rmqsGetCurrentDateTimeString(char_t *String, const size_t Size)
 {
     uint16_t Year;
     uint8_t Month, Day, Hour, Minute, Second;
