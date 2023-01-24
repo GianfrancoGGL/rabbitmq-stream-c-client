@@ -28,7 +28,7 @@ extern "C"
 #endif
 //---------------------------------------------------------------------------
 #define ROW_SEPARATOR "============================================================================"
-#define MESSAGE_COUNT  1000000
+#define MESSAGE_COUNT  500000
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
@@ -112,7 +112,7 @@ int main(int argc, char * argv[])
 
                 if (rmqsDeclarePublisher(Producer, Socket, "SYNERP_RESULTS"))
                 {
-                    MessageBatch = (rmqsMessage_t **)rmqsAllocateMemory(sizeof(rmqsProducer_t) * MESSAGE_COUNT);
+                    MessageBatch = (rmqsMessage_t **)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MESSAGE_COUNT);
 
                     for (i = 0; i < MESSAGE_COUNT; i++)
                     {
@@ -135,7 +135,6 @@ int main(int argc, char * argv[])
 
                     rmqsFreeMemory(MessageBatch);
                 }
-
             }
             else
             {
