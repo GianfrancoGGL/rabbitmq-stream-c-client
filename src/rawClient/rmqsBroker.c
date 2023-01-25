@@ -83,7 +83,7 @@ bool_t rmqsBrokerParse(rmqsBroker_t *Broker, const char_t *BrokerString, char_t 
         return false;
     }
 
-    strncpy(Broker->DBSchema, BrokerString, min(Token - BrokerString, RQMS_BROKER_MAX_DB_SCHEMA_LENGTH));
+    strncpy(Broker->DBSchema, BrokerString, getmin(Token - BrokerString, RQMS_BROKER_MAX_DB_SCHEMA_LENGTH));
     rmqsConvertToLower(Broker->DBSchema);
 
     BrokerString = Token + strlen(RMQS_BROKER_DB_SCHEMA_SEPARATOR);
@@ -107,7 +107,7 @@ bool_t rmqsBrokerParse(rmqsBroker_t *Broker, const char_t *BrokerString, char_t 
         return false;
     }
 
-    strncpy(Broker->Username, BrokerString, min(Token - BrokerString, RQMS_BROKER_MAX_USERNAME_LENGTH));
+    strncpy(Broker->Username, BrokerString, getmin(Token - BrokerString, RQMS_BROKER_MAX_USERNAME_LENGTH));
     rmqsConvertToLower(Broker->Username);
 
     BrokerString = Token + strlen(RMQS_BROKER_USER_SEPARATOR);
@@ -129,7 +129,7 @@ bool_t rmqsBrokerParse(rmqsBroker_t *Broker, const char_t *BrokerString, char_t 
         return false;
     }
 
-    strncpy(Broker->Password, BrokerString, min(Token - BrokerString, RQMS_BROKER_MAX_PASSWORD_LENGTH));
+    strncpy(Broker->Password, BrokerString, getmin(Token - BrokerString, RQMS_BROKER_MAX_PASSWORD_LENGTH));
     rmqsConvertToLower(Broker->Password);
 
     BrokerString = Token + strlen(RMQS_BROKER_PASSWORD_SEPARATOR);
@@ -151,7 +151,7 @@ bool_t rmqsBrokerParse(rmqsBroker_t *Broker, const char_t *BrokerString, char_t 
         return false;
     }
 
-    strncpy(Broker->Hostname, BrokerString, min(Token - BrokerString, RQMS_MAX_HOSTNAME_LENGTH));
+    strncpy(Broker->Hostname, BrokerString, getmin(Token - BrokerString, RQMS_MAX_HOSTNAME_LENGTH));
     rmqsConvertToLower(Broker->Hostname);
 
     BrokerString = Token + strlen(RMQS_BROKER_HOSTNAME_SEPARATOR);
@@ -178,7 +178,7 @@ bool_t rmqsBrokerParse(rmqsBroker_t *Broker, const char_t *BrokerString, char_t 
     }
     else
     {
-        strncpy(PortString, BrokerString, min((size_t)(Token - BrokerString), sizeof(PortString) - 1));
+        strncpy(PortString, BrokerString, getmin((size_t)(Token - BrokerString), sizeof(PortString) - 1));
         Broker->Port = (uint16_t)atoi(PortString);
 
         BrokerString = Token + strlen(RMQS_BROKER_PORT_SEPARATOR);

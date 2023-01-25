@@ -250,7 +250,7 @@ void rmqsListDeletePosition(rmqsList_t *List, size_t Position)
     }
     else
     {
-        rmqsListNode_t *PrevNode;
+        rmqsListNode_t *PrevNode = 0;
         size_t i;
 
         for (i = 0; i < Position; i++)
