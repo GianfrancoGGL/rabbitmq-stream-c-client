@@ -3,4 +3,3 @@
 *.o
 cmake-build-*
 .idea
-CMakeLists.txt
