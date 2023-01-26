@@ -32,20 +32,23 @@ extern "C"
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char *BrokerList = "rabbitmq-stream://guest:guest@localhost:5552";
+    char_t *BrokerList = "rabbitmq-stream://guest:guest@localhost:5552";
     rmqsClientConfiguration_t *ClientConfiguration;
-    char Error[RMQS_ERR_MAX_STRING_LENGTH];
+    char_t Error[RMQS_ERR_MAX_STRING_LENGTH];
     rmqsBroker_t *Broker;
     rmqsProducer_t *Producer;
     rmqsTimer_t *WaitingTimer, *PerformanceTimer;
     rmqsSocket Socket;
     rmqsProperty_t Properties[6];
     rmqsMessage_t **MessageBatch;
+    char_t MessageText[32];
     uint32_t SleepTime = 10;
     size_t i;
 
     (void)argc;
     (void)argv;
+
+    srand(time(NULL));
 
     //
     // Fill the client properties
@@ -116,7 +119,8 @@ int main(int argc, char * argv[])
 
                     for (i = 0; i < MESSAGE_COUNT; i++)
                     {
-                        MessageBatch[i] = rmqsMessageCreate(i + 1, "Hello world!", 12, 0);
+                        sprintf(MessageText, "%012d", rand() % MESSAGE_COUNT);
+                        MessageBatch[i] = rmqsMessageCreate(i + 1, MessageText, strlen(MessageText), 0);
                     }
 
                     PerformanceTimer = rmqsTimerCreate();

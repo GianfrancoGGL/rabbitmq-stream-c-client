@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1674552927 source:c:\rabbitmq-stream-c-client-main\src\main.c
+1674735556 source:c:\rabbitmq-stream-c-client-main\src\main.c
 	<stdio.h>
 	<memory.h>
 	<string.h>
@@ -165,7 +165,7 @@
 	"rmqsProtocol.h"
 	"rmqsMemory.h"
 
-1674462061 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsbroker.c
+1674734650 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsbroker.c
 	<string.h>
 	"rmqsBroker.h"
 	"rmqsLib.h"
@@ -176,7 +176,7 @@
 	<stdint.h>
 	"rmqsGlobal.h"
 
-1674465281 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsglobal.h
+1674734650 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsglobal.h
 
 1674279718 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslib.h
 	<stdint.h>
@@ -234,7 +234,7 @@
 	<sys/time.h>
 	"rmqsGlobal.h"
 
-1674291464 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsnetwork.h
+1674734650 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsnetwork.h
 	<stdint.h>
 	<sys/socket.h>
 	"rmqsGlobal.h"
@@ -270,7 +270,7 @@
 	<ctype.h>
 	"rmqsLib.h"
 
-1674306196 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslist.c
+1674734650 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslist.c
 	<memory.h>
 	"rmqsList.h"
 	"rmqsMemory.h"
@@ -282,7 +282,7 @@
 	"rmqsGlobal.h"
 	"rmqsMemory.h"
 
-1674469401 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmembuffer.c
+1674734650 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmembuffer.c
 	<memory.h>
 	"rmqsMemBuffer.h"
 	"rmqsGlobal.h"
@@ -307,7 +307,7 @@
 	"rmqsMutex.h"
 	"rmqsMemory.h"
 
-1674475226 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsnetwork.c
+1674734691 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsnetwork.c
 	<stdio.h>
 	<winsock2.h>
 	<unistd.h>
@@ -320,7 +320,7 @@
 	<fcntl.h>
 	"rmqsNetwork.h"
 
-1674476204 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsproducer.c
+1674650797 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsproducer.c
 	<stdio.h>
 	"rmqsProducer.h"
 	"rmqsClientConfiguration.h"
@@ -332,7 +332,7 @@
 	"rmqsClientConfiguration.h"
 	"rmqsMessage.h"
 
-1674465858 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsprotocol.c
+1674650601 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsprotocol.c
 	<string.h>
 	"rmqsClientConfiguration.h"
 	"rmqsMemory.h"
