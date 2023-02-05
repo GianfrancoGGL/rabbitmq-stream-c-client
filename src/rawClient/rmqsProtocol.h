@@ -18,16 +18,6 @@
                       ((x << 40) & 0x00FF000000000000LL) | \
                       ((x << 56) & 0xFF00000000000000LL)
 //---------------------------------------------------------------------------
-/*
-Stream creation parameters:
-
-x-max-length-bytes
-x-max-age
-x-stream-max-segment-size-bytes
-x-initial-cluster-size
-x-queue-leader-locator
-*/
-//---------------------------------------------------------------------------
 typedef enum
 {
     rmqscDeclarePublisher = 0x01,
@@ -59,7 +49,7 @@ typedef enum
     rmqscExchangeCommandVersions = 0x1B,
     rmqscStreamStats = 0x1C
 }
-rmqsCommand;
+rmqsCommand_t;
 //---------------------------------------------------------------------------
 typedef enum
 {
@@ -85,7 +75,7 @@ typedef enum
     rmqsrNoOffset = 0x13,
     rmqsrWrongReply = 0xFF
 }
-rmqsResponseCode;
+rmqsResponseCode_t;
 //---------------------------------------------------------------------------
 #define RMQS_MAX_KEY_SIZE        64
 #define RMQS_MAX_VALUE_SIZE     128

@@ -37,7 +37,7 @@ void rmqsProducerPoll(rmqsProducer_t *Producer, const rmqsSocket Socket, uint32_
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode rmqsDeclarePublisher(rmqsProducer_t *Producer, const rmqsSocket Socket, const uint8_t PublisherId, const char_t *StreamName)
+rmqsResponseCode_t rmqsDeclarePublisher(rmqsProducer_t *Producer, const rmqsSocket Socket, const uint8_t PublisherId, const char_t *StreamName)
 {
     rmqsClient_t *Client = Producer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -90,7 +90,7 @@ rmqsResponseCode rmqsDeclarePublisher(rmqsProducer_t *Producer, const rmqsSocket
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode rmqsDeletePublisher(rmqsProducer_t *Producer, const rmqsSocket Socket, const uint8_t PublisherId)
+rmqsResponseCode_t rmqsDeletePublisher(rmqsProducer_t *Producer, const rmqsSocket Socket, const uint8_t PublisherId)
 {
     rmqsClient_t *Client = Producer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;

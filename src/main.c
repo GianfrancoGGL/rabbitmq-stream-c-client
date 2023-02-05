@@ -37,15 +37,15 @@ int main(int argc, char * argv[])
     (void)argc;
     (void)argv;
 
-    char *BrokerList = "rabbitmq-stream://gian:ggi@127.0.0.1:5552";
+    char *BrokerList = "rabbitmq-stream://gian:ggi@192.168.56.1:5552";
     rmqsClientConfiguration_t *ClientConfiguration;
     char Error[RMQS_ERR_MAX_STRING_LENGTH];
     rmqsBroker_t *Broker;
     rmqsProducer_t *Producer;
     const int PublisherId = 1;
     char *StreamName = "MY-STREAM";
-    rqmsCreateStreamParams_t CreateStreamParams = {0};
-    rmqsResponseCode CreateStreamResponse;
+    rqmsCreateStreamArgs_t CreateStreamArgs = {0};
+    rmqsResponseCode_t CreateStreamResponse;
     rmqsTimer_t *WaitingTimer, *PerformanceTimer;
     rmqsSocket Socket;
     rmqsProperty_t Properties[6];
@@ -126,19 +126,31 @@ int main(int argc, char * argv[])
             {
                 printf("Logged in to %s\r\n", Broker->Hostname);
 
-                CreateStreamParams.SpecifyMaxLengthBytes = true;
-                CreateStreamParams.MaxLengthBytes = 1000000000;
+                CreateStreamArgs.SpecifyMaxLengthBytes = true;
+                CreateStreamArgs.MaxLengthBytes = 1000000;
 
-                CreateStreamParams.SpecifyMaxAge = true;
-                strcpy(CreateStreamParams.MaxAge, "12h");
+                CreateStreamArgs.SpecifyMaxAge = true;
+                strcpy(CreateStreamArgs.MaxAge, "12h");
 
-                CreateStreamParams.SpecifyStreamMaxSegmentSizeBytes = true;
-                CreateStreamParams.StreamMaxSegmentSizeBytes = 100000000;
+                CreateStreamArgs.SpecifyStreamMaxSegmentSizeBytes = true;
+                CreateStreamArgs.StreamMaxSegmentSizeBytes = 100000;
 
-                CreateStreamParams.SpecifyQueueLeaderLocator = true;
-                strcpy(CreateStreamParams.QueueLeaderLocator, "random");
+                CreateStreamArgs.SpecifyInitialClusterSize = true;
+                CreateStreamArgs.InitialClusterSize = 1;
 
-                CreateStreamResponse = rmqsCreate(Producer->Client, Socket, StreamName, &CreateStreamParams);
+                CreateStreamArgs.SpecifyQueueLeaderLocator = true;
+                CreateStreamArgs.LeaderLocator = rmqssllClientLocal;
+
+                if (rmqsDelete(Producer->Client, Socket, StreamName))
+                {
+                    printf("Deleted stream %s\r\n", StreamName);
+                }
+                else
+                {
+                    printf("Cannot delete stream %s\r\n", StreamName);
+                }
+
+                CreateStreamResponse = rmqsCreate(Producer->Client, Socket, StreamName, &CreateStreamArgs);
 
                 if (CreateStreamResponse == rmqsrOK || CreateStreamResponse == rmqsrStreamAlreadyExists)
                 {
@@ -243,7 +255,7 @@ int main(int argc, char * argv[])
 
     UsedMemory = rmqsGetUsedMemory();
     UsedMemory = UsedMemory;
-
+    
     return 0;
 }
 //---------------------------------------------------------------------------

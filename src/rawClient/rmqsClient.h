@@ -27,6 +27,15 @@ typedef struct
 }
 rmqsClient_t;
 //---------------------------------------------------------------------------
+typedef enum
+{
+    rmqssllClientLocal,
+    rmqssllBalanced,
+    rmqssllRandom,
+    rmqssllLeasrLeaders
+}
+rqmsStreamLeaderLocator_t;
+//---------------------------------------------------------------------------
 typedef struct
 {
     //
@@ -50,12 +59,17 @@ typedef struct
     //
     // Set the rule by which the queue leader is located when declared on a cluster of nodes. Valid values are 'client-local' (default) and 'balanced'
     // Other values - to clarify: 'random' - 'least-leaders'
-
     //
     bool_t SpecifyQueueLeaderLocator;
-    char_t QueueLeaderLocator[32];
+    rqmsStreamLeaderLocator_t LeaderLocator;
+
+    //
+    // Set the queue initial cluster size.
+    //
+    bool_t SpecifyInitialClusterSize;
+    size_t InitialClusterSize;
 }
-rqmsCreateStreamParams_t;
+rqmsCreateStreamArgs_t;
 //---------------------------------------------------------------------------
 rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, void *ParentObject);
 void rmqsClientDestroy(rmqsClient_t *Client);
@@ -63,12 +77,13 @@ void rmqsClientDestroy(rmqsClient_t *Client);
 bool_t rqmsClientLogin(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *VirtualHost, rmqsProperty_t *Properties, const size_t PropertiesCount);
 bool_t rqmsClientLogout(rmqsClient_t *Client, const rmqsSocket Socket, const uint16_t ClosingCode, const char_t *ClosingReason);
 //---------------------------------------------------------------------------
-rmqsResponseCode rmqsPeerProperties(rmqsClient_t *Client, const rmqsSocket Socket, rmqsProperty_t *Properties, const size_t PropertiesCount);
-rmqsResponseCode rmqsSaslHandshake(rmqsClient_t *Client, const rmqsSocket Socket, bool_t *PlainAuthSupported);
-rmqsResponseCode rmqsSaslAuthenticate(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *Mechanism, const char_t *Username, const char_t *Password);
-rmqsResponseCode rmqsOpen(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *VirtualHost);
-rmqsResponseCode rmqsClose(rmqsClient_t *Client, const rmqsSocket Socket, const uint16_t ClosingCode, const char_t *ClosingReason);
-rmqsResponseCode rmqsCreate(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *Stream, const rqmsCreateStreamParams_t *CreateStreamParams);
+rmqsResponseCode_t rmqsPeerProperties(rmqsClient_t *Client, const rmqsSocket Socket, rmqsProperty_t *Properties, const size_t PropertiesCount);
+rmqsResponseCode_t rmqsSaslHandshake(rmqsClient_t *Client, const rmqsSocket Socket, bool_t *PlainAuthSupported);
+rmqsResponseCode_t rmqsSaslAuthenticate(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *Mechanism, const char_t *Username, const char_t *Password);
+rmqsResponseCode_t rmqsOpen(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *VirtualHost);
+rmqsResponseCode_t rmqsClose(rmqsClient_t *Client, const rmqsSocket Socket, const uint16_t ClosingCode, const char_t *ClosingReason);
+rmqsResponseCode_t rmqsCreate(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *Stream, const rqmsCreateStreamArgs_t *CreateStreamArgs);
+rmqsResponseCode_t rmqsDelete(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *Stream);
 //---------------------------------------------------------------------------
 #endif
 //---------------------------------------------------------------------------
