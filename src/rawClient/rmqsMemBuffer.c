@@ -11,7 +11,7 @@ rmqsMemBuffer_t * rmqsMemBufferCreate(void)
 
     memset(Stream, 0, sizeof(rmqsMemBuffer_t));
 
-    Stream->ChunkSize = 1024 * 100000;
+    Stream->ChunkSize = 10240000;
 
     return Stream;
 }

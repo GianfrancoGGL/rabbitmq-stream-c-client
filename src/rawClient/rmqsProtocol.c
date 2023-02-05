@@ -27,21 +27,18 @@ bool_t rmqsIsLittleEndianMachine(void)
     }
 }
 //---------------------------------------------------------------------------
-void rmqsSendMessage(const void *ClientConfiguration, const rmqsSocket Socket, const char_t *Data, size_t DataSize)
+void rmqsSendMessage(const rmqsClientConfiguration_t *ClientConfiguration, const rmqsSocket Socket, const char_t *Data, size_t DataSize)
 {
-    rmqsClientConfiguration_t *ConfigurationObj = (rmqsClientConfiguration_t *)ClientConfiguration;
-
-    if (ConfigurationObj->Logger)
+    if (ClientConfiguration->Logger)
     {
-        rmqsLoggerRegisterDump(ConfigurationObj->Logger, (void *)Data, DataSize, "TX", 0);
+        rmqsLoggerRegisterDump(ClientConfiguration->Logger, (void *)Data, DataSize, "TX", 0);
     }
 
     send(Socket, (const char_t *)Data, DataSize, 0);
 }
 //---------------------------------------------------------------------------
-bool_t rmqsWaitMessage(const void *ClientConfiguration, const rmqsSocket Socket, char_t *RxBuffer, const size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout)
+bool_t rmqsWaitMessage(const rmqsClientConfiguration_t *ClientConfiguration, const rmqsSocket Socket, char_t *RxBuffer, const size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout)
 {
-    rmqsClientConfiguration_t *ConfigurationObj = (rmqsClientConfiguration_t *)ClientConfiguration;
     bool_t MessageReceived = 0;
     int32_t RxBytes;
     uint32_t MessageSize;
@@ -73,7 +70,7 @@ bool_t rmqsWaitMessage(const void *ClientConfiguration, const rmqsSocket Socket,
             //
             MessageSize = *(uint32_t *)RxStream->Data;
 
-            if (ConfigurationObj->IsLittleEndianMachine)
+            if (ClientConfiguration->IsLittleEndianMachine)
             {
                 MessageSize = SwapUInt32(MessageSize);
             }
@@ -90,9 +87,9 @@ bool_t rmqsWaitMessage(const void *ClientConfiguration, const rmqsSocket Socket,
                 //
                 MessageReceived = 1;
 
-                if (ConfigurationObj->Logger)
+                if (ClientConfiguration->Logger)
                 {
-                    rmqsLoggerRegisterDump(ConfigurationObj->Logger, (void *)RxStream->Data, RxStream->Size, "RX", 0);
+                    rmqsLoggerRegisterDump(ClientConfiguration->Logger, (void *)RxStream->Data, RxStream->Size, "RX", 0);
                 }
 
                 //

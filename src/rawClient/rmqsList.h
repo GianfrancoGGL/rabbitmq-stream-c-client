@@ -12,15 +12,17 @@ typedef struct
 }
 rmqsListNode_t;
 //---------------------------------------------------------------------------
+typedef void (*ClearDataCallback_t)(void *Data);
+//---------------------------------------------------------------------------
 typedef struct
 {
     rmqsListNode_t *First;
     size_t Count;
-    void (*ClearDataCallback)(void *);
+    ClearDataCallback_t ClearDataCallback;
 }
 rmqsList_t;
 //---------------------------------------------------------------------------
-rmqsList_t * rmqsListCreate(void (*ClearDataCallback)(void *));
+rmqsList_t * rmqsListCreate(ClearDataCallback_t ClearDataCallback);
 rmqsList_t * rmqsListGenericCreate(void);
 void rmqsListDestroy(rmqsList_t *Stream);
 //---------------------------------------------------------------------------

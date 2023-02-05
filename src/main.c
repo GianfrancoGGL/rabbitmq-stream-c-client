@@ -30,24 +30,34 @@ extern "C"
 #define ROW_SEPARATOR "============================================================================"
 #define MESSAGE_COUNT  1000000
 //---------------------------------------------------------------------------
+void PublishResultCallback(uint8_t PublisherId, uint64_t PublishingId, uint16_t Code);
+//---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char_t *BrokerList = "rabbitmq-stream://guest:guest@localhost:5552";
+    (void)argc;
+    (void)argv;
+
+    char *BrokerList = "rabbitmq-stream://gian:ggi@192.168.56.1:5552";
     rmqsClientConfiguration_t *ClientConfiguration;
-    char_t Error[RMQS_ERR_MAX_STRING_LENGTH];
+    char Error[RMQS_ERR_MAX_STRING_LENGTH];
     rmqsBroker_t *Broker;
     rmqsProducer_t *Producer;
+    const int PublisherId = 1;
     rmqsTimer_t *WaitingTimer, *PerformanceTimer;
     rmqsSocket Socket;
     rmqsProperty_t Properties[6];
     rmqsMessage_t **MessageBatch;
-    char_t MessageText[32];
     uint32_t SleepTime = 10;
+    uint64_t PublishingId;
     size_t i;
+    size_t UsedMemory;
 
     (void)argc;
     (void)argv;
 
+    //
+    // Initialize random seed
+    //
     srand(time(NULL));
 
     //
@@ -94,7 +104,7 @@ int main(int argc, char * argv[])
     }
 
     printf("Creating client...\r\n");
-    Producer = rmqsProducerCreate(ClientConfiguration, 1, "Publisher");
+    Producer = rmqsProducerCreate(ClientConfiguration, "Publisher", PublishResultCallback);
     printf("Producer created\r\n");
 
     printf("Running for %u seconds\r\n", SleepTime);
@@ -109,24 +119,25 @@ int main(int argc, char * argv[])
         {
             printf("Connected to %s\r\n", Broker->Hostname);
 
-            if (rqmsClientLogin(Producer->Client, Socket, Broker->VirtualHost, Properties, 6))
+            if (rqmsClientLogin(Producer->Client, Socket, Broker->VirtualHost, Properties, 6) == rmqsrOK)
             {
                 printf("Logged in to %s\r\n", Broker->Hostname);
 
-                if (rmqsDeclarePublisher(Producer, Socket, "SYNERP_RESULTS"))
+                if (rmqsDeclarePublisher(Producer, Socket, PublisherId, "SYNERP_RESULTS") == rmqsrOK)
                 {
+                    PublishingId = rand();
+
                     MessageBatch = (rmqsMessage_t **)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MESSAGE_COUNT);
 
                     for (i = 0; i < MESSAGE_COUNT; i++)
                     {
-                        sprintf(MessageText, "%012d", rand() % MESSAGE_COUNT);
-                        MessageBatch[i] = rmqsMessageCreate(i + 1, MessageText, strlen(MessageText), 0);
+                        MessageBatch[i] = rmqsMessageCreate(PublishingId++, "Hello world!", 12, 0);
                     }
 
                     PerformanceTimer = rmqsTimerCreate();
                     rmqsTimerStart(PerformanceTimer);
 
-                    rmqsPublishBatch(Producer, Socket, MessageBatch, MESSAGE_COUNT);
+                    rmqsPublish(Producer, Socket, PublisherId, MessageBatch, MESSAGE_COUNT);
 
                     printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT, rmqsTimerGetTime(PerformanceTimer));
 
@@ -138,6 +149,28 @@ int main(int argc, char * argv[])
                     }
 
                     rmqsFreeMemory(MessageBatch);
+
+                    if (rmqsDeletePublisher(Producer, Socket, PublisherId) != rmqsrOK)
+                    {
+                        printf("Cannot delete the publisher\r\n");
+                    }
+                    else
+                    {
+                        printf("Publisher deleted\r\n");
+                    }
+                }
+                else
+                {
+                    printf("Cannot declare the publisher\r\n");
+                }
+
+                if (rqmsClientLogout(Producer->Client, Socket, 0, "Regular shutdown"))
+                {
+                    printf("Logged out\r\n");
+                }
+                else
+                {
+                    printf("Cannot logout\r\n");
                 }
             }
             else
@@ -175,6 +208,17 @@ int main(int argc, char * argv[])
 
     rmqsThreadSleep(2000);
 
+    UsedMemory = rmqsGetUsedMemory();
+    UsedMemory = UsedMemory;
+    
     return 0;
 }
 //---------------------------------------------------------------------------
+void PublishResultCallback(uint8_t PublisherId, uint64_t PublishingId, uint16_t Code)
+{
+    (void)PublisherId;
+    (void)PublishingId;
+    (void)Code;
+}
+//---------------------------------------------------------------------------
+

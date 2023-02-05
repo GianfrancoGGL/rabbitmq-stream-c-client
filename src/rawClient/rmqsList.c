@@ -4,7 +4,7 @@
 #include "rmqsList.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsList_t * rmqsListCreate(void (*ClearDataCallback)(void *))
+rmqsList_t * rmqsListCreate(ClearDataCallback_t ClearDataCallback)
 {
     rmqsList_t *List = (rmqsList_t *)rmqsAllocateMemory(sizeof(rmqsList_t));
 
@@ -250,7 +250,7 @@ void rmqsListDeletePosition(rmqsList_t *List, size_t Position)
     }
     else
     {
-        rmqsListNode_t *PrevNode = 0;
+        rmqsListNode_t *PrevNode;
         size_t i;
 
         for (i = 0; i < Position; i++)

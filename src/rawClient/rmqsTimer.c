@@ -34,13 +34,13 @@ void rmqsTimerStart(rmqsTimer_t *Timer)
     Timer->CounterStart = LI.QuadPart;
     #endif
 
-    Timer->Running = 1;
+    Timer->Running = true;
     Timer->TimeStarted = rmqsTimerGetSystemClock(Timer);
 }
 //---------------------------------------------------------------------------
 void rmqsTimerStop(rmqsTimer_t *Timer)
 {
-    Timer->Running = 0;
+    Timer->Running = false;
 }
 //---------------------------------------------------------------------------
 uint32_t rmqsTimerGetTime(rmqsTimer_t *Timer)

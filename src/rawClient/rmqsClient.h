@@ -31,10 +31,12 @@ rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, 
 void rmqsClientDestroy(rmqsClient_t *Client);
 //---------------------------------------------------------------------------
 bool_t rqmsClientLogin(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *VirtualHost, rmqsProperty_t *Properties, const size_t PropertiesCount);
-rmqsResponseCode rmqsPeerPropertiesRequest(rmqsClient_t *Client, const rmqsSocket Socket, rmqsProperty_t *Properties, const size_t PropertiesCount);
-rmqsResponseCode rmqsSaslHandshakeRequest(rmqsClient_t *Client, const rmqsSocket Socket, bool_t *PlainAuthSupported);
-rmqsResponseCode rmqsSaslAuthenticateRequest(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *Mechanism, const char_t *Username, const char_t *Password);
-rmqsResponseCode rmqsOpenRequest(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *VirtualHost);
+bool_t rqmsClientLogout(rmqsClient_t *Client, const rmqsSocket Socket, const uint16_t ClosingCode, const char *ClosingReason);
+rmqsResponseCode rmqsPeerProperties(rmqsClient_t *Client, const rmqsSocket Socket, rmqsProperty_t *Properties, const size_t PropertiesCount);
+rmqsResponseCode rmqsSaslHandshake(rmqsClient_t *Client, const rmqsSocket Socket, bool_t *PlainAuthSupported);
+rmqsResponseCode rmqsSaslAuthenticate(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *Mechanism, const char_t *Username, const char_t *Password);
+rmqsResponseCode rmqsOpen(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *VirtualHost);
+rmqsResponseCode rmqsClose(rmqsClient_t *Client, const rmqsSocket Socket, const uint16_t ClosingCode, const char *ClosingReason);
 //---------------------------------------------------------------------------
 #endif
 //---------------------------------------------------------------------------

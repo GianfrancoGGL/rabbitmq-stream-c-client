@@ -100,7 +100,7 @@ void rmqsSocketDestroy(rmqsSocket *Socket)
 //---------------------------------------------------------------------------
 bool_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs)
 {
-    bool_t Connected = 0;
+    bool_t Connected = false;
     struct hostent *pHost;
     struct sockaddr_in ServerAddress;
     #if _WIN32 || _WIN64
@@ -160,12 +160,8 @@ bool_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSock
 
     rmqsSetSocketBlocking(Socket);
     #else
-
-    #ifdef __APPLE__
-    setsockopt(Socket, IPPROTO_TCP , TCP_CONNECTIONTIMEOUT, &TimeoutMs, sizeof(TimeoutMs));
-    #else
     setsockopt(Socket, IPPROTO_TCP , TCP_USER_TIMEOUT, &TimeoutMs, sizeof(TimeoutMs));
-    #endif
+
     if (connect(Socket, (struct sockaddr *)&ServerAddress, sizeof(struct sockaddr)) == 0)
     {
         Connected = 1;
@@ -210,16 +206,16 @@ void rmqsSetSocketWriteTimeouts(const rmqsSocket Socket, const uint32_t WriteTim
 //--------------------------------------------------------------------------
 bool_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t ulTxBufferSize, const uint32_t ulRxBufferSize)
 {
-    bool_t Result = 1;
+    bool_t Result = true;
 
     if (setsockopt(Socket, SOL_SOCKET, SO_SNDBUF, (const char_t *)&ulTxBufferSize, sizeof(uint32_t)) == -1)
     {
-        Result = 0;
+        Result = false;
     }
 
     if (setsockopt(Socket, SOL_SOCKET, SO_RCVBUF, (const char_t *)&ulRxBufferSize, sizeof(uint32_t)) == -1)
     {
-        Result = 0;
+        Result = false;
     }
 
     return Result;
@@ -346,20 +342,20 @@ bool_t rmqsNetworkError(void)
 
     if (Error == WSAECONNRESET || Error == WSAENETDOWN || Error == WSAENETUNREACH || Error == WSAENETRESET)
     {
-        Result = 1;
+        Result = true;
     }
     else
     {
-        Result = 0;
+        Result = false;
     }
     #else
     if (errno == ECONNRESET)
     {
-        Result = 1;
+        Result = true;
     }
     else
     {
-        Result = 0;
+        Result = false;
     }
     #endif
 

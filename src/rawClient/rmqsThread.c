@@ -13,14 +13,14 @@ uint32_t rmqsThreadRoutine(const uint32_t *ThreadData);
 void * rqmsThreadRoutine(void *ThreadData);
 #endif
 //--------------------------------------------------------------------------
-rmqsThread_t * rmqsThreadCreate(void (*ThreadRoutine)(void *, bool_t *), void (*CancelIORoutine)(void *), void *Parameters)
+rmqsThread_t * rmqsThreadCreate(ThreadRoutineCallback_t ThreadRoutineCallback, CancelIORoutineCallback_t CancelIORoutineCallback, void *Parameters)
 {
     rmqsThread_t *Thread = (rmqsThread_t *)rmqsAllocateMemory(sizeof(rmqsThread_t));
 
     memset(Thread, 0, sizeof(rmqsThread_t));
 
-    Thread->ThreadRoutine = ThreadRoutine;
-    Thread->CancelIORoutine = CancelIORoutine;
+    Thread->ThreadRoutineCallback = ThreadRoutineCallback;
+    Thread->CancelIORoutineCallback = CancelIORoutineCallback;
     Thread->Parameters = Parameters;
 
     return Thread;
@@ -42,8 +42,8 @@ void rmqsThreadStart(rmqsThread_t *Thread)
         return;
     }
 
-    Thread->TerminateRequest = 0;
-    Thread->Terminated = 0;
+    Thread->TerminateRequest = false;
+    Thread->Terminated = false;
 
     #if _WIN32 || _WIN64
     Thread->ThreadHandle = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)rmqsThreadRoutine, (uint32_t *)Thread, 0, &ThreadId);
@@ -59,11 +59,11 @@ void rmqsThreadStop(rmqsThread_t *Thread)
         return;
     }
 
-    Thread->TerminateRequest = 1;
+    Thread->TerminateRequest = true;
 
-    if (Thread->CancelIORoutine != 0)
+    if (Thread->CancelIORoutineCallback != 0)
     {
-        Thread->CancelIORoutine(Thread->Parameters);
+        Thread->CancelIORoutineCallback(Thread->Parameters);
     }
 
     while (! Thread->Terminated)
@@ -76,8 +76,8 @@ void rmqsThreadStop(rmqsThread_t *Thread)
     CloseHandle(Thread->ThreadHandle);
     #endif //
 
-    Thread->TerminateRequest = 0;
-    Thread->Terminated = 1;
+    Thread->TerminateRequest = false;
+    Thread->Terminated = true;
 }
 //--------------------------------------------------------------------------
 void rmqsThreadSleep(const uint32_t Milliseconds)
@@ -105,15 +105,15 @@ void rmqsThreadSleepEx(const uint32_t Milliseconds, const size_t HowManyTimes, c
 }
 //--------------------------------------------------------------------------
 #if _WIN32 || _WIN64
-uint32_t rmqsThreadRoutine(const uint32_t *ThreadData)
+uint32_t rmqsThreadRoutine(const uint32_t *ThreadPointer)
 #else
-void * rqmsThreadRoutine(void *ThreadData)
+void * rqmsThreadRoutine(void *ThreadPointer)
 #endif
 {
-    rmqsThread_t *Thread = (rmqsThread_t *)ThreadData;
+    rmqsThread_t *Thread = (rmqsThread_t *)ThreadPointer;
 
-    Thread->ThreadRoutine(Thread->Parameters, &Thread->TerminateRequest);
-    Thread->Terminated = 1;
+    Thread->ThreadRoutineCallback(Thread->Parameters, &Thread->TerminateRequest);
+    Thread->Terminated = true;
 
     #if _WIN32 || _WIN64
     return 0;

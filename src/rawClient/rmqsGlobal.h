@@ -4,6 +4,8 @@
 //---------------------------------------------------------------------------
 typedef char char_t;
 typedef unsigned char uchar_t;
+typedef long long_t;
+typedef unsigned long ulong_t;
 typedef unsigned char bool_t;
 typedef double double_t;
 //---------------------------------------------------------------------------
@@ -15,9 +17,8 @@ typedef double double_t;
 #define false  0
 #endif
 #endif
-#define getmin(x, y) (x < y ? x : y)
-#ifdef _MSC_VER 
-#pragma warning(disable:4996)
+#ifndef min
+#define min(x, y) (x < y ? x : y)
 #endif
 //---------------------------------------------------------------------------
 #define RQMS_MAX_HOSTNAME_LENGTH      256

@@ -5,9 +5,10 @@
 #include <stdlib.h>
 #include <memory.h>
 //---------------------------------------------------------------------------
-void * rmqsAllocateMemory(size_t Size);
+void * rmqsAllocateMemory(const size_t Size);
 void rmqsFreeMemory(void *Memory);
-void * rmqsRellocateMemory(void *Memory, size_t size);
+void * rmqsRellocateMemory(void *Memory, const size_t Size);
+size_t rmqsGetUsedMemory(void);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

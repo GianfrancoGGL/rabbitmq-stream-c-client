@@ -12,6 +12,9 @@
 //--------------------------------------------------------------------------
 #include "rmqsGlobal.h"
 //--------------------------------------------------------------------------
+typedef void (*ThreadRoutineCallback_t)(void *Parameters, bool_t *Terminate);
+typedef void (*CancelIORoutineCallback_t)(void *Parameters);
+//--------------------------------------------------------------------------
 typedef struct
 {
     #if _WIN32 || _WIN64
@@ -19,15 +22,15 @@ typedef struct
     #else
     pthread_t ThreadHandle;
     #endif
-    void (*ThreadRoutine)(void *, bool_t *);
-    void (*CancelIORoutine)(void *);
+    ThreadRoutineCallback_t ThreadRoutineCallback;
+    CancelIORoutineCallback_t CancelIORoutineCallback;
     void *Parameters;
     bool_t TerminateRequest;
     bool_t Terminated;
 }
 rmqsThread_t;
 //---------------------------------------------------------------------------
-rmqsThread_t * rmqsThreadCreate(void (*ThreadRoutine)(void *, bool_t *), void (*CancelIORoutine)(void *), void *Parameters);
+rmqsThread_t * rmqsThreadCreate(ThreadRoutineCallback_t ThreadRoutineCallback, CancelIORoutineCallback_t CancelIORoutineCallback, void *Parameters);
 void rmqsThreadDestroy(rmqsThread_t *Thread);
 void rmqsThreadStart(rmqsThread_t *Thread);
 void rmqsThreadStop(rmqsThread_t *Thread);

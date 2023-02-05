@@ -18,6 +18,16 @@
                       ((x << 40) & 0x00FF000000000000LL) | \
                       ((x << 56) & 0xFF00000000000000LL)
 //---------------------------------------------------------------------------
+/*
+Stream creation parameters:
+
+x-max-length-bytes
+x-initial-cluster-size
+x-queue-leader-locator
+x-max-age
+x-stream-max-segment-size-bytes
+*/
+//---------------------------------------------------------------------------
 typedef enum
 {
     rmqscDeclarePublisher = 0x01,
@@ -126,8 +136,8 @@ rmqsTuneRequest_t;
 //---------------------------------------------------------------------------
 bool_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
-void rmqsSendMessage(const void *ClientConfiguration, const rmqsSocket Socket, const char_t *Data, const size_t DataSize);
-bool_t rmqsWaitMessage(const void *ClientConfiguration, const rmqsSocket Socket, char_t *RxBuffer, const size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout);
+void rmqsSendMessage(const rmqsClientConfiguration_t *ClientConfiguration, const rmqsSocket Socket, const char_t *Data, const size_t DataSize);
+bool_t rmqsWaitMessage(const rmqsClientConfiguration_t *ClientConfiguration, const rmqsSocket Socket, char_t *RxBuffer, const size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout);
 //---------------------------------------------------------------------------
 size_t rmqsAddInt8ToStream(rmqsMemBuffer_t *Stream, int8_t Value);
 size_t rmqsAddUInt8ToStream(rmqsMemBuffer_t *Stream, uint8_t Value);
