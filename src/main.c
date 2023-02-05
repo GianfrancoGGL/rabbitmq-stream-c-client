@@ -37,12 +37,15 @@ int main(int argc, char * argv[])
     (void)argc;
     (void)argv;
 
-    char *BrokerList = "rabbitmq-stream://gian:ggi@192.168.56.1:5552";
+    char *BrokerList = "rabbitmq-stream://gian:ggi@127.0.0.1:5552";
     rmqsClientConfiguration_t *ClientConfiguration;
     char Error[RMQS_ERR_MAX_STRING_LENGTH];
     rmqsBroker_t *Broker;
     rmqsProducer_t *Producer;
     const int PublisherId = 1;
+    char *StreamName = "MY-STREAM";
+    rqmsCreateStreamParams_t CreateStreamParams = {0};
+    rmqsResponseCode CreateStreamResponse;
     rmqsTimer_t *WaitingTimer, *PerformanceTimer;
     rmqsSocket Socket;
     rmqsProperty_t Properties[6];
@@ -123,54 +126,84 @@ int main(int argc, char * argv[])
             {
                 printf("Logged in to %s\r\n", Broker->Hostname);
 
-                if (rmqsDeclarePublisher(Producer, Socket, PublisherId, "SYNERP_RESULTS") == rmqsrOK)
+                CreateStreamParams.SpecifyMaxLengthBytes = true;
+                CreateStreamParams.MaxLengthBytes = 1000000000;
+
+                CreateStreamParams.SpecifyMaxAge = true;
+                strcpy(CreateStreamParams.MaxAge, "12h");
+
+                CreateStreamParams.SpecifyStreamMaxSegmentSizeBytes = true;
+                CreateStreamParams.StreamMaxSegmentSizeBytes = 100000000;
+
+                CreateStreamParams.SpecifyQueueLeaderLocator = true;
+                strcpy(CreateStreamParams.QueueLeaderLocator, "random");
+
+                CreateStreamResponse = rmqsCreate(Producer->Client, Socket, StreamName, &CreateStreamParams);
+
+                if (CreateStreamResponse == rmqsrOK || CreateStreamResponse == rmqsrStreamAlreadyExists)
                 {
-                    PublishingId = rand();
-
-                    MessageBatch = (rmqsMessage_t **)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MESSAGE_COUNT);
-
-                    for (i = 0; i < MESSAGE_COUNT; i++)
+                    if (CreateStreamResponse == rmqsrOK)
                     {
-                        MessageBatch[i] = rmqsMessageCreate(PublishingId++, "Hello world!", 12, 0);
-                    }
-
-                    PerformanceTimer = rmqsTimerCreate();
-                    rmqsTimerStart(PerformanceTimer);
-
-                    rmqsPublish(Producer, Socket, PublisherId, MessageBatch, MESSAGE_COUNT);
-
-                    printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT, rmqsTimerGetTime(PerformanceTimer));
-
-                    rmqsTimerDestroy(PerformanceTimer);
-
-                    for (i = 0; i < MESSAGE_COUNT; i++)
-                    {
-                        rmqsMessageDestroy(MessageBatch[i]);
-                    }
-
-                    rmqsFreeMemory(MessageBatch);
-
-                    if (rmqsDeletePublisher(Producer, Socket, PublisherId) != rmqsrOK)
-                    {
-                        printf("Cannot delete the publisher\r\n");
+                        printf("Created stream %s\r\n", StreamName);
                     }
                     else
                     {
-                        printf("Publisher deleted\r\n");
+                        printf("Stream opened %s\r\n", StreamName);
+                    }
+
+                    if (rmqsDeclarePublisher(Producer, Socket, PublisherId, StreamName) == rmqsrOK)
+                    {
+                        PublishingId = rand();
+
+                        MessageBatch = (rmqsMessage_t **)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MESSAGE_COUNT);
+
+                        for (i = 0; i < MESSAGE_COUNT; i++)
+                        {
+                            MessageBatch[i] = rmqsMessageCreate(PublishingId++, "Hello world!", 12, 0);
+                        }
+
+                        PerformanceTimer = rmqsTimerCreate();
+                        rmqsTimerStart(PerformanceTimer);
+
+                        rmqsPublish(Producer, Socket, PublisherId, MessageBatch, MESSAGE_COUNT);
+
+                        printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT, rmqsTimerGetTime(PerformanceTimer));
+
+                        rmqsTimerDestroy(PerformanceTimer);
+
+                        for (i = 0; i < MESSAGE_COUNT; i++)
+                        {
+                            rmqsMessageDestroy(MessageBatch[i]);
+                        }
+
+                        rmqsFreeMemory(MessageBatch);
+
+                        if (rmqsDeletePublisher(Producer, Socket, PublisherId) != rmqsrOK)
+                        {
+                            printf("Cannot delete the publisher\r\n");
+                        }
+                        else
+                        {
+                            printf("Publisher deleted\r\n");
+                        }
+                    }
+                    else
+                    {
+                        printf("Cannot declare the publisher\r\n");
+                    }
+
+                    if (rqmsClientLogout(Producer->Client, Socket, 0, "Regular shutdown"))
+                    {
+                        printf("Logged out\r\n");
+                    }
+                    else
+                    {
+                        printf("Cannot logout\r\n");
                     }
                 }
                 else
                 {
-                    printf("Cannot declare the publisher\r\n");
-                }
-
-                if (rqmsClientLogout(Producer->Client, Socket, 0, "Regular shutdown"))
-                {
-                    printf("Logged out\r\n");
-                }
-                else
-                {
-                    printf("Cannot logout\r\n");
+                    printf("Cannot create stream %s\r\n", StreamName);
                 }
             }
             else
@@ -210,7 +243,7 @@ int main(int argc, char * argv[])
 
     UsedMemory = rmqsGetUsedMemory();
     UsedMemory = UsedMemory;
-    
+
     return 0;
 }
 //---------------------------------------------------------------------------

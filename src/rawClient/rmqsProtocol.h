@@ -22,10 +22,10 @@
 Stream creation parameters:
 
 x-max-length-bytes
-x-initial-cluster-size
-x-queue-leader-locator
 x-max-age
 x-stream-max-segment-size-bytes
+x-initial-cluster-size
+x-queue-leader-locator
 */
 //---------------------------------------------------------------------------
 typedef enum

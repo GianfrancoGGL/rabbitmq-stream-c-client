@@ -1,11 +1,12 @@
 //---------------------------------------------------------------------------
 #include "rmqsMemory.h"
+#include "rmqsGlobal.h"
 //---------------------------------------------------------------------------
 size_t TotalUsedMemory = 0;
 //---------------------------------------------------------------------------
 void * rmqsAllocateMemory(const size_t Size)
 {
-    char *Memory = (char *)malloc(Size + sizeof(size_t)); // Allocate 4 extra bytes to store the block size
+    char_t *Memory = (char_t *)malloc(Size + sizeof(size_t)); // Allocate 4 extra bytes to store the block size
 
     *(size_t *)Memory = Size; // Store the size at the beginning of the memory block
     Memory += sizeof(size_t); // Move the pointer by 4 bytes to point to memory to use
@@ -17,7 +18,7 @@ void * rmqsAllocateMemory(const size_t Size)
 //---------------------------------------------------------------------------
 void rmqsFreeMemory(void *Memory)
 {
-    char *MemoryToFree = (char *)Memory;
+    char_t *MemoryToFree = (char_t *)Memory;
 
     MemoryToFree -= sizeof(size_t); // Move back the pointer by 4 bytes to point to
                                     // the effective allocated block start, where the size is stored
@@ -29,7 +30,7 @@ void rmqsFreeMemory(void *Memory)
 //---------------------------------------------------------------------------
 void * rmqsRellocateMemory(void *Memory, const size_t Size)
 {
-    char *OldMemory = (char *)Memory, *NewMemory;
+    char_t *OldMemory = (char_t *)Memory, *NewMemory;
 
     OldMemory -= sizeof(size_t); // Move back the pointer by 4 bytes to point to
                                  // the effective allocated block start, where the size is stored

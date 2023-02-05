@@ -111,7 +111,7 @@ bool_t rqmsClientLogin(rmqsClient_t *Client, const rmqsSocket Socket, const char
     return true;
 }
 //---------------------------------------------------------------------------
-bool_t rqmsClientLogout(rmqsClient_t *Client, const rmqsSocket Socket, const uint16_t ClosingCode, const char *ClosingReason)
+bool_t rqmsClientLogout(rmqsClient_t *Client, const rmqsSocket Socket, const uint16_t ClosingCode, const char_t *ClosingReason)
 {
     if (rmqsClose(Client, Socket, ClosingCode, ClosingReason) == rmqsrOK)
     {
@@ -309,7 +309,6 @@ rmqsResponseCode rmqsSaslAuthenticate(rmqsClient_t *Client, const rmqsSocket Soc
     rmqsAddUInt16ToStream(Client->TxStream, Key, Client->ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt16ToStream(Client->TxStream, Version, Client->ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt32ToStream(Client->TxStream, Client->CorrelationId++, Client->ClientConfiguration->IsLittleEndianMachine);
-
     rmqsAddStringToStream(Client->TxStream, (char_t *)Mechanism, Client->ClientConfiguration->IsLittleEndianMachine);
 
     UsernameLen = strlen(Username);
@@ -408,7 +407,7 @@ rmqsResponseCode rmqsOpen(rmqsClient_t *Client, const rmqsSocket Socket, const c
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode rmqsClose(rmqsClient_t *Client, const rmqsSocket Socket, const uint16_t ClosingCode, const char *ClosingReason)
+rmqsResponseCode rmqsClose(rmqsClient_t *Client, const rmqsSocket Socket, const uint16_t ClosingCode, const char_t *ClosingReason)
 {
     uint16_t Key = rmqscClose;
     uint16_t Version = 1;
@@ -458,3 +457,99 @@ rmqsResponseCode rmqsClose(rmqsClient_t *Client, const rmqsSocket Socket, const 
     }
 }
 //---------------------------------------------------------------------------
+rmqsResponseCode rmqsCreate(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *Stream, const rqmsCreateStreamParams_t *CreateStreamParams)
+{
+    uint16_t Key = rmqscCreate;
+    uint16_t Version = 1;
+    rmqsResponse_t *Response;
+    size_t NoOfProperties = 0;
+    rmqsProperty_t Property;
+
+    NoOfProperties += CreateStreamParams->SpecifyMaxLengthBytes ? 1 : 0;
+    NoOfProperties += CreateStreamParams->SpecifyMaxAge ? 1 : 0;
+    NoOfProperties += CreateStreamParams->SpecifyStreamMaxSegmentSizeBytes ? 1 : 0;
+    NoOfProperties += CreateStreamParams->SpecifyQueueLeaderLocator ? 1 : 0;
+
+    rmqsMemBufferClear(Client->TxStream, 0);
+
+    rmqsAddUInt32ToStream(Client->TxStream, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToStream(Client->TxStream, Key, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToStream(Client->TxStream, Version, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, Client->CorrelationId++, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToStream(Client->TxStream, (char_t *)Stream, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToStream(Client->TxStream, NoOfProperties, Client->ClientConfiguration->IsLittleEndianMachine);
+
+    if (CreateStreamParams->SpecifyMaxLengthBytes)
+    {
+        memset(&Property, 0, sizeof(Property));
+
+        strncpy(Property.Key, "max-length-bytes", RMQS_MAX_KEY_SIZE);
+        sprintf(Property.Value, "%u", CreateStreamParams->MaxLengthBytes);
+
+        rmqsAddStringToStream(Client->TxStream, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToStream(Client->TxStream, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
+    }
+
+    if (CreateStreamParams->SpecifyMaxAge)
+    {
+        strncpy(Property.Key, "max-age", RMQS_MAX_KEY_SIZE);
+        strncpy(Property.Value, (char_t *) CreateStreamParams->MaxAge, RMQS_MAX_VALUE_SIZE);
+
+        rmqsAddStringToStream(Client->TxStream, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToStream(Client->TxStream, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
+    }
+
+    if (CreateStreamParams->SpecifyStreamMaxSegmentSizeBytes)
+    {
+        strncpy(Property.Key, "stream-max-segment-size-bytes", RMQS_MAX_KEY_SIZE);
+        sprintf(Property.Value, "%u", CreateStreamParams->StreamMaxSegmentSizeBytes);
+
+        rmqsAddStringToStream(Client->TxStream, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToStream(Client->TxStream, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
+    }
+
+    if (CreateStreamParams->SpecifyQueueLeaderLocator)
+    {
+        strncpy(Property.Key, "queue-leader-locator", RMQS_MAX_KEY_SIZE);
+        strncpy(Property.Value, (char_t *)CreateStreamParams->QueueLeaderLocator, RMQS_MAX_VALUE_SIZE);
+
+        rmqsAddStringToStream(Client->TxStream, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToStream(Client->TxStream, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
+    }
+
+    //
+    // Moves to the beginning of the stream and writes the total message body size
+    //
+    rmqsMemBufferMoveTo(Client->TxStream, 0);
+    rmqsAddUInt32ToStream(Client->TxStream, Client->TxStream->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+
+    rmqsSendMessage(Client->ClientConfiguration, Socket, (const char_t *)Client->TxStream->Data, Client->TxStream->Size);
+
+    if (rmqsWaitMessage(Client->ClientConfiguration, Socket, Client->RxSocketBuffer, sizeof(Client->RxSocketBuffer), Client->RxStream, Client->RxStreamTempBuffer, 1000))
+    {
+        Response = (rmqsResponse_t *)Client->RxStream->Data;
+
+        if (Client->ClientConfiguration->IsLittleEndianMachine)
+        {
+            Response->Size = SwapUInt32(Response->Size);
+            Response->Key = SwapUInt16(Response->Key);
+            Response->Key &= 0x7FFF;
+            Response->Version = SwapUInt16(Response->Version);
+            Response->CorrelationId = SwapUInt32(Response->CorrelationId);
+            Response->ResponseCode = SwapUInt16(Response->ResponseCode);
+        }
+
+        if (Response->Key != rmqscCreate)
+        {
+            return rmqsrWrongReply;
+        }
+
+        return Response->ResponseCode;
+    }
+    else
+    {
+        return rmqsrNoReply;
+    }
+}
+//---------------------------------------------------------------------------
+

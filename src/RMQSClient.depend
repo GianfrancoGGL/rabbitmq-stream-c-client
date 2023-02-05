@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1675583330 source:c:\rabbitmq-stream-c-client-main\src\main.c
+1675603095 source:c:\rabbitmq-stream-c-client-main\src\main.c
 	<stdio.h>
 	<memory.h>
 	<string.h>
