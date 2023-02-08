@@ -208,14 +208,20 @@ bool_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t ulTxBuff
 {
     bool_t Result = true;
 
-    if (setsockopt(Socket, SOL_SOCKET, SO_SNDBUF, (const char_t *)&ulTxBufferSize, sizeof(uint32_t)) == -1)
+    if (ulTxBufferSize != 0) // 0 = default
     {
-        Result = false;
+        if (setsockopt(Socket, SOL_SOCKET, SO_SNDBUF, (const char_t *)&ulTxBufferSize, sizeof(uint32_t)) == -1)
+        {
+            Result = false;
+        }
     }
 
-    if (setsockopt(Socket, SOL_SOCKET, SO_RCVBUF, (const char_t *)&ulRxBufferSize, sizeof(uint32_t)) == -1)
+    if (ulRxBufferSize != 0) // 0 = default
     {
-        Result = false;
+        if (setsockopt(Socket, SOL_SOCKET, SO_RCVBUF, (const char_t *)&ulRxBufferSize, sizeof(uint32_t)) == -1)
+        {
+            Result = false;
+        }
     }
 
     return Result;

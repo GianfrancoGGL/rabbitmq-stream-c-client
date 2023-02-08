@@ -51,6 +51,8 @@ typedef enum
 }
 rmqsCommand_t;
 //---------------------------------------------------------------------------
+#define rmqsCommandHasCorrelationId(x) (x != rmqscTune && x != rmqscPublishConfirm && x != rmqscPublishError && x != rmqscDeliver)
+//---------------------------------------------------------------------------
 typedef enum
 {
     rmqsrNoReply = 0x00,
@@ -95,6 +97,12 @@ typedef struct
     uint32_t Size;
     uint16_t Key;
     uint16_t Version;
+}
+rmqsMsgHeader_t;
+//---------------------------------------------------------------------------
+typedef struct
+{
+    rmqsMsgHeader_t Header;
     uint32_t CorrelationId;
     uint16_t ResponseCode;
 }
@@ -102,9 +110,7 @@ rmqsResponse_t;
 //---------------------------------------------------------------------------
 typedef struct
 {
-    uint32_t Size;
-    uint16_t Key;
-    uint16_t Version;
+    rmqsMsgHeader_t Header;
     uint32_t CorrelationId;
     uint16_t ResponseCode;
     uint16_t Unknown;
@@ -114,9 +120,7 @@ rmqsResponseHandshakeRequest_t;
 //---------------------------------------------------------------------------
 typedef struct
 {
-    uint32_t Size;
-    uint16_t Key;
-    uint16_t Version;
+    rmqsMsgHeader_t Header;
     uint32_t FrameMax;
     uint32_t Heartbeat;
 }
@@ -126,19 +130,22 @@ rmqsTuneRequest_t;
 //---------------------------------------------------------------------------
 bool_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
-void rmqsSendMessage(const rmqsClientConfiguration_t *ClientConfiguration, const rmqsSocket Socket, const char_t *Data, const size_t DataSize);
-bool_t rmqsWaitMessage(const rmqsClientConfiguration_t *ClientConfiguration, const rmqsSocket Socket, char_t *RxBuffer, const size_t RxBufferSize, rmqsMemBuffer_t *RxStream, rmqsMemBuffer_t *RxStreamTempBuffer, const uint32_t RxTimeout);
+void rmqsSendMessage(const void *Client, const rmqsSocket Socket, const char_t *Data, const size_t DataSize);
+bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32_t RxTimeout);
+bool_t rmqsWaitResponse(const void *Client, const rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, const uint32_t RxTimeout);
+void rmqsDequeueMessageFromMemBuffer(rmqsMemBuffer_t *MemBuffer, const size_t MessageSize);
+char_t * rmqsGetMessageDescription(uint16_t Key);
 //---------------------------------------------------------------------------
-size_t rmqsAddInt8ToStream(rmqsMemBuffer_t *Stream, int8_t Value);
-size_t rmqsAddUInt8ToStream(rmqsMemBuffer_t *Stream, uint8_t Value);
-size_t rmqsAddInt16ToStream(rmqsMemBuffer_t *Stream, int16_t Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddUInt16ToStream(rmqsMemBuffer_t *Stream, uint16_t Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddInt32ToStream(rmqsMemBuffer_t *Stream, int32_t Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddUInt32ToStream(rmqsMemBuffer_t *Stream, uint32_t Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddInt64ToStream(rmqsMemBuffer_t *Stream, int64_t Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddUInt64ToStream(rmqsMemBuffer_t *Stream, uint64_t Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddStringToStream(rmqsMemBuffer_t *Stream, const char_t *Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddBytesToStream(rmqsMemBuffer_t *Stream, void *Value, size_t ValueLength, bool_t IsLittleEndianMachine);
+size_t rmqsAddInt8ToMemBuffer(rmqsMemBuffer_t *MemMemBuffer, int8_t Value);
+size_t rmqsAddUInt8ToMemBuffer(rmqsMemBuffer_t *MemMemBuffer, uint8_t Value);
+size_t rmqsAddInt16ToMemBuffer(rmqsMemBuffer_t *MemMemBuffer, int16_t Value, bool_t IsLittleEndianMachine);
+size_t rmqsAddUInt16ToMemBuffer(rmqsMemBuffer_t *MemMemBuffer, uint16_t Value, bool_t IsLittleEndianMachine);
+size_t rmqsAddInt32ToMemBuffer(rmqsMemBuffer_t *MemMemBuffer, int32_t Value, bool_t IsLittleEndianMachine);
+size_t rmqsAddUInt32ToMemBuffer(rmqsMemBuffer_t *MemMemBuffer, uint32_t Value, bool_t IsLittleEndianMachine);
+size_t rmqsAddInt64ToMemBuffer(rmqsMemBuffer_t *MemMemBuffer, int64_t Value, bool_t IsLittleEndianMachine);
+size_t rmqsAddUInt64ToMemBuffer(rmqsMemBuffer_t *MemMemBuffer, uint64_t Value, bool_t IsLittleEndianMachine);
+size_t rmqsAddStringToMemBuffer(rmqsMemBuffer_t *MemMemBuffer, const char_t *Value, bool_t IsLittleEndianMachine);
+size_t rmqsAddBytesToMemBuffer(rmqsMemBuffer_t *MemMemBuffer, void *Value, size_t ValueLength, bool_t IsLittleEndianMachine);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

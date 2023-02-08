@@ -5,6 +5,7 @@
 #include <stdint.h>
 //---------------------------------------------------------------------------
 #include "rmqsList.h"
+#include "rmqsTimer.h"
 #include "rmqsLogger.h"
 //---------------------------------------------------------------------------
 typedef struct
@@ -12,6 +13,7 @@ typedef struct
     bool_t IsLittleEndianMachine;
     rmqsList_t *BrokerList;
     bool_t UseTLS;
+    rmqsTimer_t *WaitReplyTimer;
     rmqsLogger_t *Logger;
 }
 rmqsClientConfiguration_t;

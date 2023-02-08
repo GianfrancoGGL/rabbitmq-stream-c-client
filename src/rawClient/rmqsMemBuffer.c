@@ -7,127 +7,148 @@
 //---------------------------------------------------------------------------
 rmqsMemBuffer_t * rmqsMemBufferCreate(void)
 {
-    rmqsMemBuffer_t *Stream = (rmqsMemBuffer_t *)rmqsAllocateMemory(sizeof(rmqsMemBuffer_t));
+    rmqsMemBuffer_t *MemBuffer = (rmqsMemBuffer_t *)rmqsAllocateMemory(sizeof(rmqsMemBuffer_t));
 
-    memset(Stream, 0, sizeof(rmqsMemBuffer_t));
+    memset(MemBuffer, 0, sizeof(rmqsMemBuffer_t));
 
-    Stream->ChunkSize = 10240000;
+    MemBuffer->ChunkSize = 10240000;
 
-    return Stream;
+    return MemBuffer;
 }
 //---------------------------------------------------------------------------
-void rmqsMemBufferDestroy(rmqsMemBuffer_t *Stream)
+void rmqsMemBufferDestroy(rmqsMemBuffer_t *MemBuffer)
 {
-    if (Stream->Data)
+    if (MemBuffer->Data)
     {
-        rmqsFreeMemory(Stream->Data);
+        rmqsFreeMemory(MemBuffer->Data);
     }
 
-    rmqsFreeMemory((void *)Stream);
+    rmqsFreeMemory((void *)MemBuffer);
 }
 //---------------------------------------------------------------------------
-void rmqsMemBufferClear(rmqsMemBuffer_t *Stream, const bool_t ResetMemoryBuffer)
+void rmqsMemBufferClear(rmqsMemBuffer_t *MemBuffer, const bool_t ResetMemoryBuffer)
 {
-    Stream->Size = 0;
-    Stream->Position = 0;
+    MemBuffer->Size = 0;
+    MemBuffer->Position = 0;
 
-    if (ResetMemoryBuffer && Stream->Data)
+    if (ResetMemoryBuffer && MemBuffer->Data)
     {
-        rmqsFreeMemory(Stream->Data);
+        rmqsFreeMemory(MemBuffer->Data);
 
-        Stream->Data = 0;
-        Stream->CurrentMemorySize = 0;
+        MemBuffer->Data = 0;
+        MemBuffer->CurrentMemorySize = 0;
     }
 }
 //---------------------------------------------------------------------------
-size_t rmqsMemBufferRead(rmqsMemBuffer_t *Stream, void *ReadBuffer, size_t NrOfBytes)
+size_t rmqsMemBufferRead(rmqsMemBuffer_t *MemBuffer, void *ReadBuffer, size_t NoOfBytes)
 {
     char_t *p;
 
-    if (Stream->Position >= Stream->Size || NrOfBytes == 0)
+    if (MemBuffer->Position >= MemBuffer->Size || NoOfBytes == 0)
     {
         return 0;
     }
 
-    if (Stream->Position + NrOfBytes > Stream->Size)
+    if (MemBuffer->Position + NoOfBytes > MemBuffer->Size)
     {
-        NrOfBytes -= (Stream->Size - Stream->Position);
+        NoOfBytes -= (MemBuffer->Size - MemBuffer->Position);
     }
 
-    p = (char_t *)Stream->Data + Stream->Position;
+    p = (char_t *)MemBuffer->Data + MemBuffer->Position;
 
-    memcpy(ReadBuffer, (void *)p, NrOfBytes);
+    memcpy(ReadBuffer, (void *)p, NoOfBytes);
 
-    Stream->Position += NrOfBytes;
+    MemBuffer->Position += NoOfBytes;
 
-    return NrOfBytes;
+    return NoOfBytes;
 }
 //---------------------------------------------------------------------------
-size_t rmqsMemBufferWrite(rmqsMemBuffer_t *Stream, void *WriteBuffer, const size_t NrOfBytes)
+size_t rmqsMemBufferWrite(rmqsMemBuffer_t *MemBuffer, void *WriteBuffer, const size_t NoOfBytes)
 {
     char_t *p;
 
-    if (NrOfBytes == 0)
+    if (NoOfBytes == 0)
     {
         return 0;
     }
 
-    rmqsMemBufferSetMemorySize(Stream, Stream->Position + NrOfBytes);
+    rmqsMemBufferSetMemorySize(MemBuffer, MemBuffer->Position + NoOfBytes);
 
-    p = (char_t *)Stream->Data + Stream->Position;
+    p = (char_t *)MemBuffer->Data + MemBuffer->Position;
 
-    memcpy(p, WriteBuffer, NrOfBytes);
+    memcpy(p, WriteBuffer, NoOfBytes);
 
-    if (Stream->Position + NrOfBytes > Stream->Size)
+    if (MemBuffer->Position + NoOfBytes > MemBuffer->Size)
     {
-        Stream->Size = Stream->Position + NrOfBytes;
+        MemBuffer->Size = MemBuffer->Position + NoOfBytes;
     }
 
-    Stream->Position += NrOfBytes;
+    MemBuffer->Position += NoOfBytes;
 
-    return Stream->Position;
+    return MemBuffer->Position;
 }
 //---------------------------------------------------------------------------
-void rmqsMemBufferMoveTo(rmqsMemBuffer_t *Stream, size_t Position)
+void rmqsMemBufferDelete(rmqsMemBuffer_t *MemBuffer, size_t NoOfBytes)
 {
-    if (Position >= Stream->Size)
+    if (NoOfBytes > MemBuffer->Size)
     {
-        Position = Stream->Size;
+        NoOfBytes = MemBuffer->Size;
     }
 
-    Stream->Position = Position;
-}
-//---------------------------------------------------------------------------
-void rmqsMemBufferSetMemorySize(rmqsMemBuffer_t *Stream, const size_t RequiredMemorySize)
-{
-    size_t MemoryToAllocateSize;
+    memmove(MemBuffer->Data, (char_t *)MemBuffer->Data + NoOfBytes, MemBuffer->Size - NoOfBytes);
 
-    if (RequiredMemorySize == 0 && Stream->Data != 0)
+    MemBuffer->Size -= NoOfBytes;
+
+    if (MemBuffer->Position >= NoOfBytes)
     {
-        rmqsFreeMemory(Stream->Data);
-
-        Stream->Data = 0;
-        Stream->CurrentMemorySize = 0;
-
-        return;
-    }
-
-    MemoryToAllocateSize = (((RequiredMemorySize - 1) / Stream->ChunkSize) + 1) * Stream->ChunkSize;
-
-    if (Stream->Data != 0 && MemoryToAllocateSize <= Stream->CurrentMemorySize)
-    {
-        return;
-    }
-
-    if (! Stream->Data)
-    {
-        Stream->Data = rmqsAllocateMemory(MemoryToAllocateSize);
+        MemBuffer->Position -= NoOfBytes;
     }
     else
     {
-        Stream->Data = rmqsRellocateMemory(Stream->Data, MemoryToAllocateSize);
+        MemBuffer->Position = 0;
+    }
+}
+//---------------------------------------------------------------------------
+void rmqsMemBufferMoveTo(rmqsMemBuffer_t *MemBuffer, size_t Position)
+{
+    if (Position >= MemBuffer->Size)
+    {
+        Position = MemBuffer->Size;
     }
 
-    Stream->CurrentMemorySize = MemoryToAllocateSize;
+    MemBuffer->Position = Position;
+}
+//---------------------------------------------------------------------------
+void rmqsMemBufferSetMemorySize(rmqsMemBuffer_t *MemBuffer, const size_t RequiredMemorySize)
+{
+    size_t MemoryToAllocateSize;
+
+    if (RequiredMemorySize == 0 && MemBuffer->Data != 0)
+    {
+        rmqsFreeMemory(MemBuffer->Data);
+
+        MemBuffer->Data = 0;
+        MemBuffer->CurrentMemorySize = 0;
+
+        return;
+    }
+
+    MemoryToAllocateSize = (((RequiredMemorySize - 1) / MemBuffer->ChunkSize) + 1) * MemBuffer->ChunkSize;
+
+    if (MemBuffer->Data != 0 && MemoryToAllocateSize <= MemBuffer->CurrentMemorySize)
+    {
+        return;
+    }
+
+    if (! MemBuffer->Data)
+    {
+        MemBuffer->Data = rmqsAllocateMemory(MemoryToAllocateSize);
+    }
+    else
+    {
+        MemBuffer->Data = rmqsRellocateMemory(MemBuffer->Data, MemoryToAllocateSize);
+    }
+
+    MemBuffer->CurrentMemorySize = MemoryToAllocateSize;
 }
 //---------------------------------------------------------------------------

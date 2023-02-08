@@ -24,7 +24,7 @@ rmqsList_t;
 //---------------------------------------------------------------------------
 rmqsList_t * rmqsListCreate(ClearDataCallback_t ClearDataCallback);
 rmqsList_t * rmqsListGenericCreate(void);
-void rmqsListDestroy(rmqsList_t *Stream);
+void rmqsListDestroy(rmqsList_t *List);
 //---------------------------------------------------------------------------
 rmqsListNode_t * rmqsListAddBegin(rmqsList_t *List, void *Data);
 rmqsListNode_t * rmqsListAddEnd(rmqsList_t *List, void *Data);

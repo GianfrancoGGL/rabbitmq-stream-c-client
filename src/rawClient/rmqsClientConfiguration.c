@@ -55,6 +55,8 @@ rmqsClientConfiguration_t * rmqsClientConfigurationCreate(const char_t *BrokersS
     //
     ClientConfiguration->BrokerList = rmqsListGenericCreate();
 
+    ClientConfiguration->WaitReplyTimer = rmqsTimerCreate();
+
     if (EnableLogging)
     {
         ClientConfiguration->Logger = rmqsLoggerCreate(LogFileName, 0);
@@ -145,6 +147,8 @@ void rmqsClientConfigurationDestroy(rmqsClientConfiguration_t *ClientConfigurati
     }
 
     rmqsListDestroy(ClientConfiguration->BrokerList);
+
+    rmqsTimerDestroy(ClientConfiguration->WaitReplyTimer);
 
     if (ClientConfiguration->Logger != 0)
     {

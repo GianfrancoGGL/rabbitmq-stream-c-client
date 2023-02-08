@@ -13,16 +13,25 @@
 #define RMQS_CLIENT_HOSTNAME_MAX_SIZE    256
 #define RMQS_CLIENT_RX_BUFFER_SIZE      1024
 //---------------------------------------------------------------------------
+typedef enum
+{
+    rmqsctProducer,
+    rmqsctConsumer
+}
+rmqsClientType_t;
+//---------------------------------------------------------------------------
 typedef struct
 {
     rmqsClientConfiguration_t *ClientConfiguration;
     uint32_t ClientMaxFrameSize;
     uint32_t ClientHeartbeat;
+    rmqsClientType_t ClientType;
     void *ParentObject; // Producer or consumer
     uint32_t CorrelationId;
-    rmqsMemBuffer_t *TxStream;
-    rmqsMemBuffer_t *RxStream;
-    rmqsMemBuffer_t *RxStreamTempBuffer;
+    rmqsResponse_t Response;
+    rmqsMemBuffer_t *TxMemBuffer;
+    rmqsMemBuffer_t *RxMemBuffer;
+    rmqsMemBuffer_t *RxMemBufferTemp;
     char_t RxSocketBuffer[RMQS_CLIENT_RX_BUFFER_SIZE];
 }
 rmqsClient_t;
@@ -71,7 +80,7 @@ typedef struct
 }
 rqmsCreateStreamArgs_t;
 //---------------------------------------------------------------------------
-rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, void *ParentObject);
+rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, rmqsClientType_t ClientType, void *ParentObject);
 void rmqsClientDestroy(rmqsClient_t *Client);
 //---------------------------------------------------------------------------
 bool_t rqmsClientLogin(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *VirtualHost, rmqsProperty_t *Properties, const size_t PropertiesCount);
@@ -82,8 +91,8 @@ rmqsResponseCode_t rmqsSaslHandshake(rmqsClient_t *Client, const rmqsSocket Sock
 rmqsResponseCode_t rmqsSaslAuthenticate(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *Mechanism, const char_t *Username, const char_t *Password);
 rmqsResponseCode_t rmqsOpen(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *VirtualHost);
 rmqsResponseCode_t rmqsClose(rmqsClient_t *Client, const rmqsSocket Socket, const uint16_t ClosingCode, const char_t *ClosingReason);
-rmqsResponseCode_t rmqsCreate(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *Stream, const rqmsCreateStreamArgs_t *CreateStreamArgs);
-rmqsResponseCode_t rmqsDelete(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *Stream);
+rmqsResponseCode_t rmqsCreate(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *StreamName, const rqmsCreateStreamArgs_t *CreateStreamArgs);
+rmqsResponseCode_t rmqsDelete(rmqsClient_t *Client, const rmqsSocket Socket, const char_t *StreamName);
 //---------------------------------------------------------------------------
 #endif
 //---------------------------------------------------------------------------

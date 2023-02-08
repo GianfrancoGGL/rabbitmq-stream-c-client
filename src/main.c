@@ -27,17 +27,20 @@ extern "C"
 #pragma comment(lib, "ws2_32.lib")
 #endif
 //---------------------------------------------------------------------------
-#define ROW_SEPARATOR "============================================================================"
-#define MESSAGE_COUNT  1000000
+#define ROW_SEPARATOR     "============================================================================"
+#define MESSAGE_COUNT     100
+#define NO_OF_ITERATIONS  50
 //---------------------------------------------------------------------------
-void PublishResultCallback(uint8_t PublisherId, uint64_t PublishingId, uint16_t Code);
+void PublishResultCallback(uint8_t PublisherId, uint64_t PublishingId, bool_t Confirmed, uint16_t Code);
+size_t MessagesConfirmed = 0;
+size_t MessagesNotConfirmed = 0;
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
     (void)argc;
     (void)argv;
 
-    char *BrokerList = "rabbitmq-stream://gian:ggi@192.168.56.1:5552";
+    char *BrokerList = "rabbitmq-stream://gian:ggi@127.0.0.1:5552";
     rmqsClientConfiguration_t *ClientConfiguration;
     char Error[RMQS_ERR_MAX_STRING_LENGTH];
     rmqsBroker_t *Broker;
@@ -46,22 +49,19 @@ int main(int argc, char * argv[])
     char *StreamName = "MY-STREAM";
     rqmsCreateStreamArgs_t CreateStreamArgs = {0};
     rmqsResponseCode_t CreateStreamResponse;
-    rmqsTimer_t *WaitingTimer, *PerformanceTimer;
+    rmqsTimer_t *ElapseTimer, *PerformanceTimer;
     rmqsSocket Socket;
     rmqsProperty_t Properties[6];
-    rmqsMessage_t **MessageBatch;
-    uint32_t SleepTime = 10;
-    uint64_t PublishingId;
-    size_t i;
+    rmqsMessage_t *MessageBatch;
+    uint32_t PublishWaitingTime = 20000;
+    uint64_t PublishingId = 0;
+    size_t i, j;
     size_t UsedMemory;
 
     (void)argc;
     (void)argv;
 
-    //
-    // Initialize random seed
-    //
-    srand(time(NULL));
+    rmqsInitWinsock();
 
     //
     // Fill the client properties
@@ -110,13 +110,13 @@ int main(int argc, char * argv[])
     Producer = rmqsProducerCreate(ClientConfiguration, "Publisher", PublishResultCallback);
     printf("Producer created\r\n");
 
-    printf("Running for %u seconds\r\n", SleepTime);
-
     Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(ClientConfiguration->BrokerList, 0);
 
     if (Broker)
     {
         Socket = rmqsSocketCreate();
+        rmqsSetTcpNoDelay(Socket);
+        rmqsSetSocketTxRxBuffers(Socket, 20000000, 20000000);
 
         if (rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
         {
@@ -126,21 +126,6 @@ int main(int argc, char * argv[])
             {
                 printf("Logged in to %s\r\n", Broker->Hostname);
 
-                CreateStreamArgs.SpecifyMaxLengthBytes = true;
-                CreateStreamArgs.MaxLengthBytes = 1000000;
-
-                CreateStreamArgs.SpecifyMaxAge = true;
-                strcpy(CreateStreamArgs.MaxAge, "12h");
-
-                CreateStreamArgs.SpecifyStreamMaxSegmentSizeBytes = true;
-                CreateStreamArgs.StreamMaxSegmentSizeBytes = 100000;
-
-                CreateStreamArgs.SpecifyInitialClusterSize = true;
-                CreateStreamArgs.InitialClusterSize = 1;
-
-                CreateStreamArgs.SpecifyQueueLeaderLocator = true;
-                CreateStreamArgs.LeaderLocator = rmqssllClientLocal;
-
                 if (rmqsDelete(Producer->Client, Socket, StreamName))
                 {
                     printf("Deleted stream %s\r\n", StreamName);
@@ -149,6 +134,21 @@ int main(int argc, char * argv[])
                 {
                     printf("Cannot delete stream %s\r\n", StreamName);
                 }
+
+                CreateStreamArgs.SpecifyMaxLengthBytes = true;
+                CreateStreamArgs.MaxLengthBytes = 1000000000;
+
+                CreateStreamArgs.SpecifyMaxAge = true;
+                strcpy(CreateStreamArgs.MaxAge, "12h");
+
+                CreateStreamArgs.SpecifyStreamMaxSegmentSizeBytes = true;
+                CreateStreamArgs.StreamMaxSegmentSizeBytes = 100000000;
+
+                CreateStreamArgs.SpecifyInitialClusterSize = true;
+                CreateStreamArgs.InitialClusterSize = 1;
+
+                CreateStreamArgs.SpecifyQueueLeaderLocator = true;
+                CreateStreamArgs.LeaderLocator = rmqssllClientLocal;
 
                 CreateStreamResponse = rmqsCreate(Producer->Client, Socket, StreamName, &CreateStreamArgs);
 
@@ -165,30 +165,45 @@ int main(int argc, char * argv[])
 
                     if (rmqsDeclarePublisher(Producer, Socket, PublisherId, StreamName) == rmqsrOK)
                     {
-                        PublishingId = rand();
-
-                        MessageBatch = (rmqsMessage_t **)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MESSAGE_COUNT);
+                        MessageBatch = (rmqsMessage_t *)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MESSAGE_COUNT);
 
                         for (i = 0; i < MESSAGE_COUNT; i++)
                         {
-                            MessageBatch[i] = rmqsMessageCreate(PublishingId++, "Hello world!", 12, 0);
+                            MessageBatch[i].PublishingId = 0; // Will be set later
+                            MessageBatch[i].Data = "Hello world!";
+                            MessageBatch[i].Size = 12;
+                            MessageBatch[i].DeleteData = false;
                         }
 
                         PerformanceTimer = rmqsTimerCreate();
                         rmqsTimerStart(PerformanceTimer);
 
-                        rmqsPublish(Producer, Socket, PublisherId, MessageBatch, MESSAGE_COUNT);
-
-                        printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT, rmqsTimerGetTime(PerformanceTimer));
-
-                        rmqsTimerDestroy(PerformanceTimer);
-
-                        for (i = 0; i < MESSAGE_COUNT; i++)
+                        for (i = 0; i < NO_OF_ITERATIONS; i++)
                         {
-                            rmqsMessageDestroy(MessageBatch[i]);
+                            for (j = 0; j < MESSAGE_COUNT; j++)
+                            {
+                                MessageBatch[j].PublishingId = ++PublishingId;
+                            }
+
+                            rmqsPublish(Producer, Socket, PublisherId, MessageBatch, MESSAGE_COUNT);
                         }
 
                         rmqsFreeMemory(MessageBatch);
+
+                        printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATIONS, rmqsTimerGetTime(PerformanceTimer));
+
+                        rmqsTimerDestroy(PerformanceTimer);
+
+                        printf("Wait for publishing %d seconds\r\n", PublishWaitingTime / 1000);
+
+                        ElapseTimer = rmqsTimerCreate();
+                        rmqsTimerStart(ElapseTimer);
+                        printf("Timer begin: %u\r\n", rmqsTimerGetTime(ElapseTimer));
+
+                        rmqsProducerPoll(Producer, Socket, PublishWaitingTime);
+
+                        printf("Timer end: %u\r\n", rmqsTimerGetTime(ElapseTimer));
+                        rmqsTimerDestroy(ElapseTimer);
 
                         if (rmqsDeletePublisher(Producer, Socket, PublisherId) != rmqsrOK)
                         {
@@ -231,18 +246,6 @@ int main(int argc, char * argv[])
         rmqsSocketDestroy(&Socket);
     }
 
-    WaitingTimer = rmqsTimerCreate();
-    rmqsTimerStart(WaitingTimer);
-
-    printf("Waiting %d seconds\r\n", SleepTime);
-
-    while (rmqsTimerGetTime(WaitingTimer) < (SleepTime * 1000))
-    {
-        rmqsThreadSleep(100);
-    }
-
-    rmqsTimerDestroy(WaitingTimer);
-
     printf("Destroying producer...\r\n");
     rmqsProducerDestroy(Producer);
     printf("Producer destroyed\r\n");
@@ -251,19 +254,34 @@ int main(int argc, char * argv[])
     rmqsClientConfigurationDestroy(ClientConfiguration);
     printf("Client configuration destroyed\r\n");
 
-    rmqsThreadSleep(2000);
+    printf("Messages confirmed: %u/%u\r\n", MessagesConfirmed, MESSAGE_COUNT * NO_OF_ITERATIONS);
+    printf("Messages not confirmed: %u/%u\r\n", MessagesNotConfirmed, MESSAGE_COUNT * NO_OF_ITERATIONS);
 
     UsedMemory = rmqsGetUsedMemory();
-    UsedMemory = UsedMemory;
-    
+
+    printf("Unfreed memory: %u bytes\r\n", UsedMemory);
+
+    rmqsThreadSleep(5000);
+
+    rmqsShutdownWinsock();
+
     return 0;
 }
 //---------------------------------------------------------------------------
-void PublishResultCallback(uint8_t PublisherId, uint64_t PublishingId, uint16_t Code)
+void PublishResultCallback(uint8_t PublisherId, uint64_t PublishingId, bool_t Confirmed, uint16_t Code)
 {
     (void)PublisherId;
     (void)PublishingId;
     (void)Code;
+
+    if (Confirmed)
+    {
+        MessagesConfirmed++;
+    }
+    else
+    {
+        MessagesNotConfirmed++;
+    }
 }
 //---------------------------------------------------------------------------
 
