@@ -44,7 +44,7 @@ void rmqsSendMessage(const void *Client, const rmqsSocket Socket, const char_t *
 
         Key &= 0x7FFF;
 
-        rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)Data, DataSize, "TX", rmqsGetMessageDescription(Key));
+        rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)Data, DataSize, "TX", rmqsGetMessageDescription(Key), 0);
     }
 
     send(Socket, (const char_t *)Data, DataSize, 0);
@@ -59,6 +59,17 @@ bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32
     rmqsMsgHeader_t MsgHeader;
     uint16_t Key;
 
+    if (ClientObj->RxQueue->Tag1 == 1)
+    {
+        //
+        // Tag1 indicates whether it was containing a complete message
+        // of Tag2 bytes. Now we're going to read a new message,
+        // then the previous one can be dequeued and the complete marker cleared
+        //
+        rmqsDequeueMessageFromMemBuffer(ClientObj->RxQueue, ClientObj->RxQueue->Tag2);
+        ClientObj->RxQueue->Tag1 = ClientObj->RxQueue->Tag2 = 0;
+    }
+
     //
     // Tries to extract the message from the already received bytes, if not enough, read
     // again from the socket
@@ -68,12 +79,12 @@ bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32
         //
         // Is the message length (4 bytes) arrived?
         //
-        if (ClientObj->RxMemBufferTemp->Size >= sizeof(uint32_t))
+        if (ClientObj->RxQueue->Size >= sizeof(uint32_t))
         {
             //
             // Message length is once stored in the Tag1 field and eventually with the correct endianness
             //
-            MessageSize = *(uint32_t *)ClientObj->RxMemBufferTemp->Data;
+            MessageSize = *(uint32_t *)ClientObj->RxQueue->Data;
 
             if (ClientObj->ClientConfiguration->IsLittleEndianMachine)
             {
@@ -85,19 +96,19 @@ bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32
             //
             MessageSize += sizeof(uint32_t);
 
-            if (ClientObj->RxMemBufferTemp->Size >= MessageSize)
+            if (ClientObj->RxQueue->Size >= MessageSize)
             {
                 //
                 // Message completed!
                 //
                 MessageComplete = true;
 
-                rmqsMemBufferClear(ClientObj->RxMemBuffer, false);
-                rmqsMemBufferWrite(ClientObj->RxMemBuffer, ClientObj->RxMemBufferTemp->Data, MessageSize);
+                ClientObj->RxQueue->Tag1 = 1; // Message completed
+                ClientObj->RxQueue->Tag2 = MessageSize;
 
                 if (ClientObj->ClientConfiguration->Logger)
                 {
-                    Key = *(uint16_t *)((char_t *)ClientObj->RxMemBuffer->Data + sizeof(uint32_t));
+                    Key = *(uint16_t *)((char_t *)ClientObj->RxQueue->Data + sizeof(uint32_t));
 
                     if (ClientObj->ClientConfiguration->IsLittleEndianMachine)
                     {
@@ -106,10 +117,8 @@ bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32
 
                     Key &= 0x7FFF;
 
-                    rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)ClientObj->RxMemBuffer->Data, ClientObj->RxMemBuffer->Size, "RX", rmqsGetMessageDescription(Key));
+                    rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)ClientObj->RxQueue->Data, ClientObj->RxQueue->Tag2, "RX", rmqsGetMessageDescription(Key), 0);
                 }
-
-                rmqsDequeueMessageFromMemBuffer(ClientObj->RxMemBufferTemp, MessageSize);
             }
         }
 
@@ -121,7 +130,7 @@ bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32
             // without altering the byte endianness that will be changed also by the caller
             // to parse the message
             //
-            memcpy(&MsgHeader, ClientObj->RxMemBuffer->Data, sizeof(MsgHeader));
+            memcpy(&MsgHeader, ClientObj->RxQueue->Data, sizeof(MsgHeader));
 
             if (ClientObj->ClientConfiguration->IsLittleEndianMachine)
             {
@@ -138,7 +147,7 @@ bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32
                 //
                 if (ClientObj->ClientType == rmqsctProducer)
                 {
-                    rmqsHandlePublishResult(MsgHeader.Key, (rmqsProducer_t *)ClientObj->ParentObject, ClientObj->RxMemBuffer);
+                    rmqsHandlePublishResult(MsgHeader.Key, (rmqsProducer_t *)ClientObj->ParentObject, ClientObj->RxQueue);
                 }
             }
             else
@@ -157,7 +166,7 @@ bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32
             break;
         }
 
-        rmqsMemBufferWrite(ClientObj->RxMemBufferTemp, (void *)ClientObj->RxSocketBuffer, RxBytes);
+        rmqsMemBufferWrite(ClientObj->RxQueue, (void *)ClientObj->RxSocketBuffer, RxBytes);
 
         //
         // New loop to extract the message from the receive stream
@@ -179,9 +188,9 @@ bool_t rmqsWaitResponse(const void *Client, const rmqsSocket Socket, uint32_t Co
     {
         if (rmqsWaitMessage(ClientObj, Socket, WaitMessageTimeout))
         {
-            if (ClientObj->RxMemBuffer->Size >= sizeof(rmqsResponse_t))
+            if (ClientObj->RxQueue->Size >= sizeof(rmqsResponse_t))
             {
-                memcpy(Response, ClientObj->RxMemBuffer->Data, sizeof(rmqsResponse_t));
+                memcpy(Response, ClientObj->RxQueue->Data, sizeof(rmqsResponse_t));
 
                 if (ClientObj->ClientConfiguration->IsLittleEndianMachine)
                 {

@@ -40,6 +40,13 @@ void rmqsMemBufferClear(rmqsMemBuffer_t *MemBuffer, const bool_t ResetMemoryBuff
     }
 }
 //---------------------------------------------------------------------------
+void rmqsMemBufferClearTags(rmqsMemBuffer_t *MemBuffer)
+{
+    MemBuffer->Tag1 = 0;
+    MemBuffer->Tag2 = 0;
+    MemBuffer->Tag3 = 0;
+}
+//---------------------------------------------------------------------------
 size_t rmqsMemBufferRead(rmqsMemBuffer_t *MemBuffer, void *ReadBuffer, size_t NoOfBytes)
 {
     char_t *p;

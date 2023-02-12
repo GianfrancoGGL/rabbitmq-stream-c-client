@@ -29,9 +29,8 @@ typedef struct
     void *ParentObject; // Producer or consumer
     uint32_t CorrelationId;
     rmqsResponse_t Response;
-    rmqsMemBuffer_t *TxMemBuffer;
-    rmqsMemBuffer_t *RxMemBuffer;
-    rmqsMemBuffer_t *RxMemBufferTemp;
+    rmqsMemBuffer_t *TxQueue;
+    rmqsMemBuffer_t *RxQueue;
     char_t RxSocketBuffer[RMQS_CLIENT_RX_BUFFER_SIZE];
 }
 rmqsClient_t;

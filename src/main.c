@@ -28,8 +28,8 @@ extern "C"
 #endif
 //---------------------------------------------------------------------------
 #define ROW_SEPARATOR     "============================================================================"
-#define MESSAGE_COUNT     100
-#define NO_OF_ITERATIONS  50
+#define MESSAGE_COUNT     10
+#define NO_OF_ITERATIONS  10
 //---------------------------------------------------------------------------
 void PublishResultCallback(uint8_t PublisherId, uint64_t PublishingId, bool_t Confirmed, uint16_t Code);
 size_t MessagesConfirmed = 0;
@@ -40,7 +40,7 @@ int main(int argc, char * argv[])
     (void)argc;
     (void)argv;
 
-    char *BrokerList = "rabbitmq-stream://gian:ggi@127.0.0.1:5552";
+    char *BrokerList = "rabbitmq-stream://gian:ggi@192.168.56.1:5552";
     rmqsClientConfiguration_t *ClientConfiguration;
     char Error[RMQS_ERR_MAX_STRING_LENGTH];
     rmqsBroker_t *Broker;
@@ -50,7 +50,7 @@ int main(int argc, char * argv[])
     rqmsCreateStreamArgs_t CreateStreamArgs = {0};
     rmqsResponseCode_t CreateStreamResponse;
     rmqsTimer_t *ElapseTimer, *PerformanceTimer;
-    rmqsSocket Socket;
+    rmqsSocket Socket;                             
     rmqsProperty_t Properties[6];
     rmqsMessage_t *MessageBatch;
     uint32_t PublishWaitingTime = 20000;
@@ -86,7 +86,7 @@ int main(int argc, char * argv[])
     strncpy(Properties[5].Key, "platform", RMQS_MAX_KEY_SIZE);
     strncpy(Properties[5].Value, "C", RMQS_MAX_VALUE_SIZE);
 
-    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, false, 0, Error, sizeof(Error));
+    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, true, "C:\\TEMP\\RMQS_LOG.TXT", Error, sizeof(Error));
 
     if (ClientConfiguration == 0)
     {
@@ -116,7 +116,7 @@ int main(int argc, char * argv[])
     {
         Socket = rmqsSocketCreate();
         rmqsSetTcpNoDelay(Socket);
-        rmqsSetSocketTxRxBuffers(Socket, 20000000, 20000000);
+        rmqsSetSocketTxRxBuffers(Socket, 2000000, 2000000);
 
         if (rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
         {

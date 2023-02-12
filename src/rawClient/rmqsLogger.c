@@ -32,8 +32,11 @@ void rmqsLoggerDestroy(rmqsLogger_t *Logger)
 {
     rmqsFreeMemory((void *)Logger->FileName);
 
-    fclose(Logger->File);
-
+    if (Logger->File != 0)
+    {
+        fclose(Logger->File);
+    }
+    
     rmqsMutexDestroy(Logger->Mutex);
     rmqsTimerDestroy(Logger->Timer);
 
@@ -44,6 +47,11 @@ void rmqsLoggerRegisterLog(rmqsLogger_t *Logger, const char_t *Message, const ch
 {
     char_t DateTimeString[20], TimeSinceLastLog[10];
     size_t i;
+
+    if (Logger->File == 0)
+    {
+        return;
+    }
 
     rmqsMutexLock(Logger->Mutex);
 
@@ -76,7 +84,7 @@ void rmqsLoggerRegisterLog(rmqsLogger_t *Logger, const char_t *Message, const ch
     rmqsMutexUnlock(Logger->Mutex);
 }
 //---------------------------------------------------------------------------
-void rmqsLoggerRegisterDump(rmqsLogger_t *Logger, void *Data, size_t DataLen, const char_t *Comment1, const char_t *Comment2)
+void rmqsLoggerRegisterDump(rmqsLogger_t *Logger, void *Data, size_t DataLen, const char_t *Comment1, const char_t *Comment2, const char_t *Comment3)
 {
     char_t DateTimeString[20], TimeSinceLastLog[10];
     uchar_t *Pointer = (uchar_t *)Data;
@@ -84,6 +92,11 @@ void rmqsLoggerRegisterDump(rmqsLogger_t *Logger, void *Data, size_t DataLen, co
     size_t i, TotalBytesWritten = 0, RowBytesWritten = 0;
     char_t Temp[32];
     char_t AsciiVals[BYTES_TO_DUMP_PER_ROW][2], HexVals[BYTES_TO_DUMP_PER_ROW][4];
+
+    if (Logger->File == 0)
+    {
+        return;
+    }
 
     rmqsMutexLock(Logger->Mutex);
 
@@ -108,6 +121,12 @@ void rmqsLoggerRegisterDump(rmqsLogger_t *Logger, void *Data, size_t DataLen, co
             if (Comment2 && *Comment2)
             {
                 fputs(Comment2, Logger->File);
+                fputs("\n", Logger->File);
+            }
+
+            if (Comment3 && *Comment3)
+            {
+                fputs(Comment3, Logger->File);
                 fputs("\n", Logger->File);
             }
 

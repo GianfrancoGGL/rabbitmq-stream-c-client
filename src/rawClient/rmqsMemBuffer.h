@@ -14,12 +14,19 @@ typedef struct
     uint32_t Position;
     uint32_t CurrentMemorySize;
     void *Data;
+    //
+    // Extra custom properties of the object, freely usable by the application
+    //
+    uint32_t Tag1;
+    uint32_t Tag2;
+    uint32_t Tag3;
 }
 rmqsMemBuffer_t;
 //---------------------------------------------------------------------------
 rmqsMemBuffer_t * rmqsMemBufferCreate(void);
 void rmqsMemBufferDestroy(rmqsMemBuffer_t *MemBuffer);
 void rmqsMemBufferClear(rmqsMemBuffer_t *MemBuffer, const bool_t ResetMemoryBuffer);
+void rmqsMemBufferClearTags(rmqsMemBuffer_t *MemBuffer);
 size_t rmqsMemBufferRead(rmqsMemBuffer_t *MemBuffer, void *ReadBuffer, size_t NoOfBytes);
 size_t rmqsMemBufferWrite(rmqsMemBuffer_t *MemBuffer, void *WriteBuffer, size_t NoOfBytes);
 void rmqsMemBufferDelete(rmqsMemBuffer_t *MemBuffer, size_t NoOfBytes);

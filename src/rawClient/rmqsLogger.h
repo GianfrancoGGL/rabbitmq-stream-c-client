@@ -21,7 +21,7 @@ rmqsLogger_t;
 rmqsLogger_t * rmqsLoggerCreate(const char_t *FileName, bool_t AppendToFile);
 void rmqsLoggerDestroy(rmqsLogger_t *Logger);
 void rmqsLoggerRegisterLog(rmqsLogger_t *Logger, const char_t *Message, const char_t *Comment);
-void rmqsLoggerRegisterDump(rmqsLogger_t *Logger, void *Data, size_t DataLen, const char_t *Comment1, const char_t *Comment2);
+void rmqsLoggerRegisterDump(rmqsLogger_t *Logger, void *Data, size_t DataLen, const char_t *Comment1, const char_t *Comment2, const char_t *Comment3);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------
