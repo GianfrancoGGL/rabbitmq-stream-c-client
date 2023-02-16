@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1675833305 source:c:\rabbitmq-stream-c-client-main\src\main.c
+1676578264 source:c:\rabbitmq-stream-c-client-main\src\main.c
 	<stdio.h>
 	<memory.h>
 	<string.h>
@@ -165,32 +165,32 @@
 	"rmqsProtocol.h"
 	"rmqsMemory.h"
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsbroker.c
+1675666800 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsbroker.c
 	<string.h>
 	"rmqsBroker.h"
 	"rmqsLib.h"
 	"rmqsError.h"
 	"rmqsMemory.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsbroker.h
+1675666800 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsbroker.h
 	<stdint.h>
 	"rmqsGlobal.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsglobal.h
+1676431812 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsglobal.h
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslib.h
+1675666800 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslib.h
 	<stdint.h>
 	"rmqsGlobal.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqserror.h
+1675666800 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqserror.h
 	<stdint.h>
 	"rmqsGlobal.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmemory.h
+1675666800 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmemory.h
 	<stdlib.h>
 	<memory.h>
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsclient.c
+1676432126 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsclient.c
 	<stdio.h>
 	"rmqsClient.h"
 	"rmqsBroker.h"
@@ -198,59 +198,60 @@
 	"rmqsProtocol.h"
 	"rmqsMemory.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsclient.h
+1676263264 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsclient.h
 	<stdint.h>
 	"rmqsGlobal.h"
 	"rmqsClientConfiguration.h"
 	"rmqsNetwork.h"
 	"rmqsProtocol.h"
-	"rmqsMemBuffer.h"
+	"rmqsBuffer.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsclientconfiguration.h
+1675622858 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsclientconfiguration.h
 	<stdint.h>
 	"rmqsList.h"
 	"rmqsTimer.h"
 	"rmqsLogger.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslist.h
+1675746718 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslist.h
 	<stdint.h>
 	<stddef.h>
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslogger.h
+1676188748 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslogger.h
 	<stdint.h>
 	<stdio.h>
 	"rmqsMutex.h"
 	"rmqsTimer.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmutex.h
+1675666800 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmutex.h
 	<stdint.h>
 	<windows.h>
 	<pthread.h>
 	"rmqsGlobal.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqstimer.h
+1675666800 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqstimer.h
 	<stdint.h>
 	<windows.h>
 	<unistd.h>
 	<sys/time.h>
 	"rmqsGlobal.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsnetwork.h
+1675666800 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsnetwork.h
 	<stdint.h>
 	<sys/socket.h>
 	"rmqsGlobal.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsprotocol.h
+1676432026 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsprotocol.h
 	<stdint.h>
+	<string.h>
 	"rmqsNetwork.h"
-	"rmqsMemBuffer.h"
+	"rmqsBuffer.h"
 
 1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmembuffer.h
 	<stdint.h>
 	<stddef.h>
 	"rmqsGlobal.h"
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsclientconfiguration.c
+1675622868 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsclientconfiguration.c
 	<string.h>
 	"rmqsClientConfiguration.h"
 	"rmqsBroker.h"
@@ -260,23 +261,23 @@
 	"rmqsLib.h"
 	"rmqsError.h"
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqserror.c
+1675666800 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqserror.c
 	<string.h>
 	"rmqsError.h"
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslib.c
+1675666800 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslib.c
 	<time.h>
 	<stdio.h>
 	<limits.h>
 	<ctype.h>
 	"rmqsLib.h"
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslist.c
+1675666800 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslist.c
 	<memory.h>
 	"rmqsList.h"
 	"rmqsMemory.h"
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslogger.c
+1676189674 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqslogger.c
 	<ctype.h>
 	<stdint.h>
 	"rmqsLogger.h"
@@ -289,27 +290,27 @@
 	"rmqsGlobal.h"
 	"rmqsMemory.h"
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmemory.c
+1675666800 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmemory.c
 	"rmqsMemory.h"
 	"rmqsGlobal.h"
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmessage.c
+1675666800 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmessage.c
 	<ctype.h>
 	<stdint.h>
 	"rmqsMessage.h"
 	"rmqsMemory.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmessage.h
+1675666800 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmessage.h
 	<stdint.h>
 	"rmqsGlobal.h"
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmutex.c
+1675666800 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsmutex.c
 	<memory.h>
 	<pthread.h>
 	"rmqsMutex.h"
 	"rmqsMemory.h"
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsnetwork.c
+1675831624 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsnetwork.c
 	<stdio.h>
 	<winsock2.h>
 	<unistd.h>
@@ -322,42 +323,53 @@
 	<fcntl.h>
 	"rmqsNetwork.h"
 
-1675833319 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsproducer.c
+1676579753 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsproducer.c
 	<stdio.h>
 	"rmqsProducer.h"
 	"rmqsClientConfiguration.h"
 	"rmqsMemory.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsproducer.h
+1676579559 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsproducer.h
 	<stdint.h>
 	"rmqsClient.h"
 	"rmqsClientConfiguration.h"
 	"rmqsMessage.h"
 	"rmqsTimer.h"
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsprotocol.c
-	<string.h>
+1676579970 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsprotocol.c
 	"rmqsClient.h"
 	"rmqsProducer.h"
 	"rmqsMemory.h"
+	"rmqsBuffer.h"
 	"rmqsProtocol.h"
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsthread.c
+1675666800 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsthread.c
 	<memory.h>
 	<unistd.h>
 	"rmqsThread.h"
 	"rmqsMemory.h"
 
-1675832400 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsthread.h
+1675666800 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsthread.h
 	<stdint.h>
 	<windows.h>
 	<pthread.h>
 	"rmqsGlobal.h"
 
-1675832400 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqstimer.c
+1675666800 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqstimer.c
 	<time.h>
 	<stdio.h>
 	<limits.h>
 	"rmqsTimer.h"
+	"rmqsMemory.h"
+
+1676263248 c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsbuffer.h
+	<stdint.h>
+	<stddef.h>
+	"rmqsGlobal.h"
+
+1676263250 source:c:\rabbitmq-stream-c-client-main\src\rawclient\rmqsbuffer.c
+	<memory.h>
+	"rmqsBuffer.h"
+	"rmqsGlobal.h"
 	"rmqsMemory.h"
 

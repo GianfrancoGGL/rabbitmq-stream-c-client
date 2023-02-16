@@ -28,32 +28,30 @@ extern "C"
 #endif
 //---------------------------------------------------------------------------
 #define ROW_SEPARATOR     "============================================================================"
-#define MESSAGE_COUNT     10
-#define NO_OF_ITERATIONS  10
+#define NO_OF_ITERATION   1
+#define MESSAGE_COUNT     500000
 //---------------------------------------------------------------------------
-void PublishResultCallback(uint8_t PublisherId, uint64_t PublishingId, bool_t Confirmed, uint16_t Code);
+void PublishResultCallback(const uint8_t PublisherId, uint64_t *PublishingIdList, const size_t PublishingIdCount, const bool_t Confirmed, const uint16_t Code);
+rmqsTimer_t *PerformanceTimer;
 size_t MessagesConfirmed = 0;
 size_t MessagesNotConfirmed = 0;
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    (void)argc;
-    (void)argv;
-
-    char *BrokerList = "rabbitmq-stream://gian:ggi@192.168.56.1:5552";
+    char *BrokerList = "rabbitmq-stream://gian:ggi@127.0.0.1:5552";
     rmqsClientConfiguration_t *ClientConfiguration;
     char Error[RMQS_ERR_MAX_STRING_LENGTH];
     rmqsBroker_t *Broker;
     rmqsProducer_t *Producer;
-    const int PublisherId = 1;
+    const int PublisherId = 229;
     char *StreamName = "MY-STREAM";
     rqmsCreateStreamArgs_t CreateStreamArgs = {0};
     rmqsResponseCode_t CreateStreamResponse;
-    rmqsTimer_t *ElapseTimer, *PerformanceTimer;
-    rmqsSocket Socket;                             
+    rmqsTimer_t *ElapseTimer;
+    rmqsSocket Socket;
     rmqsProperty_t Properties[6];
     rmqsMessage_t *MessageBatch;
-    uint32_t PublishWaitingTime = 20000;
+    uint32_t PublishWaitingTime = 5000;
     uint64_t PublishingId = 0;
     size_t i, j;
     size_t UsedMemory;
@@ -61,7 +59,11 @@ int main(int argc, char * argv[])
     (void)argc;
     (void)argv;
 
+    #if _WIN32 || _WIN64
     rmqsInitWinsock();
+    #endif
+
+    PerformanceTimer = rmqsTimerCreate();
 
     //
     // Fill the client properties
@@ -86,7 +88,7 @@ int main(int argc, char * argv[])
     strncpy(Properties[5].Key, "platform", RMQS_MAX_KEY_SIZE);
     strncpy(Properties[5].Value, "C", RMQS_MAX_VALUE_SIZE);
 
-    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, true, "C:\\TEMP\\RMQS_LOG.TXT", Error, sizeof(Error));
+    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, false, 0, Error, sizeof(Error));
 
     if (ClientConfiguration == 0)
     {
@@ -115,8 +117,9 @@ int main(int argc, char * argv[])
     if (Broker)
     {
         Socket = rmqsSocketCreate();
-        rmqsSetTcpNoDelay(Socket);
-        rmqsSetSocketTxRxBuffers(Socket, 2000000, 2000000);
+
+        /*rmqsSetTcpNoDelay(Socket);*/
+        /*rmqsSetSocketTxRxBuffers(Socket, 1024 * 3000, 1024 * 3000);*/
 
         if (rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
         {
@@ -135,19 +138,19 @@ int main(int argc, char * argv[])
                     printf("Cannot delete stream %s\r\n", StreamName);
                 }
 
-                CreateStreamArgs.SpecifyMaxLengthBytes = true;
+                CreateStreamArgs.SetMaxLengthBytes = true;
                 CreateStreamArgs.MaxLengthBytes = 1000000000;
 
-                CreateStreamArgs.SpecifyMaxAge = true;
+                CreateStreamArgs.SetMaxAge = true;
                 strcpy(CreateStreamArgs.MaxAge, "12h");
 
-                CreateStreamArgs.SpecifyStreamMaxSegmentSizeBytes = true;
+                CreateStreamArgs.SetStreamMaxSegmentSizeBytes = true;
                 CreateStreamArgs.StreamMaxSegmentSizeBytes = 100000000;
 
-                CreateStreamArgs.SpecifyInitialClusterSize = true;
+                CreateStreamArgs.SetInitialClusterSize = true;
                 CreateStreamArgs.InitialClusterSize = 1;
 
-                CreateStreamArgs.SpecifyQueueLeaderLocator = true;
+                CreateStreamArgs.SetQueueLeaderLocator = true;
                 CreateStreamArgs.LeaderLocator = rmqssllClientLocal;
 
                 CreateStreamResponse = rmqsCreate(Producer->Client, Socket, StreamName, &CreateStreamArgs);
@@ -169,16 +172,14 @@ int main(int argc, char * argv[])
 
                         for (i = 0; i < MESSAGE_COUNT; i++)
                         {
-                            MessageBatch[i].PublishingId = 0; // Will be set later
                             MessageBatch[i].Data = "Hello world!";
                             MessageBatch[i].Size = 12;
                             MessageBatch[i].DeleteData = false;
                         }
 
-                        PerformanceTimer = rmqsTimerCreate();
                         rmqsTimerStart(PerformanceTimer);
 
-                        for (i = 0; i < NO_OF_ITERATIONS; i++)
+                        for (i = 0; i < NO_OF_ITERATION; i++)
                         {
                             for (j = 0; j < MESSAGE_COUNT; j++)
                             {
@@ -190,9 +191,7 @@ int main(int argc, char * argv[])
 
                         rmqsFreeMemory(MessageBatch);
 
-                        printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATIONS, rmqsTimerGetTime(PerformanceTimer));
-
-                        rmqsTimerDestroy(PerformanceTimer);
+                        printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, rmqsTimerGetTime(PerformanceTimer));
 
                         printf("Wait for publishing %d seconds\r\n", PublishWaitingTime / 1000);
 
@@ -200,12 +199,13 @@ int main(int argc, char * argv[])
                         rmqsTimerStart(ElapseTimer);
                         printf("Timer begin: %u\r\n", rmqsTimerGetTime(ElapseTimer));
 
+                        rmqsTimerStart(PerformanceTimer);
+
                         rmqsProducerPoll(Producer, Socket, PublishWaitingTime);
 
                         printf("Timer end: %u\r\n", rmqsTimerGetTime(ElapseTimer));
                         rmqsTimerDestroy(ElapseTimer);
-
-                        if (rmqsDeletePublisher(Producer, Socket, PublisherId) != rmqsrOK)
+                        if (rmqsDeletePublisher(Producer, Socket, PublisherId) != rmqsrOK)
                         {
                             printf("Cannot delete the publisher\r\n");
                         }
@@ -254,29 +254,41 @@ int main(int argc, char * argv[])
     rmqsClientConfigurationDestroy(ClientConfiguration);
     printf("Client configuration destroyed\r\n");
 
-    printf("Messages confirmed: %u/%u\r\n", MessagesConfirmed, MESSAGE_COUNT * NO_OF_ITERATIONS);
-    printf("Messages not confirmed: %u/%u\r\n", MessagesNotConfirmed, MESSAGE_COUNT * NO_OF_ITERATIONS);
+    printf("Messages confirmed: %u/%u\r\n", (uint32_t)MessagesConfirmed, MESSAGE_COUNT * NO_OF_ITERATION);
+    printf("Messages not confirmed: %u/%u\r\n", (uint32_t)MessagesNotConfirmed, MESSAGE_COUNT * NO_OF_ITERATION);
+
+    rmqsTimerDestroy(PerformanceTimer);
 
     UsedMemory = rmqsGetUsedMemory();
 
-    printf("Unfreed memory: %u bytes\r\n", UsedMemory);
+    printf("Unfreed memory: %u bytes\r\n", (uint32_t)UsedMemory);
 
     rmqsThreadSleep(5000);
 
+    #if _WIN32 || _WIN64
     rmqsShutdownWinsock();
+    #endif
 
     return 0;
 }
 //---------------------------------------------------------------------------
-void PublishResultCallback(uint8_t PublisherId, uint64_t PublishingId, bool_t Confirmed, uint16_t Code)
+void PublishResultCallback(const uint8_t PublisherId, uint64_t *PublishingIdList, const size_t PublishingIdCount, const bool_t Confirmed, const uint16_t Code)
 {
+    size_t i;
+
     (void)PublisherId;
-    (void)PublishingId;
+    (void)PublishingIdList;
     (void)Code;
 
     if (Confirmed)
     {
-        MessagesConfirmed++;
+        for (i = 0; i < PublishingIdCount; i++)
+        {
+            if (++MessagesConfirmed == MESSAGE_COUNT * NO_OF_ITERATION)
+            {
+                printf("%d Messages - Confirm time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, rmqsTimerGetTime(PerformanceTimer));
+            }
+        }
     }
     else
     {
@@ -284,4 +296,3 @@ void PublishResultCallback(uint8_t PublisherId, uint64_t PublishingId, bool_t Co
     }
 }
 //---------------------------------------------------------------------------
-

@@ -78,6 +78,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="rawClient/rmqsBroker.h" />
+		<Unit filename="rawClient/rmqsBuffer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="rawClient/rmqsBuffer.h" />
 		<Unit filename="rawClient/rmqsClient.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -103,10 +107,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="rawClient/rmqsLogger.h" />
-		<Unit filename="rawClient/rmqsMemBuffer.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="rawClient/rmqsMemBuffer.h" />
 		<Unit filename="rawClient/rmqsMemory.c">
 			<Option compilerVar="CC" />
 		</Unit>

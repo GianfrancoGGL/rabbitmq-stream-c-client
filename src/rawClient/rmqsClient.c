@@ -17,16 +17,16 @@ rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, 
     Client->ClientType = ClientType;
     Client->ParentObject = ParentObject;
     Client->CorrelationId = 0;
-    Client->TxQueue = rmqsMemBufferCreate();
-    Client->RxQueue = rmqsMemBufferCreate();
+    Client->TxQueue = rmqsBufferCreate();
+    Client->RxQueue = rmqsBufferCreate();
 
     return Client;
 }
 //---------------------------------------------------------------------------
 void rmqsClientDestroy(rmqsClient_t *Client)
 {
-    rmqsMemBufferDestroy(Client->TxQueue);
-    rmqsMemBufferDestroy(Client->RxQueue);
+    rmqsBufferDestroy(Client->TxQueue);
+    rmqsBufferDestroy(Client->RxQueue);
 
     rmqsFreeMemory((void *)Client);
 }
@@ -150,31 +150,31 @@ rmqsResponseCode_t rmqsPeerProperties(rmqsClient_t *Client, const rmqsSocket Soc
         MapSize += strlen(Property->Value);
     }
 
-    rmqsMemBufferClear(Client->TxQueue, false);
+    rmqsBufferClear(Client->TxQueue, false);
 
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
 
     //
     // Encode the map
     //
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, MapSize, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, MapSize, Client->ClientConfiguration->IsLittleEndianMachine);
 
     for (i = 0; i < PropertiesCount; i++)
     {
         Property = &Properties[i];
 
-        rmqsAddStringToMemBuffer(Client->TxQueue, Property->Key, Client->ClientConfiguration->IsLittleEndianMachine);
-        rmqsAddStringToMemBuffer(Client->TxQueue, Property->Value, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToBuffer(Client->TxQueue, Property->Key, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToBuffer(Client->TxQueue, Property->Value, Client->ClientConfiguration->IsLittleEndianMachine);
     }
 
     //
     // Moves to the beginning of the stream and writes the total message body size
     //
-    rmqsMemBufferMoveTo(Client->TxQueue, false);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsBufferMoveTo(Client->TxQueue, 0);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
@@ -205,18 +205,18 @@ rmqsResponseCode_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bo
 
     *PlainAuthSupported = false; // By default assume that the PLAIN auth is not supported
 
-    rmqsMemBufferClear(Client->TxQueue, false);
+    rmqsBufferClear(Client->TxQueue, false);
 
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
 
     //
     // Moves to the beginning of the stream and writes the total message body size
     //
-    rmqsMemBufferMoveTo(Client->TxQueue, false);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsBufferMoveTo(Client->TxQueue, 0);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
@@ -291,13 +291,13 @@ rmqsResponseCode_t rmqsSaslAuthenticate(rmqsClient_t *Client, const rmqsSocket S
     char_t *OpaqueData;
     size_t UsernameLen, PasswordLen, OpaqueDataLen;
 
-    rmqsMemBufferClear(Client->TxQueue, false);
+    rmqsBufferClear(Client->TxQueue, false);
 
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddStringToMemBuffer(Client->TxQueue, (char_t *)Mechanism, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, (char_t *)Mechanism, Client->ClientConfiguration->IsLittleEndianMachine);
 
     UsernameLen = strlen(Username);
     PasswordLen = strlen(Password);
@@ -307,15 +307,15 @@ rmqsResponseCode_t rmqsSaslAuthenticate(rmqsClient_t *Client, const rmqsSocket S
     memcpy(OpaqueData + 1, Username, UsernameLen);
     memcpy(OpaqueData + UsernameLen + 2, Password, PasswordLen);
 
-    rmqsAddBytesToMemBuffer(Client->TxQueue, OpaqueData, OpaqueDataLen, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddBytesToBuffer(Client->TxQueue, OpaqueData, OpaqueDataLen, true, Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsFreeMemory(OpaqueData);
 
     //
     // Moves to the beginning of the stream and writes the total message body size
     //
-    rmqsMemBufferMoveTo(Client->TxQueue, false);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsBufferMoveTo(Client->TxQueue, 0);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
@@ -339,19 +339,19 @@ rmqsResponseCode_t rmqsOpen(rmqsClient_t *Client, const rmqsSocket Socket, const
     uint16_t Key = rmqscOpen;
     uint16_t Version = 1;
 
-    rmqsMemBufferClear(Client->TxQueue, false);
+    rmqsBufferClear(Client->TxQueue, false);
 
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddStringToMemBuffer(Client->TxQueue, VirtualHost, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, VirtualHost, Client->ClientConfiguration->IsLittleEndianMachine);
 
     //
     // Moves to the beginning of the stream and writes the total message body size
     //
-    rmqsMemBufferMoveTo(Client->TxQueue, false);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsBufferMoveTo(Client->TxQueue, 0);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
@@ -375,20 +375,20 @@ rmqsResponseCode_t rmqsClose(rmqsClient_t *Client, const rmqsSocket Socket, cons
     uint16_t Key = rmqscClose;
     uint16_t Version = 1;
 
-    rmqsMemBufferClear(Client->TxQueue, false);
+    rmqsBufferClear(Client->TxQueue, false);
 
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, ClosingCode, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddStringToMemBuffer(Client->TxQueue, ClosingReason, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToBuffer(Client->TxQueue, ClosingCode, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, ClosingReason, Client->ClientConfiguration->IsLittleEndianMachine);
 
     //
     // Moves to the beginning of the stream and writes the total message body size
     //
-    rmqsMemBufferMoveTo(Client->TxQueue, false);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsBufferMoveTo(Client->TxQueue, 0);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
@@ -414,51 +414,51 @@ rmqsResponseCode_t rmqsCreate(rmqsClient_t *Client, const rmqsSocket Socket, con
     size_t NoOfArgs = 0;
     rmqsProperty_t Property;
 
-    NoOfArgs += CreateStreamArgs->SpecifyMaxLengthBytes ? 1 : 0;
-    NoOfArgs += CreateStreamArgs->SpecifyMaxAge ? 1 : 0;
-    NoOfArgs += CreateStreamArgs->SpecifyStreamMaxSegmentSizeBytes ? 1 : 0;
-    NoOfArgs += CreateStreamArgs->SpecifyQueueLeaderLocator ? 1 : 0;
-    NoOfArgs += CreateStreamArgs->SpecifyInitialClusterSize ? 1 : 0;
+    NoOfArgs += CreateStreamArgs->SetMaxLengthBytes ? 1 : 0;
+    NoOfArgs += CreateStreamArgs->SetMaxAge ? 1 : 0;
+    NoOfArgs += CreateStreamArgs->SetStreamMaxSegmentSizeBytes ? 1 : 0;
+    NoOfArgs += CreateStreamArgs->SetQueueLeaderLocator ? 1 : 0;
+    NoOfArgs += CreateStreamArgs->SetInitialClusterSize ? 1 : 0;
 
-    rmqsMemBufferClear(Client->TxQueue, false);
+    rmqsBufferClear(Client->TxQueue, false);
 
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddStringToMemBuffer(Client->TxQueue, (char_t *)StreamName, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, NoOfArgs, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, (char_t *)StreamName, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, NoOfArgs, Client->ClientConfiguration->IsLittleEndianMachine);
 
-    if (CreateStreamArgs->SpecifyMaxLengthBytes)
+    if (CreateStreamArgs->SetMaxLengthBytes)
     {
         memset(&Property, 0, sizeof(Property));
 
         strncpy(Property.Key, "max-length-bytes", RMQS_MAX_KEY_SIZE);
-        sprintf(Property.Value, "%u", CreateStreamArgs->MaxLengthBytes);
+        sprintf(Property.Value, "%u", (uint32_t)CreateStreamArgs->MaxLengthBytes);
 
-        rmqsAddStringToMemBuffer(Client->TxQueue, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
-        rmqsAddStringToMemBuffer(Client->TxQueue, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToBuffer(Client->TxQueue, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToBuffer(Client->TxQueue, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
     }
 
-    if (CreateStreamArgs->SpecifyMaxAge)
+    if (CreateStreamArgs->SetMaxAge)
     {
         strncpy(Property.Key, "max-age", RMQS_MAX_KEY_SIZE);
         strncpy(Property.Value, (char_t *) CreateStreamArgs->MaxAge, RMQS_MAX_VALUE_SIZE);
 
-        rmqsAddStringToMemBuffer(Client->TxQueue, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
-        rmqsAddStringToMemBuffer(Client->TxQueue, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToBuffer(Client->TxQueue, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToBuffer(Client->TxQueue, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
     }
 
-    if (CreateStreamArgs->SpecifyStreamMaxSegmentSizeBytes)
+    if (CreateStreamArgs->SetStreamMaxSegmentSizeBytes)
     {
         strncpy(Property.Key, "stream-max-segment-size-bytes", RMQS_MAX_KEY_SIZE);
-        sprintf(Property.Value, "%u", CreateStreamArgs->StreamMaxSegmentSizeBytes);
+        sprintf(Property.Value, "%u", (uint32_t)CreateStreamArgs->StreamMaxSegmentSizeBytes);
 
-        rmqsAddStringToMemBuffer(Client->TxQueue, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
-        rmqsAddStringToMemBuffer(Client->TxQueue, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToBuffer(Client->TxQueue, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToBuffer(Client->TxQueue, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
     }
 
-    if (CreateStreamArgs->SpecifyQueueLeaderLocator)
+    if (CreateStreamArgs->SetQueueLeaderLocator)
     {
         strncpy(Property.Key, "queue-leader-locator", RMQS_MAX_KEY_SIZE);
 
@@ -479,24 +479,24 @@ rmqsResponseCode_t rmqsCreate(rmqsClient_t *Client, const rmqsSocket Socket, con
                 break;
         }
 
-        rmqsAddStringToMemBuffer(Client->TxQueue, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
-        rmqsAddStringToMemBuffer(Client->TxQueue, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToBuffer(Client->TxQueue, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToBuffer(Client->TxQueue, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
     }
 
-    if (CreateStreamArgs->SpecifyInitialClusterSize)
+    if (CreateStreamArgs->SetInitialClusterSize)
     {
         strncpy(Property.Key, "initial-cluster-size", RMQS_MAX_KEY_SIZE);
-        sprintf(Property.Value, "%u", CreateStreamArgs->InitialClusterSize);
+        sprintf(Property.Value, "%u", (uint32_t)CreateStreamArgs->InitialClusterSize);
 
-        rmqsAddStringToMemBuffer(Client->TxQueue, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
-        rmqsAddStringToMemBuffer(Client->TxQueue, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToBuffer(Client->TxQueue, Property.Key, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsAddStringToBuffer(Client->TxQueue, Property.Value, Client->ClientConfiguration->IsLittleEndianMachine);
     }
 
     //
     // Moves to the beginning of the stream and writes the total message body size
     //
-    rmqsMemBufferMoveTo(Client->TxQueue, false);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsBufferMoveTo(Client->TxQueue, 0);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
@@ -520,19 +520,19 @@ rmqsResponseCode_t rmqsDelete(rmqsClient_t *Client, const rmqsSocket Socket, con
     uint16_t Key = rmqscDelete;
     uint16_t Version = 1;
 
-    rmqsMemBufferClear(Client->TxQueue, false);
+    rmqsBufferClear(Client->TxQueue, false);
 
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt16ToMemBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddStringToMemBuffer(Client->TxQueue, (char_t *)StreamName, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, 0, Client->ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, (char_t *)StreamName, Client->ClientConfiguration->IsLittleEndianMachine);
 
     //
     // Moves to the beginning of the stream and writes the total message body size
     //
-    rmqsMemBufferMoveTo(Client->TxQueue, false);
-    rmqsAddUInt32ToMemBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsBufferMoveTo(Client->TxQueue, 0);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 

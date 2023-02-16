@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
-#ifndef rmqsMemBufferH
-#define rmqsMemBufferH
+#ifndef rmqsBufferH
+#define rmqsBufferH
 //---------------------------------------------------------------------------
 #include <stdint.h>
 #include <stddef.h>
@@ -21,17 +21,17 @@ typedef struct
     uint32_t Tag2;
     uint32_t Tag3;
 }
-rmqsMemBuffer_t;
+rmqsBuffer_t;
 //---------------------------------------------------------------------------
-rmqsMemBuffer_t * rmqsMemBufferCreate(void);
-void rmqsMemBufferDestroy(rmqsMemBuffer_t *MemBuffer);
-void rmqsMemBufferClear(rmqsMemBuffer_t *MemBuffer, const bool_t ResetMemoryBuffer);
-void rmqsMemBufferClearTags(rmqsMemBuffer_t *MemBuffer);
-size_t rmqsMemBufferRead(rmqsMemBuffer_t *MemBuffer, void *ReadBuffer, size_t NoOfBytes);
-size_t rmqsMemBufferWrite(rmqsMemBuffer_t *MemBuffer, void *WriteBuffer, size_t NoOfBytes);
-void rmqsMemBufferDelete(rmqsMemBuffer_t *MemBuffer, size_t NoOfBytes);
-void rmqsMemBufferMoveTo(rmqsMemBuffer_t *MemBuffer, size_t Position);
-void rmqsMemBufferSetMemorySize(rmqsMemBuffer_t *MemBuffer, const size_t RequiredMemorySize);
+rmqsBuffer_t * rmqsBufferCreate(void);
+void rmqsBufferDestroy(rmqsBuffer_t *Buffer);
+void rmqsBufferClear(rmqsBuffer_t *Buffer, const bool_t ResetMemoryBuffer);
+void rmqsBufferClearTags(rmqsBuffer_t *Buffer);
+size_t rmqsBufferRead(rmqsBuffer_t *Buffer, void *ReadBuffer, size_t NoOfBytes);
+size_t rmqsBufferWrite(rmqsBuffer_t *Buffer, void *WriteBuffer, size_t NoOfBytes);
+void rmqsBufferDelete(rmqsBuffer_t *Buffer, size_t NoOfBytes);
+void rmqsBufferMoveTo(rmqsBuffer_t *Buffer, size_t Position);
+void rmqsBufferSetMemorySize(rmqsBuffer_t *Buffer, const size_t RequiredMemorySize);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

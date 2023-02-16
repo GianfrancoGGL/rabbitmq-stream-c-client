@@ -1,13 +1,9 @@
 //---------------------------------------------------------------------------
-#include <string.h>
-//---------------------------------------------------------------------------
 #include "rmqsClient.h"
 #include "rmqsProducer.h"
 #include "rmqsMemory.h"
+#include "rmqsBuffer.h"
 #include "rmqsProtocol.h"
-//---------------------------------------------------------------------------
-#define RMQS_NULL_STRING_LENGTH    -1
-#define RMQS_EMPTY_DATA_LENGTH     -1
 //---------------------------------------------------------------------------
 bool_t rmqsIsLittleEndianMachine(void)
 {
@@ -53,108 +49,23 @@ void rmqsSendMessage(const void *Client, const rmqsSocket Socket, const char_t *
 bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32_t RxTimeout)
 {
     const rmqsClient_t *ClientObj = (const rmqsClient_t *)Client;
-    bool_t MessageComplete = false, MessageReceived = false;
     int32_t RxBytes;
     uint32_t MessageSize;
     rmqsMsgHeader_t MsgHeader;
     uint16_t Key;
 
-    if (ClientObj->RxQueue->Tag1 == 1)
+    while (true)
     {
-        //
-        // Tag1 indicates whether it was containing a complete message
-        // of Tag2 bytes. Now we're going to read a new message,
-        // then the previous one can be dequeued and the complete marker cleared
-        //
-        rmqsDequeueMessageFromMemBuffer(ClientObj->RxQueue, ClientObj->RxQueue->Tag2);
-        ClientObj->RxQueue->Tag1 = ClientObj->RxQueue->Tag2 = 0;
-    }
-
-    //
-    // Tries to extract the message from the already received bytes, if not enough, read
-    // again from the socket
-    //
-    while (1)
-    {
-        //
-        // Is the message length (4 bytes) arrived?
-        //
-        if (ClientObj->RxQueue->Size >= sizeof(uint32_t))
+        if (ClientObj->RxQueue->Tag1 == true)
         {
             //
-            // Message length is once stored in the Tag1 field and eventually with the correct endianness
+            // Tag1 indicates whether it was containing a complete message
+            // of Tag2 bytes. Now we're going to read a new message,
+            // then the previous one can be dequeued and the complete marker cleared
             //
-            MessageSize = *(uint32_t *)ClientObj->RxQueue->Data;
-
-            if (ClientObj->ClientConfiguration->IsLittleEndianMachine)
-            {
-                MessageSize = SwapUInt32(MessageSize);
-            }
-
-            //
-            // The number of bytes to wait is the one stored in the 4 bytes of the length + the length itself
-            //
-            MessageSize += sizeof(uint32_t);
-
-            if (ClientObj->RxQueue->Size >= MessageSize)
-            {
-                //
-                // Message completed!
-                //
-                MessageComplete = true;
-
-                ClientObj->RxQueue->Tag1 = 1; // Message completed
-                ClientObj->RxQueue->Tag2 = MessageSize;
-
-                if (ClientObj->ClientConfiguration->Logger)
-                {
-                    Key = *(uint16_t *)((char_t *)ClientObj->RxQueue->Data + sizeof(uint32_t));
-
-                    if (ClientObj->ClientConfiguration->IsLittleEndianMachine)
-                    {
-                        Key = SwapUInt16(Key);
-                    }
-
-                    Key &= 0x7FFF;
-
-                    rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)ClientObj->RxQueue->Data, ClientObj->RxQueue->Tag2, "RX", rmqsGetMessageDescription(Key), 0);
-                }
-            }
-        }
-
-        if (MessageComplete)
-        {
-            //
-            // Check whether is a push message - PublishConfirm or PublishError
-            // the header of the message is copied within a header structure to be analyzed
-            // without altering the byte endianness that will be changed also by the caller
-            // to parse the message
-            //
-            memcpy(&MsgHeader, ClientObj->RxQueue->Data, sizeof(MsgHeader));
-
-            if (ClientObj->ClientConfiguration->IsLittleEndianMachine)
-            {
-                MsgHeader.Size = SwapUInt32(MsgHeader.Size);
-                MsgHeader.Key = SwapUInt16(MsgHeader.Key);
-                MsgHeader.Key &= 0x7FFF;
-                MsgHeader.Version = SwapUInt16(MsgHeader.Version);
-            }
-
-            if (MsgHeader.Key == rmqscPublishConfirm || MsgHeader.Key == rmqscPublishError)
-            {
-                //
-                // These message are caught and handled by this procedure and not returned to the caller
-                //
-                if (ClientObj->ClientType == rmqsctProducer)
-                {
-                    rmqsHandlePublishResult(MsgHeader.Key, (rmqsProducer_t *)ClientObj->ParentObject, ClientObj->RxQueue);
-                }
-            }
-            else
-            {
-                MessageReceived = true;
-                break;
-            }
+            rmqsDequeueMessageFromBuffer(ClientObj->RxQueue, ClientObj->RxQueue->Tag2);
+            ClientObj->RxQueue->Tag1 = false;
+            ClientObj->RxQueue->Tag2 = 0;
         }
 
         rmqsSetSocketReadTimeouts(Socket, RxTimeout);
@@ -163,17 +74,95 @@ bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32
 
         if (RxBytes <= 0)
         {
-            break;
+            return false;
         }
 
-        rmqsMemBufferWrite(ClientObj->RxQueue, (void *)ClientObj->RxSocketBuffer, RxBytes);
+        rmqsBufferWrite(ClientObj->RxQueue, (void *)ClientObj->RxSocketBuffer, RxBytes);
 
         //
-        // New loop to extract the message from the receive stream
+        // Is the message length (4 bytes) arrived?
         //
+        if (ClientObj->RxQueue->Size < sizeof(uint32_t))
+        {
+            continue;
+        }
+
+        //
+        // Message length is once stored in the Tag1 field and eventually with the correct endianness
+        //
+        MessageSize = *(uint32_t *)ClientObj->RxQueue->Data;
+
+        if (ClientObj->ClientConfiguration->IsLittleEndianMachine)
+        {
+            MessageSize = SwapUInt32(MessageSize);
+        }
+
+        //
+        // The number of bytes to wait is the one stored in the 4 bytes of the length + the length itself
+        //
+        MessageSize += sizeof(uint32_t);
+
+        if (ClientObj->RxQueue->Size < MessageSize)
+        {
+            return false;
+        }
+
+        //
+        // Message completed
+        // Completed flag is stored in the Tag1 field and the message size in the Tag2 fied
+        // so the message will be dequeued in the next function call, once it has
+        // been passed to the functionc caller for its analysis.
+        //
+        ClientObj->RxQueue->Tag1 = true;
+        ClientObj->RxQueue->Tag2 = MessageSize;
+
+        if (ClientObj->ClientConfiguration->Logger)
+        {
+            Key = *(uint16_t *)((char_t *)ClientObj->RxQueue->Data + sizeof(uint32_t));
+
+            if (ClientObj->ClientConfiguration->IsLittleEndianMachine)
+            {
+                Key = SwapUInt16(Key);
+            }
+
+            Key &= 0x7FFF;
+
+            rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)ClientObj->RxQueue->Data, ClientObj->RxQueue->Tag2, "RX", rmqsGetMessageDescription(Key), 0);
+        }
+
+        //
+        // Check whether is a push message - PublishConfirm or PublishError
+        // the header of the message is copied within a header structure to be analyzed
+        // without altering the byte endianness that will be changed also by the caller
+        // to parse the message
+        //
+        memcpy(&MsgHeader, ClientObj->RxQueue->Data, sizeof(MsgHeader));
+
+        if (ClientObj->ClientConfiguration->IsLittleEndianMachine)
+        {
+            MsgHeader.Size = SwapUInt32(MsgHeader.Size);
+            MsgHeader.Key = SwapUInt16(MsgHeader.Key);
+            MsgHeader.Key &= 0x7FFF;
+            MsgHeader.Version = SwapUInt16(MsgHeader.Version);
+        }
+
+        if (MsgHeader.Key == rmqscPublishConfirm || MsgHeader.Key == rmqscPublishError)
+        {
+            //
+            // These message are caught and handled by this procedure and not returned to the caller
+            //
+            if (ClientObj->ClientType == rmqsctProducer)
+            {
+                rmqsHandlePublishResult(MsgHeader.Key, (rmqsProducer_t *)ClientObj->ParentObject, ClientObj->RxQueue);
+            }
+        }
+        else
+        {
+            break;
+        }
     }
 
-    return MessageReceived;
+    return true;
 }
 //---------------------------------------------------------------------------
 bool_t rmqsWaitResponse(const void *Client, const rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, const uint32_t RxTimeout)
@@ -217,12 +206,12 @@ bool_t rmqsWaitResponse(const void *Client, const rmqsSocket Socket, uint32_t Co
     return false;
 }
 //---------------------------------------------------------------------------
-void rmqsDequeueMessageFromMemBuffer(rmqsMemBuffer_t *MemBuffer, const size_t MessageSize)
+void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, const size_t MessageSize)
 {
     //
     // Remove the message from the stream, shifting eventual extra bytes to the beginning
     //
-    rmqsMemBufferDelete(MemBuffer, MessageSize);
+    rmqsBufferDelete(Buffer, MessageSize);
 }
 //---------------------------------------------------------------------------
 char_t * rmqsGetMessageDescription(uint16_t Key)
@@ -344,96 +333,100 @@ char_t * rmqsGetMessageDescription(uint16_t Key)
             break;
     }
 
-    return(Description);
+    return Description;
 }
 //---------------------------------------------------------------------------
+//
+// Older Borland C++ compilers doesn't support  functions in C files
+//
 //---------------------------------------------------------------------------
+#ifdef __BORLANDC__
 //---------------------------------------------------------------------------
-size_t rmqsAddInt8ToMemBuffer(rmqsMemBuffer_t *MemBuffer, int8_t Value)
+ size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
 {
-    rmqsMemBufferWrite(MemBuffer, (void *)&Value, sizeof(Value));
+    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddUInt8ToMemBuffer(rmqsMemBuffer_t *MemBuffer, uint8_t Value)
+ size_t rmqsAddUInt8ToBuffer(rmqsBuffer_t *Buffer, uint8_t Value)
 {
-    rmqsMemBufferWrite(MemBuffer, (void *)&Value, sizeof(Value));
+    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddInt16ToMemBuffer(rmqsMemBuffer_t *MemBuffer, int16_t Value, bool_t IsLittleEndianMachine)
-{
-    if (IsLittleEndianMachine)
-    {
-        Value = SwapUInt16(Value);
-    }
-
-    rmqsMemBufferWrite(MemBuffer, (void *)&Value, sizeof(Value));
-
-    return sizeof(Value);
-}
-//---------------------------------------------------------------------------
-size_t rmqsAddUInt16ToMemBuffer(rmqsMemBuffer_t *MemBuffer, uint16_t Value, bool_t IsLittleEndianMachine)
+ size_t rmqsAddInt16ToBuffer(rmqsBuffer_t *Buffer, int16_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
         Value = SwapUInt16(Value);
     }
 
-    rmqsMemBufferWrite(MemBuffer, (void *)&Value, sizeof(Value));
+    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
 
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddInt32ToMemBuffer(rmqsMemBuffer_t *MemBuffer, int32_t Value, bool_t IsLittleEndianMachine)
+ size_t rmqsAddUInt16ToBuffer(rmqsBuffer_t *Buffer, uint16_t Value, bool_t IsLittleEndianMachine)
+{
+    if (IsLittleEndianMachine)
+    {
+        Value = SwapUInt16(Value);
+    }
+
+    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
+
+    return sizeof(Value);
+}
+//---------------------------------------------------------------------------
+ size_t rmqsAddInt32ToBuffer(rmqsBuffer_t *Buffer, int32_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
         Value = SwapUInt32(Value);
     }
 
-    rmqsMemBufferWrite(MemBuffer, (void *)&Value, sizeof(Value));
+    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
 
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddUInt32ToMemBuffer(rmqsMemBuffer_t *MemBuffer, uint32_t Value, bool_t IsLittleEndianMachine)
+ size_t rmqsAddUInt32ToBuffer(rmqsBuffer_t *Buffer, uint32_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
         Value = SwapUInt32(Value);
     }
 
-    rmqsMemBufferWrite(MemBuffer, (void *)&Value, sizeof(Value));
+    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
 
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddInt64ToMemBuffer(rmqsMemBuffer_t *MemBuffer, int64_t Value, bool_t IsLittleEndianMachine)
+ size_t rmqsAddInt64ToBuffer(rmqsBuffer_t *Buffer, int64_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
         Value = SwapUInt64(Value);
     }
 
-    rmqsMemBufferWrite(MemBuffer, (void *)&Value, sizeof(Value));
+    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
 
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddUInt64ToMemBuffer(rmqsMemBuffer_t *MemBuffer, uint64_t Value, bool_t IsLittleEndianMachine)
+ size_t rmqsAddUInt64ToBuffer(rmqsBuffer_t *Buffer, uint64_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
         Value = SwapUInt64(Value);
     }
 
-    rmqsMemBufferWrite(MemBuffer, (void *)&Value, sizeof(Value));
+    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
 
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddStringToMemBuffer(rmqsMemBuffer_t *MemBuffer, const char_t *Value, bool_t IsLittleEndianMachine)
+ size_t rmqsAddStringToBuffer(rmqsBuffer_t *Buffer, const char_t *Value, bool_t IsLittleEndianMachine)
 {
     int16_t StringLen;
     size_t BytesAdded;
@@ -447,19 +440,19 @@ size_t rmqsAddStringToMemBuffer(rmqsMemBuffer_t *MemBuffer, const char_t *Value,
         StringLen = (int16_t)strlen(Value);
     }
 
-    rmqsAddInt16ToMemBuffer(MemBuffer, StringLen, IsLittleEndianMachine);
+    rmqsAddInt16ToBuffer(Buffer, StringLen, IsLittleEndianMachine);
     BytesAdded = sizeof(StringLen);
 
     if (StringLen != RMQS_NULL_STRING_LENGTH)
     {
-        rmqsMemBufferWrite(MemBuffer, (void *)Value, StringLen);
+        rmqsBufferWrite(Buffer, (void *)Value, StringLen);
         BytesAdded += StringLen;
     }
 
     return BytesAdded;
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddBytesToMemBuffer(rmqsMemBuffer_t *MemBuffer, void *Value, size_t ValueLength, bool_t IsLittleEndianMachine)
+ size_t rmqsAddBytesToBuffer(rmqsBuffer_t *Buffer, void *Value, size_t ValueLength, bool_t DeclareLength, bool_t IsLittleEndianMachine)
 {
     int32_t DataLen;
     size_t BytesAdded;
@@ -473,16 +466,21 @@ size_t rmqsAddBytesToMemBuffer(rmqsMemBuffer_t *MemBuffer, void *Value, size_t V
         DataLen = (int32_t)ValueLength;
     }
 
-    rmqsAddInt32ToMemBuffer(MemBuffer, DataLen, IsLittleEndianMachine);
-    BytesAdded = sizeof(DataLen);
+    if (DeclareLength)
+    {
+        rmqsAddInt32ToBuffer(Buffer, DataLen, IsLittleEndianMachine);
+        BytesAdded = sizeof(DataLen);
+    }
 
     if (DataLen != RMQS_EMPTY_DATA_LENGTH)
     {
-        rmqsMemBufferWrite(MemBuffer, (void *)Value, DataLen);
+        rmqsBufferWrite(Buffer, (void *)Value, DataLen);
         BytesAdded += DataLen;
     }
 
     return BytesAdded;
 }
+//---------------------------------------------------------------------------
+#endif
 //---------------------------------------------------------------------------
 

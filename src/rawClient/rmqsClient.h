@@ -8,7 +8,7 @@
 #include "rmqsClientConfiguration.h"
 #include "rmqsNetwork.h"
 #include "rmqsProtocol.h"
-#include "rmqsMemBuffer.h"
+#include "rmqsBuffer.h"
 //---------------------------------------------------------------------------
 #define RMQS_CLIENT_HOSTNAME_MAX_SIZE    256
 #define RMQS_CLIENT_RX_BUFFER_SIZE      1024
@@ -29,8 +29,8 @@ typedef struct
     void *ParentObject; // Producer or consumer
     uint32_t CorrelationId;
     rmqsResponse_t Response;
-    rmqsMemBuffer_t *TxQueue;
-    rmqsMemBuffer_t *RxQueue;
+    rmqsBuffer_t *TxQueue;
+    rmqsBuffer_t *RxQueue;
     char_t RxSocketBuffer[RMQS_CLIENT_RX_BUFFER_SIZE];
 }
 rmqsClient_t;
@@ -49,32 +49,32 @@ typedef struct
     //
     // Total body size for ready messages a queue can contain before it starts to drop them from its head.
     //
-    bool_t SpecifyMaxLengthBytes;
+    bool_t SetMaxLengthBytes;
     size_t MaxLengthBytes;
 
     // Sets the data retention for stream queues in time units
     // (Y=Years, M=Months, D=Days, h=hours, m=minutes, s=seconds).
     // E.g. "1h" configures the stream to only keep the last 1 hour of received messages.
-    bool_t SpecifyMaxAge;
+    bool_t SetMaxAge;
     char_t MaxAge[16];
 
     //
     // Total segment size for stream segments on disk.
     //
-    bool_t SpecifyStreamMaxSegmentSizeBytes;
+    bool_t SetStreamMaxSegmentSizeBytes;
     size_t StreamMaxSegmentSizeBytes;
 
     //
     // Set the rule by which the queue leader is located when declared on a cluster of nodes. Valid values are 'client-local' (default) and 'balanced'
     // Other values - to clarify: 'random' - 'least-leaders'
     //
-    bool_t SpecifyQueueLeaderLocator;
+    bool_t SetQueueLeaderLocator;
     rqmsStreamLeaderLocator_t LeaderLocator;
 
     //
     // Set the queue initial cluster size.
     //
-    bool_t SpecifyInitialClusterSize;
+    bool_t SetInitialClusterSize;
     size_t InitialClusterSize;
 }
 rqmsCreateStreamArgs_t;
