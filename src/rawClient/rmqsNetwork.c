@@ -160,8 +160,14 @@ bool_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSock
 
     rmqsSetSocketBlocking(Socket);
     #else
-    setsockopt(Socket, IPPROTO_TCP , TCP_USER_TIMEOUT, &TimeoutMs, sizeof(TimeoutMs));
+	setsockopt(Socket, IPPROTO_TCP , TCP_USER_TIMEOUT, &TimeoutMs, sizeof(TimeoutMs));
 
+    #ifdef __APPLE__
+	setsockopt(Socket, IPPROTO_TCP , TCP_CONNECTIONTIMEOUT, &TimeoutMs, sizeof(TimeoutMs));
+    #else
+    setsockopt(Socket, IPPROTO_TCP , TCP_USER_TIMEOUT, &TimeoutMs, sizeof(TimeoutMs));
+    #endif
+	
     if (connect(Socket, (struct sockaddr *)&ServerAddress, sizeof(struct sockaddr)) == 0)
     {
         Connected = 1;
