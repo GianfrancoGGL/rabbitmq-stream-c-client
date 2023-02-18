@@ -21,8 +21,8 @@ add_executable(rabbitmq_stream_c_client_main
         src/rawClient/rmqsList.h
         src/rawClient/rmqsLogger.c
         src/rawClient/rmqsLogger.h
-        src/rawClient/rmqsMemBuffer.c
-        src/rawClient/rmqsMemBuffer.h
+        src/rawClient/rmqsBuffer.c
+        src/rawClient/rmqsBuffer.h
         src/rawClient/rmqsMemory.c
         src/rawClient/rmqsMemory.h
         src/rawClient/rmqsMessage.c
