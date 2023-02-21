@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RabbitMQ streams C client: C:/rabbitmq-stream-c-client-main/src/rmqsNetwork.h Source File</title>
+<title>RabbitMQ stream C client: C:/rabbitmq-stream-c-client-main/src/rawClient/rmqsNetwork.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,9 +20,8 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="RabbitMQLogo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">RabbitMQ streams C client
+   <div id="projectname">RabbitMQ stream C client
    </div>
   </td>
  </tr>
@@ -70,67 +69,58 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c2041065ae2580372680e5ac7ffaeff8.html">rawClient</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="headertitle"><div class="title">rmqsNetwork.h</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="rmqs_network_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">//---------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#ifndef rmqsNetworkH</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#define rmqsNetworkH</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//---------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#ifndef __WIN32__</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#if ! __WIN32__</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;sys/socket.h&gt;</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="rmqs_network_8h.html#aea5e083a5fcdf95a43029b2815a28133">   10</a></span><span class="preprocessor">#define RMQS_MAX_HOSTNAME_LENGTH     255</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &quot;rmqsGlobal.h&quot;</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#ifdef __WIN32__</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">typedef</span> uint32_t <a class="code hl_typedef" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a>;</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">typedef</span> int32_t <a class="code hl_typedef" href="rmqs_network_8h.html#a2638fd0191afb81d57710f2bcdbca9bd">rmqsSocketLen</a>;</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#define rmqsInvalidSocket 0</span></div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">   17</a></span><span class="keyword">typedef</span> int32_t <a class="code hl_typedef" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a>;</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="rmqs_network_8h.html#a2638fd0191afb81d57710f2bcdbca9bd">   18</a></span><span class="keyword">typedef</span> socklen_t <a class="code hl_typedef" href="rmqs_network_8h.html#a2638fd0191afb81d57710f2bcdbca9bd">rmqsSocketLen</a>;</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="rmqs_network_8h.html#a013d9dc234bca3fa7f49a22a9f93bf1f">   19</a></span><span class="preprocessor">#define rmqsInvalidSocket -1</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#ifdef __WIN32__</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>int32_t rmqsInitWinsock(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keywordtype">void</span> rmqsShutdownWinsock(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><a class="code hl_typedef" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a> <a class="code hl_function" href="rmqs_network_8h.html#aa979f99e44db9fdb913b4d2176e3f911">rmqsSocketCreate</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keywordtype">void</span> <a class="code hl_function" href="rmqs_network_8h.html#a846e9ca2b3f1ad0eec20c186f5715710">rmqsSocketDestroy</a>(<a class="code hl_typedef" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a> *Socket);</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>uint8_t <a class="code hl_function" href="rmqs_network_8h.html#a91e6a0d05a410f0c68c562705ef509a9">rmqsSocketConnect</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *Host, <span class="keyword">const</span> uint16_t Port, <span class="keyword">const</span> <a class="code hl_typedef" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a> Socket, <span class="keyword">const</span> uint32_t TimeoutMs);</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#define RMQS_MAX_HOSTNAME_LENGTH     255</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#if _WIN32 || _WIN64</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">typedef</span> uint32_t rmqsSocket;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">typedef</span> int32_t rmqsSocketLen;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#define rmqsInvalidSocket 0</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="keyword">typedef</span> int32_t rmqsSocket;</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">typedef</span> socklen_t rmqsSocketLen;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#define rmqsInvalidSocket -1</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#if _WIN32 || _WIN64</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>int32_t rmqsInitWinsock(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keywordtype">void</span> rmqsShutdownWinsock(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>rmqsSocket rmqsSocketCreate(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keywordtype">void</span> rmqsSocketDestroy(rmqsSocket *Socket);</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keywordtype">void</span> <a class="code hl_function" href="rmqs_network_8h.html#affc48b3afbeaa74e222963e879bc50dc">rmqsSetSocketTimeouts</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a> Socket, <span class="keyword">const</span> uint32_t ReadTimeout, <span class="keyword">const</span> uint32_t WriteTimeout);</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>uint8_t <a class="code hl_function" href="rmqs_network_8h.html#a958186b6d5990df7eabb1244653b00db">rmqsSetSocketTxRxBuffers</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a> Socket, <span class="keyword">const</span> uint32_t TxBufferSize, <span class="keyword">const</span> uint32_t RxBufferSize);</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>uint8_t <a class="code hl_function" href="rmqs_network_8h.html#a34cbb136d0663e2f9f149b842414bc85">rmqsSetSocketBlocking</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a> Socket);</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>uint8_t <a class="code hl_function" href="rmqs_network_8h.html#ae838eabe4e25d6dc0bc9e1d3b6ab3771">rmqsSetSocketNonBlocking</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a> Socket);</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>uint8_t <a class="code hl_function" href="rmqs_network_8h.html#a70c0503a8bc8d28aa17865a195ef4267">rmqsSetKeepAlive</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a> Socket);</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>uint8_t <a class="code hl_function" href="rmqs_network_8h.html#a59c73ed25576bddf42fcd00c26b430e2">rmqsSetTcpNoDelay</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a> Socket);</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>uint8_t <a class="code hl_function" href="rmqs_network_8h.html#ac1e73a66a50eb5e92c8fcbf2df1ebd3d">rmqsNetworkError</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="comment">//--------------------------------------------------------------------------</span></div>
-<div class="ttc" id="armqs_network_8h_html_a2638fd0191afb81d57710f2bcdbca9bd"><div class="ttname"><a href="rmqs_network_8h.html#a2638fd0191afb81d57710f2bcdbca9bd">rmqsSocketLen</a></div><div class="ttdeci">socklen_t rmqsSocketLen</div><div class="ttdef"><b>Definition:</b> rmqsNetwork.h:18</div></div>
-<div class="ttc" id="armqs_network_8h_html_a34cbb136d0663e2f9f149b842414bc85"><div class="ttname"><a href="rmqs_network_8h.html#a34cbb136d0663e2f9f149b842414bc85">rmqsSetSocketBlocking</a></div><div class="ttdeci">uint8_t rmqsSetSocketBlocking(const rmqsSocket Socket)</div><div class="ttdef"><b>Definition:</b> rmqsNetwork.c:204</div></div>
-<div class="ttc" id="armqs_network_8h_html_a59c73ed25576bddf42fcd00c26b430e2"><div class="ttname"><a href="rmqs_network_8h.html#a59c73ed25576bddf42fcd00c26b430e2">rmqsSetTcpNoDelay</a></div><div class="ttdeci">uint8_t rmqsSetTcpNoDelay(const rmqsSocket Socket)</div><div class="ttdef"><b>Definition:</b> rmqsNetwork.c:304</div></div>
-<div class="ttc" id="armqs_network_8h_html_a5d6ba7daacb1e6fbd1f646323e2e731e"><div class="ttname"><a href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a></div><div class="ttdeci">int32_t rmqsSocket</div><div class="ttdef"><b>Definition:</b> rmqsNetwork.h:17</div></div>
-<div class="ttc" id="armqs_network_8h_html_a70c0503a8bc8d28aa17865a195ef4267"><div class="ttname"><a href="rmqs_network_8h.html#a70c0503a8bc8d28aa17865a195ef4267">rmqsSetKeepAlive</a></div><div class="ttdeci">uint8_t rmqsSetKeepAlive(const rmqsSocket Socket)</div><div class="ttdef"><b>Definition:</b> rmqsNetwork.c:250</div></div>
-<div class="ttc" id="armqs_network_8h_html_a846e9ca2b3f1ad0eec20c186f5715710"><div class="ttname"><a href="rmqs_network_8h.html#a846e9ca2b3f1ad0eec20c186f5715710">rmqsSocketDestroy</a></div><div class="ttdeci">void rmqsSocketDestroy(rmqsSocket *Socket)</div><div class="ttdef"><b>Definition:</b> rmqsNetwork.c:86</div></div>
-<div class="ttc" id="armqs_network_8h_html_a91e6a0d05a410f0c68c562705ef509a9"><div class="ttname"><a href="rmqs_network_8h.html#a91e6a0d05a410f0c68c562705ef509a9">rmqsSocketConnect</a></div><div class="ttdeci">uint8_t rmqsSocketConnect(const char *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs)</div><div class="ttdef"><b>Definition:</b> rmqsNetwork.c:99</div></div>
-<div class="ttc" id="armqs_network_8h_html_a958186b6d5990df7eabb1244653b00db"><div class="ttname"><a href="rmqs_network_8h.html#a958186b6d5990df7eabb1244653b00db">rmqsSetSocketTxRxBuffers</a></div><div class="ttdeci">uint8_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t TxBufferSize, const uint32_t RxBufferSize)</div><div class="ttdef"><b>Definition:</b> rmqsNetwork.c:187</div></div>
-<div class="ttc" id="armqs_network_8h_html_aa979f99e44db9fdb913b4d2176e3f911"><div class="ttname"><a href="rmqs_network_8h.html#aa979f99e44db9fdb913b4d2176e3f911">rmqsSocketCreate</a></div><div class="ttdeci">rmqsSocket rmqsSocketCreate(void)</div><div class="ttdef"><b>Definition:</b> rmqsNetwork.c:81</div></div>
-<div class="ttc" id="armqs_network_8h_html_ac1e73a66a50eb5e92c8fcbf2df1ebd3d"><div class="ttname"><a href="rmqs_network_8h.html#ac1e73a66a50eb5e92c8fcbf2df1ebd3d">rmqsNetworkError</a></div><div class="ttdeci">uint8_t rmqsNetworkError(void)</div><div class="ttdef"><b>Definition:</b> rmqsNetwork.c:316</div></div>
-<div class="ttc" id="armqs_network_8h_html_ae838eabe4e25d6dc0bc9e1d3b6ab3771"><div class="ttname"><a href="rmqs_network_8h.html#ae838eabe4e25d6dc0bc9e1d3b6ab3771">rmqsSetSocketNonBlocking</a></div><div class="ttdeci">uint8_t rmqsSetSocketNonBlocking(const rmqsSocket Socket)</div><div class="ttdef"><b>Definition:</b> rmqsNetwork.c:227</div></div>
-<div class="ttc" id="armqs_network_8h_html_affc48b3afbeaa74e222963e879bc50dc"><div class="ttname"><a href="rmqs_network_8h.html#affc48b3afbeaa74e222963e879bc50dc">rmqsSetSocketTimeouts</a></div><div class="ttdeci">void rmqsSetSocketTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeout, const uint32_t WriteTimeout)</div><div class="ttdef"><b>Definition:</b> rmqsNetwork.c:165</div></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>bool_t rmqsSocketConnect(<span class="keyword">const</span> char_t *Host, <span class="keyword">const</span> uint16_t Port, <span class="keyword">const</span> rmqsSocket Socket, <span class="keyword">const</span> uint32_t TimeoutMs);</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keywordtype">void</span> rmqsSetSocketReadTimeouts(<span class="keyword">const</span> rmqsSocket Socket, <span class="keyword">const</span> uint32_t ReadTimeout);</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keywordtype">void</span> rmqsSetSocketWriteTimeouts(<span class="keyword">const</span> rmqsSocket Socket, <span class="keyword">const</span> uint32_t WriteTimeout);</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>bool_t rmqsSetSocketTxRxBuffers(<span class="keyword">const</span> rmqsSocket Socket, <span class="keyword">const</span> uint32_t TxBufferSize, <span class="keyword">const</span> uint32_t RxBufferSize);</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>bool_t rmqsSetSocketBlocking(<span class="keyword">const</span> rmqsSocket Socket);</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>bool_t rmqsSetSocketNonBlocking(<span class="keyword">const</span> rmqsSocket Socket);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>bool_t rmqsSetKeepAlive(<span class="keyword">const</span> rmqsSocket Socket);</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>bool_t rmqsSetTcpNoDelay(<span class="keyword">const</span> rmqsSocket Socket);</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>bool_t rmqsNetworkError(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="comment">//--------------------------------------------------------------------------</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

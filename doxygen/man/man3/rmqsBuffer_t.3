@@ -1,0 +1,69 @@
+.TH "rmqsBuffer_t" 3 "Mon Feb 20 2023" "RabbitMQ stream C client" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+rmqsBuffer_t \- Holds a memory stream in which information can be written in append mode and that dynamically allocates the memory necessary to contain it\&. Memory is allocated in chunks of customizable size to reduce the number of allocations needed\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <rmqsBuffer\&.h>\fP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "uint32_t \fBChunkSize\fP"
+.br
+.ti -1c
+.RI "uint32_t \fBSize\fP"
+.br
+.ti -1c
+.RI "uint32_t \fBPosition\fP"
+.br
+.ti -1c
+.RI "uint32_t \fBCurrentMemorySize\fP"
+.br
+.ti -1c
+.RI "void * \fBData\fP"
+.br
+.ti -1c
+.RI "uint32_t \fBTag1\fP"
+.br
+.ti -1c
+.RI "uint32_t \fBTag2\fP"
+.br
+.ti -1c
+.RI "uint32_t \fBTag3\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds a memory stream in which information can be written in append mode and that dynamically allocates the memory necessary to contain it\&. Memory is allocated in chunks of customizable size to reduce the number of allocations needed\&. 
+
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIChunkSize\fP The initial amount of memory that is allocated when the structure is created or when new memory blocks need to be allocated 
+.br
+\fISize\fP The size of the data written to the buffer 
+.br
+\fIPosition\fP The current position within the buffer\&. If the buffer is used only in append mode, the position corresponds to the last byte written, but it is possible to reposition itself in any point of the memory buffer and overwrite information already stored 
+.br
+\fICurrentMemorySize\fP The amount of memory currently allocated\&. Should not be confused with the 'Size' field, because the memory is allocated in chunks, therefore it is possible to have only one character written in the buffer and therefore Size=1 and the value of this field would be equal to ChunkSize 
+.br
+\fIData\fP Pointer to the data written to the buffer 
+.br
+\fITag1\fP Field in which it is possible to store additional information regarding the content of the data structure\&. 
+.br
+\fITag2\fP Additional custom field 
+.br
+\fITag3\fP Additional custom field 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for RabbitMQ stream C client from the source code\&.

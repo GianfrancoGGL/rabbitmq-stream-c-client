@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RabbitMQ streams C client: rmqsBroker_t Struct Reference</title>
+<title>RabbitMQ stream C client: rmqsBroker_t Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,9 +20,8 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="RabbitMQLogo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">RabbitMQ streams C client
+   <div id="projectname">RabbitMQ stream C client
    </div>
   </td>
  </tr>
@@ -71,52 +70,43 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structrmqs_broker__t-members.html">List of all members</a>  </div>
+<a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle"><div class="title">rmqsBroker_t Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
-
-<p><code>#include &lt;<a class="el" href="rmqs_environment_8h_source.html">rmqsEnvironment.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a8720c8b48b807cc2a08eaa1ed6c3bb1f"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrmqs_broker__t.html#a8720c8b48b807cc2a08eaa1ed6c3bb1f">Host</a> [<a class="el" href="rmqs_network_8h.html#aea5e083a5fcdf95a43029b2815a28133">RMQS_MAX_HOSTNAME_LENGTH</a>+1]</td></tr>
-<tr class="separator:a8720c8b48b807cc2a08eaa1ed6c3bb1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ca9f1035f63e961a13c1092d55ff48a"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrmqs_broker__t.html#a8ca9f1035f63e961a13c1092d55ff48a">Port</a></td></tr>
-<tr class="separator:a8ca9f1035f63e961a13c1092d55ff48a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+Data Fields</h2></td></tr>
+<tr class="memitem:ae63cf49710e22cb2864a1ac481bc9cc0"><td class="memItemLeft" align="right" valign="top"><a id="ae63cf49710e22cb2864a1ac481bc9cc0" name="ae63cf49710e22cb2864a1ac481bc9cc0"></a>
+char_t&#160;</td><td class="memItemRight" valign="bottom"><b>Hostname</b> [RQMS_MAX_HOSTNAME_LENGTH+1]</td></tr>
+<tr class="separator:ae63cf49710e22cb2864a1ac481bc9cc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeac1f39ed83d419caa452b3d33dd5d12"><td class="memItemLeft" align="right" valign="top"><a id="aeac1f39ed83d419caa452b3d33dd5d12" name="aeac1f39ed83d419caa452b3d33dd5d12"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>Port</b></td></tr>
+<tr class="separator:aeac1f39ed83d419caa452b3d33dd5d12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e329fda9c7378e5f91614f128caa852"><td class="memItemLeft" align="right" valign="top"><a id="a0e329fda9c7378e5f91614f128caa852" name="a0e329fda9c7378e5f91614f128caa852"></a>
+char_t&#160;</td><td class="memItemRight" valign="bottom"><b>Username</b> [RQMS_BROKER_MAX_USERNAME_LENGTH+1]</td></tr>
+<tr class="separator:a0e329fda9c7378e5f91614f128caa852"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad79cd95cc55dcad6a2cdc90bbe12ae80"><td class="memItemLeft" align="right" valign="top"><a id="ad79cd95cc55dcad6a2cdc90bbe12ae80" name="ad79cd95cc55dcad6a2cdc90bbe12ae80"></a>
+char_t&#160;</td><td class="memItemRight" valign="bottom"><b>Password</b> [RQMS_BROKER_MAX_PASSWORD_LENGTH+1]</td></tr>
+<tr class="separator:ad79cd95cc55dcad6a2cdc90bbe12ae80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a996a485d752be55b60a639d11a4ed6f2"><td class="memItemLeft" align="right" valign="top"><a id="a996a485d752be55b60a639d11a4ed6f2" name="a996a485d752be55b60a639d11a4ed6f2"></a>
+char_t&#160;</td><td class="memItemRight" valign="bottom"><b>DBSchema</b> [RQMS_BROKER_MAX_DB_SCHEMA_LENGTH+1]</td></tr>
+<tr class="separator:a996a485d752be55b60a639d11a4ed6f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1244a88a8d177435140fd41e1d24386"><td class="memItemLeft" align="right" valign="top"><a id="ad1244a88a8d177435140fd41e1d24386" name="ad1244a88a8d177435140fd41e1d24386"></a>
+char_t&#160;</td><td class="memItemRight" valign="bottom"><b>VirtualHost</b> [RQMS_MAX_HOSTNAME_LENGTH+1]</td></tr>
+<tr class="separator:ad1244a88a8d177435140fd41e1d24386"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa88645ae51276889cf7a6f6091c41099"><td class="memItemLeft" align="right" valign="top"><a id="aa88645ae51276889cf7a6f6091c41099" name="aa88645ae51276889cf7a6f6091c41099"></a>
+bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>UseTLS</b></td></tr>
+<tr class="separator:aa88645ae51276889cf7a6f6091c41099"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a395c698660bc4cdc6099b31fe3e9f4dc"><td class="memItemLeft" align="right" valign="top"><a id="a395c698660bc4cdc6099b31fe3e9f4dc" name="a395c698660bc4cdc6099b31fe3e9f4dc"></a>
+char_t&#160;</td><td class="memItemRight" valign="bottom"><b>AdvicedHostname</b> [RQMS_MAX_HOSTNAME_LENGTH+1]</td></tr>
+<tr class="separator:a395c698660bc4cdc6099b31fe3e9f4dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a739fecd0119e37e82a667649768d166e"><td class="memItemLeft" align="right" valign="top"><a id="a739fecd0119e37e82a667649768d166e" name="a739fecd0119e37e82a667649768d166e"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>AdvicedPort</b></td></tr>
+<tr class="separator:a739fecd0119e37e82a667649768d166e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a8720c8b48b807cc2a08eaa1ed6c3bb1f" name="a8720c8b48b807cc2a08eaa1ed6c3bb1f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8720c8b48b807cc2a08eaa1ed6c3bb1f">&#9670;&#160;</a></span>Host</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char rmqsBroker_t::Host[<a class="el" href="rmqs_network_8h.html#aea5e083a5fcdf95a43029b2815a28133">RMQS_MAX_HOSTNAME_LENGTH</a>+1]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8ca9f1035f63e961a13c1092d55ff48a" name="a8ca9f1035f63e961a13c1092d55ff48a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ca9f1035f63e961a13c1092d55ff48a">&#9670;&#160;</a></span>Port</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint16_t rmqsBroker_t::Port</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>C:/rabbitmq-stream-c-client-main/src/<a class="el" href="rmqs_environment_8h_source.html">rmqsEnvironment.h</a></li>
+<li>C:/rabbitmq-stream-c-client-main/src/rawClient/<a class="el" href="rmqs_broker_8h_source.html">rmqsBroker.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

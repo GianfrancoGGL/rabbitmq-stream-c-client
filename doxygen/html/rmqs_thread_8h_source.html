@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RabbitMQ streams C client: C:/rabbitmq-stream-c-client-main/src/rmqsThread.h Source File</title>
+<title>RabbitMQ stream C client: C:/rabbitmq-stream-c-client-main/src/rawClient/rmqsThread.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,9 +20,8 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="RabbitMQLogo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">RabbitMQ streams C client
+   <div id="projectname">RabbitMQ stream C client
    </div>
   </td>
  </tr>
@@ -70,60 +69,55 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c2041065ae2580372680e5ac7ffaeff8.html">rawClient</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="headertitle"><div class="title">rmqsThread.h</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="rmqs_thread_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">//--------------------------------------------------------------------------</span></div>
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">//--------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#ifndef rmqsThreadH</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#define rmqsThreadH</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//--------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">//--------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#ifdef __WIN32__</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#if _WIN32 || _WIN64</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;windows.h&gt;</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;pthread.h&gt;</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment">//--------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="structrmqs_thread__t.html">   13</a></span><span class="keyword">typedef</span> <span class="keyword">struct</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>{</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">    #ifdef __WIN32__</span></div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    HANDLE ThreadHandle;</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">    #else</span></div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="structrmqs_thread__t.html#a5dfd34d79450763cf9f61d6897372fa6">   18</a></span>    pthread_t <a class="code hl_variable" href="structrmqs_thread__t.html#a5dfd34d79450763cf9f61d6897372fa6">ThreadHandle</a>;</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="structrmqs_thread__t.html#a696b7e2a406bf91d421dc04111fded4b">   20</a></span>    void (*ThreadRoutine)(<span class="keywordtype">void</span> *, uint8_t *);</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structrmqs_thread__t.html#ae1d2a256d16538f68267781ad1fa4666">   21</a></span>    void (*CancelIORoutine)(<span class="keywordtype">void</span> *);</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="structrmqs_thread__t.html#a77499762b53d3cd97b16dca1ec2e73fd">   22</a></span>    <span class="keywordtype">void</span> *<a class="code hl_variable" href="structrmqs_thread__t.html#a77499762b53d3cd97b16dca1ec2e73fd">Parameters</a>;</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="structrmqs_thread__t.html#aa30210f249c2f6e6032f408f8845289c">   23</a></span>    uint8_t <a class="code hl_variable" href="structrmqs_thread__t.html#aa30210f249c2f6e6032f408f8845289c">TerminateRequest</a>;</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structrmqs_thread__t.html#aa9271b7af3a445542968c59e93895603">   24</a></span>    uint8_t <a class="code hl_variable" href="structrmqs_thread__t.html#aa9271b7af3a445542968c59e93895603">Terminated</a>;</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>}</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a>;</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a> * <a class="code hl_function" href="rmqs_thread_8h.html#a34948070be257276de792773259e694a">rmqsThreadCreate</a>(<span class="keywordtype">void</span> (*ThreadRoutine)(<span class="keywordtype">void</span> *, uint8_t *), <span class="keywordtype">void</span> (*CancelIORoutine)(<span class="keywordtype">void</span> *), <span class="keywordtype">void</span> *Parameters);</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keywordtype">void</span> <a class="code hl_function" href="rmqs_thread_8h.html#a5b6b2145fe44a137713cf7a8721ed6bd">rmqsThreadDestroy</a>(<a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a> *Thread);</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keywordtype">void</span> <a class="code hl_function" href="rmqs_thread_8h.html#ac73e94f0c92d049477ec0199137597b8">rmqsThreadStart</a>(<a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a> *Thread);</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keywordtype">void</span> <a class="code hl_function" href="rmqs_thread_8h.html#aeef82051149b45f956ba6e5ff97c38bb">rmqsThreadStop</a>(<a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a> *Thread);</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keywordtype">void</span> <a class="code hl_function" href="rmqs_thread_8h.html#a2e5e5146f0073140c407a3d9eaf43309">rmqsThreadSleep</a>(uint32_t Milliseconds);</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="keywordtype">void</span> <a class="code hl_function" href="rmqs_thread_8h.html#a74c29708bd285b7eb3695b73ad5ea72a">rmqsThreadSleepEx</a>(uint32_t Milliseconds, <span class="keywordtype">size_t</span> HowManyTimes, uint8_t *Abort);</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="comment">//--------------------------------------------------------------------------</span></div>
-<div class="ttc" id="armqs_thread_8h_html_a2e5e5146f0073140c407a3d9eaf43309"><div class="ttname"><a href="rmqs_thread_8h.html#a2e5e5146f0073140c407a3d9eaf43309">rmqsThreadSleep</a></div><div class="ttdeci">void rmqsThreadSleep(uint32_t Milliseconds)</div><div class="ttdef"><b>Definition:</b> rmqsThread.c:83</div></div>
-<div class="ttc" id="armqs_thread_8h_html_a34948070be257276de792773259e694a"><div class="ttname"><a href="rmqs_thread_8h.html#a34948070be257276de792773259e694a">rmqsThreadCreate</a></div><div class="ttdeci">rmqsThread_t * rmqsThreadCreate(void(*ThreadRoutine)(void *, uint8_t *), void(*CancelIORoutine)(void *), void *Parameters)</div><div class="ttdef"><b>Definition:</b> rmqsThread.c:16</div></div>
-<div class="ttc" id="armqs_thread_8h_html_a5b6b2145fe44a137713cf7a8721ed6bd"><div class="ttname"><a href="rmqs_thread_8h.html#a5b6b2145fe44a137713cf7a8721ed6bd">rmqsThreadDestroy</a></div><div class="ttdeci">void rmqsThreadDestroy(rmqsThread_t *Thread)</div><div class="ttdef"><b>Definition:</b> rmqsThread.c:29</div></div>
-<div class="ttc" id="armqs_thread_8h_html_a74c29708bd285b7eb3695b73ad5ea72a"><div class="ttname"><a href="rmqs_thread_8h.html#a74c29708bd285b7eb3695b73ad5ea72a">rmqsThreadSleepEx</a></div><div class="ttdeci">void rmqsThreadSleepEx(uint32_t Milliseconds, size_t HowManyTimes, uint8_t *Abort)</div><div class="ttdef"><b>Definition:</b> rmqsThread.c:92</div></div>
-<div class="ttc" id="armqs_thread_8h_html_ac73e94f0c92d049477ec0199137597b8"><div class="ttname"><a href="rmqs_thread_8h.html#ac73e94f0c92d049477ec0199137597b8">rmqsThreadStart</a></div><div class="ttdeci">void rmqsThreadStart(rmqsThread_t *Thread)</div><div class="ttdef"><b>Definition:</b> rmqsThread.c:34</div></div>
-<div class="ttc" id="armqs_thread_8h_html_aeef82051149b45f956ba6e5ff97c38bb"><div class="ttname"><a href="rmqs_thread_8h.html#aeef82051149b45f956ba6e5ff97c38bb">rmqsThreadStop</a></div><div class="ttdeci">void rmqsThreadStop(rmqsThread_t *Thread)</div><div class="ttdef"><b>Definition:</b> rmqsThread.c:55</div></div>
-<div class="ttc" id="astructrmqs_thread__t_html"><div class="ttname"><a href="structrmqs_thread__t.html">rmqsThread_t</a></div><div class="ttdef"><b>Definition:</b> rmqsThread.h:14</div></div>
-<div class="ttc" id="astructrmqs_thread__t_html_a5dfd34d79450763cf9f61d6897372fa6"><div class="ttname"><a href="structrmqs_thread__t.html#a5dfd34d79450763cf9f61d6897372fa6">rmqsThread_t::ThreadHandle</a></div><div class="ttdeci">pthread_t ThreadHandle</div><div class="ttdef"><b>Definition:</b> rmqsThread.h:18</div></div>
-<div class="ttc" id="astructrmqs_thread__t_html_a77499762b53d3cd97b16dca1ec2e73fd"><div class="ttname"><a href="structrmqs_thread__t.html#a77499762b53d3cd97b16dca1ec2e73fd">rmqsThread_t::Parameters</a></div><div class="ttdeci">void * Parameters</div><div class="ttdef"><b>Definition:</b> rmqsThread.h:22</div></div>
-<div class="ttc" id="astructrmqs_thread__t_html_aa30210f249c2f6e6032f408f8845289c"><div class="ttname"><a href="structrmqs_thread__t.html#aa30210f249c2f6e6032f408f8845289c">rmqsThread_t::TerminateRequest</a></div><div class="ttdeci">uint8_t TerminateRequest</div><div class="ttdef"><b>Definition:</b> rmqsThread.h:23</div></div>
-<div class="ttc" id="astructrmqs_thread__t_html_aa9271b7af3a445542968c59e93895603"><div class="ttname"><a href="structrmqs_thread__t.html#aa9271b7af3a445542968c59e93895603">rmqsThread_t::Terminated</a></div><div class="ttdeci">uint8_t Terminated</div><div class="ttdef"><b>Definition:</b> rmqsThread.h:24</div></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;rmqsGlobal.h&quot;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="comment">//--------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">typedef</span> void (*ThreadRoutineCallback_t)(<span class="keywordtype">void</span> *Parameters, bool_t *Terminate);</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">typedef</span> void (*CancelIORoutineCallback_t)(<span class="keywordtype">void</span> *Parameters);</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment">//--------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="structrmqs_thread__t.html">   18</a></span><span class="keyword">typedef</span> <span class="keyword">struct</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>{</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">    #if _WIN32 || _WIN64</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    HANDLE ThreadHandle;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">    #else</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    pthread_t ThreadHandle;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    ThreadRoutineCallback_t ThreadRoutineCallback;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    CancelIORoutineCallback_t CancelIORoutineCallback;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="keywordtype">void</span> *Parameters;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    bool_t TerminateRequest;</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    bool_t Terminated;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>}</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a>;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a> * rmqsThreadCreate(ThreadRoutineCallback_t ThreadRoutineCallback, CancelIORoutineCallback_t CancelIORoutineCallback, <span class="keywordtype">void</span> *Parameters);</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keywordtype">void</span> rmqsThreadDestroy(<a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a> *Thread);</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keywordtype">void</span> rmqsThreadStart(<a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a> *Thread);</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="keywordtype">void</span> rmqsThreadStop(<a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a> *Thread);</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="keywordtype">void</span> rmqsThreadSleep(<span class="keyword">const</span> uint32_t Milliseconds);</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="keywordtype">void</span> rmqsThreadSleepEx(<span class="keyword">const</span> uint32_t Milliseconds, <span class="keyword">const</span> <span class="keywordtype">size_t</span> HowManyTimes, <span class="keyword">const</span> bool_t *Abort);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="comment">//--------------------------------------------------------------------------</span></div>
+<div class="ttc" id="astructrmqs_thread__t_html"><div class="ttname"><a href="structrmqs_thread__t.html">rmqsThread_t</a></div><div class="ttdef"><b>Definition:</b> rmqsThread.h:19</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

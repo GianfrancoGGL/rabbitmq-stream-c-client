@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RabbitMQ streams C client: C:/rabbitmq-stream-c-client-main/src/rmqsList.h Source File</title>
+<title>RabbitMQ stream C client: C:/rabbitmq-stream-c-client-main/src/rawClient/rmqsList.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,9 +20,8 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="RabbitMQLogo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">RabbitMQ streams C client
+   <div id="projectname">RabbitMQ stream C client
    </div>
   </td>
  </tr>
@@ -70,14 +69,14 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c2041065ae2580372680e5ac7ffaeff8.html">rawClient</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="headertitle"><div class="title">rmqsList.h</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="rmqs_list_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">//---------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#ifndef rmqsListH</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#define rmqsListH</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//---------------------------------------------------------------------------</span></div>
@@ -86,59 +85,45 @@ $(function() {
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">//---------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="structrmqs_list_node__t.html">    8</a></span><span class="keyword">typedef</span> <span class="keyword">struct</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>{</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="structrmqs_list_node__t.html#a8d6fe3b082df7b75f80e45318b97269d">   10</a></span>    <span class="keywordtype">void</span> *<a class="code hl_variable" href="structrmqs_list_node__t.html#a8d6fe3b082df7b75f80e45318b97269d">Data</a>;</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="structrmqs_list_node__t.html#ab6b810e6fcbd97471d5d2ed7a8e69bd4">   11</a></span>    <span class="keywordtype">void</span> *<a class="code hl_variable" href="structrmqs_list_node__t.html#ab6b810e6fcbd97471d5d2ed7a8e69bd4">Next</a>;</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    <span class="keywordtype">void</span> *Data;</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    <span class="keywordtype">void</span> *Next;</div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>}</div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><a class="code hl_struct" href="structrmqs_list_node__t.html">rmqsListNode_t</a>;</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="structrmqs_list__t.html">   15</a></span><span class="keyword">typedef</span> <span class="keyword">struct</span></div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>{</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="structrmqs_list__t.html#a762bdd848a045ed33cc07efc20adf5d3">   17</a></span>    <a class="code hl_struct" href="structrmqs_list_node__t.html">rmqsListNode_t</a> *<a class="code hl_variable" href="structrmqs_list__t.html#a762bdd848a045ed33cc07efc20adf5d3">First</a>;</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="structrmqs_list__t.html#af2916d04631369d02b0c639c394bf575">   18</a></span>    <span class="keywordtype">size_t</span> <a class="code hl_variable" href="structrmqs_list__t.html#af2916d04631369d02b0c639c394bf575">Count</a>;</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="structrmqs_list__t.html#abb84780c2800c383b8985bbae543fe96">   19</a></span>    void (*ClearDataCB)(<span class="keywordtype">void</span> *);</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>}</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a>;</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> * <a class="code hl_function" href="rmqs_list_8h.html#a0577803c9e78cfd1a5387a03114e81ca">rmqsListCreate</a>(<span class="keywordtype">void</span> (*ClearDataCB)(<span class="keywordtype">void</span> *));</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keywordtype">void</span> <a class="code hl_function" href="rmqs_list_8h.html#aeee10773551b954b2c0826901ce70198">rmqsListDestroy</a>(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *Stream);</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><a class="code hl_struct" href="structrmqs_list_node__t.html">rmqsListNode_t</a> * <a class="code hl_function" href="rmqs_list_8h.html#a76cfc71afb2b2eee8134cc875a89d355">rmqsListAddBegin</a>(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">void</span> *Data);</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><a class="code hl_struct" href="structrmqs_list_node__t.html">rmqsListNode_t</a> * <a class="code hl_function" href="rmqs_list_8h.html#ad3c93a62f610b95d18d66f6bcfc44a21">rmqsListAddEnd</a>(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">void</span> *Data);</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><a class="code hl_struct" href="structrmqs_list_node__t.html">rmqsListNode_t</a> * <a class="code hl_function" href="rmqs_list_8h.html#adde4d49be3ef6f6297b9ac5e5e54aa33">rmqsListAddPosition</a>(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">size_t</span> Position, <span class="keywordtype">void</span> *Data);</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keywordtype">void</span> <a class="code hl_function" href="rmqs_list_8h.html#a09d2f8e419deb6709693461eed1d7c39">rmqsListDeleteBegin</a>(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List);</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keywordtype">void</span> <a class="code hl_function" href="rmqs_list_8h.html#a493d98dc2f37388289cf6d31d6cb0338">rmqsListDeleteEnd</a>(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List);</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keywordtype">void</span> <a class="code hl_function" href="rmqs_list_8h.html#a143c55c01d4faeefadb29d25b7f91faa">rmqsListDeleteData</a>(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">void</span> *Data);</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="keywordtype">void</span> <a class="code hl_function" href="rmqs_list_8h.html#a1673a041e113af1bf4cb0336e2c2f190">rmqsListDeletePosition</a>(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">size_t</span> Position);</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><a class="code hl_struct" href="structrmqs_list_node__t.html">rmqsListNode_t</a> * <a class="code hl_function" href="rmqs_list_8h.html#ae4ee4563aa62a7c5a2f6e61609ca4f32">rmqsListSearchByData</a>(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">void</span> *Data);</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><a class="code hl_struct" href="structrmqs_list_node__t.html">rmqsListNode_t</a> * <a class="code hl_function" href="rmqs_list_8h.html#a0d68f394a6627f14c885be24af611a7a">rmqsListSearchByPosition</a>(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">size_t</span> Position);</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">typedef</span> void (*ClearDataCallback_t)(<span class="keywordtype">void</span> *Data);</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="structrmqs_list__t.html">   17</a></span><span class="keyword">typedef</span> <span class="keyword">struct</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>{</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <a class="code hl_struct" href="structrmqs_list_node__t.html">rmqsListNode_t</a> *First;</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keywordtype">size_t</span> Count;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    ClearDataCallback_t ClearDataCallback;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>}</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a>;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> * rmqsListCreate(ClearDataCallback_t ClearDataCallback);</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> * rmqsListGenericCreate(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keywordtype">void</span> rmqsListDestroy(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List);</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><a class="code hl_struct" href="structrmqs_list_node__t.html">rmqsListNode_t</a> * rmqsListAddBegin(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">void</span> *Data);</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><a class="code hl_struct" href="structrmqs_list_node__t.html">rmqsListNode_t</a> * rmqsListAddEnd(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">void</span> *Data);</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><a class="code hl_struct" href="structrmqs_list_node__t.html">rmqsListNode_t</a> * rmqsListAddPosition(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">size_t</span> Position, <span class="keywordtype">void</span> *Data);</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="keywordtype">void</span> rmqsListDeleteBegin(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List);</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keywordtype">void</span> rmqsListDeleteEnd(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List);</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keywordtype">void</span> rmqsListDeleteData(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">void</span> *Data);</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="keywordtype">void</span> rmqsListDeletePosition(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">size_t</span> Position);</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="keywordtype">void</span> * <a class="code hl_function" href="rmqs_list_8h.html#acd2cea1f4cc36552e7e3547ed51ee81f">rmqsListGetDataByPosition</a>(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">size_t</span> Position);</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keywordtype">void</span> <a class="code hl_function" href="rmqs_list_8h.html#a989d563e3ac6875bb612724eb0af8864">rmqsGenericListDestroy</a>(<span class="keywordtype">void</span> *Data);</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="comment">//---------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="comment">//--------------------------------------------------------------------------</span></div>
-<div class="ttc" id="armqs_list_8h_html_a0577803c9e78cfd1a5387a03114e81ca"><div class="ttname"><a href="rmqs_list_8h.html#a0577803c9e78cfd1a5387a03114e81ca">rmqsListCreate</a></div><div class="ttdeci">rmqsList_t * rmqsListCreate(void(*ClearDataCB)(void *))</div><div class="ttdef"><b>Definition:</b> rmqsList.c:7</div></div>
-<div class="ttc" id="armqs_list_8h_html_a09d2f8e419deb6709693461eed1d7c39"><div class="ttname"><a href="rmqs_list_8h.html#a09d2f8e419deb6709693461eed1d7c39">rmqsListDeleteBegin</a></div><div class="ttdeci">void rmqsListDeleteBegin(rmqsList_t *List)</div><div class="ttdef"><b>Definition:</b> rmqsList.c:122</div></div>
-<div class="ttc" id="armqs_list_8h_html_a0d68f394a6627f14c885be24af611a7a"><div class="ttname"><a href="rmqs_list_8h.html#a0d68f394a6627f14c885be24af611a7a">rmqsListSearchByPosition</a></div><div class="ttdeci">rmqsListNode_t * rmqsListSearchByPosition(rmqsList_t *List, size_t Position)</div><div class="ttdef"><b>Definition:</b> rmqsList.c:298</div></div>
-<div class="ttc" id="armqs_list_8h_html_a143c55c01d4faeefadb29d25b7f91faa"><div class="ttname"><a href="rmqs_list_8h.html#a143c55c01d4faeefadb29d25b7f91faa">rmqsListDeleteData</a></div><div class="ttdeci">void rmqsListDeleteData(rmqsList_t *List, void *Data)</div><div class="ttdef"><b>Definition:</b> rmqsList.c:191</div></div>
-<div class="ttc" id="armqs_list_8h_html_a1673a041e113af1bf4cb0336e2c2f190"><div class="ttname"><a href="rmqs_list_8h.html#a1673a041e113af1bf4cb0336e2c2f190">rmqsListDeletePosition</a></div><div class="ttdeci">void rmqsListDeletePosition(rmqsList_t *List, size_t Position)</div><div class="ttdef"><b>Definition:</b> rmqsList.c:220</div></div>
-<div class="ttc" id="armqs_list_8h_html_a493d98dc2f37388289cf6d31d6cb0338"><div class="ttname"><a href="rmqs_list_8h.html#a493d98dc2f37388289cf6d31d6cb0338">rmqsListDeleteEnd</a></div><div class="ttdeci">void rmqsListDeleteEnd(rmqsList_t *List)</div><div class="ttdef"><b>Definition:</b> rmqsList.c:145</div></div>
-<div class="ttc" id="armqs_list_8h_html_a76cfc71afb2b2eee8134cc875a89d355"><div class="ttname"><a href="rmqs_list_8h.html#a76cfc71afb2b2eee8134cc875a89d355">rmqsListAddBegin</a></div><div class="ttdeci">rmqsListNode_t * rmqsListAddBegin(rmqsList_t *List, void *Data)</div><div class="ttdef"><b>Definition:</b> rmqsList.c:28</div></div>
-<div class="ttc" id="armqs_list_8h_html_a989d563e3ac6875bb612724eb0af8864"><div class="ttname"><a href="rmqs_list_8h.html#a989d563e3ac6875bb612724eb0af8864">rmqsGenericListDestroy</a></div><div class="ttdeci">void rmqsGenericListDestroy(void *Data)</div><div class="ttdef"><b>Definition:</b> rmqsList.c:336</div></div>
-<div class="ttc" id="armqs_list_8h_html_acd2cea1f4cc36552e7e3547ed51ee81f"><div class="ttname"><a href="rmqs_list_8h.html#acd2cea1f4cc36552e7e3547ed51ee81f">rmqsListGetDataByPosition</a></div><div class="ttdeci">void * rmqsListGetDataByPosition(rmqsList_t *List, size_t Position)</div><div class="ttdef"><b>Definition:</b> rmqsList.c:322</div></div>
-<div class="ttc" id="armqs_list_8h_html_ad3c93a62f610b95d18d66f6bcfc44a21"><div class="ttname"><a href="rmqs_list_8h.html#ad3c93a62f610b95d18d66f6bcfc44a21">rmqsListAddEnd</a></div><div class="ttdeci">rmqsListNode_t * rmqsListAddEnd(rmqsList_t *List, void *Data)</div><div class="ttdef"><b>Definition:</b> rmqsList.c:50</div></div>
-<div class="ttc" id="armqs_list_8h_html_adde4d49be3ef6f6297b9ac5e5e54aa33"><div class="ttname"><a href="rmqs_list_8h.html#adde4d49be3ef6f6297b9ac5e5e54aa33">rmqsListAddPosition</a></div><div class="ttdeci">rmqsListNode_t * rmqsListAddPosition(rmqsList_t *List, size_t Position, void *Data)</div><div class="ttdef"><b>Definition:</b> rmqsList.c:79</div></div>
-<div class="ttc" id="armqs_list_8h_html_ae4ee4563aa62a7c5a2f6e61609ca4f32"><div class="ttname"><a href="rmqs_list_8h.html#ae4ee4563aa62a7c5a2f6e61609ca4f32">rmqsListSearchByData</a></div><div class="ttdeci">rmqsListNode_t * rmqsListSearchByData(rmqsList_t *List, void *Data)</div><div class="ttdef"><b>Definition:</b> rmqsList.c:275</div></div>
-<div class="ttc" id="armqs_list_8h_html_aeee10773551b954b2c0826901ce70198"><div class="ttname"><a href="rmqs_list_8h.html#aeee10773551b954b2c0826901ce70198">rmqsListDestroy</a></div><div class="ttdeci">void rmqsListDestroy(rmqsList_t *Stream)</div><div class="ttdef"><b>Definition:</b> rmqsList.c:18</div></div>
-<div class="ttc" id="astructrmqs_list__t_html"><div class="ttname"><a href="structrmqs_list__t.html">rmqsList_t</a></div><div class="ttdef"><b>Definition:</b> rmqsList.h:16</div></div>
-<div class="ttc" id="astructrmqs_list__t_html_a762bdd848a045ed33cc07efc20adf5d3"><div class="ttname"><a href="structrmqs_list__t.html#a762bdd848a045ed33cc07efc20adf5d3">rmqsList_t::First</a></div><div class="ttdeci">rmqsListNode_t * First</div><div class="ttdef"><b>Definition:</b> rmqsList.h:17</div></div>
-<div class="ttc" id="astructrmqs_list__t_html_af2916d04631369d02b0c639c394bf575"><div class="ttname"><a href="structrmqs_list__t.html#af2916d04631369d02b0c639c394bf575">rmqsList_t::Count</a></div><div class="ttdeci">size_t Count</div><div class="ttdef"><b>Definition:</b> rmqsList.h:18</div></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><a class="code hl_struct" href="structrmqs_list_node__t.html">rmqsListNode_t</a> * rmqsListSearchByData(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">void</span> *Data);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><a class="code hl_struct" href="structrmqs_list_node__t.html">rmqsListNode_t</a> * rmqsListSearchByPosition(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">size_t</span> Position);</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keywordtype">void</span> * rmqsListGetDataByPosition(<a class="code hl_struct" href="structrmqs_list__t.html">rmqsList_t</a> *List, <span class="keywordtype">size_t</span> Position);</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="keywordtype">void</span> rmqListGenericDestroyCallcack(<span class="keywordtype">void</span> *Data);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="comment">//---------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="comment">//--------------------------------------------------------------------------</span></div>
+<div class="ttc" id="astructrmqs_list__t_html"><div class="ttname"><a href="structrmqs_list__t.html">rmqsList_t</a></div><div class="ttdef"><b>Definition:</b> rmqsList.h:18</div></div>
 <div class="ttc" id="astructrmqs_list_node__t_html"><div class="ttname"><a href="structrmqs_list_node__t.html">rmqsListNode_t</a></div><div class="ttdef"><b>Definition:</b> rmqsList.h:9</div></div>
-<div class="ttc" id="astructrmqs_list_node__t_html_a8d6fe3b082df7b75f80e45318b97269d"><div class="ttname"><a href="structrmqs_list_node__t.html#a8d6fe3b082df7b75f80e45318b97269d">rmqsListNode_t::Data</a></div><div class="ttdeci">void * Data</div><div class="ttdef"><b>Definition:</b> rmqsList.h:10</div></div>
-<div class="ttc" id="astructrmqs_list_node__t_html_ab6b810e6fcbd97471d5d2ed7a8e69bd4"><div class="ttname"><a href="structrmqs_list_node__t.html#ab6b810e6fcbd97471d5d2ed7a8e69bd4">rmqsListNode_t::Next</a></div><div class="ttdeci">void * Next</div><div class="ttdef"><b>Definition:</b> rmqsList.h:11</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

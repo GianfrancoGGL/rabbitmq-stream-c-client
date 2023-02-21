@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RabbitMQ streams C client: rmqsThread_t Struct Reference</title>
+<title>RabbitMQ stream C client: rmqsThread_t Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,9 +20,8 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="RabbitMQLogo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">RabbitMQ streams C client
+   <div id="projectname">RabbitMQ stream C client
    </div>
   </td>
  </tr>
@@ -71,116 +70,34 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structrmqs_thread__t-members.html">List of all members</a>  </div>
+<a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle"><div class="title">rmqsThread_t Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
-
-<p><code>#include &lt;<a class="el" href="rmqs_thread_8h_source.html">rmqsThread.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a5dfd34d79450763cf9f61d6897372fa6"><td class="memItemLeft" align="right" valign="top">pthread_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrmqs_thread__t.html#a5dfd34d79450763cf9f61d6897372fa6">ThreadHandle</a></td></tr>
-<tr class="separator:a5dfd34d79450763cf9f61d6897372fa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a696b7e2a406bf91d421dc04111fded4b"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrmqs_thread__t.html#a696b7e2a406bf91d421dc04111fded4b">ThreadRoutine</a> )(void *, uint8_t *)</td></tr>
-<tr class="separator:a696b7e2a406bf91d421dc04111fded4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae1d2a256d16538f68267781ad1fa4666"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrmqs_thread__t.html#ae1d2a256d16538f68267781ad1fa4666">CancelIORoutine</a> )(void *)</td></tr>
-<tr class="separator:ae1d2a256d16538f68267781ad1fa4666"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77499762b53d3cd97b16dca1ec2e73fd"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrmqs_thread__t.html#a77499762b53d3cd97b16dca1ec2e73fd">Parameters</a></td></tr>
-<tr class="separator:a77499762b53d3cd97b16dca1ec2e73fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa30210f249c2f6e6032f408f8845289c"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrmqs_thread__t.html#aa30210f249c2f6e6032f408f8845289c">TerminateRequest</a></td></tr>
-<tr class="separator:aa30210f249c2f6e6032f408f8845289c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9271b7af3a445542968c59e93895603"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrmqs_thread__t.html#aa9271b7af3a445542968c59e93895603">Terminated</a></td></tr>
-<tr class="separator:aa9271b7af3a445542968c59e93895603"><td class="memSeparator" colspan="2">&#160;</td></tr>
+Data Fields</h2></td></tr>
+<tr class="memitem:ac0956a71ceaa8d0479920c0a12d377c0"><td class="memItemLeft" align="right" valign="top"><a id="ac0956a71ceaa8d0479920c0a12d377c0" name="ac0956a71ceaa8d0479920c0a12d377c0"></a>
+pthread_t&#160;</td><td class="memItemRight" valign="bottom"><b>ThreadHandle</b></td></tr>
+<tr class="separator:ac0956a71ceaa8d0479920c0a12d377c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af41c84a955c7bfc055f90b3ba130bd39"><td class="memItemLeft" align="right" valign="top"><a id="af41c84a955c7bfc055f90b3ba130bd39" name="af41c84a955c7bfc055f90b3ba130bd39"></a>
+ThreadRoutineCallback_t&#160;</td><td class="memItemRight" valign="bottom"><b>ThreadRoutineCallback</b></td></tr>
+<tr class="separator:af41c84a955c7bfc055f90b3ba130bd39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac35abbbab24c4d9e57fa8c8fcda7d353"><td class="memItemLeft" align="right" valign="top"><a id="ac35abbbab24c4d9e57fa8c8fcda7d353" name="ac35abbbab24c4d9e57fa8c8fcda7d353"></a>
+CancelIORoutineCallback_t&#160;</td><td class="memItemRight" valign="bottom"><b>CancelIORoutineCallback</b></td></tr>
+<tr class="separator:ac35abbbab24c4d9e57fa8c8fcda7d353"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac468bc2522c11279e1429f334c1b9108"><td class="memItemLeft" align="right" valign="top"><a id="ac468bc2522c11279e1429f334c1b9108" name="ac468bc2522c11279e1429f334c1b9108"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>Parameters</b></td></tr>
+<tr class="separator:ac468bc2522c11279e1429f334c1b9108"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa704e2c1ea98bceb6094dc4104adcb5f"><td class="memItemLeft" align="right" valign="top"><a id="aa704e2c1ea98bceb6094dc4104adcb5f" name="aa704e2c1ea98bceb6094dc4104adcb5f"></a>
+bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>TerminateRequest</b></td></tr>
+<tr class="separator:aa704e2c1ea98bceb6094dc4104adcb5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b6c7592aad4d9d291ccd38da948141d"><td class="memItemLeft" align="right" valign="top"><a id="a7b6c7592aad4d9d291ccd38da948141d" name="a7b6c7592aad4d9d291ccd38da948141d"></a>
+bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>Terminated</b></td></tr>
+<tr class="separator:a7b6c7592aad4d9d291ccd38da948141d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="ae1d2a256d16538f68267781ad1fa4666" name="ae1d2a256d16538f68267781ad1fa4666"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae1d2a256d16538f68267781ad1fa4666">&#9670;&#160;</a></span>CancelIORoutine</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void(* rmqsThread_t::CancelIORoutine) (void *)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a77499762b53d3cd97b16dca1ec2e73fd" name="a77499762b53d3cd97b16dca1ec2e73fd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a77499762b53d3cd97b16dca1ec2e73fd">&#9670;&#160;</a></span>Parameters</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void* rmqsThread_t::Parameters</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa9271b7af3a445542968c59e93895603" name="aa9271b7af3a445542968c59e93895603"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa9271b7af3a445542968c59e93895603">&#9670;&#160;</a></span>Terminated</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t rmqsThread_t::Terminated</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa30210f249c2f6e6032f408f8845289c" name="aa30210f249c2f6e6032f408f8845289c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa30210f249c2f6e6032f408f8845289c">&#9670;&#160;</a></span>TerminateRequest</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t rmqsThread_t::TerminateRequest</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a5dfd34d79450763cf9f61d6897372fa6" name="a5dfd34d79450763cf9f61d6897372fa6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5dfd34d79450763cf9f61d6897372fa6">&#9670;&#160;</a></span>ThreadHandle</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">pthread_t rmqsThread_t::ThreadHandle</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a696b7e2a406bf91d421dc04111fded4b" name="a696b7e2a406bf91d421dc04111fded4b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a696b7e2a406bf91d421dc04111fded4b">&#9670;&#160;</a></span>ThreadRoutine</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void(* rmqsThread_t::ThreadRoutine) (void *, uint8_t *)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>C:/rabbitmq-stream-c-client-main/src/<a class="el" href="rmqs_thread_8h_source.html">rmqsThread.h</a></li>
+<li>C:/rabbitmq-stream-c-client-main/src/rawClient/<a class="el" href="rmqs_thread_8h_source.html">rmqsThread.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
