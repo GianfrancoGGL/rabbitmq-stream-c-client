@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['key_0',['Key',['../structrmqs_property__t.html#a44a39150759eb217992aa968fc09d20f',1,'rmqsProperty_t::Key()'],['../structrmqs_response__t.html#ae83e552370793e28d64972e26d901bf5',1,'rmqsResponse_t::Key()']]]
+  ['key_0',['Key',['../structrmqs_property__t.html#a23913b0430c6b8b4c411f2195e8c53f0',1,'rmqsProperty_t::Key()'],['../structrmqs_msg_header__t.html#aed4989aaf2c7b5eea7a74752327d17c0',1,'rmqsMsgHeader_t::Key()']]]
 ];

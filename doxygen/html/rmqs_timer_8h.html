@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RabbitMQ streams C client: C:/rabbitmq-stream-c-client-main/src/rmqsTimer.h File Reference</title>
+<title>RabbitMQ stream C client: C:/rabbitmq-stream-c-client-main/src/rawClient/rmqsTimer.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -20,9 +24,8 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="RabbitMQLogo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">RabbitMQ streams C client
+   <div id="projectname">RabbitMQ stream C client
    </div>
   </td>
  </tr>
@@ -47,6 +50,23 @@ $(function() {
 /* @license-end */
 </script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('rmqs_timer_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -68,11 +88,6 @@ $(function() {
 </div>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
@@ -83,6 +98,7 @@ $(function() {
 <div class="textblock"><code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;unistd.h&gt;</code><br />
 <code>#include &lt;sys/time.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="rmqs_global_8h_source.html">rmqsGlobal.h</a>&quot;</code><br />
 </div>
 <p><a href="rmqs_timer_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -105,8 +121,138 @@ Functions</h2></td></tr>
 <tr class="separator:a79f6b432ebcadaea28e4a91552650993"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad2cfcc84cdf8bbb9597fccf2608819c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_timer_8h.html#aad2cfcc84cdf8bbb9597fccf2608819c">rmqsTimerGetSystemClock</a> (<a class="el" href="structrmqs_timer__t.html">rmqsTimer_t</a> *Timer)</td></tr>
 <tr class="separator:aad2cfcc84cdf8bbb9597fccf2608819c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46d74272f560bad98371993b1586b4de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_timer_8h.html#a46d74272f560bad98371993b1586b4de">rmqsGetCurrentDateTime</a> (uint16_t *Year, uint8_t *Month, uint8_t *Day, uint8_t *Hour, uint8_t *Minute, uint8_t *Second)</td></tr>
+<tr class="separator:a46d74272f560bad98371993b1586b4de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb19683741699725cdbb466950175abc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_timer_8h.html#acb19683741699725cdbb466950175abc">rmqsGetCurrentDateTimeString</a> (<a class="el" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *String, const size_t Size)</td></tr>
+<tr class="separator:acb19683741699725cdbb466950175abc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a46d74272f560bad98371993b1586b4de" name="a46d74272f560bad98371993b1586b4de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46d74272f560bad98371993b1586b4de">&#9670;&#160;</a></span>rmqsGetCurrentDateTime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rmqsGetCurrentDateTime </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t *&#160;</td>
+          <td class="paramname"><em>Year</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>Month</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>Day</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>Hour</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>Minute</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>Second</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rmqs_timer_8c_source.html#l00104">104</a> of file <a class="el" href="rmqs_timer_8c_source.html">rmqsTimer.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  105</span>{</div>
+<div class="line"><span class="lineno">  106</span><span class="preprocessor">    #if _WIN32 || _WIN64</span></div>
+<div class="line"><span class="lineno">  107</span>    SYSTEMTIME SystemTime;</div>
+<div class="line"><span class="lineno">  108</span> </div>
+<div class="line"><span class="lineno">  109</span>    GetLocalTime(&amp;SystemTime);</div>
+<div class="line"><span class="lineno">  110</span> </div>
+<div class="line"><span class="lineno">  111</span>    *Year = SystemTime.wYear;</div>
+<div class="line"><span class="lineno">  112</span>    *Month = (uint8_t)SystemTime.wMonth;</div>
+<div class="line"><span class="lineno">  113</span>    *Day = (uint8_t)SystemTime.wDay;</div>
+<div class="line"><span class="lineno">  114</span>    *Hour = (uint8_t)SystemTime.wHour;</div>
+<div class="line"><span class="lineno">  115</span>    *Minute = (uint8_t)SystemTime.wMinute;</div>
+<div class="line"><span class="lineno">  116</span>    *Second = (uint8_t)SystemTime.wSecond;</div>
+<div class="line"><span class="lineno">  117</span>    #<span class="keywordflow">else</span></div>
+<div class="line"><span class="lineno">  118</span>    time_t Time;</div>
+<div class="line"><span class="lineno">  119</span>    <span class="keyword">struct</span> tm TM;</div>
+<div class="line"><span class="lineno">  120</span> </div>
+<div class="line"><span class="lineno">  121</span>    time(&amp;Time);</div>
+<div class="line"><span class="lineno">  122</span>    gmtime_r((<span class="keyword">const</span> time_t *)&amp;time, &amp;TM);</div>
+<div class="line"><span class="lineno">  123</span> </div>
+<div class="line"><span class="lineno">  124</span>    *Year = (uint16_t)(TM.tm_year + 1900);</div>
+<div class="line"><span class="lineno">  125</span>    *Month = (uint8_t)(TM.tm_mon + 1);</div>
+<div class="line"><span class="lineno">  126</span>    *Day = (uint8_t)TM.tm_mday;</div>
+<div class="line"><span class="lineno">  127</span>    *Hour = (uint8_t)TM.tm_hour;</div>
+<div class="line"><span class="lineno">  128</span>    *Minute = (uint8_t)TM.tm_min;</div>
+<div class="line"><span class="lineno">  129</span>    *Second = (uint8_t)TM.tm_sec;</div>
+<div class="line"><span class="lineno">  130</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  131</span>}</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="acb19683741699725cdbb466950175abc" name="acb19683741699725cdbb466950175abc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb19683741699725cdbb466950175abc">&#9670;&#160;</a></span>rmqsGetCurrentDateTimeString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rmqsGetCurrentDateTimeString </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *&#160;</td>
+          <td class="paramname"><em>String</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>Size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rmqs_timer_8c_source.html#l00133">133</a> of file <a class="el" href="rmqs_timer_8c_source.html">rmqsTimer.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  134</span>{</div>
+<div class="line"><span class="lineno">  135</span>    uint16_t Year;</div>
+<div class="line"><span class="lineno">  136</span>    uint8_t Month, Day, Hour, Minute, Second;</div>
+<div class="line"><span class="lineno">  137</span> </div>
+<div class="line"><span class="lineno">  138</span>    <span class="keywordflow">if</span> (Size &lt; 20)</div>
+<div class="line"><span class="lineno">  139</span>    {</div>
+<div class="line"><span class="lineno">  140</span>        *String = 0;</div>
+<div class="line"><span class="lineno">  141</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><span class="lineno">  142</span>    }</div>
+<div class="line"><span class="lineno">  143</span> </div>
+<div class="line"><span class="lineno">  144</span>    <a class="code hl_function" href="rmqs_timer_8c.html#a46d74272f560bad98371993b1586b4de">rmqsGetCurrentDateTime</a>(&amp;Year, &amp;Month, &amp;Day, &amp;Hour, &amp;Minute, &amp;Second);</div>
+<div class="line"><span class="lineno">  145</span> </div>
+<div class="line"><span class="lineno">  146</span>    sprintf(String, <span class="stringliteral">&quot;%04d-%02d-%02d %02d:%02d:%02d&quot;</span>, (int32_t)Year, (int32_t)Month, (int32_t)Day, (int32_t)Hour, (int32_t)Minute, (int32_t)Second);</div>
+<div class="line"><span class="lineno">  147</span>}</div>
+<div class="ttc" id="armqs_timer_8c_html_a46d74272f560bad98371993b1586b4de"><div class="ttname"><a href="rmqs_timer_8c.html#a46d74272f560bad98371993b1586b4de">rmqsGetCurrentDateTime</a></div><div class="ttdeci">void rmqsGetCurrentDateTime(uint16_t *Year, uint8_t *Month, uint8_t *Day, uint8_t *Hour, uint8_t *Minute, uint8_t *Second)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_timer_8c_source.html#l00104">rmqsTimer.c:104</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
 <a id="ad3c60956db84299847277e737c28d7e4" name="ad3c60956db84299847277e737c28d7e4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad3c60956db84299847277e737c28d7e4">&#9670;&#160;</a></span>rmqsTimerCreate()</h2>
 
@@ -123,6 +269,17 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_timer_8c_source.html#l00032">32</a> of file <a class="el" href="rmqs_timer_8c_source.html">rmqsTimer.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   33</span>{</div>
+<div class="line"><span class="lineno">   34</span>    <a class="code hl_struct" href="structrmqs_timer__t.html">rmqsTimer_t</a> *Timer = (<a class="code hl_struct" href="structrmqs_timer__t.html">rmqsTimer_t</a> *)<a class="code hl_function" href="rmqs_memory_8c.html#a2f35d0cb86bb8dff7488d6fa0d292fa4">rmqsAllocateMemory</a>(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="structrmqs_timer__t.html">rmqsTimer_t</a>));</div>
+<div class="line"><span class="lineno">   35</span> </div>
+<div class="line"><span class="lineno">   36</span>    memset(Timer, 0, <span class="keyword">sizeof</span>(<a class="code hl_struct" href="structrmqs_timer__t.html">rmqsTimer_t</a>));</div>
+<div class="line"><span class="lineno">   37</span> </div>
+<div class="line"><span class="lineno">   38</span>    <span class="keywordflow">return</span> Timer;</div>
+<div class="line"><span class="lineno">   39</span>}</div>
+<div class="ttc" id="armqs_memory_8c_html_a2f35d0cb86bb8dff7488d6fa0d292fa4"><div class="ttname"><a href="rmqs_memory_8c.html#a2f35d0cb86bb8dff7488d6fa0d292fa4">rmqsAllocateMemory</a></div><div class="ttdeci">void * rmqsAllocateMemory(const size_t Size)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_memory_8c_source.html#l00030">rmqsMemory.c:30</a></div></div>
+<div class="ttc" id="astructrmqs_timer__t_html"><div class="ttname"><a href="structrmqs_timer__t.html">rmqsTimer_t</a></div><div class="ttdef"><b>Definition:</b> <a href="rmqs_timer_8h_source.html#l00039">rmqsTimer.h:40</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="a8c55e40e5aeba56be9d24d6149878b65" name="a8c55e40e5aeba56be9d24d6149878b65"></a>
@@ -141,6 +298,12 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_timer_8c_source.html#l00041">41</a> of file <a class="el" href="rmqs_timer_8c_source.html">rmqsTimer.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   42</span>{</div>
+<div class="line"><span class="lineno">   43</span>    <a class="code hl_function" href="rmqs_memory_8c.html#ad119bd89e5fa1e1b8601be2cc14381a5">rmqsFreeMemory</a>((<span class="keywordtype">void</span> *)Timer);</div>
+<div class="line"><span class="lineno">   44</span>}</div>
+<div class="ttc" id="armqs_memory_8c_html_ad119bd89e5fa1e1b8601be2cc14381a5"><div class="ttname"><a href="rmqs_memory_8c.html#ad119bd89e5fa1e1b8601be2cc14381a5">rmqsFreeMemory</a></div><div class="ttdeci">void rmqsFreeMemory(void *Memory)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_memory_8c_source.html#l00042">rmqsMemory.c:42</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="aad2cfcc84cdf8bbb9597fccf2608819c" name="aad2cfcc84cdf8bbb9597fccf2608819c"></a>
@@ -159,6 +322,33 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_timer_8c_source.html#l00079">79</a> of file <a class="el" href="rmqs_timer_8c_source.html">rmqsTimer.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   80</span>{</div>
+<div class="line"><span class="lineno">   81</span><span class="preprocessor">    #if _WIN32 || _WIN64</span></div>
+<div class="line"><span class="lineno">   82</span>    LARGE_INTEGER LI;</div>
+<div class="line"><span class="lineno">   83</span> </div>
+<div class="line"><span class="lineno">   84</span>    <span class="keywordflow">if</span> (! Timer-&gt;<a class="code hl_variable" href="structrmqs_timer__t.html#ae5f901cf9afe242702e29ff137611c87">Running</a>)</div>
+<div class="line"><span class="lineno">   85</span>    {</div>
+<div class="line"><span class="lineno">   86</span>        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><span class="lineno">   87</span>    }</div>
+<div class="line"><span class="lineno">   88</span> </div>
+<div class="line"><span class="lineno">   89</span>    QueryPerformanceCounter(&amp;LI);</div>
+<div class="line"><span class="lineno">   90</span> </div>
+<div class="line"><span class="lineno">   91</span>    <span class="keywordflow">return</span> (uint32_t)(<a class="code hl_typedef" href="rmqs_global_8h.html#ac340fde9f4743ef7a9398b79d7bea8bd">double_t</a>)((LI.QuadPart - Timer-&gt;CounterStart) / Timer-&gt;PCFrequency);</div>
+<div class="line"><span class="lineno">   92</span><span class="preprocessor">    #else</span></div>
+<div class="line"><span class="lineno">   93</span>    <span class="keyword">struct </span>timespec TS;</div>
+<div class="line"><span class="lineno">   94</span>    uint32_t TheTick;</div>
+<div class="line"><span class="lineno">   95</span> </div>
+<div class="line"><span class="lineno">   96</span>    clock_gettime(CLOCK_MONOTONIC, &amp;TS);</div>
+<div class="line"><span class="lineno">   97</span> </div>
+<div class="line"><span class="lineno">   98</span>    TheTick = (TS.tv_nsec / 1000000) + (TS.tv_sec * 1000);</div>
+<div class="line"><span class="lineno">   99</span> </div>
+<div class="line"><span class="lineno">  100</span>    <span class="keywordflow">return</span> TheTick;</div>
+<div class="line"><span class="lineno">  101</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  102</span>}</div>
+<div class="ttc" id="armqs_global_8h_html_ac340fde9f4743ef7a9398b79d7bea8bd"><div class="ttname"><a href="rmqs_global_8h.html#ac340fde9f4743ef7a9398b79d7bea8bd">double_t</a></div><div class="ttdeci">double double_t</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_global_8h_source.html#l00033">rmqsGlobal.h:33</a></div></div>
+<div class="ttc" id="astructrmqs_timer__t_html_ae5f901cf9afe242702e29ff137611c87"><div class="ttname"><a href="structrmqs_timer__t.html#ae5f901cf9afe242702e29ff137611c87">rmqsTimer_t::Running</a></div><div class="ttdeci">bool_t Running</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_timer_8h_source.html#l00041">rmqsTimer.h:41</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="a79f6b432ebcadaea28e4a91552650993" name="a79f6b432ebcadaea28e4a91552650993"></a>
@@ -177,6 +367,18 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_timer_8c_source.html#l00069">69</a> of file <a class="el" href="rmqs_timer_8c_source.html">rmqsTimer.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   70</span>{</div>
+<div class="line"><span class="lineno">   71</span>    <span class="keywordflow">if</span> (! Timer-&gt;<a class="code hl_variable" href="structrmqs_timer__t.html#ae5f901cf9afe242702e29ff137611c87">Running</a>)</div>
+<div class="line"><span class="lineno">   72</span>    {</div>
+<div class="line"><span class="lineno">   73</span>        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><span class="lineno">   74</span>    }</div>
+<div class="line"><span class="lineno">   75</span> </div>
+<div class="line"><span class="lineno">   76</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="rmqs_timer_8c.html#aad2cfcc84cdf8bbb9597fccf2608819c">rmqsTimerGetSystemClock</a>(Timer) - Timer-&gt;<a class="code hl_variable" href="structrmqs_timer__t.html#a3c30052d73a339cb239d6d7cd3bcd55e">TimeStarted</a>;</div>
+<div class="line"><span class="lineno">   77</span>}</div>
+<div class="ttc" id="armqs_timer_8c_html_aad2cfcc84cdf8bbb9597fccf2608819c"><div class="ttname"><a href="rmqs_timer_8c.html#aad2cfcc84cdf8bbb9597fccf2608819c">rmqsTimerGetSystemClock</a></div><div class="ttdeci">uint32_t rmqsTimerGetSystemClock(rmqsTimer_t *Timer)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_timer_8c_source.html#l00079">rmqsTimer.c:79</a></div></div>
+<div class="ttc" id="astructrmqs_timer__t_html_a3c30052d73a339cb239d6d7cd3bcd55e"><div class="ttname"><a href="structrmqs_timer__t.html#a3c30052d73a339cb239d6d7cd3bcd55e">rmqsTimer_t::TimeStarted</a></div><div class="ttdeci">uint32_t TimeStarted</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_timer_8h_source.html#l00043">rmqsTimer.h:43</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="a5d2777aa334f0bf57c5ab9031f542f2c" name="a5d2777aa334f0bf57c5ab9031f542f2c"></a>
@@ -195,6 +397,24 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_timer_8c_source.html#l00046">46</a> of file <a class="el" href="rmqs_timer_8c_source.html">rmqsTimer.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   47</span>{</div>
+<div class="line"><span class="lineno">   48</span><span class="preprocessor">    #if _WIN32 || _WIN64</span></div>
+<div class="line"><span class="lineno">   49</span>    LARGE_INTEGER LI;</div>
+<div class="line"><span class="lineno">   50</span> </div>
+<div class="line"><span class="lineno">   51</span>    QueryPerformanceFrequency(&amp;LI);</div>
+<div class="line"><span class="lineno">   52</span> </div>
+<div class="line"><span class="lineno">   53</span>    Timer-&gt;PCFrequency = (<a class="code hl_typedef" href="rmqs_global_8h.html#ac340fde9f4743ef7a9398b79d7bea8bd">double_t</a>)LI.QuadPart / 1000.0;</div>
+<div class="line"><span class="lineno">   54</span> </div>
+<div class="line"><span class="lineno">   55</span>    QueryPerformanceCounter(&amp;LI);</div>
+<div class="line"><span class="lineno">   56</span> </div>
+<div class="line"><span class="lineno">   57</span>    Timer-&gt;CounterStart = LI.QuadPart;</div>
+<div class="line"><span class="lineno">   58</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">   59</span> </div>
+<div class="line"><span class="lineno">   60</span>    Timer-&gt;<a class="code hl_variable" href="structrmqs_timer__t.html#ae5f901cf9afe242702e29ff137611c87">Running</a> = <span class="keyword">true</span>;</div>
+<div class="line"><span class="lineno">   61</span>    Timer-&gt;<a class="code hl_variable" href="structrmqs_timer__t.html#a3c30052d73a339cb239d6d7cd3bcd55e">TimeStarted</a> = <a class="code hl_function" href="rmqs_timer_8c.html#aad2cfcc84cdf8bbb9597fccf2608819c">rmqsTimerGetSystemClock</a>(Timer);</div>
+<div class="line"><span class="lineno">   62</span>}</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="a71fa486d04e51582c4a2f6b541b17a05" name="a71fa486d04e51582c4a2f6b541b17a05"></a>
@@ -213,12 +433,21 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_timer_8c_source.html#l00064">64</a> of file <a class="el" href="rmqs_timer_8c_source.html">rmqsTimer.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   65</span>{</div>
+<div class="line"><span class="lineno">   66</span>    Timer-&gt;<a class="code hl_variable" href="structrmqs_timer__t.html#ae5f901cf9afe242702e29ff137611c87">Running</a> = <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">   67</span>}</div>
+</div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c2041065ae2580372680e5ac7ffaeff8.html">rawClient</a></li><li class="navelem"><a class="el" href="rmqs_timer_8h.html">rmqsTimer.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+  </ul>
+</div>
 </body>
 </html>

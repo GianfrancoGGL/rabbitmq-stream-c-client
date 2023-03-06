@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['rmqscommand_0',['rmqsCommand',['../rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975',1,'rmqsProtocol.h']]],
-  ['rmqsproducerstatus_1',['rmqsProducerStatus',['../rmqs_producer_8h.html#a91322292cbd6bcf35a4b0cd41a5cee57',1,'rmqsProducer.h']]],
-  ['rmqsresponsecode_2',['rmqsResponseCode',['../rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2',1,'rmqsProtocol.h']]],
-  ['rqmsproducerevent_3',['rqmsProducerEvent',['../rmqs_producer_8h.html#a0fb553205959e40706ad61a510ff02cf',1,'rmqsProducer.h']]]
+  ['rmqsclienttype_5ft_0',['rmqsClientType_t',['../rmqs_client_8h.html#ab41c2dc8922add9afb122979d9830eda',1,'rmqsClient.h']]],
+  ['rmqscommand_5ft_1',['rmqsCommand_t',['../rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812',1,'rmqsProtocol.h']]],
+  ['rmqsresponsecode_5ft_2',['rmqsResponseCode_t',['../rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1',1,'rmqsProtocol.h']]],
+  ['rqmsstreamleaderlocator_5ft_3',['rqmsStreamLeaderLocator_t',['../rmqs_client_8h.html#aaea681c43bd27ea9d7b29663c633d807',1,'rmqsClient.h']]]
 ];

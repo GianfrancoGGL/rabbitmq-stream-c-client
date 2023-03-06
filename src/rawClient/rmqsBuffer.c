@@ -28,6 +28,12 @@ SOFTWARE.
 #include "rmqsGlobal.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
+/** \brief Creates a new memory stream
+ *
+ * \param void
+ * \return rmqsBuffer_t*
+ *
+ */
 rmqsBuffer_t * rmqsBufferCreate(void)
 {
     rmqsBuffer_t *Buffer = (rmqsBuffer_t *)rmqsAllocateMemory(sizeof(rmqsBuffer_t));

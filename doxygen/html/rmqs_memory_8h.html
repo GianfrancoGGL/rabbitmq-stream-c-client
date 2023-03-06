@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RabbitMQ streams C client: C:/rabbitmq-stream-c-client-main/src/rmqsMemory.h File Reference</title>
+<title>RabbitMQ stream C client: C:/rabbitmq-stream-c-client-main/src/rawClient/rmqsMemory.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -20,9 +24,8 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="RabbitMQLogo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">RabbitMQ streams C client
+   <div id="projectname">RabbitMQ stream C client
    </div>
   </td>
  </tr>
@@ -47,6 +50,23 @@ $(function() {
 /* @license-end */
 </script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('rmqs_memory_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -68,11 +88,6 @@ $(function() {
 </div>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
@@ -86,16 +101,18 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae84167573a53fb5e7128d0624c1da9c5"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_memory_8h.html#ae84167573a53fb5e7128d0624c1da9c5">rmqsAllocateMemory</a> (size_t Size)</td></tr>
-<tr class="separator:ae84167573a53fb5e7128d0624c1da9c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f35d0cb86bb8dff7488d6fa0d292fa4"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_memory_8h.html#a2f35d0cb86bb8dff7488d6fa0d292fa4">rmqsAllocateMemory</a> (const size_t Size)</td></tr>
+<tr class="separator:a2f35d0cb86bb8dff7488d6fa0d292fa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad119bd89e5fa1e1b8601be2cc14381a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_memory_8h.html#ad119bd89e5fa1e1b8601be2cc14381a5">rmqsFreeMemory</a> (void *Memory)</td></tr>
 <tr class="separator:ad119bd89e5fa1e1b8601be2cc14381a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2897c1e4defba58b8ae13aab42b5be9b"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_memory_8h.html#a2897c1e4defba58b8ae13aab42b5be9b">rmqsRellocateMemory</a> (void *Memory, size_t size)</td></tr>
-<tr class="separator:a2897c1e4defba58b8ae13aab42b5be9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad191e0264248fa3c0bd34daea3b92ccc"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_memory_8h.html#ad191e0264248fa3c0bd34daea3b92ccc">rmqsRellocateMemory</a> (void *Memory, const size_t Size)</td></tr>
+<tr class="separator:ad191e0264248fa3c0bd34daea3b92ccc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16f068773bee21f08bb00fce283804a6"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_memory_8h.html#a16f068773bee21f08bb00fce283804a6">rmqsGetUsedMemory</a> (void)</td></tr>
+<tr class="separator:a16f068773bee21f08bb00fce283804a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ae84167573a53fb5e7128d0624c1da9c5" name="ae84167573a53fb5e7128d0624c1da9c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae84167573a53fb5e7128d0624c1da9c5">&#9670;&#160;</a></span>rmqsAllocateMemory()</h2>
+<a id="a2f35d0cb86bb8dff7488d6fa0d292fa4" name="a2f35d0cb86bb8dff7488d6fa0d292fa4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f35d0cb86bb8dff7488d6fa0d292fa4">&#9670;&#160;</a></span>rmqsAllocateMemory()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -103,13 +120,27 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void * rmqsAllocateMemory </td>
           <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">const size_t&#160;</td>
           <td class="paramname"><em>Size</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_memory_8c_source.html#l00030">30</a> of file <a class="el" href="rmqs_memory_8c_source.html">rmqsMemory.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   31</span>{</div>
+<div class="line"><span class="lineno">   32</span>    <a class="code hl_typedef" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *Memory = (<a class="code hl_typedef" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *)malloc(Size + <span class="keyword">sizeof</span>(<span class="keywordtype">size_t</span>)); <span class="comment">// Allocate 4 extra bytes to store the block size</span></div>
+<div class="line"><span class="lineno">   33</span> </div>
+<div class="line"><span class="lineno">   34</span>    *(<span class="keywordtype">size_t</span> *)Memory = Size; <span class="comment">// Store the size at the beginning of the memory block</span></div>
+<div class="line"><span class="lineno">   35</span>    Memory += <span class="keyword">sizeof</span>(size_t); <span class="comment">// Move the pointer by 4 bytes to point to memory to use</span></div>
+<div class="line"><span class="lineno">   36</span> </div>
+<div class="line"><span class="lineno">   37</span>    <a class="code hl_variable" href="rmqs_memory_8c.html#ac61505652f96788c3b826b4c32fdec37">TotalUsedMemory</a> += Size + <span class="keyword">sizeof</span>(size_t); <span class="comment">// Used memory is the specified size + 4 for the block size</span></div>
+<div class="line"><span class="lineno">   38</span> </div>
+<div class="line"><span class="lineno">   39</span>    <span class="keywordflow">return</span> (<span class="keywordtype">void</span> *)Memory; <span class="comment">// Memory pointer to be used</span></div>
+<div class="line"><span class="lineno">   40</span>}</div>
+<div class="ttc" id="armqs_global_8h_html_a40bb5262bf908c328fbcfbe5d29d0201"><div class="ttname"><a href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a></div><div class="ttdeci">char char_t</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_global_8h_source.html#l00028">rmqsGlobal.h:28</a></div></div>
+<div class="ttc" id="armqs_memory_8c_html_ac61505652f96788c3b826b4c32fdec37"><div class="ttname"><a href="rmqs_memory_8c.html#ac61505652f96788c3b826b4c32fdec37">TotalUsedMemory</a></div><div class="ttdeci">size_t TotalUsedMemory</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_memory_8c_source.html#l00028">rmqsMemory.c:28</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="ad119bd89e5fa1e1b8601be2cc14381a5" name="ad119bd89e5fa1e1b8601be2cc14381a5"></a>
@@ -128,10 +159,45 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_memory_8c_source.html#l00042">42</a> of file <a class="el" href="rmqs_memory_8c_source.html">rmqsMemory.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   43</span>{</div>
+<div class="line"><span class="lineno">   44</span>    <a class="code hl_typedef" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *MemoryToFree = (<a class="code hl_typedef" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *)Memory;</div>
+<div class="line"><span class="lineno">   45</span> </div>
+<div class="line"><span class="lineno">   46</span>    MemoryToFree -= <span class="keyword">sizeof</span>(size_t); <span class="comment">// Move back the pointer by 4 bytes to point to</span></div>
+<div class="line"><span class="lineno">   47</span>                                    <span class="comment">// the effective allocated block start, where the size is stored</span></div>
+<div class="line"><span class="lineno">   48</span> </div>
+<div class="line"><span class="lineno">   49</span>    <a class="code hl_variable" href="rmqs_memory_8c.html#ac61505652f96788c3b826b4c32fdec37">TotalUsedMemory</a> -= *(<span class="keywordtype">size_t</span> *)MemoryToFree + <span class="keyword">sizeof</span>(<span class="keywordtype">size_t</span>); <span class="comment">// Decrease the amount of allocated memory</span></div>
+<div class="line"><span class="lineno">   50</span> </div>
+<div class="line"><span class="lineno">   51</span>    free((<span class="keywordtype">void</span> *)MemoryToFree);</div>
+<div class="line"><span class="lineno">   52</span>}</div>
+</div><!-- fragment -->
 </div>
 </div>
-<a id="a2897c1e4defba58b8ae13aab42b5be9b" name="a2897c1e4defba58b8ae13aab42b5be9b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2897c1e4defba58b8ae13aab42b5be9b">&#9670;&#160;</a></span>rmqsRellocateMemory()</h2>
+<a id="a16f068773bee21f08bb00fce283804a6" name="a16f068773bee21f08bb00fce283804a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16f068773bee21f08bb00fce283804a6">&#9670;&#160;</a></span>rmqsGetUsedMemory()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t rmqsGetUsedMemory </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rmqs_memory_8c_source.html#l00074">74</a> of file <a class="el" href="rmqs_memory_8c_source.html">rmqsMemory.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   75</span>{</div>
+<div class="line"><span class="lineno">   76</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="rmqs_memory_8c.html#ac61505652f96788c3b826b4c32fdec37">TotalUsedMemory</a>;</div>
+<div class="line"><span class="lineno">   77</span>}</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="ad191e0264248fa3c0bd34daea3b92ccc" name="ad191e0264248fa3c0bd34daea3b92ccc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad191e0264248fa3c0bd34daea3b92ccc">&#9670;&#160;</a></span>rmqsRellocateMemory()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -145,8 +211,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size</em>&#160;</td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>Size</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -156,12 +222,36 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_memory_8c_source.html#l00054">54</a> of file <a class="el" href="rmqs_memory_8c_source.html">rmqsMemory.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   55</span>{</div>
+<div class="line"><span class="lineno">   56</span>    <a class="code hl_typedef" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *OldMemory = (<a class="code hl_typedef" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *)Memory, *NewMemory;</div>
+<div class="line"><span class="lineno">   57</span> </div>
+<div class="line"><span class="lineno">   58</span>    OldMemory -= <span class="keyword">sizeof</span>(size_t); <span class="comment">// Move back the pointer by 4 bytes to point to</span></div>
+<div class="line"><span class="lineno">   59</span>                                 <span class="comment">// the effective allocated block start, where the size is stored</span></div>
+<div class="line"><span class="lineno">   60</span> </div>
+<div class="line"><span class="lineno">   61</span>    <a class="code hl_variable" href="rmqs_memory_8c.html#ac61505652f96788c3b826b4c32fdec37">TotalUsedMemory</a> -= *(<span class="keywordtype">size_t</span> *)OldMemory + <span class="keyword">sizeof</span>(<span class="keywordtype">size_t</span>); <span class="comment">// Decrease the amount of allocated size</span></div>
+<div class="line"><span class="lineno">   62</span> </div>
+<div class="line"><span class="lineno">   63</span>    NewMemory = realloc((<span class="keywordtype">void</span> *)OldMemory, Size + <span class="keyword">sizeof</span>(<span class="keywordtype">size_t</span>)); <span class="comment">// Allocate a new memory block,</span></div>
+<div class="line"><span class="lineno">   64</span>                                                                   <span class="comment">// preserving the original memory content</span></div>
+<div class="line"><span class="lineno">   65</span> </div>
+<div class="line"><span class="lineno">   66</span>    *(<span class="keywordtype">size_t</span> *)NewMemory = Size; <span class="comment">// Store the size at the beginning of the memory block</span></div>
+<div class="line"><span class="lineno">   67</span>    NewMemory += <span class="keyword">sizeof</span>(size_t); <span class="comment">// Memory pointer to be used</span></div>
+<div class="line"><span class="lineno">   68</span> </div>
+<div class="line"><span class="lineno">   69</span>    <a class="code hl_variable" href="rmqs_memory_8c.html#ac61505652f96788c3b826b4c32fdec37">TotalUsedMemory</a> += Size + <span class="keyword">sizeof</span>(size_t); <span class="comment">// Update the used memory size</span></div>
+<div class="line"><span class="lineno">   70</span> </div>
+<div class="line"><span class="lineno">   71</span>    <span class="keywordflow">return</span> (<span class="keywordtype">void</span> *)NewMemory;</div>
+<div class="line"><span class="lineno">   72</span>}</div>
+</div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c2041065ae2580372680e5ac7ffaeff8.html">rawClient</a></li><li class="navelem"><a class="el" href="rmqs_memory_8h.html">rmqsMemory.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+  </ul>
+</div>
 </body>
 </html>

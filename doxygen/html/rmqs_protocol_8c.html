@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RabbitMQ streams C client: C:/rabbitmq-stream-c-client-main/src/rmqsProtocol.c File Reference</title>
+<title>RabbitMQ stream C client: C:/rabbitmq-stream-c-client-main/src/rawClient/rmqsProtocol.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -20,9 +24,8 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="RabbitMQLogo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">RabbitMQ streams C client
+   <div id="projectname">RabbitMQ stream C client
    </div>
   </td>
  </tr>
@@ -47,6 +50,23 @@ $(function() {
 /* @license-end */
 </script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('rmqs_protocol_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -68,127 +88,53 @@ $(function() {
 </div>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">rmqsProtocol.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;string.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="rmqs_environment_8h_source.html">rmqsEnvironment.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="rmqs_client_8h_source.html">rmqsClient.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="rmqs_producer_8h_source.html">rmqsProducer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="rmqs_memory_8h_source.html">rmqsMemory.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="rmqs_buffer_8h_source.html">rmqsBuffer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="rmqs_protocol_8h_source.html">rmqsProtocol.h</a>&quot;</code><br />
-</div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:ad762698bc1d6e93072f8d2d38aaeda4f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#ad762698bc1d6e93072f8d2d38aaeda4f">SwapUInt16</a>(x)&#160;&#160;&#160;((uint16_t)(x &gt;&gt; 8) &amp; (uint16_t)0x00FF) | ((uint16_t)(x &lt;&lt; 8) &amp; (uint16_t)0xFF00)</td></tr>
-<tr class="separator:ad762698bc1d6e93072f8d2d38aaeda4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add7a8fc17cdda71b0f3b41e1be66f48d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#add7a8fc17cdda71b0f3b41e1be66f48d">SwapUInt32</a>(x)&#160;&#160;&#160;((x &gt;&gt; 24) &amp; 0x000000FF) | ((x &gt;&gt; 8) &amp; 0x0000FF00) | ((x &lt;&lt; 8) &amp; 0x00FF0000) | ((x &lt;&lt; 24) &amp; 0xFF000000)</td></tr>
-<tr class="separator:add7a8fc17cdda71b0f3b41e1be66f48d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2be8dd416eca474facf4c7a260840805"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#a2be8dd416eca474facf4c7a260840805">RMQS_NULL_STRING_LENGTH</a>&#160;&#160;&#160;-1</td></tr>
-<tr class="separator:a2be8dd416eca474facf4c7a260840805"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
+</div>
+<p><a href="rmqs_protocol_8c_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a2e1ae40935b6eaec2a907cae7c0e0daf"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#a2e1ae40935b6eaec2a907cae7c0e0daf">rmqsIsLittleEndianMachine</a> (void)</td></tr>
-<tr class="separator:a2e1ae40935b6eaec2a907cae7c0e0daf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2922b14173753b8fcbdcff766911017e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2">rmqsResponseCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#a2922b14173753b8fcbdcff766911017e">rmqsPeerPropertiesRequest</a> (const void *Producer, <a class="el" href="rmqs_protocol_8h.html#a9f1e7f86d3a4d7bc369ed8d858c35c30">rmqsCorrelationId</a> CorrelationId, uint32_t PropertiesCount, <a class="el" href="structrmqs_property__t.html">rmqsProperty_t</a> *Properties)</td></tr>
-<tr class="separator:a2922b14173753b8fcbdcff766911017e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13da9210c783e2f2f4b49fc2731eb68b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#a13da9210c783e2f2f4b49fc2731eb68b">rmqsAddInt8ToStream</a> (<a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *Stream, int8_t Value)</td></tr>
-<tr class="separator:a13da9210c783e2f2f4b49fc2731eb68b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec67876c48c8410dc7bc04657add6338"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#aec67876c48c8410dc7bc04657add6338">rmqsAddUInt8ToStream</a> (<a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *Stream, uint8_t Value)</td></tr>
-<tr class="separator:aec67876c48c8410dc7bc04657add6338"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7b574e3b4fc51b8cba481b5705f8166"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#ae7b574e3b4fc51b8cba481b5705f8166">rmqsAddInt16ToStream</a> (<a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *Stream, int16_t Value, uint8_t IsLittleEndianMachine)</td></tr>
-<tr class="separator:ae7b574e3b4fc51b8cba481b5705f8166"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a198cc1f713f40270206c0cf3bc12fd6d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#a198cc1f713f40270206c0cf3bc12fd6d">rmqsAddUInt16ToStream</a> (<a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *Stream, uint16_t Value, uint8_t IsLittleEndianMachine)</td></tr>
-<tr class="separator:a198cc1f713f40270206c0cf3bc12fd6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a19606fbea61f83ead82c0ed99f2018"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#a2a19606fbea61f83ead82c0ed99f2018">rmqsAddInt32ToStream</a> (<a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *Stream, int32_t Value, uint8_t IsLittleEndianMachine)</td></tr>
-<tr class="separator:a2a19606fbea61f83ead82c0ed99f2018"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b9bbdc1d6f81caec5b73b7241e26b0e"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#a4b9bbdc1d6f81caec5b73b7241e26b0e">rmqsAddUInt32ToStream</a> (<a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *Stream, uint32_t Value, uint8_t IsLittleEndianMachine)</td></tr>
-<tr class="separator:a4b9bbdc1d6f81caec5b73b7241e26b0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2692889049a8358f23936e1adf1440de"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#a2692889049a8358f23936e1adf1440de">rmqsAddStringToStream</a> (<a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *Stream, char *Value, uint8_t IsLittleEndianMachine)</td></tr>
-<tr class="separator:a2692889049a8358f23936e1adf1440de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2670af5ba982549baafe8e1f64e730d0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="rmqs_global_8h.html#a449976458a084f880dc8e3d29e7eb6f5">bool_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#a2670af5ba982549baafe8e1f64e730d0">rmqsIsLittleEndianMachine</a> (void)</td></tr>
+<tr class="separator:a2670af5ba982549baafe8e1f64e730d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a967de4559c1da354e8fbdc5cb16f4799"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#a967de4559c1da354e8fbdc5cb16f4799">rmqsSendMessage</a> (const void *Client, const <a class="el" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a> Socket, const <a class="el" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *Data, size_t DataSize)</td></tr>
+<tr class="separator:a967de4559c1da354e8fbdc5cb16f4799"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60fb438147ff9041f48473d309f084a7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="rmqs_global_8h.html#a449976458a084f880dc8e3d29e7eb6f5">bool_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#a60fb438147ff9041f48473d309f084a7">rmqsWaitMessage</a> (const void *Client, const <a class="el" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a> Socket, const uint32_t RxTimeout)</td></tr>
+<tr class="separator:a60fb438147ff9041f48473d309f084a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a074032f01ea072509666f88743393b37"><td class="memItemLeft" align="right" valign="top"><a class="el" href="rmqs_global_8h.html#a449976458a084f880dc8e3d29e7eb6f5">bool_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#a074032f01ea072509666f88743393b37">rmqsWaitResponse</a> (const void *Client, const <a class="el" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a> Socket, uint32_t CorrelationId, <a class="el" href="structrmqs_response__t.html">rmqsResponse_t</a> *Response, const uint32_t RxTimeout)</td></tr>
+<tr class="separator:a074032f01ea072509666f88743393b37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40b993ca8e1e207ea7a462b5cc901491"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#a40b993ca8e1e207ea7a462b5cc901491">rmqsDequeueMessageFromBuffer</a> (<a class="el" href="structrmqs_buffer__t.html">rmqsBuffer_t</a> *Buffer, const size_t MessageSize)</td></tr>
+<tr class="separator:a40b993ca8e1e207ea7a462b5cc901491"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd439e030cb0a8f713729bec57f0a803"><td class="memItemLeft" align="right" valign="top"><a class="el" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_protocol_8c.html#acd439e030cb0a8f713729bec57f0a803">rmqsGetMessageDescription</a> (uint16_t Key)</td></tr>
+<tr class="separator:acd439e030cb0a8f713729bec57f0a803"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a2be8dd416eca474facf4c7a260840805" name="a2be8dd416eca474facf4c7a260840805"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2be8dd416eca474facf4c7a260840805">&#9670;&#160;</a></span>RMQS_NULL_STRING_LENGTH</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define RMQS_NULL_STRING_LENGTH&#160;&#160;&#160;-1</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad762698bc1d6e93072f8d2d38aaeda4f" name="ad762698bc1d6e93072f8d2d38aaeda4f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad762698bc1d6e93072f8d2d38aaeda4f">&#9670;&#160;</a></span>SwapUInt16</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define SwapUInt16</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">x</td><td>)</td>
-          <td>&#160;&#160;&#160;((uint16_t)(x &gt;&gt; 8) &amp; (uint16_t)0x00FF) | ((uint16_t)(x &lt;&lt; 8) &amp; (uint16_t)0xFF00)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="add7a8fc17cdda71b0f3b41e1be66f48d" name="add7a8fc17cdda71b0f3b41e1be66f48d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#add7a8fc17cdda71b0f3b41e1be66f48d">&#9670;&#160;</a></span>SwapUInt32</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define SwapUInt32</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">x</td><td>)</td>
-          <td>&#160;&#160;&#160;((x &gt;&gt; 24) &amp; 0x000000FF) | ((x &gt;&gt; 8) &amp; 0x0000FF00) | ((x &lt;&lt; 8) &amp; 0x00FF0000) | ((x &lt;&lt; 24) &amp; 0xFF000000)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ae7b574e3b4fc51b8cba481b5705f8166" name="ae7b574e3b4fc51b8cba481b5705f8166"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7b574e3b4fc51b8cba481b5705f8166">&#9670;&#160;</a></span>rmqsAddInt16ToStream()</h2>
+<a id="a40b993ca8e1e207ea7a462b5cc901491" name="a40b993ca8e1e207ea7a462b5cc901491"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40b993ca8e1e207ea7a462b5cc901491">&#9670;&#160;</a></span>rmqsDequeueMessageFromBuffer()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t rmqsAddInt16ToStream </td>
+          <td class="memname">void rmqsDequeueMessageFromBuffer </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *&#160;</td>
-          <td class="paramname"><em>Stream</em>, </td>
+          <td class="paramtype"><a class="el" href="structrmqs_buffer__t.html">rmqsBuffer_t</a> *&#160;</td>
+          <td class="paramname"><em>Buffer</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>Value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>IsLittleEndianMachine</em>&#160;</td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>MessageSize</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -198,208 +144,194 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_protocol_8c_source.html#l00232">232</a> of file <a class="el" href="rmqs_protocol_8c_source.html">rmqsProtocol.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  233</span>{</div>
+<div class="line"><span class="lineno">  234</span>    <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  235</span>    <span class="comment">// Remove the message from the stream, shifting eventual extra bytes to the beginning</span></div>
+<div class="line"><span class="lineno">  236</span>    <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  237</span>    <a class="code hl_function" href="rmqs_buffer_8c.html#afb9c77054d98ce9426855e4f2eca6b01">rmqsBufferDelete</a>(Buffer, MessageSize);</div>
+<div class="line"><span class="lineno">  238</span>}</div>
+<div class="ttc" id="armqs_buffer_8c_html_afb9c77054d98ce9426855e4f2eca6b01"><div class="ttname"><a href="rmqs_buffer_8c.html#afb9c77054d98ce9426855e4f2eca6b01">rmqsBufferDelete</a></div><div class="ttdeci">void rmqsBufferDelete(rmqsBuffer_t *Buffer, size_t NoOfBytes)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_buffer_8c_source.html#l00127">rmqsBuffer.c:127</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
-<a id="a2a19606fbea61f83ead82c0ed99f2018" name="a2a19606fbea61f83ead82c0ed99f2018"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2a19606fbea61f83ead82c0ed99f2018">&#9670;&#160;</a></span>rmqsAddInt32ToStream()</h2>
+<a id="acd439e030cb0a8f713729bec57f0a803" name="acd439e030cb0a8f713729bec57f0a803"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd439e030cb0a8f713729bec57f0a803">&#9670;&#160;</a></span>rmqsGetMessageDescription()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t rmqsAddInt32ToStream </td>
+          <td class="memname"><a class="el" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> * rmqsGetMessageDescription </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *&#160;</td>
-          <td class="paramname"><em>Stream</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int32_t&#160;</td>
-          <td class="paramname"><em>Value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>IsLittleEndianMachine</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a13da9210c783e2f2f4b49fc2731eb68b" name="a13da9210c783e2f2f4b49fc2731eb68b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a13da9210c783e2f2f4b49fc2731eb68b">&#9670;&#160;</a></span>rmqsAddInt8ToStream()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t rmqsAddInt8ToStream </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *&#160;</td>
-          <td class="paramname"><em>Stream</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int8_t&#160;</td>
-          <td class="paramname"><em>Value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2692889049a8358f23936e1adf1440de" name="a2692889049a8358f23936e1adf1440de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2692889049a8358f23936e1adf1440de">&#9670;&#160;</a></span>rmqsAddStringToStream()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t rmqsAddStringToStream </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *&#160;</td>
-          <td class="paramname"><em>Stream</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>Value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>IsLittleEndianMachine</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a198cc1f713f40270206c0cf3bc12fd6d" name="a198cc1f713f40270206c0cf3bc12fd6d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a198cc1f713f40270206c0cf3bc12fd6d">&#9670;&#160;</a></span>rmqsAddUInt16ToStream()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t rmqsAddUInt16ToStream </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *&#160;</td>
-          <td class="paramname"><em>Stream</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>Value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>Key</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>IsLittleEndianMachine</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_protocol_8c_source.html#l00240">240</a> of file <a class="el" href="rmqs_protocol_8c_source.html">rmqsProtocol.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  241</span>{</div>
+<div class="line"><span class="lineno">  242</span>    <a class="code hl_typedef" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *Description = <span class="stringliteral">&quot;Unknown message&quot;</span>;</div>
+<div class="line"><span class="lineno">  243</span> </div>
+<div class="line"><span class="lineno">  244</span>    <span class="keywordflow">switch</span> (Key)</div>
+<div class="line"><span class="lineno">  245</span>    {</div>
+<div class="line"><span class="lineno">  246</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812aa4dbc3797ad72f8b157133fce0c4ac54">rmqscDeclarePublisher</a>:</div>
+<div class="line"><span class="lineno">  247</span>            Description = <span class="stringliteral">&quot;DeclarePublisher&quot;</span>;</div>
+<div class="line"><span class="lineno">  248</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  249</span> </div>
+<div class="line"><span class="lineno">  250</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812afe688f5db16f58734a7d9b1f81cbe673">rmqscPublish</a>:</div>
+<div class="line"><span class="lineno">  251</span>            Description = <span class="stringliteral">&quot;Publish&quot;</span>;</div>
+<div class="line"><span class="lineno">  252</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  253</span> </div>
+<div class="line"><span class="lineno">  254</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a7abe6c8ded1516383116f87a85dfb5b8">rmqscPublishConfirm</a>:</div>
+<div class="line"><span class="lineno">  255</span>            Description = <span class="stringliteral">&quot;PublishConfirm&quot;</span>;</div>
+<div class="line"><span class="lineno">  256</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  257</span> </div>
+<div class="line"><span class="lineno">  258</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a760baf2ffa4d39d20e044422744c9c4b">rmqscPublishError</a>:</div>
+<div class="line"><span class="lineno">  259</span>            Description = <span class="stringliteral">&quot;PublishError&quot;</span>;</div>
+<div class="line"><span class="lineno">  260</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  261</span> </div>
+<div class="line"><span class="lineno">  262</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ab9e5516feb95f882a768d234eb66943b">rmqscQueryPublisherSequence</a>:</div>
+<div class="line"><span class="lineno">  263</span>            Description = <span class="stringliteral">&quot;QueryPublisherSequence&quot;</span>;</div>
+<div class="line"><span class="lineno">  264</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  265</span> </div>
+<div class="line"><span class="lineno">  266</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a049da15cf699e8712259dd8c14c8c219">rmqscDeletePublisher</a>:</div>
+<div class="line"><span class="lineno">  267</span>            Description = <span class="stringliteral">&quot;DeletePublisher&quot;</span>;</div>
+<div class="line"><span class="lineno">  268</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  269</span> </div>
+<div class="line"><span class="lineno">  270</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ada77c67aa3d179055a368b344c58088d">rmqscSubscribe</a>:</div>
+<div class="line"><span class="lineno">  271</span>            Description = <span class="stringliteral">&quot;Subscribe&quot;</span>;</div>
+<div class="line"><span class="lineno">  272</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  273</span> </div>
+<div class="line"><span class="lineno">  274</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a17400efba1e17cda742efa83193aa65c">rmqscDeliver</a>:</div>
+<div class="line"><span class="lineno">  275</span>            Description = <span class="stringliteral">&quot;Deliver&quot;</span>;</div>
+<div class="line"><span class="lineno">  276</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  277</span> </div>
+<div class="line"><span class="lineno">  278</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812abe0c2895b3a1b6785c1b7006598e5e02">rmqscCredit</a>:</div>
+<div class="line"><span class="lineno">  279</span>            Description = <span class="stringliteral">&quot;Credit&quot;</span>;</div>
+<div class="line"><span class="lineno">  280</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  281</span> </div>
+<div class="line"><span class="lineno">  282</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a7fbbb6dd30f9d744672255b5c963fe1d">rmqscStoreOffset</a>:</div>
+<div class="line"><span class="lineno">  283</span>            Description = <span class="stringliteral">&quot;StoreOffset&quot;</span>;</div>
+<div class="line"><span class="lineno">  284</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  285</span> </div>
+<div class="line"><span class="lineno">  286</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a1f21033bbb30c3ee466f67aa82631ef5">rmqscQueryOffset</a>:</div>
+<div class="line"><span class="lineno">  287</span>            Description = <span class="stringliteral">&quot;QueryOffset&quot;</span>;</div>
+<div class="line"><span class="lineno">  288</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  289</span> </div>
+<div class="line"><span class="lineno">  290</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a21296d342a493b4bfe36fc8942aa7c12">rmqscUnsubscribe</a>:</div>
+<div class="line"><span class="lineno">  291</span>            Description = <span class="stringliteral">&quot;Unsubscribe&quot;</span>;</div>
+<div class="line"><span class="lineno">  292</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  293</span> </div>
+<div class="line"><span class="lineno">  294</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a74d6df33d991e821eca7d477954715df">rmqscCreate</a>:</div>
+<div class="line"><span class="lineno">  295</span>            Description = <span class="stringliteral">&quot;Create&quot;</span>;</div>
+<div class="line"><span class="lineno">  296</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  297</span> </div>
+<div class="line"><span class="lineno">  298</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812abbbcddd32b1c73a5df306a6d88f7a160">rmqscDelete</a>:</div>
+<div class="line"><span class="lineno">  299</span>            Description = <span class="stringliteral">&quot;Delete&quot;</span>;</div>
+<div class="line"><span class="lineno">  300</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  301</span> </div>
+<div class="line"><span class="lineno">  302</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a0575eac4fb602e09dbf38b6e0d37be4e">rmqscMetadata</a>:</div>
+<div class="line"><span class="lineno">  303</span>            Description = <span class="stringliteral">&quot;Metadata&quot;</span>;</div>
+<div class="line"><span class="lineno">  304</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  305</span> </div>
+<div class="line"><span class="lineno">  306</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ade7ab4146931dcb2af7d4264d8c4f380">rmqscMetadataUpdate</a>:</div>
+<div class="line"><span class="lineno">  307</span>            Description = <span class="stringliteral">&quot;MetadataUpdate&quot;</span>;</div>
+<div class="line"><span class="lineno">  308</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  309</span> </div>
+<div class="line"><span class="lineno">  310</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a1f37115bea578fffed197451a3ed4951">rmqscPeerProperties</a>:</div>
+<div class="line"><span class="lineno">  311</span>            Description = <span class="stringliteral">&quot;PeerProperties&quot;</span>;</div>
+<div class="line"><span class="lineno">  312</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  313</span> </div>
+<div class="line"><span class="lineno">  314</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a6a94307e3b5f5ab656c5fc5ea135e5c3">rmqscSaslHandshake</a>:</div>
+<div class="line"><span class="lineno">  315</span>            Description = <span class="stringliteral">&quot;SaslHandshake&quot;</span>;</div>
+<div class="line"><span class="lineno">  316</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  317</span> </div>
+<div class="line"><span class="lineno">  318</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a184e4f894278d21c6c89db1a5cb775bc">rmqscSaslAuthenticate</a>:</div>
+<div class="line"><span class="lineno">  319</span>            Description = <span class="stringliteral">&quot;SaslAuthenticate&quot;</span>;</div>
+<div class="line"><span class="lineno">  320</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  321</span> </div>
+<div class="line"><span class="lineno">  322</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812aff65a03adad2dffc0cee0805d0c1d69a">rmqscTune</a>:</div>
+<div class="line"><span class="lineno">  323</span>            Description = <span class="stringliteral">&quot;Tune&quot;</span>;</div>
+<div class="line"><span class="lineno">  324</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  325</span> </div>
+<div class="line"><span class="lineno">  326</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812adcb49790ce12529ef9a5cd919ef7e6d1">rmqscOpen</a>:</div>
+<div class="line"><span class="lineno">  327</span>            Description = <span class="stringliteral">&quot;Open&quot;</span>;</div>
+<div class="line"><span class="lineno">  328</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  329</span> </div>
+<div class="line"><span class="lineno">  330</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ab2d4ca5b88f2ee161c76c95fc423dbd9">rmqscClose</a>:</div>
+<div class="line"><span class="lineno">  331</span>            Description = <span class="stringliteral">&quot;Close&quot;</span>;</div>
+<div class="line"><span class="lineno">  332</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  333</span> </div>
+<div class="line"><span class="lineno">  334</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a863e93452c02438b1c142d0829eae431">rmqscHeartbeat</a>:</div>
+<div class="line"><span class="lineno">  335</span>            Description = <span class="stringliteral">&quot;Heartbeat&quot;</span>;</div>
+<div class="line"><span class="lineno">  336</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  337</span> </div>
+<div class="line"><span class="lineno">  338</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a918fe2e7bd49198fe767e5436f1e7136">rmqscRoute</a>:</div>
+<div class="line"><span class="lineno">  339</span>            Description = <span class="stringliteral">&quot;Route&quot;</span>;</div>
+<div class="line"><span class="lineno">  340</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  341</span> </div>
+<div class="line"><span class="lineno">  342</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ab1b656db67d4ead6575a0d0d3ab5d7d0">rmqscPartitions</a>:</div>
+<div class="line"><span class="lineno">  343</span>            Description = <span class="stringliteral">&quot;Partitions&quot;</span>;</div>
+<div class="line"><span class="lineno">  344</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  345</span> </div>
+<div class="line"><span class="lineno">  346</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812aa281cffa0e2d570066469f2eede99140">rmqscConsumerUpdate</a>:</div>
+<div class="line"><span class="lineno">  347</span>            Description = <span class="stringliteral">&quot;ConsumerUpdate&quot;</span>;</div>
+<div class="line"><span class="lineno">  348</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  349</span> </div>
+<div class="line"><span class="lineno">  350</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812acead03f4ab598d7b4f8081ce99fbd197">rmqscExchangeCommandVersions</a>:</div>
+<div class="line"><span class="lineno">  351</span>            Description = <span class="stringliteral">&quot;ExchangeCommandVersions&quot;</span>;</div>
+<div class="line"><span class="lineno">  352</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  353</span> </div>
+<div class="line"><span class="lineno">  354</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812addce01613e61cf6f7148ead5a1730e37">rmqscStreamStats</a>:</div>
+<div class="line"><span class="lineno">  355</span>            Description = <span class="stringliteral">&quot;StreamStats&quot;</span>;</div>
+<div class="line"><span class="lineno">  356</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  357</span>    }</div>
+<div class="line"><span class="lineno">  358</span> </div>
+<div class="line"><span class="lineno">  359</span>    <span class="keywordflow">return</span> Description;</div>
+<div class="line"><span class="lineno">  360</span>}</div>
+<div class="ttc" id="armqs_global_8h_html_a40bb5262bf908c328fbcfbe5d29d0201"><div class="ttname"><a href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a></div><div class="ttdeci">char char_t</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_global_8h_source.html#l00028">rmqsGlobal.h:28</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a049da15cf699e8712259dd8c14c8c219"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a049da15cf699e8712259dd8c14c8c219">rmqscDeletePublisher</a></div><div class="ttdeci">@ rmqscDeletePublisher</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00055">rmqsProtocol.h:55</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a0575eac4fb602e09dbf38b6e0d37be4e"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a0575eac4fb602e09dbf38b6e0d37be4e">rmqscMetadata</a></div><div class="ttdeci">@ rmqscMetadata</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00064">rmqsProtocol.h:64</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a17400efba1e17cda742efa83193aa65c"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a17400efba1e17cda742efa83193aa65c">rmqscDeliver</a></div><div class="ttdeci">@ rmqscDeliver</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00057">rmqsProtocol.h:57</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a184e4f894278d21c6c89db1a5cb775bc"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a184e4f894278d21c6c89db1a5cb775bc">rmqscSaslAuthenticate</a></div><div class="ttdeci">@ rmqscSaslAuthenticate</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00068">rmqsProtocol.h:68</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a1f21033bbb30c3ee466f67aa82631ef5"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a1f21033bbb30c3ee466f67aa82631ef5">rmqscQueryOffset</a></div><div class="ttdeci">@ rmqscQueryOffset</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00060">rmqsProtocol.h:60</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a1f37115bea578fffed197451a3ed4951"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a1f37115bea578fffed197451a3ed4951">rmqscPeerProperties</a></div><div class="ttdeci">@ rmqscPeerProperties</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00066">rmqsProtocol.h:66</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a21296d342a493b4bfe36fc8942aa7c12"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a21296d342a493b4bfe36fc8942aa7c12">rmqscUnsubscribe</a></div><div class="ttdeci">@ rmqscUnsubscribe</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00061">rmqsProtocol.h:61</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a6a94307e3b5f5ab656c5fc5ea135e5c3"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a6a94307e3b5f5ab656c5fc5ea135e5c3">rmqscSaslHandshake</a></div><div class="ttdeci">@ rmqscSaslHandshake</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00067">rmqsProtocol.h:67</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a74d6df33d991e821eca7d477954715df"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a74d6df33d991e821eca7d477954715df">rmqscCreate</a></div><div class="ttdeci">@ rmqscCreate</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00062">rmqsProtocol.h:62</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a760baf2ffa4d39d20e044422744c9c4b"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a760baf2ffa4d39d20e044422744c9c4b">rmqscPublishError</a></div><div class="ttdeci">@ rmqscPublishError</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00053">rmqsProtocol.h:53</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a7abe6c8ded1516383116f87a85dfb5b8"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a7abe6c8ded1516383116f87a85dfb5b8">rmqscPublishConfirm</a></div><div class="ttdeci">@ rmqscPublishConfirm</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00052">rmqsProtocol.h:52</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a7fbbb6dd30f9d744672255b5c963fe1d"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a7fbbb6dd30f9d744672255b5c963fe1d">rmqscStoreOffset</a></div><div class="ttdeci">@ rmqscStoreOffset</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00059">rmqsProtocol.h:59</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a863e93452c02438b1c142d0829eae431"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a863e93452c02438b1c142d0829eae431">rmqscHeartbeat</a></div><div class="ttdeci">@ rmqscHeartbeat</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00072">rmqsProtocol.h:72</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812a918fe2e7bd49198fe767e5436f1e7136"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a918fe2e7bd49198fe767e5436f1e7136">rmqscRoute</a></div><div class="ttdeci">@ rmqscRoute</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00073">rmqsProtocol.h:73</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812aa281cffa0e2d570066469f2eede99140"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812aa281cffa0e2d570066469f2eede99140">rmqscConsumerUpdate</a></div><div class="ttdeci">@ rmqscConsumerUpdate</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00075">rmqsProtocol.h:75</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812aa4dbc3797ad72f8b157133fce0c4ac54"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812aa4dbc3797ad72f8b157133fce0c4ac54">rmqscDeclarePublisher</a></div><div class="ttdeci">@ rmqscDeclarePublisher</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00050">rmqsProtocol.h:50</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812ab1b656db67d4ead6575a0d0d3ab5d7d0"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ab1b656db67d4ead6575a0d0d3ab5d7d0">rmqscPartitions</a></div><div class="ttdeci">@ rmqscPartitions</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00074">rmqsProtocol.h:74</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812ab2d4ca5b88f2ee161c76c95fc423dbd9"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ab2d4ca5b88f2ee161c76c95fc423dbd9">rmqscClose</a></div><div class="ttdeci">@ rmqscClose</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00071">rmqsProtocol.h:71</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812ab9e5516feb95f882a768d234eb66943b"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ab9e5516feb95f882a768d234eb66943b">rmqscQueryPublisherSequence</a></div><div class="ttdeci">@ rmqscQueryPublisherSequence</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00054">rmqsProtocol.h:54</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812abbbcddd32b1c73a5df306a6d88f7a160"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812abbbcddd32b1c73a5df306a6d88f7a160">rmqscDelete</a></div><div class="ttdeci">@ rmqscDelete</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00063">rmqsProtocol.h:63</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812abe0c2895b3a1b6785c1b7006598e5e02"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812abe0c2895b3a1b6785c1b7006598e5e02">rmqscCredit</a></div><div class="ttdeci">@ rmqscCredit</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00058">rmqsProtocol.h:58</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812acead03f4ab598d7b4f8081ce99fbd197"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812acead03f4ab598d7b4f8081ce99fbd197">rmqscExchangeCommandVersions</a></div><div class="ttdeci">@ rmqscExchangeCommandVersions</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00076">rmqsProtocol.h:76</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812ada77c67aa3d179055a368b344c58088d"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ada77c67aa3d179055a368b344c58088d">rmqscSubscribe</a></div><div class="ttdeci">@ rmqscSubscribe</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00056">rmqsProtocol.h:56</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812adcb49790ce12529ef9a5cd919ef7e6d1"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812adcb49790ce12529ef9a5cd919ef7e6d1">rmqscOpen</a></div><div class="ttdeci">@ rmqscOpen</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00070">rmqsProtocol.h:70</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812addce01613e61cf6f7148ead5a1730e37"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812addce01613e61cf6f7148ead5a1730e37">rmqscStreamStats</a></div><div class="ttdeci">@ rmqscStreamStats</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00078">rmqsProtocol.h:77</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812ade7ab4146931dcb2af7d4264d8c4f380"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ade7ab4146931dcb2af7d4264d8c4f380">rmqscMetadataUpdate</a></div><div class="ttdeci">@ rmqscMetadataUpdate</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00065">rmqsProtocol.h:65</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812afe688f5db16f58734a7d9b1f81cbe673"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812afe688f5db16f58734a7d9b1f81cbe673">rmqscPublish</a></div><div class="ttdeci">@ rmqscPublish</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00051">rmqsProtocol.h:51</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_abc1b7e9bfea6c929871ed57de1d65812aff65a03adad2dffc0cee0805d0c1d69a"><div class="ttname"><a href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812aff65a03adad2dffc0cee0805d0c1d69a">rmqscTune</a></div><div class="ttdeci">@ rmqscTune</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00069">rmqsProtocol.h:69</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
-<a id="a4b9bbdc1d6f81caec5b73b7241e26b0e" name="a4b9bbdc1d6f81caec5b73b7241e26b0e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4b9bbdc1d6f81caec5b73b7241e26b0e">&#9670;&#160;</a></span>rmqsAddUInt32ToStream()</h2>
+<a id="a2670af5ba982549baafe8e1f64e730d0" name="a2670af5ba982549baafe8e1f64e730d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2670af5ba982549baafe8e1f64e730d0">&#9670;&#160;</a></span>rmqsIsLittleEndianMachine()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t rmqsAddUInt32ToStream </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *&#160;</td>
-          <td class="paramname"><em>Stream</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>Value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>IsLittleEndianMachine</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aec67876c48c8410dc7bc04657add6338" name="aec67876c48c8410dc7bc04657add6338"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec67876c48c8410dc7bc04657add6338">&#9670;&#160;</a></span>rmqsAddUInt8ToStream()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t rmqsAddUInt8ToStream </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structrmqs_stream__t.html">rmqsStream_t</a> *&#160;</td>
-          <td class="paramname"><em>Stream</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>Value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2e1ae40935b6eaec2a907cae7c0e0daf" name="a2e1ae40935b6eaec2a907cae7c0e0daf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e1ae40935b6eaec2a907cae7c0e0daf">&#9670;&#160;</a></span>rmqsIsLittleEndianMachine()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t rmqsIsLittleEndianMachine </td>
+          <td class="memname"><a class="el" href="rmqs_global_8h.html#a449976458a084f880dc8e3d29e7eb6f5">bool_t</a> rmqsIsLittleEndianMachine </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -408,37 +340,56 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_protocol_8c_source.html#l00031">31</a> of file <a class="el" href="rmqs_protocol_8c_source.html">rmqsProtocol.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   32</span>{</div>
+<div class="line"><span class="lineno">   33</span>    <span class="keyword">union</span></div>
+<div class="line"><span class="lineno">   34</span>    {</div>
+<div class="line"><span class="lineno">   35</span>        uint32_t i;</div>
+<div class="line"><span class="lineno">   36</span>        <a class="code hl_typedef" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> c[4];</div>
+<div class="line"><span class="lineno">   37</span>    }</div>
+<div class="line"><span class="lineno">   38</span>    bint = {0x01020304};</div>
+<div class="line"><span class="lineno">   39</span> </div>
+<div class="line"><span class="lineno">   40</span>    <span class="keywordflow">if</span> (bint.c[0] == 1)</div>
+<div class="line"><span class="lineno">   41</span>    {</div>
+<div class="line"><span class="lineno">   42</span>       <span class="keywordflow">return</span> 0;</div>
+<div class="line"><span class="lineno">   43</span>    }</div>
+<div class="line"><span class="lineno">   44</span>    <span class="keywordflow">else</span></div>
+<div class="line"><span class="lineno">   45</span>    {</div>
+<div class="line"><span class="lineno">   46</span>       <span class="keywordflow">return</span> 1;</div>
+<div class="line"><span class="lineno">   47</span>    }</div>
+<div class="line"><span class="lineno">   48</span>}</div>
+</div><!-- fragment -->
 </div>
 </div>
-<a id="a2922b14173753b8fcbdcff766911017e" name="a2922b14173753b8fcbdcff766911017e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2922b14173753b8fcbdcff766911017e">&#9670;&#160;</a></span>rmqsPeerPropertiesRequest()</h2>
+<a id="a967de4559c1da354e8fbdc5cb16f4799" name="a967de4559c1da354e8fbdc5cb16f4799"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a967de4559c1da354e8fbdc5cb16f4799">&#9670;&#160;</a></span>rmqsSendMessage()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2">rmqsResponseCode</a> rmqsPeerPropertiesRequest </td>
+          <td class="memname">void rmqsSendMessage </td>
           <td>(</td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>Producer</em>, </td>
+          <td class="paramname"><em>Client</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="rmqs_protocol_8h.html#a9f1e7f86d3a4d7bc369ed8d858c35c30">rmqsCorrelationId</a>&#160;</td>
-          <td class="paramname"><em>CorrelationId</em>, </td>
+          <td class="paramtype">const <a class="el" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a>&#160;</td>
+          <td class="paramname"><em>Socket</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>PropertiesCount</em>, </td>
+          <td class="paramtype">const <a class="el" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *&#160;</td>
+          <td class="paramname"><em>Data</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structrmqs_property__t.html">rmqsProperty_t</a> *&#160;</td>
-          <td class="paramname"><em>Properties</em>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>DataSize</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -448,12 +399,314 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_protocol_8c_source.html#l00050">50</a> of file <a class="el" href="rmqs_protocol_8c_source.html">rmqsProtocol.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   51</span>{</div>
+<div class="line"><span class="lineno">   52</span>    <span class="keyword">const</span> <a class="code hl_struct" href="structrmqs_client__t.html">rmqsClient_t</a> *ClientObj = (<span class="keyword">const</span> <a class="code hl_struct" href="structrmqs_client__t.html">rmqsClient_t</a> *)Client;</div>
+<div class="line"><span class="lineno">   53</span>    uint16_t Key;</div>
+<div class="line"><span class="lineno">   54</span> </div>
+<div class="line"><span class="lineno">   55</span>    <span class="keywordflow">if</span> (ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">ClientConfiguration</a>-&gt;<a class="code hl_variable" href="structrmqs_client_configuration__t.html#a03daaad2669ced43dc1616ee22f64042">Logger</a>)</div>
+<div class="line"><span class="lineno">   56</span>    {</div>
+<div class="line"><span class="lineno">   57</span>        Key = *(uint16_t *)(Data + <span class="keyword">sizeof</span>(uint32_t));</div>
+<div class="line"><span class="lineno">   58</span> </div>
+<div class="line"><span class="lineno">   59</span>        <span class="keywordflow">if</span> (ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">ClientConfiguration</a>-&gt;<a class="code hl_variable" href="structrmqs_client_configuration__t.html#ad850b105d1b1603949b7431b09c492f7">IsLittleEndianMachine</a>)</div>
+<div class="line"><span class="lineno">   60</span>        {</div>
+<div class="line"><span class="lineno">   61</span>            Key = <a class="code hl_define" href="rmqs_protocol_8h.html#ad762698bc1d6e93072f8d2d38aaeda4f">SwapUInt16</a>(Key);</div>
+<div class="line"><span class="lineno">   62</span>        }</div>
+<div class="line"><span class="lineno">   63</span> </div>
+<div class="line"><span class="lineno">   64</span>        Key &amp;= 0x7FFF;</div>
+<div class="line"><span class="lineno">   65</span> </div>
+<div class="line"><span class="lineno">   66</span>        <a class="code hl_function" href="rmqs_logger_8c.html#af3cfde9e3742606e0b47f46d60e183a7">rmqsLoggerRegisterDump</a>(ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">ClientConfiguration</a>-&gt;<a class="code hl_variable" href="structrmqs_client_configuration__t.html#a03daaad2669ced43dc1616ee22f64042">Logger</a>, (<span class="keywordtype">void</span> *)Data, DataSize, <span class="stringliteral">&quot;TX&quot;</span>, <a class="code hl_function" href="rmqs_protocol_8c.html#acd439e030cb0a8f713729bec57f0a803">rmqsGetMessageDescription</a>(Key), 0);</div>
+<div class="line"><span class="lineno">   67</span>    }</div>
+<div class="line"><span class="lineno">   68</span> </div>
+<div class="line"><span class="lineno">   69</span>    send(Socket, (<span class="keyword">const</span> <a class="code hl_typedef" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *)Data, DataSize, 0);</div>
+<div class="line"><span class="lineno">   70</span>}</div>
+<div class="ttc" id="armqs_logger_8c_html_af3cfde9e3742606e0b47f46d60e183a7"><div class="ttname"><a href="rmqs_logger_8c.html#af3cfde9e3742606e0b47f46d60e183a7">rmqsLoggerRegisterDump</a></div><div class="ttdeci">void rmqsLoggerRegisterDump(rmqsLogger_t *Logger, void *Data, size_t DataLen, const char_t *Comment1, const char_t *Comment2, const char_t *Comment3)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_logger_8c_source.html#l00110">rmqsLogger.c:110</a></div></div>
+<div class="ttc" id="armqs_protocol_8c_html_acd439e030cb0a8f713729bec57f0a803"><div class="ttname"><a href="rmqs_protocol_8c.html#acd439e030cb0a8f713729bec57f0a803">rmqsGetMessageDescription</a></div><div class="ttdeci">char_t * rmqsGetMessageDescription(uint16_t Key)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8c_source.html#l00240">rmqsProtocol.c:240</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_ad762698bc1d6e93072f8d2d38aaeda4f"><div class="ttname"><a href="rmqs_protocol_8h.html#ad762698bc1d6e93072f8d2d38aaeda4f">SwapUInt16</a></div><div class="ttdeci">#define SwapUInt16(x)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00034">rmqsProtocol.h:34</a></div></div>
+<div class="ttc" id="astructrmqs_client__t_html"><div class="ttname"><a href="structrmqs_client__t.html">rmqsClient_t</a></div><div class="ttdef"><b>Definition:</b> <a href="rmqs_client_8h_source.html#l00046">rmqsClient.h:47</a></div></div>
+<div class="ttc" id="astructrmqs_client__t_html_a02c0cc1558a5007fc21e2450e4e092a7"><div class="ttname"><a href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">rmqsClient_t::ClientConfiguration</a></div><div class="ttdeci">rmqsClientConfiguration_t * ClientConfiguration</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_client_8h_source.html#l00048">rmqsClient.h:48</a></div></div>
+<div class="ttc" id="astructrmqs_client_configuration__t_html_a03daaad2669ced43dc1616ee22f64042"><div class="ttname"><a href="structrmqs_client_configuration__t.html#a03daaad2669ced43dc1616ee22f64042">rmqsClientConfiguration_t::Logger</a></div><div class="ttdeci">rmqsLogger_t * Logger</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_client_configuration_8h_source.html#l00040">rmqsClientConfiguration.h:40</a></div></div>
+<div class="ttc" id="astructrmqs_client_configuration__t_html_ad850b105d1b1603949b7431b09c492f7"><div class="ttname"><a href="structrmqs_client_configuration__t.html#ad850b105d1b1603949b7431b09c492f7">rmqsClientConfiguration_t::IsLittleEndianMachine</a></div><div class="ttdeci">bool_t IsLittleEndianMachine</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_client_configuration_8h_source.html#l00036">rmqsClientConfiguration.h:36</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a60fb438147ff9041f48473d309f084a7" name="a60fb438147ff9041f48473d309f084a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60fb438147ff9041f48473d309f084a7">&#9670;&#160;</a></span>rmqsWaitMessage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="rmqs_global_8h.html#a449976458a084f880dc8e3d29e7eb6f5">bool_t</a> rmqsWaitMessage </td>
+          <td>(</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>Client</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a>&#160;</td>
+          <td class="paramname"><em>Socket</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t&#160;</td>
+          <td class="paramname"><em>RxTimeout</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rmqs_protocol_8c_source.html#l00072">72</a> of file <a class="el" href="rmqs_protocol_8c_source.html">rmqsProtocol.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   73</span>{</div>
+<div class="line"><span class="lineno">   74</span>    <span class="keyword">const</span> <a class="code hl_struct" href="structrmqs_client__t.html">rmqsClient_t</a> *ClientObj = (<span class="keyword">const</span> <a class="code hl_struct" href="structrmqs_client__t.html">rmqsClient_t</a> *)Client;</div>
+<div class="line"><span class="lineno">   75</span>    int32_t RxBytes;</div>
+<div class="line"><span class="lineno">   76</span>    uint32_t MessageSize;</div>
+<div class="line"><span class="lineno">   77</span>    <a class="code hl_struct" href="structrmqs_msg_header__t.html">rmqsMsgHeader_t</a> MsgHeader;</div>
+<div class="line"><span class="lineno">   78</span>    uint16_t Key;</div>
+<div class="line"><span class="lineno">   79</span> </div>
+<div class="line"><span class="lineno">   80</span>    <span class="keywordflow">while</span> (<span class="keyword">true</span>)</div>
+<div class="line"><span class="lineno">   81</span>    {</div>
+<div class="line"><span class="lineno">   82</span>        <span class="keywordflow">if</span> (ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#a870517b811551c97c9de710cf8511754">Tag1</a> == <span class="keyword">true</span>)</div>
+<div class="line"><span class="lineno">   83</span>        {</div>
+<div class="line"><span class="lineno">   84</span>            <span class="comment">//</span></div>
+<div class="line"><span class="lineno">   85</span>            <span class="comment">// Tag1 indicates whether it was containing a complete message</span></div>
+<div class="line"><span class="lineno">   86</span>            <span class="comment">// of Tag2 bytes. Now we&#39;re going to read a new message,</span></div>
+<div class="line"><span class="lineno">   87</span>            <span class="comment">// then the previous one can be dequeued and the complete marker cleared</span></div>
+<div class="line"><span class="lineno">   88</span>            <span class="comment">//</span></div>
+<div class="line"><span class="lineno">   89</span>            <a class="code hl_function" href="rmqs_protocol_8c.html#a40b993ca8e1e207ea7a462b5cc901491">rmqsDequeueMessageFromBuffer</a>(ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>, ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#ace0c7c03978e578f22b8767876b4bb04">Tag2</a>);</div>
+<div class="line"><span class="lineno">   90</span>            ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#a870517b811551c97c9de710cf8511754">Tag1</a> = <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">   91</span>            ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#ace0c7c03978e578f22b8767876b4bb04">Tag2</a> = 0;</div>
+<div class="line"><span class="lineno">   92</span>        }</div>
+<div class="line"><span class="lineno">   93</span> </div>
+<div class="line"><span class="lineno">   94</span>        <a class="code hl_function" href="rmqs_network_8c.html#a10f726b65395d2788eceafb95c3bc85a">rmqsSetSocketReadTimeouts</a>(Socket, RxTimeout);</div>
+<div class="line"><span class="lineno">   95</span> </div>
+<div class="line"><span class="lineno">   96</span>        RxBytes = recv(Socket, (<a class="code hl_typedef" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *)ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a34ffd68501e632fc26a1022430f5c51b">RxSocketBuffer</a>, <a class="code hl_define" href="rmqs_client_8h.html#ae024f0a04ee6ecc88aa264b31369939c">RMQS_CLIENT_RX_BUFFER_SIZE</a>, 0);</div>
+<div class="line"><span class="lineno">   97</span> </div>
+<div class="line"><span class="lineno">   98</span>        <span class="keywordflow">if</span> (RxBytes &lt;= 0)</div>
+<div class="line"><span class="lineno">   99</span>        {</div>
+<div class="line"><span class="lineno">  100</span>            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">  101</span>        }</div>
+<div class="line"><span class="lineno">  102</span> </div>
+<div class="line"><span class="lineno">  103</span>        <a class="code hl_function" href="rmqs_buffer_8c.html#a1fa3669da2764f855ba54fb0f4344d24">rmqsBufferWrite</a>(ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>, (<span class="keywordtype">void</span> *)ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a34ffd68501e632fc26a1022430f5c51b">RxSocketBuffer</a>, RxBytes);</div>
+<div class="line"><span class="lineno">  104</span> </div>
+<div class="line"><span class="lineno">  105</span>        <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  106</span>        <span class="comment">// Is the message length (4 bytes) arrived?</span></div>
+<div class="line"><span class="lineno">  107</span>        <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  108</span>        <span class="keywordflow">if</span> (ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#a9ebfa0d77b70499d12d661ab31d39df1">Size</a> &lt; <span class="keyword">sizeof</span>(uint32_t))</div>
+<div class="line"><span class="lineno">  109</span>        {</div>
+<div class="line"><span class="lineno">  110</span>            <span class="keywordflow">continue</span>;</div>
+<div class="line"><span class="lineno">  111</span>        }</div>
+<div class="line"><span class="lineno">  112</span> </div>
+<div class="line"><span class="lineno">  113</span>        <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  114</span>        <span class="comment">// Message length is once stored in the Tag1 field and eventually with the correct endianness</span></div>
+<div class="line"><span class="lineno">  115</span>        <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  116</span>        MessageSize = *(uint32_t *)ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#abc992caf10c7ff7ab4b152f8e3cc8cdc">Data</a>;</div>
+<div class="line"><span class="lineno">  117</span> </div>
+<div class="line"><span class="lineno">  118</span>        if (ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">ClientConfiguration</a>-&gt;<a class="code hl_variable" href="structrmqs_client_configuration__t.html#ad850b105d1b1603949b7431b09c492f7">IsLittleEndianMachine</a>)</div>
+<div class="line"><span class="lineno">  119</span>        {</div>
+<div class="line"><span class="lineno">  120</span>            MessageSize = <a class="code hl_define" href="rmqs_protocol_8h.html#add7a8fc17cdda71b0f3b41e1be66f48d">SwapUInt32</a>(MessageSize);</div>
+<div class="line"><span class="lineno">  121</span>        }</div>
+<div class="line"><span class="lineno">  122</span> </div>
+<div class="line"><span class="lineno">  123</span>        <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  124</span>        <span class="comment">// The number of bytes to wait is the one stored in the 4 bytes of the length + the length itself</span></div>
+<div class="line"><span class="lineno">  125</span>        <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  126</span>        MessageSize += <span class="keyword">sizeof</span>(uint32_t);</div>
+<div class="line"><span class="lineno">  127</span> </div>
+<div class="line"><span class="lineno">  128</span>        <span class="keywordflow">if</span> (ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#a9ebfa0d77b70499d12d661ab31d39df1">Size</a> &lt; MessageSize)</div>
+<div class="line"><span class="lineno">  129</span>        {</div>
+<div class="line"><span class="lineno">  130</span>            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">  131</span>        }</div>
+<div class="line"><span class="lineno">  132</span> </div>
+<div class="line"><span class="lineno">  133</span>        <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  134</span>        <span class="comment">// Message completed</span></div>
+<div class="line"><span class="lineno">  135</span>        <span class="comment">// Completed flag is stored in the Tag1 field and the message size in the Tag2 fied</span></div>
+<div class="line"><span class="lineno">  136</span>        <span class="comment">// so the message will be dequeued in the next function call, once it has</span></div>
+<div class="line"><span class="lineno">  137</span>        <span class="comment">// been passed to the functionc caller for its analysis.</span></div>
+<div class="line"><span class="lineno">  138</span>        <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  139</span>        ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#a870517b811551c97c9de710cf8511754">Tag1</a> = <span class="keyword">true</span>;</div>
+<div class="line"><span class="lineno">  140</span>        ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#ace0c7c03978e578f22b8767876b4bb04">Tag2</a> = MessageSize;</div>
+<div class="line"><span class="lineno">  141</span> </div>
+<div class="line"><span class="lineno">  142</span>        <span class="keywordflow">if</span> (ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">ClientConfiguration</a>-&gt;<a class="code hl_variable" href="structrmqs_client_configuration__t.html#a03daaad2669ced43dc1616ee22f64042">Logger</a>)</div>
+<div class="line"><span class="lineno">  143</span>        {</div>
+<div class="line"><span class="lineno">  144</span>            Key = *(uint16_t *)((<a class="code hl_typedef" href="rmqs_global_8h.html#a40bb5262bf908c328fbcfbe5d29d0201">char_t</a> *)ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#abc992caf10c7ff7ab4b152f8e3cc8cdc">Data</a> + <span class="keyword">sizeof</span>(uint32_t));</div>
+<div class="line"><span class="lineno">  145</span> </div>
+<div class="line"><span class="lineno">  146</span>            <span class="keywordflow">if</span> (ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">ClientConfiguration</a>-&gt;<a class="code hl_variable" href="structrmqs_client_configuration__t.html#ad850b105d1b1603949b7431b09c492f7">IsLittleEndianMachine</a>)</div>
+<div class="line"><span class="lineno">  147</span>            {</div>
+<div class="line"><span class="lineno">  148</span>                Key = <a class="code hl_define" href="rmqs_protocol_8h.html#ad762698bc1d6e93072f8d2d38aaeda4f">SwapUInt16</a>(Key);</div>
+<div class="line"><span class="lineno">  149</span>            }</div>
+<div class="line"><span class="lineno">  150</span> </div>
+<div class="line"><span class="lineno">  151</span>            Key &amp;= 0x7FFF;</div>
+<div class="line"><span class="lineno">  152</span> </div>
+<div class="line"><span class="lineno">  153</span>            <a class="code hl_function" href="rmqs_logger_8c.html#af3cfde9e3742606e0b47f46d60e183a7">rmqsLoggerRegisterDump</a>(ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">ClientConfiguration</a>-&gt;<a class="code hl_variable" href="structrmqs_client_configuration__t.html#a03daaad2669ced43dc1616ee22f64042">Logger</a>, (<span class="keywordtype">void</span> *)ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#abc992caf10c7ff7ab4b152f8e3cc8cdc">Data</a>, ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#ace0c7c03978e578f22b8767876b4bb04">Tag2</a>, <span class="stringliteral">&quot;RX&quot;</span>, <a class="code hl_function" href="rmqs_protocol_8c.html#acd439e030cb0a8f713729bec57f0a803">rmqsGetMessageDescription</a>(Key), 0);</div>
+<div class="line"><span class="lineno">  154</span>        }</div>
+<div class="line"><span class="lineno">  155</span> </div>
+<div class="line"><span class="lineno">  156</span>        <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  157</span>        <span class="comment">// Check whether is a push message - PublishConfirm or PublishError</span></div>
+<div class="line"><span class="lineno">  158</span>        <span class="comment">// the header of the message is copied within a header structure to be analyzed</span></div>
+<div class="line"><span class="lineno">  159</span>        <span class="comment">// without altering the byte endianness that will be changed also by the caller</span></div>
+<div class="line"><span class="lineno">  160</span>        <span class="comment">// to parse the message</span></div>
+<div class="line"><span class="lineno">  161</span>        <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  162</span>        memcpy(&amp;MsgHeader, ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#abc992caf10c7ff7ab4b152f8e3cc8cdc">Data</a>, <span class="keyword">sizeof</span>(MsgHeader));</div>
+<div class="line"><span class="lineno">  163</span> </div>
+<div class="line"><span class="lineno">  164</span>        <span class="keywordflow">if</span> (ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">ClientConfiguration</a>-&gt;<a class="code hl_variable" href="structrmqs_client_configuration__t.html#ad850b105d1b1603949b7431b09c492f7">IsLittleEndianMachine</a>)</div>
+<div class="line"><span class="lineno">  165</span>        {</div>
+<div class="line"><span class="lineno">  166</span>            MsgHeader.<a class="code hl_variable" href="structrmqs_msg_header__t.html#a473955690fb105536066144aeea4c8dc">Size</a> = <a class="code hl_define" href="rmqs_protocol_8h.html#add7a8fc17cdda71b0f3b41e1be66f48d">SwapUInt32</a>(MsgHeader.<a class="code hl_variable" href="structrmqs_msg_header__t.html#a473955690fb105536066144aeea4c8dc">Size</a>);</div>
+<div class="line"><span class="lineno">  167</span>            MsgHeader.<a class="code hl_variable" href="structrmqs_msg_header__t.html#aed4989aaf2c7b5eea7a74752327d17c0">Key</a> = <a class="code hl_define" href="rmqs_protocol_8h.html#ad762698bc1d6e93072f8d2d38aaeda4f">SwapUInt16</a>(MsgHeader.<a class="code hl_variable" href="structrmqs_msg_header__t.html#aed4989aaf2c7b5eea7a74752327d17c0">Key</a>);</div>
+<div class="line"><span class="lineno">  168</span>            MsgHeader.<a class="code hl_variable" href="structrmqs_msg_header__t.html#aed4989aaf2c7b5eea7a74752327d17c0">Key</a> &amp;= 0x7FFF;</div>
+<div class="line"><span class="lineno">  169</span>            MsgHeader.<a class="code hl_variable" href="structrmqs_msg_header__t.html#a8d5773f11b347e42baf19378bec22484">Version</a> = <a class="code hl_define" href="rmqs_protocol_8h.html#ad762698bc1d6e93072f8d2d38aaeda4f">SwapUInt16</a>(MsgHeader.<a class="code hl_variable" href="structrmqs_msg_header__t.html#a8d5773f11b347e42baf19378bec22484">Version</a>);</div>
+<div class="line"><span class="lineno">  170</span>        }</div>
+<div class="line"><span class="lineno">  171</span> </div>
+<div class="line"><span class="lineno">  172</span>        <span class="keywordflow">if</span> (MsgHeader.<a class="code hl_variable" href="structrmqs_msg_header__t.html#aed4989aaf2c7b5eea7a74752327d17c0">Key</a> == <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a7abe6c8ded1516383116f87a85dfb5b8">rmqscPublishConfirm</a> || MsgHeader.<a class="code hl_variable" href="structrmqs_msg_header__t.html#aed4989aaf2c7b5eea7a74752327d17c0">Key</a> == <a class="code hl_enumvalue" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a760baf2ffa4d39d20e044422744c9c4b">rmqscPublishError</a>)</div>
+<div class="line"><span class="lineno">  173</span>        {</div>
+<div class="line"><span class="lineno">  174</span>            <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  175</span>            <span class="comment">// These message are caught and handled by this procedure and not returned to the caller</span></div>
+<div class="line"><span class="lineno">  176</span>            <span class="comment">//</span></div>
+<div class="line"><span class="lineno">  177</span>            <span class="keywordflow">if</span> (ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#afbf138815e728426371991090a3993c8">ClientType</a> == <a class="code hl_enumvalue" href="rmqs_client_8h.html#ab41c2dc8922add9afb122979d9830edaa3325e8d3d1e3357c97be40441273c2c8">rmqsctProducer</a>)</div>
+<div class="line"><span class="lineno">  178</span>            {</div>
+<div class="line"><span class="lineno">  179</span>                <a class="code hl_function" href="rmqs_producer_8c.html#ac88def37c796731e393f0ea32530db10">rmqsHandlePublishResult</a>(MsgHeader.<a class="code hl_variable" href="structrmqs_msg_header__t.html#aed4989aaf2c7b5eea7a74752327d17c0">Key</a>, (<a class="code hl_struct" href="structrmqs_producer__t.html">rmqsProducer_t</a> *)ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a40175b355febae553256f23b3852de0b">ParentObject</a>, ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>);</div>
+<div class="line"><span class="lineno">  180</span>            }</div>
+<div class="line"><span class="lineno">  181</span>        }</div>
+<div class="line"><span class="lineno">  182</span>        <span class="keywordflow">else</span></div>
+<div class="line"><span class="lineno">  183</span>        {</div>
+<div class="line"><span class="lineno">  184</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><span class="lineno">  185</span>        }</div>
+<div class="line"><span class="lineno">  186</span>    }</div>
+<div class="line"><span class="lineno">  187</span> </div>
+<div class="line"><span class="lineno">  188</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><span class="lineno">  189</span>}</div>
+<div class="ttc" id="armqs_buffer_8c_html_a1fa3669da2764f855ba54fb0f4344d24"><div class="ttname"><a href="rmqs_buffer_8c.html#a1fa3669da2764f855ba54fb0f4344d24">rmqsBufferWrite</a></div><div class="ttdeci">size_t rmqsBufferWrite(rmqsBuffer_t *Buffer, void *WriteBuffer, const size_t NoOfBytes)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_buffer_8c_source.html#l00102">rmqsBuffer.c:102</a></div></div>
+<div class="ttc" id="armqs_client_8h_html_ab41c2dc8922add9afb122979d9830edaa3325e8d3d1e3357c97be40441273c2c8"><div class="ttname"><a href="rmqs_client_8h.html#ab41c2dc8922add9afb122979d9830edaa3325e8d3d1e3357c97be40441273c2c8">rmqsctProducer</a></div><div class="ttdeci">@ rmqsctProducer</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_client_8h_source.html#l00041">rmqsClient.h:41</a></div></div>
+<div class="ttc" id="armqs_client_8h_html_ae024f0a04ee6ecc88aa264b31369939c"><div class="ttname"><a href="rmqs_client_8h.html#ae024f0a04ee6ecc88aa264b31369939c">RMQS_CLIENT_RX_BUFFER_SIZE</a></div><div class="ttdeci">#define RMQS_CLIENT_RX_BUFFER_SIZE</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_client_8h_source.html#l00037">rmqsClient.h:37</a></div></div>
+<div class="ttc" id="armqs_network_8c_html_a10f726b65395d2788eceafb95c3bc85a"><div class="ttname"><a href="rmqs_network_8c.html#a10f726b65395d2788eceafb95c3bc85a">rmqsSetSocketReadTimeouts</a></div><div class="ttdeci">void rmqsSetSocketReadTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeout)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_network_8c_source.html#l00203">rmqsNetwork.c:203</a></div></div>
+<div class="ttc" id="armqs_producer_8c_html_ac88def37c796731e393f0ea32530db10"><div class="ttname"><a href="rmqs_producer_8c.html#ac88def37c796731e393f0ea32530db10">rmqsHandlePublishResult</a></div><div class="ttdeci">void rmqsHandlePublishResult(uint16_t Key, rmqsProducer_t *Producer, rmqsBuffer_t *Buffer)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_producer_8c_source.html#l00179">rmqsProducer.c:179</a></div></div>
+<div class="ttc" id="armqs_protocol_8c_html_a40b993ca8e1e207ea7a462b5cc901491"><div class="ttname"><a href="rmqs_protocol_8c.html#a40b993ca8e1e207ea7a462b5cc901491">rmqsDequeueMessageFromBuffer</a></div><div class="ttdeci">void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, const size_t MessageSize)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8c_source.html#l00232">rmqsProtocol.c:232</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_add7a8fc17cdda71b0f3b41e1be66f48d"><div class="ttname"><a href="rmqs_protocol_8h.html#add7a8fc17cdda71b0f3b41e1be66f48d">SwapUInt32</a></div><div class="ttdeci">#define SwapUInt32(x)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00035">rmqsProtocol.h:35</a></div></div>
+<div class="ttc" id="astructrmqs_buffer__t_html_a870517b811551c97c9de710cf8511754"><div class="ttname"><a href="structrmqs_buffer__t.html#a870517b811551c97c9de710cf8511754">rmqsBuffer_t::Tag1</a></div><div class="ttdeci">uint32_t Tag1</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_buffer_8h_source.html#l00058">rmqsBuffer.h:58</a></div></div>
+<div class="ttc" id="astructrmqs_buffer__t_html_a9ebfa0d77b70499d12d661ab31d39df1"><div class="ttname"><a href="structrmqs_buffer__t.html#a9ebfa0d77b70499d12d661ab31d39df1">rmqsBuffer_t::Size</a></div><div class="ttdeci">size_t Size</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_buffer_8h_source.html#l00054">rmqsBuffer.h:54</a></div></div>
+<div class="ttc" id="astructrmqs_buffer__t_html_abc992caf10c7ff7ab4b152f8e3cc8cdc"><div class="ttname"><a href="structrmqs_buffer__t.html#abc992caf10c7ff7ab4b152f8e3cc8cdc">rmqsBuffer_t::Data</a></div><div class="ttdeci">void * Data</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_buffer_8h_source.html#l00057">rmqsBuffer.h:57</a></div></div>
+<div class="ttc" id="astructrmqs_buffer__t_html_ace0c7c03978e578f22b8767876b4bb04"><div class="ttname"><a href="structrmqs_buffer__t.html#ace0c7c03978e578f22b8767876b4bb04">rmqsBuffer_t::Tag2</a></div><div class="ttdeci">uint32_t Tag2</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_buffer_8h_source.html#l00059">rmqsBuffer.h:59</a></div></div>
+<div class="ttc" id="astructrmqs_client__t_html_a34ffd68501e632fc26a1022430f5c51b"><div class="ttname"><a href="structrmqs_client__t.html#a34ffd68501e632fc26a1022430f5c51b">rmqsClient_t::RxSocketBuffer</a></div><div class="ttdeci">char_t RxSocketBuffer[RMQS_CLIENT_RX_BUFFER_SIZE]</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_client_8h_source.html#l00057">rmqsClient.h:57</a></div></div>
+<div class="ttc" id="astructrmqs_client__t_html_a40175b355febae553256f23b3852de0b"><div class="ttname"><a href="structrmqs_client__t.html#a40175b355febae553256f23b3852de0b">rmqsClient_t::ParentObject</a></div><div class="ttdeci">void * ParentObject</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_client_8h_source.html#l00052">rmqsClient.h:52</a></div></div>
+<div class="ttc" id="astructrmqs_client__t_html_aa6e8afe1699365d759fc1af982f71f04"><div class="ttname"><a href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">rmqsClient_t::RxQueue</a></div><div class="ttdeci">rmqsBuffer_t * RxQueue</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_client_8h_source.html#l00056">rmqsClient.h:56</a></div></div>
+<div class="ttc" id="astructrmqs_client__t_html_afbf138815e728426371991090a3993c8"><div class="ttname"><a href="structrmqs_client__t.html#afbf138815e728426371991090a3993c8">rmqsClient_t::ClientType</a></div><div class="ttdeci">rmqsClientType_t ClientType</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_client_8h_source.html#l00051">rmqsClient.h:51</a></div></div>
+<div class="ttc" id="astructrmqs_msg_header__t_html"><div class="ttname"><a href="structrmqs_msg_header__t.html">rmqsMsgHeader_t</a></div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00122">rmqsProtocol.h:123</a></div></div>
+<div class="ttc" id="astructrmqs_msg_header__t_html_a473955690fb105536066144aeea4c8dc"><div class="ttname"><a href="structrmqs_msg_header__t.html#a473955690fb105536066144aeea4c8dc">rmqsMsgHeader_t::Size</a></div><div class="ttdeci">uint32_t Size</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00124">rmqsProtocol.h:124</a></div></div>
+<div class="ttc" id="astructrmqs_msg_header__t_html_a8d5773f11b347e42baf19378bec22484"><div class="ttname"><a href="structrmqs_msg_header__t.html#a8d5773f11b347e42baf19378bec22484">rmqsMsgHeader_t::Version</a></div><div class="ttdeci">uint16_t Version</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00126">rmqsProtocol.h:126</a></div></div>
+<div class="ttc" id="astructrmqs_msg_header__t_html_aed4989aaf2c7b5eea7a74752327d17c0"><div class="ttname"><a href="structrmqs_msg_header__t.html#aed4989aaf2c7b5eea7a74752327d17c0">rmqsMsgHeader_t::Key</a></div><div class="ttdeci">uint16_t Key</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00125">rmqsProtocol.h:125</a></div></div>
+<div class="ttc" id="astructrmqs_producer__t_html"><div class="ttname"><a href="structrmqs_producer__t.html">rmqsProducer_t</a></div><div class="ttdef"><b>Definition:</b> <a href="rmqs_producer_8h_source.html#l00040">rmqsProducer.h:41</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a074032f01ea072509666f88743393b37" name="a074032f01ea072509666f88743393b37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a074032f01ea072509666f88743393b37">&#9670;&#160;</a></span>rmqsWaitResponse()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="rmqs_global_8h.html#a449976458a084f880dc8e3d29e7eb6f5">bool_t</a> rmqsWaitResponse </td>
+          <td>(</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>Client</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsSocket</a>&#160;</td>
+          <td class="paramname"><em>Socket</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>CorrelationId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structrmqs_response__t.html">rmqsResponse_t</a> *&#160;</td>
+          <td class="paramname"><em>Response</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t&#160;</td>
+          <td class="paramname"><em>RxTimeout</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rmqs_protocol_8c_source.html#l00191">191</a> of file <a class="el" href="rmqs_protocol_8c_source.html">rmqsProtocol.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  192</span>{</div>
+<div class="line"><span class="lineno">  193</span>    <span class="keyword">const</span> <a class="code hl_struct" href="structrmqs_client__t.html">rmqsClient_t</a> *ClientObj = (<span class="keyword">const</span> <a class="code hl_struct" href="structrmqs_client__t.html">rmqsClient_t</a> *)Client;</div>
+<div class="line"><span class="lineno">  194</span>    uint32_t WaitMessageTimeout = RxTimeout;</div>
+<div class="line"><span class="lineno">  195</span>    uint32_t Time;</div>
+<div class="line"><span class="lineno">  196</span> </div>
+<div class="line"><span class="lineno">  197</span>    <a class="code hl_function" href="rmqs_timer_8c.html#a5d2777aa334f0bf57c5ab9031f542f2c">rmqsTimerStart</a>(ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">ClientConfiguration</a>-&gt;<a class="code hl_variable" href="structrmqs_client_configuration__t.html#a5dc34ca60f73818ee526975d2c0de687">WaitReplyTimer</a>);</div>
+<div class="line"><span class="lineno">  198</span> </div>
+<div class="line"><span class="lineno">  199</span>    <span class="keywordflow">while</span> (<a class="code hl_function" href="rmqs_timer_8c.html#a79f6b432ebcadaea28e4a91552650993">rmqsTimerGetTime</a>(ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">ClientConfiguration</a>-&gt;<a class="code hl_variable" href="structrmqs_client_configuration__t.html#a5dc34ca60f73818ee526975d2c0de687">WaitReplyTimer</a>) &lt; RxTimeout)</div>
+<div class="line"><span class="lineno">  200</span>    {</div>
+<div class="line"><span class="lineno">  201</span>        <span class="keywordflow">if</span> (<a class="code hl_function" href="rmqs_protocol_8c.html#a60fb438147ff9041f48473d309f084a7">rmqsWaitMessage</a>(ClientObj, Socket, WaitMessageTimeout))</div>
+<div class="line"><span class="lineno">  202</span>        {</div>
+<div class="line"><span class="lineno">  203</span>            <span class="keywordflow">if</span> (ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#a9ebfa0d77b70499d12d661ab31d39df1">Size</a> &gt;= <span class="keyword">sizeof</span>(<a class="code hl_struct" href="structrmqs_response__t.html">rmqsResponse_t</a>))</div>
+<div class="line"><span class="lineno">  204</span>            {</div>
+<div class="line"><span class="lineno">  205</span>                memcpy(Response, ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">RxQueue</a>-&gt;<a class="code hl_variable" href="structrmqs_buffer__t.html#abc992caf10c7ff7ab4b152f8e3cc8cdc">Data</a>, <span class="keyword">sizeof</span>(<a class="code hl_struct" href="structrmqs_response__t.html">rmqsResponse_t</a>));</div>
+<div class="line"><span class="lineno">  206</span> </div>
+<div class="line"><span class="lineno">  207</span>                <span class="keywordflow">if</span> (ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">ClientConfiguration</a>-&gt;<a class="code hl_variable" href="structrmqs_client_configuration__t.html#ad850b105d1b1603949b7431b09c492f7">IsLittleEndianMachine</a>)</div>
+<div class="line"><span class="lineno">  208</span>                {</div>
+<div class="line"><span class="lineno">  209</span>                    Response-&gt;<a class="code hl_variable" href="structrmqs_response__t.html#ac18b87752c7baf948923235038e0df17">Header</a>.<a class="code hl_variable" href="structrmqs_msg_header__t.html#a473955690fb105536066144aeea4c8dc">Size</a> = <a class="code hl_define" href="rmqs_protocol_8h.html#add7a8fc17cdda71b0f3b41e1be66f48d">SwapUInt32</a>(Response-&gt;<a class="code hl_variable" href="structrmqs_response__t.html#ac18b87752c7baf948923235038e0df17">Header</a>.<a class="code hl_variable" href="structrmqs_msg_header__t.html#a473955690fb105536066144aeea4c8dc">Size</a>);</div>
+<div class="line"><span class="lineno">  210</span>                    Response-&gt;<a class="code hl_variable" href="structrmqs_response__t.html#ac18b87752c7baf948923235038e0df17">Header</a>.<a class="code hl_variable" href="structrmqs_msg_header__t.html#aed4989aaf2c7b5eea7a74752327d17c0">Key</a> = <a class="code hl_define" href="rmqs_protocol_8h.html#ad762698bc1d6e93072f8d2d38aaeda4f">SwapUInt16</a>(Response-&gt;<a class="code hl_variable" href="structrmqs_response__t.html#ac18b87752c7baf948923235038e0df17">Header</a>.<a class="code hl_variable" href="structrmqs_msg_header__t.html#aed4989aaf2c7b5eea7a74752327d17c0">Key</a>);</div>
+<div class="line"><span class="lineno">  211</span>                    Response-&gt;<a class="code hl_variable" href="structrmqs_response__t.html#ac18b87752c7baf948923235038e0df17">Header</a>.<a class="code hl_variable" href="structrmqs_msg_header__t.html#aed4989aaf2c7b5eea7a74752327d17c0">Key</a> &amp;= 0x7FFF;</div>
+<div class="line"><span class="lineno">  212</span>                    Response-&gt;<a class="code hl_variable" href="structrmqs_response__t.html#ac18b87752c7baf948923235038e0df17">Header</a>.<a class="code hl_variable" href="structrmqs_msg_header__t.html#a8d5773f11b347e42baf19378bec22484">Version</a> = <a class="code hl_define" href="rmqs_protocol_8h.html#ad762698bc1d6e93072f8d2d38aaeda4f">SwapUInt16</a>(Response-&gt;<a class="code hl_variable" href="structrmqs_response__t.html#ac18b87752c7baf948923235038e0df17">Header</a>.<a class="code hl_variable" href="structrmqs_msg_header__t.html#a8d5773f11b347e42baf19378bec22484">Version</a>);</div>
+<div class="line"><span class="lineno">  213</span>                    Response-&gt;<a class="code hl_variable" href="structrmqs_response__t.html#afe9b69a7927dd547d2f08138e095937b">CorrelationId</a> = <a class="code hl_define" href="rmqs_protocol_8h.html#add7a8fc17cdda71b0f3b41e1be66f48d">SwapUInt32</a>(Response-&gt;<a class="code hl_variable" href="structrmqs_response__t.html#afe9b69a7927dd547d2f08138e095937b">CorrelationId</a>);</div>
+<div class="line"><span class="lineno">  214</span>                    Response-&gt;<a class="code hl_variable" href="structrmqs_response__t.html#a12f7568d380e39597e91f06ed9fa813b">ResponseCode</a> = <a class="code hl_define" href="rmqs_protocol_8h.html#ad762698bc1d6e93072f8d2d38aaeda4f">SwapUInt16</a>(Response-&gt;<a class="code hl_variable" href="structrmqs_response__t.html#a12f7568d380e39597e91f06ed9fa813b">ResponseCode</a>);</div>
+<div class="line"><span class="lineno">  215</span> </div>
+<div class="line"><span class="lineno">  216</span>                    <span class="keywordflow">if</span> (<a class="code hl_define" href="rmqs_protocol_8h.html#a7ef46833c940573faafc0a314d98fd97">rmqsCommandHasCorrelationId</a>(Response-&gt;<a class="code hl_variable" href="structrmqs_response__t.html#ac18b87752c7baf948923235038e0df17">Header</a>.<a class="code hl_variable" href="structrmqs_msg_header__t.html#aed4989aaf2c7b5eea7a74752327d17c0">Key</a>) &amp;&amp; Response-&gt;<a class="code hl_variable" href="structrmqs_response__t.html#afe9b69a7927dd547d2f08138e095937b">CorrelationId</a> == CorrelationId)</div>
+<div class="line"><span class="lineno">  217</span>                    {</div>
+<div class="line"><span class="lineno">  218</span>                        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><span class="lineno">  219</span>                    }</div>
+<div class="line"><span class="lineno">  220</span>                }</div>
+<div class="line"><span class="lineno">  221</span>            }</div>
+<div class="line"><span class="lineno">  222</span> </div>
+<div class="line"><span class="lineno">  223</span>            Time = <a class="code hl_function" href="rmqs_timer_8c.html#a79f6b432ebcadaea28e4a91552650993">rmqsTimerGetTime</a>(ClientObj-&gt;<a class="code hl_variable" href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">ClientConfiguration</a>-&gt;<a class="code hl_variable" href="structrmqs_client_configuration__t.html#a5dc34ca60f73818ee526975d2c0de687">WaitReplyTimer</a>);</div>
+<div class="line"><span class="lineno">  224</span> </div>
+<div class="line"><span class="lineno">  225</span>            WaitMessageTimeout = RxTimeout - Time;</div>
+<div class="line"><span class="lineno">  226</span>        }</div>
+<div class="line"><span class="lineno">  227</span>    }</div>
+<div class="line"><span class="lineno">  228</span> </div>
+<div class="line"><span class="lineno">  229</span>    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">  230</span>}</div>
+<div class="ttc" id="armqs_protocol_8c_html_a60fb438147ff9041f48473d309f084a7"><div class="ttname"><a href="rmqs_protocol_8c.html#a60fb438147ff9041f48473d309f084a7">rmqsWaitMessage</a></div><div class="ttdeci">bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32_t RxTimeout)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8c_source.html#l00072">rmqsProtocol.c:72</a></div></div>
+<div class="ttc" id="armqs_protocol_8h_html_a7ef46833c940573faafc0a314d98fd97"><div class="ttname"><a href="rmqs_protocol_8h.html#a7ef46833c940573faafc0a314d98fd97">rmqsCommandHasCorrelationId</a></div><div class="ttdeci">#define rmqsCommandHasCorrelationId(x)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00081">rmqsProtocol.h:81</a></div></div>
+<div class="ttc" id="armqs_timer_8c_html_a5d2777aa334f0bf57c5ab9031f542f2c"><div class="ttname"><a href="rmqs_timer_8c.html#a5d2777aa334f0bf57c5ab9031f542f2c">rmqsTimerStart</a></div><div class="ttdeci">void rmqsTimerStart(rmqsTimer_t *Timer)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_timer_8c_source.html#l00046">rmqsTimer.c:46</a></div></div>
+<div class="ttc" id="armqs_timer_8c_html_a79f6b432ebcadaea28e4a91552650993"><div class="ttname"><a href="rmqs_timer_8c.html#a79f6b432ebcadaea28e4a91552650993">rmqsTimerGetTime</a></div><div class="ttdeci">uint32_t rmqsTimerGetTime(rmqsTimer_t *Timer)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_timer_8c_source.html#l00069">rmqsTimer.c:69</a></div></div>
+<div class="ttc" id="astructrmqs_client_configuration__t_html_a5dc34ca60f73818ee526975d2c0de687"><div class="ttname"><a href="structrmqs_client_configuration__t.html#a5dc34ca60f73818ee526975d2c0de687">rmqsClientConfiguration_t::WaitReplyTimer</a></div><div class="ttdeci">rmqsTimer_t * WaitReplyTimer</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_client_configuration_8h_source.html#l00039">rmqsClientConfiguration.h:39</a></div></div>
+<div class="ttc" id="astructrmqs_response__t_html"><div class="ttname"><a href="structrmqs_response__t.html">rmqsResponse_t</a></div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00130">rmqsProtocol.h:131</a></div></div>
+<div class="ttc" id="astructrmqs_response__t_html_a12f7568d380e39597e91f06ed9fa813b"><div class="ttname"><a href="structrmqs_response__t.html#a12f7568d380e39597e91f06ed9fa813b">rmqsResponse_t::ResponseCode</a></div><div class="ttdeci">uint16_t ResponseCode</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00134">rmqsProtocol.h:134</a></div></div>
+<div class="ttc" id="astructrmqs_response__t_html_ac18b87752c7baf948923235038e0df17"><div class="ttname"><a href="structrmqs_response__t.html#ac18b87752c7baf948923235038e0df17">rmqsResponse_t::Header</a></div><div class="ttdeci">rmqsMsgHeader_t Header</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00132">rmqsProtocol.h:132</a></div></div>
+<div class="ttc" id="astructrmqs_response__t_html_afe9b69a7927dd547d2f08138e095937b"><div class="ttname"><a href="structrmqs_response__t.html#afe9b69a7927dd547d2f08138e095937b">rmqsResponse_t::CorrelationId</a></div><div class="ttdeci">uint32_t CorrelationId</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_protocol_8h_source.html#l00133">rmqsProtocol.h:133</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c2041065ae2580372680e5ac7ffaeff8.html">rawClient</a></li><li class="navelem"><a class="el" href="rmqs_protocol_8c.html">rmqsProtocol.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+  </ul>
+</div>
 </body>
 </html>

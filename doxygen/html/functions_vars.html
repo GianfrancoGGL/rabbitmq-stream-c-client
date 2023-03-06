@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RabbitMQ streams C client: Class Members - Variables</title>
+<title>RabbitMQ stream C client: Class Members - Variables</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -20,9 +24,8 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="RabbitMQLogo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">RabbitMQ streams C client
+   <div id="projectname">RabbitMQ stream C client
    </div>
   </td>
  </tr>
@@ -48,6 +51,22 @@ $(function() {
 </script>
 <div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('functions_vars.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -72,104 +91,158 @@ $(function() {
 <div class="contents">
 &#160;
 
+<h3><a id="index_a" name="index_a"></a>- a -</h3><ul>
+<li>AdvicedHostname&#160;:&#160;<a class="el" href="structrmqs_broker__t.html#a807139f344c88917bc4038746181fb3c">rmqsBroker_t</a></li>
+<li>AdvicedPort&#160;:&#160;<a class="el" href="structrmqs_broker__t.html#acf899bd3cf727669d078321d7b7bae6a">rmqsBroker_t</a></li>
+<li>AppendToFile&#160;:&#160;<a class="el" href="structrmqs_logger__t.html#a396b281467c0fac2ba5cdcdb78ee7bcf">rmqsLogger_t</a></li>
+</ul>
+
+
 <h3><a id="index_b" name="index_b"></a>- b -</h3><ul>
-<li>BrokersList&#160;:&#160;<a class="el" href="structrmqs_environment__t.html#aa2c3d3393f2d353ce70345067bd82fc4">rmqsEnvironment_t</a></li>
+<li>BrokerList&#160;:&#160;<a class="el" href="structrmqs_client_configuration__t.html#a7e3ac36c6bee4bc5672a195baf7dc60a">rmqsClientConfiguration_t</a></li>
 </ul>
 
 
 <h3><a id="index_c" name="index_c"></a>- c -</h3><ul>
-<li>CancelIORoutine&#160;:&#160;<a class="el" href="structrmqs_thread__t.html#ae1d2a256d16538f68267781ad1fa4666">rmqsThread_t</a></li>
-<li>ChunkSize&#160;:&#160;<a class="el" href="structrmqs_stream__t.html#a72596719dba583a1de63b8b0c758ee82">rmqsStream_t</a></li>
-<li>ClearDataCB&#160;:&#160;<a class="el" href="structrmqs_list__t.html#abb84780c2800c383b8985bbae543fe96">rmqsList_t</a></li>
-<li>CorrelationId&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#a465293c9ca41d414a4d485f40e8defa2">rmqsProducer_t</a>, <a class="el" href="structrmqs_response__t.html#afe9b69a7927dd547d2f08138e095937b">rmqsResponse_t</a></li>
+<li>CancelIORoutineCallback&#160;:&#160;<a class="el" href="structrmqs_thread__t.html#aa0024e5461ea2ef7fa8a3f5b5c60afdc">rmqsThread_t</a></li>
+<li>ChunkSize&#160;:&#160;<a class="el" href="structrmqs_buffer__t.html#a38402b2b301556118452a572ebd6f125">rmqsBuffer_t</a></li>
+<li>ClearDataCallback&#160;:&#160;<a class="el" href="structrmqs_list__t.html#aaccf97a5b7d97077f1eaa96faff0a662">rmqsList_t</a></li>
+<li>Client&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#aa96378092e82592f8f7b05513d299946">rmqsProducer_t</a></li>
+<li>ClientConfiguration&#160;:&#160;<a class="el" href="structrmqs_client__t.html#a02c0cc1558a5007fc21e2450e4e092a7">rmqsClient_t</a></li>
+<li>ClientHeartbeat&#160;:&#160;<a class="el" href="structrmqs_client__t.html#a7625b5d7a6e247bba420f54e2076c777">rmqsClient_t</a></li>
+<li>ClientMaxFrameSize&#160;:&#160;<a class="el" href="structrmqs_client__t.html#a0fa4d128d0b4fd1817975f3a1ebb335f">rmqsClient_t</a></li>
+<li>ClientType&#160;:&#160;<a class="el" href="structrmqs_client__t.html#afbf138815e728426371991090a3993c8">rmqsClient_t</a></li>
+<li>CorrelationId&#160;:&#160;<a class="el" href="structrmqs_client__t.html#af1bba411df59d134d3580b836f7eb5ee">rmqsClient_t</a>, <a class="el" href="structrmqs_response__t.html#afe9b69a7927dd547d2f08138e095937b">rmqsResponse_t</a>, <a class="el" href="structrmqs_response_handshake_request__t.html#a5d385cd7c24ba6440dda456b18b88c29">rmqsResponseHandshakeRequest_t</a></li>
 <li>Count&#160;:&#160;<a class="el" href="structrmqs_list__t.html#af2916d04631369d02b0c639c394bf575">rmqsList_t</a></li>
-<li>CurrentMemorySize&#160;:&#160;<a class="el" href="structrmqs_stream__t.html#a0052c015ce20e7670885d0683865759b">rmqsStream_t</a></li>
+<li>CurrentMemorySize&#160;:&#160;<a class="el" href="structrmqs_buffer__t.html#adb519833dd81ce4a8050ae138cb6cbb1">rmqsBuffer_t</a></li>
 </ul>
 
 
 <h3><a id="index_d" name="index_d"></a>- d -</h3><ul>
-<li>Data&#160;:&#160;<a class="el" href="structrmqs_list_node__t.html#a8d6fe3b082df7b75f80e45318b97269d">rmqsListNode_t</a>, <a class="el" href="structrmqs_stream__t.html#af364958c1e927f7f9ffbe76614005464">rmqsStream_t</a></li>
-</ul>
-
-
-<h3><a id="index_e" name="index_e"></a>- e -</h3><ul>
-<li>Environment&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#a13f9dd413c8d87f381d042c19cba6eda">rmqsProducer_t</a></li>
-<li>EventsCB&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#a1dc9d6171236652a837d496c91e8a058">rmqsProducer_t</a></li>
+<li>Data&#160;:&#160;<a class="el" href="structrmqs_buffer__t.html#abc992caf10c7ff7ab4b152f8e3cc8cdc">rmqsBuffer_t</a>, <a class="el" href="structrmqs_list_node__t.html#a8d6fe3b082df7b75f80e45318b97269d">rmqsListNode_t</a>, <a class="el" href="structrmqs_message__t.html#aee7f54dcd6d696e4026efe59285f2f89">rmqsMessage_t</a></li>
+<li>DBSchema&#160;:&#160;<a class="el" href="structrmqs_broker__t.html#a801eb897146185a53fb5b05e2873f85d">rmqsBroker_t</a></li>
+<li>DeleteData&#160;:&#160;<a class="el" href="structrmqs_message__t.html#a938e174514c837f50283632da10929be">rmqsMessage_t</a></li>
 </ul>
 
 
 <h3><a id="index_f" name="index_f"></a>- f -</h3><ul>
+<li>File&#160;:&#160;<a class="el" href="structrmqs_logger__t.html#a8c36b66265bf23191cc95271009a8ced">rmqsLogger_t</a></li>
+<li>FileName&#160;:&#160;<a class="el" href="structrmqs_logger__t.html#ab64240e9bc3856f77c6b8b324fe23a20">rmqsLogger_t</a></li>
 <li>First&#160;:&#160;<a class="el" href="structrmqs_list__t.html#a762bdd848a045ed33cc07efc20adf5d3">rmqsList_t</a></li>
+<li>FrameMax&#160;:&#160;<a class="el" href="structrmqs_tune_request__t.html#aed98a1d74caa7211d5b54906a7520fb5">rmqsTuneRequest_t</a></li>
 </ul>
 
 
 <h3><a id="index_h" name="index_h"></a>- h -</h3><ul>
-<li>Host&#160;:&#160;<a class="el" href="structrmqs_broker__t.html#a8720c8b48b807cc2a08eaa1ed6c3bb1f">rmqsBroker_t</a></li>
+<li>Header&#160;:&#160;<a class="el" href="structrmqs_response__t.html#ac18b87752c7baf948923235038e0df17">rmqsResponse_t</a>, <a class="el" href="structrmqs_response_handshake_request__t.html#a3e13857009c5107c11177a038682ed12">rmqsResponseHandshakeRequest_t</a>, <a class="el" href="structrmqs_tune_request__t.html#a3a95bd1c2431d3f7993941c6574bd430">rmqsTuneRequest_t</a></li>
+<li>Heartbeat&#160;:&#160;<a class="el" href="structrmqs_tune_request__t.html#a76f4482ae87262dfdc0c8cbd045d5652">rmqsTuneRequest_t</a></li>
+<li>Hostname&#160;:&#160;<a class="el" href="structrmqs_broker__t.html#a2afefc922dd61b5082383eed2eb5640d">rmqsBroker_t</a></li>
 </ul>
 
 
 <h3><a id="index_i" name="index_i"></a>- i -</h3><ul>
-<li>IsLittleEndianMachine&#160;:&#160;<a class="el" href="structrmqs_environment__t.html#ad38a267c8a817877d563ee32aae577a9">rmqsEnvironment_t</a></li>
+<li>InitialClusterSize&#160;:&#160;<a class="el" href="structrqms_create_stream_args__t.html#a113bc3d4b2d5a76a15eb10b04623753d">rqmsCreateStreamArgs_t</a></li>
+<li>IsLittleEndianMachine&#160;:&#160;<a class="el" href="structrmqs_client_configuration__t.html#ad850b105d1b1603949b7431b09c492f7">rmqsClientConfiguration_t</a></li>
 </ul>
 
 
 <h3><a id="index_k" name="index_k"></a>- k -</h3><ul>
-<li>Key&#160;:&#160;<a class="el" href="structrmqs_property__t.html#a44a39150759eb217992aa968fc09d20f">rmqsProperty_t</a>, <a class="el" href="structrmqs_response__t.html#ae83e552370793e28d64972e26d901bf5">rmqsResponse_t</a></li>
+<li>Key&#160;:&#160;<a class="el" href="structrmqs_msg_header__t.html#aed4989aaf2c7b5eea7a74752327d17c0">rmqsMsgHeader_t</a>, <a class="el" href="structrmqs_property__t.html#a23913b0430c6b8b4c411f2195e8c53f0">rmqsProperty_t</a></li>
+</ul>
+
+
+<h3><a id="index_l" name="index_l"></a>- l -</h3><ul>
+<li>LeaderLocator&#160;:&#160;<a class="el" href="structrqms_create_stream_args__t.html#ab0be4d75f12e420a5a16a4c4a57ae96c">rqmsCreateStreamArgs_t</a></li>
+<li>Logger&#160;:&#160;<a class="el" href="structrmqs_client_configuration__t.html#a03daaad2669ced43dc1616ee22f64042">rmqsClientConfiguration_t</a></li>
 </ul>
 
 
 <h3><a id="index_m" name="index_m"></a>- m -</h3><ul>
+<li>MaxAge&#160;:&#160;<a class="el" href="structrqms_create_stream_args__t.html#a79e6c30c4b0c66f8a0b8a0a9c7da5ac6">rqmsCreateStreamArgs_t</a></li>
+<li>MaxLengthBytes&#160;:&#160;<a class="el" href="structrqms_create_stream_args__t.html#acbefbec14af19bc045c246af3f193543">rqmsCreateStreamArgs_t</a></li>
+<li>Mutex&#160;:&#160;<a class="el" href="structrmqs_logger__t.html#ac1d2f1e027f91f53b07e45675a97a58c">rmqsLogger_t</a></li>
 <li>mutex&#160;:&#160;<a class="el" href="structrmqs_mutex__t.html#ac296a439b1da57b2b7997574a078dd2f">rmqsMutex_t</a></li>
 </ul>
 
 
 <h3><a id="index_n" name="index_n"></a>- n -</h3><ul>
 <li>Next&#160;:&#160;<a class="el" href="structrmqs_list_node__t.html#ab6b810e6fcbd97471d5d2ed7a8e69bd4">rmqsListNode_t</a></li>
+<li>NoOfMechanisms&#160;:&#160;<a class="el" href="structrmqs_response_handshake_request__t.html#ab5474400b5ff31ca0b4f6517fe21cd82">rmqsResponseHandshakeRequest_t</a></li>
 </ul>
 
 
 <h3><a id="index_p" name="index_p"></a>- p -</h3><ul>
 <li>Parameters&#160;:&#160;<a class="el" href="structrmqs_thread__t.html#a77499762b53d3cd97b16dca1ec2e73fd">rmqsThread_t</a></li>
+<li>ParentObject&#160;:&#160;<a class="el" href="structrmqs_client__t.html#a40175b355febae553256f23b3852de0b">rmqsClient_t</a></li>
+<li>Password&#160;:&#160;<a class="el" href="structrmqs_broker__t.html#ad98ed5a8ca304bad2f4ce7f127ee3b10">rmqsBroker_t</a></li>
+<li>PollTimer&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#a3d204879f1054f327f1c98fd46866c88">rmqsProducer_t</a></li>
 <li>Port&#160;:&#160;<a class="el" href="structrmqs_broker__t.html#a8ca9f1035f63e961a13c1092d55ff48a">rmqsBroker_t</a></li>
-<li>Position&#160;:&#160;<a class="el" href="structrmqs_stream__t.html#aec968fe8cdb88aff3296b952282eb416">rmqsStream_t</a></li>
-<li>ProducersList&#160;:&#160;<a class="el" href="structrmqs_environment__t.html#ad585b953ba21abce6cd542cbef00e310">rmqsEnvironment_t</a></li>
-<li>ProducerThread&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#adf4cc1d271f0460680c10685c34c8cd8">rmqsProducer_t</a></li>
+<li>Position&#160;:&#160;<a class="el" href="structrmqs_buffer__t.html#a134948f3af1695077f3c50d3e098109b">rmqsBuffer_t</a></li>
+<li>PublisherReference&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#a252dff7f22cc20f5fccdc8dccb7c11e2">rmqsProducer_t</a></li>
+<li>PublishingId&#160;:&#160;<a class="el" href="structrmqs_message__t.html#ae3d148fbf363c309e59028141fe32acc">rmqsMessage_t</a></li>
+<li>PublishingIdResultArray&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#a37ad23f84afd9b50356361965cfb1068">rmqsProducer_t</a></li>
+<li>PublishResultCallback&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#a14fbb810ca5f7d0f22285cd060a1c462">rmqsProducer_t</a></li>
 </ul>
 
 
 <h3><a id="index_r" name="index_r"></a>- r -</h3><ul>
-<li>ResponseCode&#160;:&#160;<a class="el" href="structrmqs_response__t.html#a12f7568d380e39597e91f06ed9fa813b">rmqsResponse_t</a></li>
-<li>Running&#160;:&#160;<a class="el" href="structrmqs_timer__t.html#a7d1cd31bd571aacd710dfe0e15f5bc84">rmqsTimer_t</a></li>
-<li>RxSocketBuffer&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#a117186e0db51165710ccfcd52d0eaf35">rmqsProducer_t</a></li>
-<li>RxStream&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#ad0a0b972207d2963c57e505283eb7416">rmqsProducer_t</a></li>
+<li>Response&#160;:&#160;<a class="el" href="structrmqs_client__t.html#aa3122aa6e36ff26eb9005beb72cab40b">rmqsClient_t</a></li>
+<li>ResponseCode&#160;:&#160;<a class="el" href="structrmqs_response__t.html#a12f7568d380e39597e91f06ed9fa813b">rmqsResponse_t</a>, <a class="el" href="structrmqs_response_handshake_request__t.html#a2e4fcb2ff3857e86bda933f536ece59d">rmqsResponseHandshakeRequest_t</a></li>
+<li>Running&#160;:&#160;<a class="el" href="structrmqs_timer__t.html#ae5f901cf9afe242702e29ff137611c87">rmqsTimer_t</a></li>
+<li>RxQueue&#160;:&#160;<a class="el" href="structrmqs_client__t.html#aa6e8afe1699365d759fc1af982f71f04">rmqsClient_t</a></li>
+<li>RxSocketBuffer&#160;:&#160;<a class="el" href="structrmqs_client__t.html#a34ffd68501e632fc26a1022430f5c51b">rmqsClient_t</a></li>
 </ul>
 
 
 <h3><a id="index_s" name="index_s"></a>- s -</h3><ul>
-<li>Size&#160;:&#160;<a class="el" href="structrmqs_response__t.html#a88ae58ece3f1f53e23315c5014f312e9">rmqsResponse_t</a>, <a class="el" href="structrmqs_stream__t.html#ad339655dcbf935f05ab0a92209d3bea2">rmqsStream_t</a></li>
-<li>Socket&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#aad8549247771e25e1428b61ae371668f">rmqsProducer_t</a></li>
-<li>Status&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#ae1dafeaea5f26d1a6493739c043fa7d2">rmqsProducer_t</a></li>
+<li>SetInitialClusterSize&#160;:&#160;<a class="el" href="structrqms_create_stream_args__t.html#a3102eb7d0f2df9f6aad07dd45d91f1ba">rqmsCreateStreamArgs_t</a></li>
+<li>SetMaxAge&#160;:&#160;<a class="el" href="structrqms_create_stream_args__t.html#a916987cb095392dc9b8230f22dca92a3">rqmsCreateStreamArgs_t</a></li>
+<li>SetMaxLengthBytes&#160;:&#160;<a class="el" href="structrqms_create_stream_args__t.html#af3d2a82b8f4279c984f68423dac10877">rqmsCreateStreamArgs_t</a></li>
+<li>SetQueueLeaderLocator&#160;:&#160;<a class="el" href="structrqms_create_stream_args__t.html#ad275975dff17b0931eb46266990e3bd8">rqmsCreateStreamArgs_t</a></li>
+<li>SetStreamMaxSegmentSizeBytes&#160;:&#160;<a class="el" href="structrqms_create_stream_args__t.html#a3388c4eebc0005b8398bdbf27d2d1ef6">rqmsCreateStreamArgs_t</a></li>
+<li>Size&#160;:&#160;<a class="el" href="structrmqs_buffer__t.html#a9ebfa0d77b70499d12d661ab31d39df1">rmqsBuffer_t</a>, <a class="el" href="structrmqs_message__t.html#a002165772ca4d82262abf907dd0909d2">rmqsMessage_t</a>, <a class="el" href="structrmqs_msg_header__t.html#a473955690fb105536066144aeea4c8dc">rmqsMsgHeader_t</a></li>
+<li>StreamMaxSegmentSizeBytes&#160;:&#160;<a class="el" href="structrqms_create_stream_args__t.html#a765cd4e321d30a1e076b20567b2dbc69">rqmsCreateStreamArgs_t</a></li>
 </ul>
 
 
 <h3><a id="index_t" name="index_t"></a>- t -</h3><ul>
-<li>Terminated&#160;:&#160;<a class="el" href="structrmqs_thread__t.html#aa9271b7af3a445542968c59e93895603">rmqsThread_t</a></li>
-<li>TerminateRequest&#160;:&#160;<a class="el" href="structrmqs_thread__t.html#aa30210f249c2f6e6032f408f8845289c">rmqsThread_t</a></li>
+<li>Tag1&#160;:&#160;<a class="el" href="structrmqs_buffer__t.html#a870517b811551c97c9de710cf8511754">rmqsBuffer_t</a></li>
+<li>Tag2&#160;:&#160;<a class="el" href="structrmqs_buffer__t.html#ace0c7c03978e578f22b8767876b4bb04">rmqsBuffer_t</a></li>
+<li>Tag3&#160;:&#160;<a class="el" href="structrmqs_buffer__t.html#ae93186b6b64b09378942a058182c6d48">rmqsBuffer_t</a></li>
+<li>Terminated&#160;:&#160;<a class="el" href="structrmqs_thread__t.html#a7735f406aea3e691121d702d40eaf40e">rmqsThread_t</a></li>
+<li>TerminateRequest&#160;:&#160;<a class="el" href="structrmqs_thread__t.html#a1a20aee9f037ba0ee7fa170e60d9558e">rmqsThread_t</a></li>
 <li>ThreadHandle&#160;:&#160;<a class="el" href="structrmqs_thread__t.html#a5dfd34d79450763cf9f61d6897372fa6">rmqsThread_t</a></li>
-<li>ThreadRoutine&#160;:&#160;<a class="el" href="structrmqs_thread__t.html#a696b7e2a406bf91d421dc04111fded4b">rmqsThread_t</a></li>
+<li>ThreadRoutineCallback&#160;:&#160;<a class="el" href="structrmqs_thread__t.html#abbae60e738f50709090c66fa6aab3e69">rmqsThread_t</a></li>
+<li>Timer&#160;:&#160;<a class="el" href="structrmqs_logger__t.html#a3a880061f2146272befc7ff21e78ffd6">rmqsLogger_t</a></li>
 <li>TimeStarted&#160;:&#160;<a class="el" href="structrmqs_timer__t.html#a3c30052d73a339cb239d6d7cd3bcd55e">rmqsTimer_t</a></li>
-<li>TxStream&#160;:&#160;<a class="el" href="structrmqs_producer__t.html#ac09083a9ec96b704df701ad1cead8912">rmqsProducer_t</a></li>
+<li>TxQueue&#160;:&#160;<a class="el" href="structrmqs_client__t.html#a3a772b6469a4fbc6b78c1b173208e16b">rmqsClient_t</a></li>
+</ul>
+
+
+<h3><a id="index_u" name="index_u"></a>- u -</h3><ul>
+<li>Unknown&#160;:&#160;<a class="el" href="structrmqs_response_handshake_request__t.html#aa4461223d195bf58d204f6fd03ca84b8">rmqsResponseHandshakeRequest_t</a></li>
+<li>Username&#160;:&#160;<a class="el" href="structrmqs_broker__t.html#a76b72db4497583fcfc6bf01449fcb359">rmqsBroker_t</a></li>
+<li>UseTLS&#160;:&#160;<a class="el" href="structrmqs_broker__t.html#ae1a1a8f50a013a68decffebf7a194630">rmqsBroker_t</a>, <a class="el" href="structrmqs_client_configuration__t.html#af374b026f1bff7b2974043862fe6a475">rmqsClientConfiguration_t</a></li>
 </ul>
 
 
 <h3><a id="index_v" name="index_v"></a>- v -</h3><ul>
-<li>Value&#160;:&#160;<a class="el" href="structrmqs_property__t.html#a5a0f77d63dad334c441fbff47c162187">rmqsProperty_t</a></li>
-<li>Version&#160;:&#160;<a class="el" href="structrmqs_response__t.html#a8662fab0e8f08962983bcdbacbd48cfe">rmqsResponse_t</a></li>
+<li>Value&#160;:&#160;<a class="el" href="structrmqs_property__t.html#abda1fb15f9610f4d3c33256915efc8c4">rmqsProperty_t</a></li>
+<li>Version&#160;:&#160;<a class="el" href="structrmqs_msg_header__t.html#a8d5773f11b347e42baf19378bec22484">rmqsMsgHeader_t</a></li>
+<li>VirtualHost&#160;:&#160;<a class="el" href="structrmqs_broker__t.html#a2fd614104413f2823337c1c7758ede2a">rmqsBroker_t</a></li>
+</ul>
+
+
+<h3><a id="index_w" name="index_w"></a>- w -</h3><ul>
+<li>WaitReplyTimer&#160;:&#160;<a class="el" href="structrmqs_client_configuration__t.html#a5dc34ca60f73818ee526975d2c0de687">rmqsClientConfiguration_t</a></li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+  </ul>
+</div>
 </body>
 </html>

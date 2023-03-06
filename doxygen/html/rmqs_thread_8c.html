@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RabbitMQ streams C client: C:/rabbitmq-stream-c-client-main/src/rmqsThread.c File Reference</title>
+<title>RabbitMQ stream C client: C:/rabbitmq-stream-c-client-main/src/rawClient/rmqsThread.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -20,9 +24,8 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="RabbitMQLogo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">RabbitMQ streams C client
+   <div id="projectname">RabbitMQ stream C client
    </div>
   </td>
  </tr>
@@ -47,6 +50,23 @@ $(function() {
 /* @license-end */
 </script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('rmqs_thread_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -68,11 +88,6 @@ $(function() {
 </div>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
@@ -83,27 +98,29 @@ $(function() {
 <code>#include &lt;unistd.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="rmqs_thread_8h_source.html">rmqsThread.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="rmqs_memory_8h_source.html">rmqsMemory.h</a>&quot;</code><br />
-</div><table class="memberdecls">
+</div>
+<p><a href="rmqs_thread_8c_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a2e9b65494b50874f0ec871b6d1d11548"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_thread_8c.html#a2e9b65494b50874f0ec871b6d1d11548">rqmsThreadRoutine</a> (void *ThreadData)</td></tr>
 <tr class="separator:a2e9b65494b50874f0ec871b6d1d11548"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34948070be257276de792773259e694a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structrmqs_thread__t.html">rmqsThread_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_thread_8c.html#a34948070be257276de792773259e694a">rmqsThreadCreate</a> (void(*ThreadRoutine)(void *, uint8_t *), void(*CancelIORoutine)(void *), void *Parameters)</td></tr>
-<tr class="separator:a34948070be257276de792773259e694a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37fbcf92689a44ce0292bf5cae6cea93"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structrmqs_thread__t.html">rmqsThread_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_thread_8c.html#a37fbcf92689a44ce0292bf5cae6cea93">rmqsThreadCreate</a> (<a class="el" href="rmqs_thread_8h.html#a1ff6f2039bb56cb28a601f1dbc9eb222">ThreadRoutineCallback_t</a> ThreadRoutineCallback, <a class="el" href="rmqs_thread_8h.html#a06d272e96b5796478a90ff014fd3bda6">CancelIORoutineCallback_t</a> CancelIORoutineCallback, void *Parameters)</td></tr>
+<tr class="separator:a37fbcf92689a44ce0292bf5cae6cea93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b6b2145fe44a137713cf7a8721ed6bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_thread_8c.html#a5b6b2145fe44a137713cf7a8721ed6bd">rmqsThreadDestroy</a> (<a class="el" href="structrmqs_thread__t.html">rmqsThread_t</a> *Thread)</td></tr>
 <tr class="separator:a5b6b2145fe44a137713cf7a8721ed6bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac73e94f0c92d049477ec0199137597b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_thread_8c.html#ac73e94f0c92d049477ec0199137597b8">rmqsThreadStart</a> (<a class="el" href="structrmqs_thread__t.html">rmqsThread_t</a> *Thread)</td></tr>
 <tr class="separator:ac73e94f0c92d049477ec0199137597b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeef82051149b45f956ba6e5ff97c38bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_thread_8c.html#aeef82051149b45f956ba6e5ff97c38bb">rmqsThreadStop</a> (<a class="el" href="structrmqs_thread__t.html">rmqsThread_t</a> *Thread)</td></tr>
 <tr class="separator:aeef82051149b45f956ba6e5ff97c38bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e5e5146f0073140c407a3d9eaf43309"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_thread_8c.html#a2e5e5146f0073140c407a3d9eaf43309">rmqsThreadSleep</a> (uint32_t Milliseconds)</td></tr>
-<tr class="separator:a2e5e5146f0073140c407a3d9eaf43309"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74c29708bd285b7eb3695b73ad5ea72a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_thread_8c.html#a74c29708bd285b7eb3695b73ad5ea72a">rmqsThreadSleepEx</a> (uint32_t Milliseconds, size_t HowManyTimes, uint8_t *Abort)</td></tr>
-<tr class="separator:a74c29708bd285b7eb3695b73ad5ea72a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a347c8514398e7c55839455bd54c4068a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_thread_8c.html#a347c8514398e7c55839455bd54c4068a">rmqsThreadSleep</a> (const uint32_t Milliseconds)</td></tr>
+<tr class="separator:a347c8514398e7c55839455bd54c4068a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b155e7999a724942b4dd8327dd8a938"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rmqs_thread_8c.html#a9b155e7999a724942b4dd8327dd8a938">rmqsThreadSleepEx</a> (const uint32_t Milliseconds, const size_t HowManyTimes, const <a class="el" href="rmqs_global_8h.html#a449976458a084f880dc8e3d29e7eb6f5">bool_t</a> *Abort)</td></tr>
+<tr class="separator:a9b155e7999a724942b4dd8327dd8a938"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a34948070be257276de792773259e694a" name="a34948070be257276de792773259e694a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34948070be257276de792773259e694a">&#9670;&#160;</a></span>rmqsThreadCreate()</h2>
+<a id="a37fbcf92689a44ce0292bf5cae6cea93" name="a37fbcf92689a44ce0292bf5cae6cea93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37fbcf92689a44ce0292bf5cae6cea93">&#9670;&#160;</a></span>rmqsThreadCreate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -111,14 +128,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="structrmqs_thread__t.html">rmqsThread_t</a> * rmqsThreadCreate </td>
           <td>(</td>
-          <td class="paramtype">void(*)(void *, uint8_t *)&#160;</td>
-          <td class="paramname"><em>ThreadRoutine</em>, </td>
+          <td class="paramtype"><a class="el" href="rmqs_thread_8h.html#a1ff6f2039bb56cb28a601f1dbc9eb222">ThreadRoutineCallback_t</a>&#160;</td>
+          <td class="paramname"><em>ThreadRoutineCallback</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">void(*)(void *)&#160;</td>
-          <td class="paramname"><em>CancelIORoutine</em>, </td>
+          <td class="paramtype"><a class="el" href="rmqs_thread_8h.html#a06d272e96b5796478a90ff014fd3bda6">CancelIORoutineCallback_t</a>&#160;</td>
+          <td class="paramname"><em>CancelIORoutineCallback</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -134,6 +151,24 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_thread_8c_source.html#l00039">39</a> of file <a class="el" href="rmqs_thread_8c_source.html">rmqsThread.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   40</span>{</div>
+<div class="line"><span class="lineno">   41</span>    <a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a> *Thread = (<a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a> *)<a class="code hl_function" href="rmqs_memory_8c.html#a2f35d0cb86bb8dff7488d6fa0d292fa4">rmqsAllocateMemory</a>(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a>));</div>
+<div class="line"><span class="lineno">   42</span> </div>
+<div class="line"><span class="lineno">   43</span>    memset(Thread, 0, <span class="keyword">sizeof</span>(<a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a>));</div>
+<div class="line"><span class="lineno">   44</span> </div>
+<div class="line"><span class="lineno">   45</span>    Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#abbae60e738f50709090c66fa6aab3e69">ThreadRoutineCallback</a> = ThreadRoutineCallback;</div>
+<div class="line"><span class="lineno">   46</span>    Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#aa0024e5461ea2ef7fa8a3f5b5c60afdc">CancelIORoutineCallback</a> = CancelIORoutineCallback;</div>
+<div class="line"><span class="lineno">   47</span>    Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a77499762b53d3cd97b16dca1ec2e73fd">Parameters</a> = Parameters;</div>
+<div class="line"><span class="lineno">   48</span> </div>
+<div class="line"><span class="lineno">   49</span>    <span class="keywordflow">return</span> Thread;</div>
+<div class="line"><span class="lineno">   50</span>}</div>
+<div class="ttc" id="armqs_memory_8c_html_a2f35d0cb86bb8dff7488d6fa0d292fa4"><div class="ttname"><a href="rmqs_memory_8c.html#a2f35d0cb86bb8dff7488d6fa0d292fa4">rmqsAllocateMemory</a></div><div class="ttdeci">void * rmqsAllocateMemory(const size_t Size)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_memory_8c_source.html#l00030">rmqsMemory.c:30</a></div></div>
+<div class="ttc" id="astructrmqs_thread__t_html"><div class="ttname"><a href="structrmqs_thread__t.html">rmqsThread_t</a></div><div class="ttdef"><b>Definition:</b> <a href="rmqs_thread_8h_source.html#l00041">rmqsThread.h:42</a></div></div>
+<div class="ttc" id="astructrmqs_thread__t_html_a77499762b53d3cd97b16dca1ec2e73fd"><div class="ttname"><a href="structrmqs_thread__t.html#a77499762b53d3cd97b16dca1ec2e73fd">rmqsThread_t::Parameters</a></div><div class="ttdeci">void * Parameters</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_thread_8h_source.html#l00050">rmqsThread.h:50</a></div></div>
+<div class="ttc" id="astructrmqs_thread__t_html_aa0024e5461ea2ef7fa8a3f5b5c60afdc"><div class="ttname"><a href="structrmqs_thread__t.html#aa0024e5461ea2ef7fa8a3f5b5c60afdc">rmqsThread_t::CancelIORoutineCallback</a></div><div class="ttdeci">CancelIORoutineCallback_t CancelIORoutineCallback</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_thread_8h_source.html#l00049">rmqsThread.h:49</a></div></div>
+<div class="ttc" id="astructrmqs_thread__t_html_abbae60e738f50709090c66fa6aab3e69"><div class="ttname"><a href="structrmqs_thread__t.html#abbae60e738f50709090c66fa6aab3e69">rmqsThread_t::ThreadRoutineCallback</a></div><div class="ttdeci">ThreadRoutineCallback_t ThreadRoutineCallback</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_thread_8h_source.html#l00048">rmqsThread.h:48</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="a5b6b2145fe44a137713cf7a8721ed6bd" name="a5b6b2145fe44a137713cf7a8721ed6bd"></a>
@@ -152,10 +187,16 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_thread_8c_source.html#l00052">52</a> of file <a class="el" href="rmqs_thread_8c_source.html">rmqsThread.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   53</span>{</div>
+<div class="line"><span class="lineno">   54</span>    <a class="code hl_function" href="rmqs_memory_8c.html#ad119bd89e5fa1e1b8601be2cc14381a5">rmqsFreeMemory</a>((<span class="keywordtype">void</span> *)Thread);</div>
+<div class="line"><span class="lineno">   55</span>}</div>
+<div class="ttc" id="armqs_memory_8c_html_ad119bd89e5fa1e1b8601be2cc14381a5"><div class="ttname"><a href="rmqs_memory_8c.html#ad119bd89e5fa1e1b8601be2cc14381a5">rmqsFreeMemory</a></div><div class="ttdeci">void rmqsFreeMemory(void *Memory)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_memory_8c_source.html#l00042">rmqsMemory.c:42</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
-<a id="a2e5e5146f0073140c407a3d9eaf43309" name="a2e5e5146f0073140c407a3d9eaf43309"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e5e5146f0073140c407a3d9eaf43309">&#9670;&#160;</a></span>rmqsThreadSleep()</h2>
+<a id="a347c8514398e7c55839455bd54c4068a" name="a347c8514398e7c55839455bd54c4068a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a347c8514398e7c55839455bd54c4068a">&#9670;&#160;</a></span>rmqsThreadSleep()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -163,17 +204,26 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void rmqsThreadSleep </td>
           <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramtype">const uint32_t&#160;</td>
           <td class="paramname"><em>Milliseconds</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_thread_8c_source.html#l00106">106</a> of file <a class="el" href="rmqs_thread_8c_source.html">rmqsThread.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  107</span>{</div>
+<div class="line"><span class="lineno">  108</span><span class="preprocessor">    #if _WIN32 || _WIN64</span></div>
+<div class="line"><span class="lineno">  109</span>    Sleep(Milliseconds);</div>
+<div class="line"><span class="lineno">  110</span><span class="preprocessor">    #else</span></div>
+<div class="line"><span class="lineno">  111</span>    usleep(Milliseconds * 1000);</div>
+<div class="line"><span class="lineno">  112</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  113</span>}</div>
+</div><!-- fragment -->
 </div>
 </div>
-<a id="a74c29708bd285b7eb3695b73ad5ea72a" name="a74c29708bd285b7eb3695b73ad5ea72a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a74c29708bd285b7eb3695b73ad5ea72a">&#9670;&#160;</a></span>rmqsThreadSleepEx()</h2>
+<a id="a9b155e7999a724942b4dd8327dd8a938" name="a9b155e7999a724942b4dd8327dd8a938"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b155e7999a724942b4dd8327dd8a938">&#9670;&#160;</a></span>rmqsThreadSleepEx()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -181,19 +231,19 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void rmqsThreadSleepEx </td>
           <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramtype">const uint32_t&#160;</td>
           <td class="paramname"><em>Milliseconds</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">const size_t&#160;</td>
           <td class="paramname"><em>HowManyTimes</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramtype">const <a class="el" href="rmqs_global_8h.html#a449976458a084f880dc8e3d29e7eb6f5">bool_t</a> *&#160;</td>
           <td class="paramname"><em>Abort</em>&#160;</td>
         </tr>
         <tr>
@@ -204,6 +254,22 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_thread_8c_source.html#l00115">115</a> of file <a class="el" href="rmqs_thread_8c_source.html">rmqsThread.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  116</span>{</div>
+<div class="line"><span class="lineno">  117</span>    <span class="keywordtype">size_t</span> i;</div>
+<div class="line"><span class="lineno">  118</span> </div>
+<div class="line"><span class="lineno">  119</span>    <span class="keywordflow">for</span> (i = 0; i &lt; HowManyTimes; i++)</div>
+<div class="line"><span class="lineno">  120</span>    {</div>
+<div class="line"><span class="lineno">  121</span>        <span class="keywordflow">if</span> (*Abort)</div>
+<div class="line"><span class="lineno">  122</span>        {</div>
+<div class="line"><span class="lineno">  123</span>            <span class="keywordflow">return</span>;</div>
+<div class="line"><span class="lineno">  124</span>        }</div>
+<div class="line"><span class="lineno">  125</span> </div>
+<div class="line"><span class="lineno">  126</span>        <a class="code hl_function" href="rmqs_thread_8c.html#a347c8514398e7c55839455bd54c4068a">rmqsThreadSleep</a>(Milliseconds);</div>
+<div class="line"><span class="lineno">  127</span>    }</div>
+<div class="line"><span class="lineno">  128</span>}</div>
+<div class="ttc" id="armqs_thread_8c_html_a347c8514398e7c55839455bd54c4068a"><div class="ttname"><a href="rmqs_thread_8c.html#a347c8514398e7c55839455bd54c4068a">rmqsThreadSleep</a></div><div class="ttdeci">void rmqsThreadSleep(const uint32_t Milliseconds)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_thread_8c_source.html#l00106">rmqsThread.c:106</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="ac73e94f0c92d049477ec0199137597b8" name="ac73e94f0c92d049477ec0199137597b8"></a>
@@ -222,6 +288,31 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_thread_8c_source.html#l00057">57</a> of file <a class="el" href="rmqs_thread_8c_source.html">rmqsThread.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   58</span>{</div>
+<div class="line"><span class="lineno">   59</span><span class="preprocessor">    #if _WIN32 || _WIN64</span></div>
+<div class="line"><span class="lineno">   60</span>    DWORD ThreadId;</div>
+<div class="line"><span class="lineno">   61</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">   62</span> </div>
+<div class="line"><span class="lineno">   63</span>    <span class="keywordflow">if</span> (Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a5dfd34d79450763cf9f61d6897372fa6">ThreadHandle</a> != 0)</div>
+<div class="line"><span class="lineno">   64</span>    {</div>
+<div class="line"><span class="lineno">   65</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><span class="lineno">   66</span>    }</div>
+<div class="line"><span class="lineno">   67</span> </div>
+<div class="line"><span class="lineno">   68</span>    Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a1a20aee9f037ba0ee7fa170e60d9558e">TerminateRequest</a> = <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">   69</span>    Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a7735f406aea3e691121d702d40eaf40e">Terminated</a> = <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">   70</span> </div>
+<div class="line"><span class="lineno">   71</span><span class="preprocessor">    #if _WIN32 || _WIN64</span></div>
+<div class="line"><span class="lineno">   72</span>    Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a5dfd34d79450763cf9f61d6897372fa6">ThreadHandle</a> = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)rmqsThreadRoutine, (uint32_t *)Thread, 0, &amp;ThreadId);</div>
+<div class="line"><span class="lineno">   73</span><span class="preprocessor">    #else</span></div>
+<div class="line"><span class="lineno">   74</span>    pthread_create(&amp;Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a5dfd34d79450763cf9f61d6897372fa6">ThreadHandle</a>, 0, <a class="code hl_function" href="rmqs_thread_8c.html#a2e9b65494b50874f0ec871b6d1d11548">rqmsThreadRoutine</a>, Thread);</div>
+<div class="line"><span class="lineno">   75</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">   76</span>}</div>
+<div class="ttc" id="armqs_thread_8c_html_a2e9b65494b50874f0ec871b6d1d11548"><div class="ttname"><a href="rmqs_thread_8c.html#a2e9b65494b50874f0ec871b6d1d11548">rqmsThreadRoutine</a></div><div class="ttdeci">void * rqmsThreadRoutine(void *ThreadData)</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_thread_8c_source.html#l00133">rmqsThread.c:133</a></div></div>
+<div class="ttc" id="astructrmqs_thread__t_html_a1a20aee9f037ba0ee7fa170e60d9558e"><div class="ttname"><a href="structrmqs_thread__t.html#a1a20aee9f037ba0ee7fa170e60d9558e">rmqsThread_t::TerminateRequest</a></div><div class="ttdeci">bool_t TerminateRequest</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_thread_8h_source.html#l00051">rmqsThread.h:51</a></div></div>
+<div class="ttc" id="astructrmqs_thread__t_html_a5dfd34d79450763cf9f61d6897372fa6"><div class="ttname"><a href="structrmqs_thread__t.html#a5dfd34d79450763cf9f61d6897372fa6">rmqsThread_t::ThreadHandle</a></div><div class="ttdeci">pthread_t ThreadHandle</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_thread_8h_source.html#l00046">rmqsThread.h:46</a></div></div>
+<div class="ttc" id="astructrmqs_thread__t_html_a7735f406aea3e691121d702d40eaf40e"><div class="ttname"><a href="structrmqs_thread__t.html#a7735f406aea3e691121d702d40eaf40e">rmqsThread_t::Terminated</a></div><div class="ttdeci">bool_t Terminated</div><div class="ttdef"><b>Definition:</b> <a href="rmqs_thread_8h_source.html#l00052">rmqsThread.h:52</a></div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="aeef82051149b45f956ba6e5ff97c38bb" name="aeef82051149b45f956ba6e5ff97c38bb"></a>
@@ -240,6 +331,34 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_thread_8c_source.html#l00078">78</a> of file <a class="el" href="rmqs_thread_8c_source.html">rmqsThread.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   79</span>{</div>
+<div class="line"><span class="lineno">   80</span>    <span class="keywordflow">if</span> (Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a5dfd34d79450763cf9f61d6897372fa6">ThreadHandle</a> == 0)</div>
+<div class="line"><span class="lineno">   81</span>    {</div>
+<div class="line"><span class="lineno">   82</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><span class="lineno">   83</span>    }</div>
+<div class="line"><span class="lineno">   84</span> </div>
+<div class="line"><span class="lineno">   85</span>    Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a1a20aee9f037ba0ee7fa170e60d9558e">TerminateRequest</a> = <span class="keyword">true</span>;</div>
+<div class="line"><span class="lineno">   86</span> </div>
+<div class="line"><span class="lineno">   87</span>    <span class="keywordflow">if</span> (Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#aa0024e5461ea2ef7fa8a3f5b5c60afdc">CancelIORoutineCallback</a> != 0)</div>
+<div class="line"><span class="lineno">   88</span>    {</div>
+<div class="line"><span class="lineno">   89</span>        Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#aa0024e5461ea2ef7fa8a3f5b5c60afdc">CancelIORoutineCallback</a>(Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a77499762b53d3cd97b16dca1ec2e73fd">Parameters</a>);</div>
+<div class="line"><span class="lineno">   90</span>    }</div>
+<div class="line"><span class="lineno">   91</span> </div>
+<div class="line"><span class="lineno">   92</span>    <span class="keywordflow">while</span> (! Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a7735f406aea3e691121d702d40eaf40e">Terminated</a>)</div>
+<div class="line"><span class="lineno">   93</span>    {</div>
+<div class="line"><span class="lineno">   94</span>        <a class="code hl_function" href="rmqs_thread_8c.html#a347c8514398e7c55839455bd54c4068a">rmqsThreadSleep</a>(50);</div>
+<div class="line"><span class="lineno">   95</span>    }</div>
+<div class="line"><span class="lineno">   96</span> </div>
+<div class="line"><span class="lineno">   97</span><span class="preprocessor">    #if _WIN32 || _WIN64</span></div>
+<div class="line"><span class="lineno">   98</span>    TerminateThread(Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a5dfd34d79450763cf9f61d6897372fa6">ThreadHandle</a>, 0x00);</div>
+<div class="line"><span class="lineno">   99</span>    CloseHandle(Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a5dfd34d79450763cf9f61d6897372fa6">ThreadHandle</a>);</div>
+<div class="line"><span class="lineno">  100</span><span class="preprocessor">    #endif </span><span class="comment">//</span></div>
+<div class="line"><span class="lineno">  101</span> </div>
+<div class="line"><span class="lineno">  102</span>    Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a1a20aee9f037ba0ee7fa170e60d9558e">TerminateRequest</a> = <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">  103</span>    Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a7735f406aea3e691121d702d40eaf40e">Terminated</a> = <span class="keyword">true</span>;</div>
+<div class="line"><span class="lineno">  104</span>}</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="a2e9b65494b50874f0ec871b6d1d11548" name="a2e9b65494b50874f0ec871b6d1d11548"></a>
@@ -258,12 +377,32 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="rmqs_thread_8c_source.html#l00133">133</a> of file <a class="el" href="rmqs_thread_8c_source.html">rmqsThread.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  135</span>{</div>
+<div class="line"><span class="lineno">  136</span>    <a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a> *Thread = (<a class="code hl_struct" href="structrmqs_thread__t.html">rmqsThread_t</a> *)ThreadPointer;</div>
+<div class="line"><span class="lineno">  137</span> </div>
+<div class="line"><span class="lineno">  138</span>    Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#abbae60e738f50709090c66fa6aab3e69">ThreadRoutineCallback</a>(Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a77499762b53d3cd97b16dca1ec2e73fd">Parameters</a>, &amp;Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a1a20aee9f037ba0ee7fa170e60d9558e">TerminateRequest</a>);</div>
+<div class="line"><span class="lineno">  139</span>    Thread-&gt;<a class="code hl_variable" href="structrmqs_thread__t.html#a7735f406aea3e691121d702d40eaf40e">Terminated</a> = <span class="keyword">true</span>;</div>
+<div class="line"><span class="lineno">  140</span> </div>
+<div class="line"><span class="lineno">  141</span><span class="preprocessor">    #if _WIN32 || _WIN64</span></div>
+<div class="line"><span class="lineno">  142</span>    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><span class="lineno">  143</span><span class="preprocessor">    #else</span></div>
+<div class="line"><span class="lineno">  144</span>    pthread_exit(0);</div>
+<div class="line"><span class="lineno">  145</span> </div>
+<div class="line"><span class="lineno">  146</span>    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><span class="lineno">  147</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  148</span>}</div>
+</div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c2041065ae2580372680e5ac7ffaeff8.html">rawClient</a></li><li class="navelem"><a class="el" href="rmqs_thread_8c.html">rmqsThread.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+  </ul>
+</div>
 </body>
 </html>

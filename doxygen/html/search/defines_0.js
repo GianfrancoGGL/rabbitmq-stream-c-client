@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mqms_5fbroker_5fport_5fseparator_0',['MQMS_BROKER_PORT_SEPARATOR',['../rmqs_environment_8h.html#ac51c04610af3d8dc73d94754dde9ec09',1,'rmqsEnvironment.h']]]
+  ['bytes_5fto_5fdump_5fper_5frow_0',['BYTES_TO_DUMP_PER_ROW',['../rmqs_logger_8c.html#a092831a5e6faba0b9519ef22664a5400',1,'rmqsLogger.c']]]
 ];

@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['main_0',['main',['../main_8c.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main.c']]],
-  ['main_2ec_1',['main.c',['../main_8c.html',1,'']]],
-  ['mqms_5fbroker_5fport_5fseparator_2',['MQMS_BROKER_PORT_SEPARATOR',['../rmqs_environment_8h.html#ac51c04610af3d8dc73d94754dde9ec09',1,'rmqsEnvironment.h']]],
-  ['mutex_3',['mutex',['../structrmqs_mutex__t.html#ac296a439b1da57b2b7997574a078dd2f',1,'rmqsMutex_t']]]
+  ['leaderlocator_0',['LeaderLocator',['../structrqms_create_stream_args__t.html#ab0be4d75f12e420a5a16a4c4a57ae96c',1,'rqmsCreateStreamArgs_t']]],
+  ['log_5fseparator_1',['LOG_SEPARATOR',['../rmqs_logger_8c.html#a569703c3cd1851ff8bb0ed42dd303619',1,'rmqsLogger.c']]],
+  ['logger_2',['Logger',['../structrmqs_client_configuration__t.html#a03daaad2669ced43dc1616ee22f64042',1,'rmqsClientConfiguration_t']]],
+  ['long_5ft_3',['long_t',['../rmqs_global_8h.html#a6dac628fd9ce38988f7f70ef73925203',1,'rmqsGlobal.h']]]
 ];

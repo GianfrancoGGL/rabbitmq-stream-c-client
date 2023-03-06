@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>RabbitMQ streams C client: File Members</title>
+<title>RabbitMQ stream C client: File Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -20,9 +24,8 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="RabbitMQLogo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">RabbitMQ streams C client
+   <div id="projectname">RabbitMQ stream C client
    </div>
   </td>
  </tr>
@@ -48,6 +51,22 @@ $(function() {
 </script>
 <div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('globals_r.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -73,136 +92,189 @@ $(function() {
 <div class="textblock">Here is a list of all file members with links to the files they belong to:</div>
 
 <h3><a id="index_r" name="index_r"></a>- r -</h3><ul>
-<li>RMQS_BROKER_ITEMS_SEPARATOR&#160;:&#160;<a class="el" href="rmqs_environment_8h.html#a6a437fc7e9061ce561fd6678cdee8a12">rmqsEnvironment.h</a></li>
+<li>rmqListGenericDestroyCallcack()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#addc622e41b0e657c0042e5a095b545ce">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#addc622e41b0e657c0042e5a095b545ce">rmqsList.h</a></li>
+<li>RMQS_BROKER_DB_SCHEMA_SEPARATOR&#160;:&#160;<a class="el" href="rmqs_broker_8h.html#a743ff3f425aab3f72580c9d49929e810">rmqsBroker.h</a></li>
+<li>RMQS_BROKER_DEFAULT_VHOST&#160;:&#160;<a class="el" href="rmqs_broker_8h.html#a84b05c50c05f00ca67526b9ad3b3f51f">rmqsBroker.h</a></li>
+<li>RMQS_BROKER_HOSTNAME_SEPARATOR&#160;:&#160;<a class="el" href="rmqs_broker_8h.html#a03e113c4561aa2fb2705cf87bffa666c">rmqsBroker.h</a></li>
+<li>RMQS_BROKER_PASSWORD_SEPARATOR&#160;:&#160;<a class="el" href="rmqs_broker_8h.html#ae29ff93b35d263af9e3028a4756ad968">rmqsBroker.h</a></li>
+<li>RMQS_BROKER_PORT_SEPARATOR&#160;:&#160;<a class="el" href="rmqs_broker_8h.html#aef96bee960f2ab76c546ce30094e15d9">rmqsBroker.h</a></li>
+<li>RMQS_BROKER_SEPARATOR&#160;:&#160;<a class="el" href="rmqs_broker_8h.html#a4c66e031c915a9053ecf21772fb98218">rmqsBroker.h</a></li>
+<li>RMQS_BROKER_USER_SEPARATOR&#160;:&#160;<a class="el" href="rmqs_broker_8h.html#aeccaef25f45beda0371e68d2331eafa2">rmqsBroker.h</a></li>
+<li>RMQS_CLIENT_HOSTNAME_MAX_SIZE&#160;:&#160;<a class="el" href="rmqs_client_8h.html#acedc95320efb60ba9f00cfe7d12f9bcc">rmqsClient.h</a></li>
+<li>RMQS_CLIENT_RX_BUFFER_SIZE&#160;:&#160;<a class="el" href="rmqs_client_8h.html#ae024f0a04ee6ecc88aa264b31369939c">rmqsClient.h</a></li>
+<li>RMQS_EMPTY_DATA_LENGTH&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a4c88d33a07d4436d912e839cff1c465b">rmqsProtocol.h</a></li>
+<li>RMQS_ERR_IDX_BROKER_DEF_WITH_CTRL_CHAR&#160;:&#160;<a class="el" href="rmqs_error_8h.html#a934ff07ad993186a52031457f643d68f">rmqsError.h</a></li>
+<li>RMQS_ERR_IDX_BROKER_DEF_WITH_SPACE&#160;:&#160;<a class="el" href="rmqs_error_8h.html#a8f34c7af1efa57d47809d5697652c8cc">rmqsError.h</a></li>
+<li>RMQS_ERR_IDX_EMPTY_HOSTNAME&#160;:&#160;<a class="el" href="rmqs_error_8h.html#a2beb93030fa8e3537cab7b39f5670c26">rmqsError.h</a></li>
+<li>RMQS_ERR_IDX_UNSPECIFIED_PORT&#160;:&#160;<a class="el" href="rmqs_error_8h.html#a43ba409df65a539a26b2e1da89cefa60">rmqsError.h</a></li>
+<li>RMQS_ERR_IDX_WRONG_BROKER_DEF&#160;:&#160;<a class="el" href="rmqs_error_8h.html#a22407fb48685304cbc5f25bac5c3a883">rmqsError.h</a></li>
+<li>RMQS_ERR_MAX_IDX&#160;:&#160;<a class="el" href="rmqs_error_8h.html#afe4ca58500b3ce5c060c5b1ee6e673bd">rmqsError.h</a></li>
+<li>RMQS_ERR_MAX_STRING_LENGTH&#160;:&#160;<a class="el" href="rmqs_error_8h.html#a0205b90be15ea2ce006da0e6787dab92">rmqsError.h</a></li>
 <li>RMQS_MAX_HOSTNAME_LENGTH&#160;:&#160;<a class="el" href="rmqs_network_8h.html#aea5e083a5fcdf95a43029b2815a28133">rmqsNetwork.h</a></li>
 <li>RMQS_MAX_KEY_SIZE&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6c1d3d1780a68aa17c9ad682ed10bb4a">rmqsProtocol.h</a></li>
+<li>RMQS_MAX_PUBLISHER_REFERENCE_LENGTH&#160;:&#160;<a class="el" href="rmqs_producer_8h.html#a5e3421650efa3660f4a3072bd59e2e56">rmqsProducer.h</a></li>
 <li>RMQS_MAX_VALUE_SIZE&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a1085614e5593820763b93718a2ef02a5">rmqsProtocol.h</a></li>
-<li>RMQS_NULL_STRING_LENGTH&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#a2be8dd416eca474facf4c7a260840805">rmqsProtocol.c</a></li>
-<li>rmqsAddInt16ToStream()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#ae7b574e3b4fc51b8cba481b5705f8166">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#ae7b574e3b4fc51b8cba481b5705f8166">rmqsProtocol.h</a></li>
-<li>rmqsAddInt32ToStream()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#a2a19606fbea61f83ead82c0ed99f2018">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#a2a19606fbea61f83ead82c0ed99f2018">rmqsProtocol.h</a></li>
-<li>rmqsAddInt8ToStream()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#a13da9210c783e2f2f4b49fc2731eb68b">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#a13da9210c783e2f2f4b49fc2731eb68b">rmqsProtocol.h</a></li>
-<li>rmqsAddStringToStream()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#a2692889049a8358f23936e1adf1440de">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#a2692889049a8358f23936e1adf1440de">rmqsProtocol.h</a></li>
-<li>rmqsAddUInt16ToStream()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#a198cc1f713f40270206c0cf3bc12fd6d">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#a198cc1f713f40270206c0cf3bc12fd6d">rmqsProtocol.h</a></li>
-<li>rmqsAddUInt32ToStream()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#a4b9bbdc1d6f81caec5b73b7241e26b0e">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#a4b9bbdc1d6f81caec5b73b7241e26b0e">rmqsProtocol.h</a></li>
-<li>rmqsAddUInt8ToStream()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#aec67876c48c8410dc7bc04657add6338">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#aec67876c48c8410dc7bc04657add6338">rmqsProtocol.h</a></li>
-<li>rmqsAllocateMemory()&#160;:&#160;<a class="el" href="rmqs_memory_8c.html#ae84167573a53fb5e7128d0624c1da9c5">rmqsMemory.c</a>, <a class="el" href="rmqs_memory_8h.html#ae84167573a53fb5e7128d0624c1da9c5">rmqsMemory.h</a></li>
-<li>rmqscClose&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975ab2d4ca5b88f2ee161c76c95fc423dbd9">rmqsProtocol.h</a></li>
-<li>rmqscConsumerUpdate&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975aa281cffa0e2d570066469f2eede99140">rmqsProtocol.h</a></li>
-<li>rmqscCreate&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a74d6df33d991e821eca7d477954715df">rmqsProtocol.h</a></li>
-<li>rmqscCredit&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975abe0c2895b3a1b6785c1b7006598e5e02">rmqsProtocol.h</a></li>
-<li>rmqscDeclarePublisher&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975aa4dbc3797ad72f8b157133fce0c4ac54">rmqsProtocol.h</a></li>
-<li>rmqscDelete&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975abbbcddd32b1c73a5df306a6d88f7a160">rmqsProtocol.h</a></li>
-<li>rmqscDeletePublisher&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a049da15cf699e8712259dd8c14c8c219">rmqsProtocol.h</a></li>
-<li>rmqscDeliver&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a17400efba1e17cda742efa83193aa65c">rmqsProtocol.h</a></li>
-<li>rmqscExchangeCommandVersions&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975acead03f4ab598d7b4f8081ce99fbd197">rmqsProtocol.h</a></li>
-<li>rmqscHeartbeat&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a863e93452c02438b1c142d0829eae431">rmqsProtocol.h</a></li>
-<li>rmqscMetadata&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a0575eac4fb602e09dbf38b6e0d37be4e">rmqsProtocol.h</a></li>
-<li>rmqscMetadataUpdate&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975ade7ab4146931dcb2af7d4264d8c4f380">rmqsProtocol.h</a></li>
-<li>rmqsCommand&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975">rmqsProtocol.h</a></li>
-<li>rmqscOpen&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975adcb49790ce12529ef9a5cd919ef7e6d1">rmqsProtocol.h</a></li>
-<li>rmqsCorrelationId&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a9f1e7f86d3a4d7bc369ed8d858c35c30">rmqsProtocol.h</a></li>
-<li>rmqscPartitions&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975ab1b656db67d4ead6575a0d0d3ab5d7d0">rmqsProtocol.h</a></li>
-<li>rmqscPeerProperties&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a1f37115bea578fffed197451a3ed4951">rmqsProtocol.h</a></li>
-<li>rmqscPublish&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975afe688f5db16f58734a7d9b1f81cbe673">rmqsProtocol.h</a></li>
-<li>rmqscPublishConfirm&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a7abe6c8ded1516383116f87a85dfb5b8">rmqsProtocol.h</a></li>
-<li>rmqscPublishError&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a760baf2ffa4d39d20e044422744c9c4b">rmqsProtocol.h</a></li>
-<li>rmqscQueryOffset&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a1f21033bbb30c3ee466f67aa82631ef5">rmqsProtocol.h</a></li>
-<li>rmqscQueryPublisherSequence&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975ab9e5516feb95f882a768d234eb66943b">rmqsProtocol.h</a></li>
-<li>rmqscRoute&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a918fe2e7bd49198fe767e5436f1e7136">rmqsProtocol.h</a></li>
-<li>rmqscSaslAuthenticate&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a184e4f894278d21c6c89db1a5cb775bc">rmqsProtocol.h</a></li>
-<li>rmqscSaslHandshake&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a6a94307e3b5f5ab656c5fc5ea135e5c3">rmqsProtocol.h</a></li>
-<li>rmqscStoreOffset&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a7fbbb6dd30f9d744672255b5c963fe1d">rmqsProtocol.h</a></li>
-<li>rmqscStreamStats&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975addce01613e61cf6f7148ead5a1730e37">rmqsProtocol.h</a></li>
-<li>rmqscSubscribe&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975ada77c67aa3d179055a368b344c58088d">rmqsProtocol.h</a></li>
-<li>rmqscTune&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975aff65a03adad2dffc0cee0805d0c1d69a">rmqsProtocol.h</a></li>
-<li>rmqscUnsubscribe&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aed62688bd5ffe8e2b265e9ea4c31a975a21296d342a493b4bfe36fc8942aa7c12">rmqsProtocol.h</a></li>
-<li>rmqsEnvironmentBrokersListDestroy()&#160;:&#160;<a class="el" href="rmqs_environment_8c.html#a2106b7696085e61fc4df90b7426e8780">rmqsEnvironment.c</a>, <a class="el" href="rmqs_environment_8h.html#a2106b7696085e61fc4df90b7426e8780">rmqsEnvironment.h</a></li>
-<li>rmqsEnvironmentCreate()&#160;:&#160;<a class="el" href="rmqs_environment_8c.html#ace0527cbb319ac91f4528a8394747be7">rmqsEnvironment.c</a>, <a class="el" href="rmqs_environment_8h.html#ace0527cbb319ac91f4528a8394747be7">rmqsEnvironment.h</a></li>
-<li>rmqsEnvironmentDestroy()&#160;:&#160;<a class="el" href="rmqs_environment_8c.html#a51649761db636e1b79206186c8be1f23">rmqsEnvironment.c</a>, <a class="el" href="rmqs_environment_8h.html#a51649761db636e1b79206186c8be1f23">rmqsEnvironment.h</a></li>
-<li>rmqsEnvironmentProducerCreate()&#160;:&#160;<a class="el" href="rmqs_environment_8c.html#acd3e79ebde9094c0cea4cacaa05dfa69">rmqsEnvironment.c</a>, <a class="el" href="rmqs_environment_8h.html#acd3e79ebde9094c0cea4cacaa05dfa69">rmqsEnvironment.h</a></li>
-<li>rmqsEnvironmentProducerDestroy()&#160;:&#160;<a class="el" href="rmqs_environment_8c.html#a835d7727a94a278e7b4d8ac1310de449">rmqsEnvironment.c</a>, <a class="el" href="rmqs_environment_8h.html#a835d7727a94a278e7b4d8ac1310de449">rmqsEnvironment.h</a></li>
-<li>rmqsEnvironmentProducersListDestroy()&#160;:&#160;<a class="el" href="rmqs_environment_8c.html#a676ff2667db103b07a34d1f11a8fcf78">rmqsEnvironment.c</a>, <a class="el" href="rmqs_environment_8h.html#a676ff2667db103b07a34d1f11a8fcf78">rmqsEnvironment.h</a></li>
+<li>RMQS_NULL_STRING_LENGTH&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a2be8dd416eca474facf4c7a260840805">rmqsProtocol.h</a></li>
+<li>RMQS_PLAIN_PROTOCOL&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a2aeba47f94dd949a9edfb6d22fb9e19b">rmqsProtocol.h</a></li>
+<li>RMQS_PUBLISHING_ID_RESULT_ARRAY_SIZE&#160;:&#160;<a class="el" href="rmqs_producer_8h.html#a6b092b6188d7e0ff6400d9ad1b9de316">rmqsProducer.h</a></li>
+<li>rmqsAddBytesToBuffer()&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aceab35d868fec17e0b7b7e0412719ce3">rmqsProtocol.h</a></li>
+<li>rmqsAddInt16ToBuffer()&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a24dbac54aadac9060eeb662062bfcf60">rmqsProtocol.h</a></li>
+<li>rmqsAddInt32ToBuffer()&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a0fee30792e9b93c7829d2f41ae933066">rmqsProtocol.h</a></li>
+<li>rmqsAddInt64ToBuffer()&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a7ada18ecaa49db23a9f0134ba41dc9e8">rmqsProtocol.h</a></li>
+<li>rmqsAddInt8ToBuffer()&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a1af9d71782d76b781123490162fa3719">rmqsProtocol.h</a></li>
+<li>rmqsAddStringToBuffer()&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#ad2c23569119b3edaedde5131eab94a93">rmqsProtocol.h</a></li>
+<li>rmqsAddUInt16ToBuffer()&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aa0f9e93bade947c9cbc33b3a0492838e">rmqsProtocol.h</a></li>
+<li>rmqsAddUInt32ToBuffer()&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a76c1a9170bbd3e5e5512ca475665cb54">rmqsProtocol.h</a></li>
+<li>rmqsAddUInt64ToBuffer()&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#aa9b313784f3694ce5304e06d21007944">rmqsProtocol.h</a></li>
+<li>rmqsAddUInt8ToBuffer()&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a879de4a606e77136158bacdd213cd593">rmqsProtocol.h</a></li>
+<li>rmqsAllocateMemory()&#160;:&#160;<a class="el" href="rmqs_memory_8c.html#a2f35d0cb86bb8dff7488d6fa0d292fa4">rmqsMemory.c</a>, <a class="el" href="rmqs_memory_8h.html#a2f35d0cb86bb8dff7488d6fa0d292fa4">rmqsMemory.h</a></li>
+<li>rmqsBrokerCreate()&#160;:&#160;<a class="el" href="rmqs_broker_8c.html#a8ce7ee6b44b091f87c76e26696f52d28">rmqsBroker.c</a>, <a class="el" href="rmqs_broker_8h.html#a8ce7ee6b44b091f87c76e26696f52d28">rmqsBroker.h</a></li>
+<li>rmqsBrokerDestroy()&#160;:&#160;<a class="el" href="rmqs_broker_8c.html#abde3d7ed75749d26e516571fabd1540b">rmqsBroker.c</a>, <a class="el" href="rmqs_broker_8h.html#abde3d7ed75749d26e516571fabd1540b">rmqsBroker.h</a></li>
+<li>rmqsBrokerParse()&#160;:&#160;<a class="el" href="rmqs_broker_8c.html#ac822e02660d44365dd28a389c8302b7c">rmqsBroker.c</a>, <a class="el" href="rmqs_broker_8h.html#ac822e02660d44365dd28a389c8302b7c">rmqsBroker.h</a></li>
+<li>rmqsBrokerSetDefault()&#160;:&#160;<a class="el" href="rmqs_broker_8c.html#a6a8583242ab4ea5e7ec82e1f1d0134cb">rmqsBroker.c</a>, <a class="el" href="rmqs_broker_8h.html#a6a8583242ab4ea5e7ec82e1f1d0134cb">rmqsBroker.h</a></li>
+<li>rmqsBufferClear()&#160;:&#160;<a class="el" href="rmqs_buffer_8c.html#a7dd833f453ebe17b2f0e992368b5bdd7">rmqsBuffer.c</a>, <a class="el" href="rmqs_buffer_8h.html#a7dd833f453ebe17b2f0e992368b5bdd7">rmqsBuffer.h</a></li>
+<li>rmqsBufferClearTags()&#160;:&#160;<a class="el" href="rmqs_buffer_8c.html#ac4b69631947243932cad288f3c4883f0">rmqsBuffer.c</a>, <a class="el" href="rmqs_buffer_8h.html#ac4b69631947243932cad288f3c4883f0">rmqsBuffer.h</a></li>
+<li>rmqsBufferCreate()&#160;:&#160;<a class="el" href="rmqs_buffer_8c.html#ac42a65fb16f1f9b1bf9e4c6d6457f91e">rmqsBuffer.c</a>, <a class="el" href="rmqs_buffer_8h.html#ac42a65fb16f1f9b1bf9e4c6d6457f91e">rmqsBuffer.h</a></li>
+<li>rmqsBufferDelete()&#160;:&#160;<a class="el" href="rmqs_buffer_8c.html#afb9c77054d98ce9426855e4f2eca6b01">rmqsBuffer.c</a>, <a class="el" href="rmqs_buffer_8h.html#afb9c77054d98ce9426855e4f2eca6b01">rmqsBuffer.h</a></li>
+<li>rmqsBufferDestroy()&#160;:&#160;<a class="el" href="rmqs_buffer_8c.html#aabd7e2a0ffe54f9a67cbc009a7c850eb">rmqsBuffer.c</a>, <a class="el" href="rmqs_buffer_8h.html#aabd7e2a0ffe54f9a67cbc009a7c850eb">rmqsBuffer.h</a></li>
+<li>rmqsBufferMoveTo()&#160;:&#160;<a class="el" href="rmqs_buffer_8c.html#a8f06772c601a586d96cc4a42b8660059">rmqsBuffer.c</a>, <a class="el" href="rmqs_buffer_8h.html#a8f06772c601a586d96cc4a42b8660059">rmqsBuffer.h</a></li>
+<li>rmqsBufferRead()&#160;:&#160;<a class="el" href="rmqs_buffer_8c.html#a15f16a27ec8047f73d60476cc32256ee">rmqsBuffer.c</a>, <a class="el" href="rmqs_buffer_8h.html#a15f16a27ec8047f73d60476cc32256ee">rmqsBuffer.h</a></li>
+<li>rmqsBufferSetMemorySize()&#160;:&#160;<a class="el" href="rmqs_buffer_8c.html#a16bea9c7f995044f05d4aa47bbb70220">rmqsBuffer.c</a>, <a class="el" href="rmqs_buffer_8h.html#a16bea9c7f995044f05d4aa47bbb70220">rmqsBuffer.h</a></li>
+<li>rmqsBufferWrite()&#160;:&#160;<a class="el" href="rmqs_buffer_8c.html#a1fa3669da2764f855ba54fb0f4344d24">rmqsBuffer.c</a>, <a class="el" href="rmqs_buffer_8h.html#acc9a7d33de37274b36e3896f0402aedd">rmqsBuffer.h</a></li>
+<li>rmqscClose&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ab2d4ca5b88f2ee161c76c95fc423dbd9">rmqsProtocol.h</a></li>
+<li>rmqscConsumerUpdate&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812aa281cffa0e2d570066469f2eede99140">rmqsProtocol.h</a></li>
+<li>rmqscCreate&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a74d6df33d991e821eca7d477954715df">rmqsProtocol.h</a></li>
+<li>rmqscCredit&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812abe0c2895b3a1b6785c1b7006598e5e02">rmqsProtocol.h</a></li>
+<li>rmqscDeclarePublisher&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812aa4dbc3797ad72f8b157133fce0c4ac54">rmqsProtocol.h</a></li>
+<li>rmqscDelete&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812abbbcddd32b1c73a5df306a6d88f7a160">rmqsProtocol.h</a></li>
+<li>rmqscDeletePublisher&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a049da15cf699e8712259dd8c14c8c219">rmqsProtocol.h</a></li>
+<li>rmqscDeliver&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a17400efba1e17cda742efa83193aa65c">rmqsProtocol.h</a></li>
+<li>rmqscExchangeCommandVersions&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812acead03f4ab598d7b4f8081ce99fbd197">rmqsProtocol.h</a></li>
+<li>rmqscHeartbeat&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a863e93452c02438b1c142d0829eae431">rmqsProtocol.h</a></li>
+<li>rmqsClientConfigurationCreate()&#160;:&#160;<a class="el" href="rmqs_client_configuration_8c.html#a528c4d4e5bf24ed81f45570581758103">rmqsClientConfiguration.c</a>, <a class="el" href="rmqs_client_configuration_8h.html#a528c4d4e5bf24ed81f45570581758103">rmqsClientConfiguration.h</a></li>
+<li>rmqsClientConfigurationDestroy()&#160;:&#160;<a class="el" href="rmqs_client_configuration_8c.html#a1f4c70497e897fc7ca94892ed950672e">rmqsClientConfiguration.c</a>, <a class="el" href="rmqs_client_configuration_8h.html#a1f4c70497e897fc7ca94892ed950672e">rmqsClientConfiguration.h</a></li>
+<li>rmqsClientCreate()&#160;:&#160;<a class="el" href="rmqs_client_8c.html#ac75f4b3dec9474c1c83738f6b7e13188">rmqsClient.c</a>, <a class="el" href="rmqs_client_8h.html#ac75f4b3dec9474c1c83738f6b7e13188">rmqsClient.h</a></li>
+<li>rmqsClientDestroy()&#160;:&#160;<a class="el" href="rmqs_client_8c.html#a85ccf9f764fac58ad666fe322c25ac48">rmqsClient.c</a>, <a class="el" href="rmqs_client_8h.html#a85ccf9f764fac58ad666fe322c25ac48">rmqsClient.h</a></li>
+<li>rmqsClientType_t&#160;:&#160;<a class="el" href="rmqs_client_8h.html#ab41c2dc8922add9afb122979d9830eda">rmqsClient.h</a></li>
+<li>rmqsClose()&#160;:&#160;<a class="el" href="rmqs_client_8c.html#a3d67b5cec1ec263a862818d51fce2cb6">rmqsClient.c</a>, <a class="el" href="rmqs_client_8h.html#a3d67b5cec1ec263a862818d51fce2cb6">rmqsClient.h</a></li>
+<li>rmqscMetadata&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a0575eac4fb602e09dbf38b6e0d37be4e">rmqsProtocol.h</a></li>
+<li>rmqscMetadataUpdate&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ade7ab4146931dcb2af7d4264d8c4f380">rmqsProtocol.h</a></li>
+<li>rmqsCommand_t&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812">rmqsProtocol.h</a></li>
+<li>rmqsCommandHasCorrelationId&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a7ef46833c940573faafc0a314d98fd97">rmqsProtocol.h</a></li>
+<li>rmqsConvertToLower()&#160;:&#160;<a class="el" href="rmqs_lib_8c.html#ac7874400fe097a28477742d9aadb296a">rmqsLib.c</a>, <a class="el" href="rmqs_lib_8h.html#ac7874400fe097a28477742d9aadb296a">rmqsLib.h</a></li>
+<li>rmqscOpen&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812adcb49790ce12529ef9a5cd919ef7e6d1">rmqsProtocol.h</a></li>
+<li>rmqscPartitions&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ab1b656db67d4ead6575a0d0d3ab5d7d0">rmqsProtocol.h</a></li>
+<li>rmqscPeerProperties&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a1f37115bea578fffed197451a3ed4951">rmqsProtocol.h</a></li>
+<li>rmqscPublish&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812afe688f5db16f58734a7d9b1f81cbe673">rmqsProtocol.h</a></li>
+<li>rmqscPublishConfirm&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a7abe6c8ded1516383116f87a85dfb5b8">rmqsProtocol.h</a></li>
+<li>rmqscPublishError&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a760baf2ffa4d39d20e044422744c9c4b">rmqsProtocol.h</a></li>
+<li>rmqscQueryOffset&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a1f21033bbb30c3ee466f67aa82631ef5">rmqsProtocol.h</a></li>
+<li>rmqscQueryPublisherSequence&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ab9e5516feb95f882a768d234eb66943b">rmqsProtocol.h</a></li>
+<li>rmqsCreate()&#160;:&#160;<a class="el" href="rmqs_client_8c.html#a63c18d2e711eaf691314b00396509247">rmqsClient.c</a>, <a class="el" href="rmqs_client_8h.html#a63c18d2e711eaf691314b00396509247">rmqsClient.h</a></li>
+<li>rmqscRoute&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a918fe2e7bd49198fe767e5436f1e7136">rmqsProtocol.h</a></li>
+<li>rmqscSaslAuthenticate&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a184e4f894278d21c6c89db1a5cb775bc">rmqsProtocol.h</a></li>
+<li>rmqscSaslHandshake&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a6a94307e3b5f5ab656c5fc5ea135e5c3">rmqsProtocol.h</a></li>
+<li>rmqscStoreOffset&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a7fbbb6dd30f9d744672255b5c963fe1d">rmqsProtocol.h</a></li>
+<li>rmqscStreamStats&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812addce01613e61cf6f7148ead5a1730e37">rmqsProtocol.h</a></li>
+<li>rmqscSubscribe&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812ada77c67aa3d179055a368b344c58088d">rmqsProtocol.h</a></li>
+<li>rmqsctConsumer&#160;:&#160;<a class="el" href="rmqs_client_8h.html#ab41c2dc8922add9afb122979d9830edaa839750f816b152dcc1c4a1db2e005414">rmqsClient.h</a></li>
+<li>rmqsctProducer&#160;:&#160;<a class="el" href="rmqs_client_8h.html#ab41c2dc8922add9afb122979d9830edaa3325e8d3d1e3357c97be40441273c2c8">rmqsClient.h</a></li>
+<li>rmqscTune&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812aff65a03adad2dffc0cee0805d0c1d69a">rmqsProtocol.h</a></li>
+<li>rmqscUnsubscribe&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#abc1b7e9bfea6c929871ed57de1d65812a21296d342a493b4bfe36fc8942aa7c12">rmqsProtocol.h</a></li>
+<li>rmqsDeclarePublisher()&#160;:&#160;<a class="el" href="rmqs_producer_8c.html#ac6584bfb50f0cc80bc524543a3323fd5">rmqsProducer.c</a>, <a class="el" href="rmqs_producer_8h.html#ac6584bfb50f0cc80bc524543a3323fd5">rmqsProducer.h</a></li>
+<li>rmqsDelete()&#160;:&#160;<a class="el" href="rmqs_client_8c.html#a1ebbedea80ee01ba0d041b382522c2f6">rmqsClient.c</a>, <a class="el" href="rmqs_client_8h.html#a1ebbedea80ee01ba0d041b382522c2f6">rmqsClient.h</a></li>
+<li>rmqsDeletePublisher()&#160;:&#160;<a class="el" href="rmqs_producer_8c.html#a8fb895b38db076dfb48a66b186721740">rmqsProducer.c</a>, <a class="el" href="rmqs_producer_8h.html#a8fb895b38db076dfb48a66b186721740">rmqsProducer.h</a></li>
+<li>rmqsDequeueMessageFromBuffer()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#a40b993ca8e1e207ea7a462b5cc901491">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#a40b993ca8e1e207ea7a462b5cc901491">rmqsProtocol.h</a></li>
+<li>rmqsError&#160;:&#160;<a class="el" href="rmqs_error_8c.html#a2911449c4f25a98c563c0ec61335700d">rmqsError.c</a></li>
+<li>rmqsFieldSize&#160;:&#160;<a class="el" href="rmqs_global_8h.html#ae3a51c4245834d5f2be8d72f04aca512">rmqsGlobal.h</a></li>
 <li>rmqsFreeMemory()&#160;:&#160;<a class="el" href="rmqs_memory_8c.html#ad119bd89e5fa1e1b8601be2cc14381a5">rmqsMemory.c</a>, <a class="el" href="rmqs_memory_8h.html#ad119bd89e5fa1e1b8601be2cc14381a5">rmqsMemory.h</a></li>
-<li>rmqsGenericListDestroy()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#a989d563e3ac6875bb612724eb0af8864">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#a989d563e3ac6875bb612724eb0af8864">rmqsList.h</a></li>
+<li>rmqsGetCurrentDateTime()&#160;:&#160;<a class="el" href="rmqs_timer_8c.html#a46d74272f560bad98371993b1586b4de">rmqsTimer.c</a>, <a class="el" href="rmqs_timer_8h.html#a46d74272f560bad98371993b1586b4de">rmqsTimer.h</a></li>
+<li>rmqsGetCurrentDateTimeString()&#160;:&#160;<a class="el" href="rmqs_timer_8c.html#acb19683741699725cdbb466950175abc">rmqsTimer.c</a>, <a class="el" href="rmqs_timer_8h.html#acb19683741699725cdbb466950175abc">rmqsTimer.h</a></li>
+<li>rmqsGetMessageDescription()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#acd439e030cb0a8f713729bec57f0a803">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#acd439e030cb0a8f713729bec57f0a803">rmqsProtocol.h</a></li>
+<li>rmqsGetUsedMemory()&#160;:&#160;<a class="el" href="rmqs_memory_8c.html#a16f068773bee21f08bb00fce283804a6">rmqsMemory.c</a>, <a class="el" href="rmqs_memory_8h.html#a16f068773bee21f08bb00fce283804a6">rmqsMemory.h</a></li>
+<li>rmqsHandlePublishResult()&#160;:&#160;<a class="el" href="rmqs_producer_8c.html#ac88def37c796731e393f0ea32530db10">rmqsProducer.c</a>, <a class="el" href="rmqs_producer_8h.html#ac88def37c796731e393f0ea32530db10">rmqsProducer.h</a></li>
 <li>rmqsInvalidSocket&#160;:&#160;<a class="el" href="rmqs_network_8h.html#a013d9dc234bca3fa7f49a22a9f93bf1f">rmqsNetwork.h</a></li>
-<li>rmqsIsLittleEndianMachine()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#a2e1ae40935b6eaec2a907cae7c0e0daf">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#a2e1ae40935b6eaec2a907cae7c0e0daf">rmqsProtocol.h</a></li>
-<li>rmqsKey&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a66126e594948909c589b5e9d18fdca50">rmqsProtocol.h</a></li>
+<li>rmqsIsLittleEndianMachine()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#a2670af5ba982549baafe8e1f64e730d0">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#a2670af5ba982549baafe8e1f64e730d0">rmqsProtocol.h</a></li>
 <li>rmqsListAddBegin()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#a76cfc71afb2b2eee8134cc875a89d355">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#a76cfc71afb2b2eee8134cc875a89d355">rmqsList.h</a></li>
 <li>rmqsListAddEnd()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#ad3c93a62f610b95d18d66f6bcfc44a21">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#ad3c93a62f610b95d18d66f6bcfc44a21">rmqsList.h</a></li>
 <li>rmqsListAddPosition()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#adde4d49be3ef6f6297b9ac5e5e54aa33">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#adde4d49be3ef6f6297b9ac5e5e54aa33">rmqsList.h</a></li>
-<li>rmqsListCreate()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#a0577803c9e78cfd1a5387a03114e81ca">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#a0577803c9e78cfd1a5387a03114e81ca">rmqsList.h</a></li>
+<li>rmqsListCreate()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#a3dc96656ceed66b4b86abdc0918bd93d">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#a3dc96656ceed66b4b86abdc0918bd93d">rmqsList.h</a></li>
 <li>rmqsListDeleteBegin()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#a09d2f8e419deb6709693461eed1d7c39">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#a09d2f8e419deb6709693461eed1d7c39">rmqsList.h</a></li>
 <li>rmqsListDeleteData()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#a143c55c01d4faeefadb29d25b7f91faa">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#a143c55c01d4faeefadb29d25b7f91faa">rmqsList.h</a></li>
 <li>rmqsListDeleteEnd()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#a493d98dc2f37388289cf6d31d6cb0338">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#a493d98dc2f37388289cf6d31d6cb0338">rmqsList.h</a></li>
 <li>rmqsListDeletePosition()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#a1673a041e113af1bf4cb0336e2c2f190">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#a1673a041e113af1bf4cb0336e2c2f190">rmqsList.h</a></li>
-<li>rmqsListDestroy()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#a32563ef697125d2d0df89a7ea9c9d249">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#aeee10773551b954b2c0826901ce70198">rmqsList.h</a></li>
+<li>rmqsListDestroy()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#a32563ef697125d2d0df89a7ea9c9d249">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#a32563ef697125d2d0df89a7ea9c9d249">rmqsList.h</a></li>
+<li>rmqsListGenericCreate()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#aa01d26743344be598d08762f29ba3a40">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#aa01d26743344be598d08762f29ba3a40">rmqsList.h</a></li>
 <li>rmqsListGetDataByPosition()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#acd2cea1f4cc36552e7e3547ed51ee81f">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#acd2cea1f4cc36552e7e3547ed51ee81f">rmqsList.h</a></li>
 <li>rmqsListSearchByData()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#ae4ee4563aa62a7c5a2f6e61609ca4f32">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#ae4ee4563aa62a7c5a2f6e61609ca4f32">rmqsList.h</a></li>
 <li>rmqsListSearchByPosition()&#160;:&#160;<a class="el" href="rmqs_list_8c.html#a0d68f394a6627f14c885be24af611a7a">rmqsList.c</a>, <a class="el" href="rmqs_list_8h.html#a0d68f394a6627f14c885be24af611a7a">rmqsList.h</a></li>
+<li>rmqsLoggerCreate()&#160;:&#160;<a class="el" href="rmqs_logger_8c.html#a4f044c7fb2e36c269d1d5640b1af0cbe">rmqsLogger.c</a>, <a class="el" href="rmqs_logger_8h.html#a4f044c7fb2e36c269d1d5640b1af0cbe">rmqsLogger.h</a></li>
+<li>rmqsLoggerDestroy()&#160;:&#160;<a class="el" href="rmqs_logger_8c.html#a85cc4e96d3c7de0f5a94d6e565d6ccc2">rmqsLogger.c</a>, <a class="el" href="rmqs_logger_8h.html#a85cc4e96d3c7de0f5a94d6e565d6ccc2">rmqsLogger.h</a></li>
+<li>rmqsLoggerRegisterDump()&#160;:&#160;<a class="el" href="rmqs_logger_8c.html#af3cfde9e3742606e0b47f46d60e183a7">rmqsLogger.c</a>, <a class="el" href="rmqs_logger_8h.html#af3cfde9e3742606e0b47f46d60e183a7">rmqsLogger.h</a></li>
+<li>rmqsLoggerRegisterLog()&#160;:&#160;<a class="el" href="rmqs_logger_8c.html#a9d858b6b77180451c4f84b88962075c3">rmqsLogger.c</a>, <a class="el" href="rmqs_logger_8h.html#a9d858b6b77180451c4f84b88962075c3">rmqsLogger.h</a></li>
+<li>rmqsMessageCreate()&#160;:&#160;<a class="el" href="rmqs_message_8c.html#a70c110d1bdc510710ab2e0188a893fd3">rmqsMessage.c</a>, <a class="el" href="rmqs_message_8h.html#a70c110d1bdc510710ab2e0188a893fd3">rmqsMessage.h</a></li>
+<li>rmqsMessageDestroy()&#160;:&#160;<a class="el" href="rmqs_message_8c.html#ae46ee80b7a016c244ccac2c77f032d8c">rmqsMessage.c</a>, <a class="el" href="rmqs_message_8h.html#ae46ee80b7a016c244ccac2c77f032d8c">rmqsMessage.h</a></li>
 <li>rmqsMutexCreate()&#160;:&#160;<a class="el" href="rmqs_mutex_8c.html#aab52fb564a5e4caca6e76689730b697d">rmqsMutex.c</a>, <a class="el" href="rmqs_mutex_8h.html#aab52fb564a5e4caca6e76689730b697d">rmqsMutex.h</a></li>
 <li>rmqsMutexDestroy()&#160;:&#160;<a class="el" href="rmqs_mutex_8c.html#a8603cedf72e6d9f5bc9d3f6eab839ca2">rmqsMutex.c</a>, <a class="el" href="rmqs_mutex_8h.html#a8603cedf72e6d9f5bc9d3f6eab839ca2">rmqsMutex.h</a></li>
 <li>rmqsMutexLock()&#160;:&#160;<a class="el" href="rmqs_mutex_8c.html#a24216c435d32e22cbe60351b6e8591e1">rmqsMutex.c</a>, <a class="el" href="rmqs_mutex_8h.html#a24216c435d32e22cbe60351b6e8591e1">rmqsMutex.h</a></li>
-<li>rmqsMutexTryLock()&#160;:&#160;<a class="el" href="rmqs_mutex_8c.html#abe2d5da58119e648aa9775aeff15d0f4">rmqsMutex.c</a>, <a class="el" href="rmqs_mutex_8h.html#abe2d5da58119e648aa9775aeff15d0f4">rmqsMutex.h</a></li>
+<li>rmqsMutexTryLock()&#160;:&#160;<a class="el" href="rmqs_mutex_8c.html#a6e09fa185588081aafa2a1024237686f">rmqsMutex.c</a>, <a class="el" href="rmqs_mutex_8h.html#a6e09fa185588081aafa2a1024237686f">rmqsMutex.h</a></li>
 <li>rmqsMutexUnlock()&#160;:&#160;<a class="el" href="rmqs_mutex_8c.html#a76d95df37ed83bfc9b912a9b87532ef4">rmqsMutex.c</a>, <a class="el" href="rmqs_mutex_8h.html#a76d95df37ed83bfc9b912a9b87532ef4">rmqsMutex.h</a></li>
-<li>rmqsNetworkError()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#ac1e73a66a50eb5e92c8fcbf2df1ebd3d">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#ac1e73a66a50eb5e92c8fcbf2df1ebd3d">rmqsNetwork.h</a></li>
-<li>rmqspeConnected&#160;:&#160;<a class="el" href="rmqs_producer_8h.html#a0fb553205959e40706ad61a510ff02cfa8dd473a90a171ef0da6aeb3ce159c765">rmqsProducer.h</a></li>
-<li>rmqspeDisconnected&#160;:&#160;<a class="el" href="rmqs_producer_8h.html#a0fb553205959e40706ad61a510ff02cfa1fbb74df9b4602550b688c56be765131">rmqsProducer.h</a></li>
-<li>rmqsPeerPropertiesRequest()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#a2922b14173753b8fcbdcff766911017e">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#a2922b14173753b8fcbdcff766911017e">rmqsProtocol.h</a></li>
-<li>rmqspeReady&#160;:&#160;<a class="el" href="rmqs_producer_8h.html#a0fb553205959e40706ad61a510ff02cfa431129c0cc2c356d31db6fc3bdf8a719">rmqsProducer.h</a></li>
-<li>rmqsProducerCreate()&#160;:&#160;<a class="el" href="rmqs_producer_8c.html#a38815004a7007f5dcb443fc9e783d63c">rmqsProducer.c</a>, <a class="el" href="rmqs_producer_8h.html#a38815004a7007f5dcb443fc9e783d63c">rmqsProducer.h</a></li>
+<li>rmqsNetworkError()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#a0df654988ea11b2b347fa7541f20b408">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#a0df654988ea11b2b347fa7541f20b408">rmqsNetwork.h</a></li>
+<li>rmqsOpen()&#160;:&#160;<a class="el" href="rmqs_client_8c.html#ab0dfca5b3b38c7a3c7ccd48ac754031d">rmqsClient.c</a>, <a class="el" href="rmqs_client_8h.html#ab0dfca5b3b38c7a3c7ccd48ac754031d">rmqsClient.h</a></li>
+<li>rmqsPeerProperties()&#160;:&#160;<a class="el" href="rmqs_client_8c.html#a7dd81872660728b90b28a6d1771ce9c5">rmqsClient.c</a>, <a class="el" href="rmqs_client_8h.html#a44cb839d0ac3028cfc52d3b6d7daf43e">rmqsClient.h</a></li>
+<li>rmqsProducerCreate()&#160;:&#160;<a class="el" href="rmqs_producer_8c.html#aab2441cdff523fa2d06a8567d9968e8c">rmqsProducer.c</a>, <a class="el" href="rmqs_producer_8h.html#aab2441cdff523fa2d06a8567d9968e8c">rmqsProducer.h</a></li>
 <li>rmqsProducerDestroy()&#160;:&#160;<a class="el" href="rmqs_producer_8c.html#aac8b7aa5ea2cf15f796935ea9898a6d9">rmqsProducer.c</a>, <a class="el" href="rmqs_producer_8h.html#aac8b7aa5ea2cf15f796935ea9898a6d9">rmqsProducer.h</a></li>
-<li>rmqsProducerStatus&#160;:&#160;<a class="el" href="rmqs_producer_8h.html#a91322292cbd6bcf35a4b0cd41a5cee57">rmqsProducer.h</a></li>
-<li>rmqsProducerThreadRoutine()&#160;:&#160;<a class="el" href="rmqs_producer_8c.html#a209af845501452db615eee3d2e06f2d4">rmqsProducer.c</a>, <a class="el" href="rmqs_producer_8h.html#a209af845501452db615eee3d2e06f2d4">rmqsProducer.h</a></li>
-<li>rmqspsConnected&#160;:&#160;<a class="el" href="rmqs_producer_8h.html#a91322292cbd6bcf35a4b0cd41a5cee57abf5a8edfaf9bcafb3f4d92a4e4c1ea71">rmqsProducer.h</a></li>
-<li>rmqspsDisconnected&#160;:&#160;<a class="el" href="rmqs_producer_8h.html#a91322292cbd6bcf35a4b0cd41a5cee57a52203ada4fa91425b89e7c6f7d9980a2">rmqsProducer.h</a></li>
-<li>rmqspsReady&#160;:&#160;<a class="el" href="rmqs_producer_8h.html#a91322292cbd6bcf35a4b0cd41a5cee57a1d38c563e587e7f5a718bfb4e4c941c8">rmqsProducer.h</a></li>
-<li>rmqsPublisherId&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#ade8db272b4bc5dc857cde956a8401c64">rmqsProtocol.h</a></li>
-<li>rmqsrAccessRefused&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2abf85a74672ffa75c7deb8ebd23dae697">rmqsProtocol.h</a></li>
-<li>rmqsrAuthenticationFailure&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2ae94d7859ba569296fca3bc2212ca166f">rmqsProtocol.h</a></li>
-<li>rmqsRellocateMemory()&#160;:&#160;<a class="el" href="rmqs_memory_8c.html#a2897c1e4defba58b8ae13aab42b5be9b">rmqsMemory.c</a>, <a class="el" href="rmqs_memory_8h.html#a2897c1e4defba58b8ae13aab42b5be9b">rmqsMemory.h</a></li>
-<li>rmqsResponseCode&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2">rmqsProtocol.h</a></li>
-<li>rmqsrFrameTooLarge&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2af826f9b6e2b40d921ccb50e07ceeb11c">rmqsProtocol.h</a></li>
-<li>rmqsrInternalError&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2aa3f442d345b8f6700c5f58ecec40d7af">rmqsProtocol.h</a></li>
-<li>rmqsrNoOffset&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2a41c96da6816923a462cd5cee09ca6a1f">rmqsProtocol.h</a></li>
-<li>rmqsrNoReply&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2a72244a485ddb45aba049925864e24e31">rmqsProtocol.h</a></li>
-<li>rmqsrOK&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2a4bc02e5cb2971217db43027ee62ca903">rmqsProtocol.h</a></li>
-<li>rmqsrPreconditionFailed&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2afb74a3d895129645506e3dce2519095f">rmqsProtocol.h</a></li>
-<li>rmqsrPublisherDoesNotExist&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2a479ff4ef31d238bdde0b89ebc2928e47">rmqsProtocol.h</a></li>
-<li>rmqsrSASLAuthenticationFailureLoopback&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2a29493015f150b91a8da1b7908d42a91b">rmqsProtocol.h</a></li>
-<li>rmqsrSASLChallenge&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2ae2291d422883665a0ab367934250102e">rmqsProtocol.h</a></li>
-<li>rmqsrSASLError&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2a0ba5acbae3283c7101210983dc264ac9">rmqsProtocol.h</a></li>
-<li>rmqsrSASLMechanismNotSupported&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2a55135cf7fde3da8961699436799871e2">rmqsProtocol.h</a></li>
-<li>rmqsrStreamAlreadyExists&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2a6b190bf7f86324d376155f3abc8951d2">rmqsProtocol.h</a></li>
-<li>rmqsrStreamDoesNotExist&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2a3cc8de37fce7877b7dafdccb169b5676">rmqsProtocol.h</a></li>
-<li>rmqsrStreamNotAvailable&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2a30ab1bb900e6da66ce59e25f8d575833">rmqsProtocol.h</a></li>
-<li>rmqsrSubscriptionIDAlreadyExists&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2a1faa8fcb799df0d1c82568f0ef8c78e0">rmqsProtocol.h</a></li>
-<li>rmqsrSubscriptionIDDoesNotExist&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2a16008399cc346a62687c4f0bf3b9b885">rmqsProtocol.h</a></li>
-<li>rmqsrUnknownFrame&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2ad61e7557893f712433d95cc8b0c7ffe8">rmqsProtocol.h</a></li>
-<li>rmqsrVirtualHostAccessFailure&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6affffa07440f7c1aeae1f284fee15e2a8caf1459d9af08d476e36f13ec5ea8d3">rmqsProtocol.h</a></li>
-<li>rmqsSetKeepAlive()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#a70c0503a8bc8d28aa17865a195ef4267">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#a70c0503a8bc8d28aa17865a195ef4267">rmqsNetwork.h</a></li>
-<li>rmqsSetSocketBlocking()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#a34cbb136d0663e2f9f149b842414bc85">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#a34cbb136d0663e2f9f149b842414bc85">rmqsNetwork.h</a></li>
-<li>rmqsSetSocketNonBlocking()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#ae838eabe4e25d6dc0bc9e1d3b6ab3771">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#ae838eabe4e25d6dc0bc9e1d3b6ab3771">rmqsNetwork.h</a></li>
-<li>rmqsSetSocketTimeouts()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#affc48b3afbeaa74e222963e879bc50dc">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#affc48b3afbeaa74e222963e879bc50dc">rmqsNetwork.h</a></li>
-<li>rmqsSetSocketTxRxBuffers()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#a8f0ef4de891eb359ea072bd11ad74e2b">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#a958186b6d5990df7eabb1244653b00db">rmqsNetwork.h</a></li>
-<li>rmqsSetTcpNoDelay()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#a59c73ed25576bddf42fcd00c26b430e2">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#a59c73ed25576bddf42fcd00c26b430e2">rmqsNetwork.h</a></li>
-<li>rmqsSize&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a6083589d4f180aedce64d6e63593998f">rmqsProtocol.h</a></li>
+<li>rmqsProducerPoll()&#160;:&#160;<a class="el" href="rmqs_producer_8c.html#af7b79e05bfddce6b0a349f82314567ed">rmqsProducer.c</a>, <a class="el" href="rmqs_producer_8h.html#af7b79e05bfddce6b0a349f82314567ed">rmqsProducer.h</a></li>
+<li>rmqsPublish()&#160;:&#160;<a class="el" href="rmqs_producer_8c.html#a31ab4450431ec183d6e814679a91e1d8">rmqsProducer.c</a>, <a class="el" href="rmqs_producer_8h.html#a31ab4450431ec183d6e814679a91e1d8">rmqsProducer.h</a></li>
+<li>rmqsrAccessRefused&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1abf85a74672ffa75c7deb8ebd23dae697">rmqsProtocol.h</a></li>
+<li>rmqsrAuthenticationFailure&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1ae94d7859ba569296fca3bc2212ca166f">rmqsProtocol.h</a></li>
+<li>rmqsRellocateMemory()&#160;:&#160;<a class="el" href="rmqs_memory_8c.html#ad191e0264248fa3c0bd34daea3b92ccc">rmqsMemory.c</a>, <a class="el" href="rmqs_memory_8h.html#ad191e0264248fa3c0bd34daea3b92ccc">rmqsMemory.h</a></li>
+<li>rmqsResponseCode_t&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1">rmqsProtocol.h</a></li>
+<li>rmqsrFrameTooLarge&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1af826f9b6e2b40d921ccb50e07ceeb11c">rmqsProtocol.h</a></li>
+<li>rmqsrInternalError&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1aa3f442d345b8f6700c5f58ecec40d7af">rmqsProtocol.h</a></li>
+<li>rmqsrNoOffset&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a41c96da6816923a462cd5cee09ca6a1f">rmqsProtocol.h</a></li>
+<li>rmqsrNoReply&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a72244a485ddb45aba049925864e24e31">rmqsProtocol.h</a></li>
+<li>rmqsrOK&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a4bc02e5cb2971217db43027ee62ca903">rmqsProtocol.h</a></li>
+<li>rmqsrPreconditionFailed&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1afb74a3d895129645506e3dce2519095f">rmqsProtocol.h</a></li>
+<li>rmqsrPublisherDoesNotExist&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a479ff4ef31d238bdde0b89ebc2928e47">rmqsProtocol.h</a></li>
+<li>rmqsrSASLAuthenticationFailureLoopback&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a29493015f150b91a8da1b7908d42a91b">rmqsProtocol.h</a></li>
+<li>rmqsrSASLChallenge&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1ae2291d422883665a0ab367934250102e">rmqsProtocol.h</a></li>
+<li>rmqsrSASLError&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a0ba5acbae3283c7101210983dc264ac9">rmqsProtocol.h</a></li>
+<li>rmqsrSASLMechanismNotSupported&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a55135cf7fde3da8961699436799871e2">rmqsProtocol.h</a></li>
+<li>rmqsrStreamAlreadyExists&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a6b190bf7f86324d376155f3abc8951d2">rmqsProtocol.h</a></li>
+<li>rmqsrStreamDoesNotExist&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a3cc8de37fce7877b7dafdccb169b5676">rmqsProtocol.h</a></li>
+<li>rmqsrStreamNotAvailable&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a30ab1bb900e6da66ce59e25f8d575833">rmqsProtocol.h</a></li>
+<li>rmqsrSubscriptionIDAlreadyExists&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a1faa8fcb799df0d1c82568f0ef8c78e0">rmqsProtocol.h</a></li>
+<li>rmqsrSubscriptionIDDoesNotExist&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a16008399cc346a62687c4f0bf3b9b885">rmqsProtocol.h</a></li>
+<li>rmqsrUnknownFrame&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1ad61e7557893f712433d95cc8b0c7ffe8">rmqsProtocol.h</a></li>
+<li>rmqsrVirtualHostAccessFailure&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a8caf1459d9af08d476e36f13ec5ea8d3">rmqsProtocol.h</a></li>
+<li>rmqsrWrongReply&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#af463e7438ba7ee2915dda6ada39c5ae1a38006cf7578ccd70416c85eddd65aa36">rmqsProtocol.h</a></li>
+<li>rmqsSaslAuthenticate()&#160;:&#160;<a class="el" href="rmqs_client_8c.html#a0f2a8dbd79f2f1a2730ddeda23178d38">rmqsClient.c</a>, <a class="el" href="rmqs_client_8h.html#a0f2a8dbd79f2f1a2730ddeda23178d38">rmqsClient.h</a></li>
+<li>rmqsSaslHandshake()&#160;:&#160;<a class="el" href="rmqs_client_8c.html#a0555c8b863aba49c294a01c35c8988cb">rmqsClient.c</a>, <a class="el" href="rmqs_client_8h.html#a3cde725b8420561f70e200bac56bcc2e">rmqsClient.h</a></li>
+<li>rmqsSendMessage()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#a967de4559c1da354e8fbdc5cb16f4799">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#a0a3b8e386bcedfc669ac3c209c79487a">rmqsProtocol.h</a></li>
+<li>rmqsSetError()&#160;:&#160;<a class="el" href="rmqs_error_8c.html#a43592a7f6c68bb3e26c9f613f4d8d605">rmqsError.c</a>, <a class="el" href="rmqs_error_8h.html#a43592a7f6c68bb3e26c9f613f4d8d605">rmqsError.h</a></li>
+<li>rmqsSetKeepAlive()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#af22a33887b5d5da0a58914800566fbac">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#af22a33887b5d5da0a58914800566fbac">rmqsNetwork.h</a></li>
+<li>rmqsSetSocketBlocking()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#a0073683ea06f9f1f13600c4bf8481b6f">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#a0073683ea06f9f1f13600c4bf8481b6f">rmqsNetwork.h</a></li>
+<li>rmqsSetSocketNonBlocking()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#a2eb5e6db255185f817e6a69e9da2b5e5">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#a2eb5e6db255185f817e6a69e9da2b5e5">rmqsNetwork.h</a></li>
+<li>rmqsSetSocketReadTimeouts()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#a10f726b65395d2788eceafb95c3bc85a">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#a10f726b65395d2788eceafb95c3bc85a">rmqsNetwork.h</a></li>
+<li>rmqsSetSocketTxRxBuffers()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#ae1383927be3791d8b2cceea79f293b3e">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#a13dc4bc0d71e95369c40e9448526b569">rmqsNetwork.h</a></li>
+<li>rmqsSetSocketWriteTimeouts()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#ab8588724ae9b5101c999af69ae3cd84e">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#ab8588724ae9b5101c999af69ae3cd84e">rmqsNetwork.h</a></li>
+<li>rmqsSetTcpNoDelay()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#a32a939a8a39c29d38344444d2b643440">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#a32a939a8a39c29d38344444d2b643440">rmqsNetwork.h</a></li>
+<li>rmqssllBalanced&#160;:&#160;<a class="el" href="rmqs_client_8h.html#aaea681c43bd27ea9d7b29663c633d807a4b489a3460e22bed40c6a9a812f07c5a">rmqsClient.h</a></li>
+<li>rmqssllClientLocal&#160;:&#160;<a class="el" href="rmqs_client_8h.html#aaea681c43bd27ea9d7b29663c633d807a5fe08374e16016acd0abe04283209359">rmqsClient.h</a></li>
+<li>rmqssllLeasrLeaders&#160;:&#160;<a class="el" href="rmqs_client_8h.html#aaea681c43bd27ea9d7b29663c633d807a320492ca289c7d4240ed442782ff96d2">rmqsClient.h</a></li>
+<li>rmqssllRandom&#160;:&#160;<a class="el" href="rmqs_client_8h.html#aaea681c43bd27ea9d7b29663c633d807a8feb5a15c6deefcf7b6a0393931c349e">rmqsClient.h</a></li>
 <li>rmqsSocket&#160;:&#160;<a class="el" href="rmqs_network_8h.html#a5d6ba7daacb1e6fbd1f646323e2e731e">rmqsNetwork.h</a></li>
-<li>rmqsSocketConnect()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#a91e6a0d05a410f0c68c562705ef509a9">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#a91e6a0d05a410f0c68c562705ef509a9">rmqsNetwork.h</a></li>
+<li>rmqsSocketConnect()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#a08776198b2b131ce8e3d69e9a730975e">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#a08776198b2b131ce8e3d69e9a730975e">rmqsNetwork.h</a></li>
 <li>rmqsSocketCreate()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#aa979f99e44db9fdb913b4d2176e3f911">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#aa979f99e44db9fdb913b4d2176e3f911">rmqsNetwork.h</a></li>
 <li>rmqsSocketDestroy()&#160;:&#160;<a class="el" href="rmqs_network_8c.html#a846e9ca2b3f1ad0eec20c186f5715710">rmqsNetwork.c</a>, <a class="el" href="rmqs_network_8h.html#a846e9ca2b3f1ad0eec20c186f5715710">rmqsNetwork.h</a></li>
 <li>rmqsSocketLen&#160;:&#160;<a class="el" href="rmqs_network_8h.html#a2638fd0191afb81d57710f2bcdbca9bd">rmqsNetwork.h</a></li>
-<li>rmqsStreamClear()&#160;:&#160;<a class="el" href="rmqs_stream_8c.html#ac81ca30df83a7a06afbe72e1dd25489e">rmqsStream.c</a>, <a class="el" href="rmqs_stream_8h.html#ac81ca30df83a7a06afbe72e1dd25489e">rmqsStream.h</a></li>
-<li>rmqsStreamCreate()&#160;:&#160;<a class="el" href="rmqs_stream_8c.html#a8947b787011d22136404008be15d4e71">rmqsStream.c</a>, <a class="el" href="rmqs_stream_8h.html#a8947b787011d22136404008be15d4e71">rmqsStream.h</a></li>
-<li>rmqsStreamDestroy()&#160;:&#160;<a class="el" href="rmqs_stream_8c.html#ada686470da8343857907452b7aee3be5">rmqsStream.c</a>, <a class="el" href="rmqs_stream_8h.html#ada686470da8343857907452b7aee3be5">rmqsStream.h</a></li>
-<li>rmqsStreamMoveTo()&#160;:&#160;<a class="el" href="rmqs_stream_8c.html#a65a02ca427e51568da58797551023af6">rmqsStream.c</a>, <a class="el" href="rmqs_stream_8h.html#a65a02ca427e51568da58797551023af6">rmqsStream.h</a></li>
-<li>rmqsStreamRead()&#160;:&#160;<a class="el" href="rmqs_stream_8c.html#a973a877f84e709b96fbdb81494db4ce7">rmqsStream.c</a>, <a class="el" href="rmqs_stream_8h.html#a973a877f84e709b96fbdb81494db4ce7">rmqsStream.h</a></li>
-<li>rmqsStreamSetMemorySize()&#160;:&#160;<a class="el" href="rmqs_stream_8c.html#aa56f830a84fa244b9b946d3e1532172d">rmqsStream.c</a>, <a class="el" href="rmqs_stream_8h.html#aa56f830a84fa244b9b946d3e1532172d">rmqsStream.h</a></li>
-<li>rmqsStreamWrite()&#160;:&#160;<a class="el" href="rmqs_stream_8c.html#ae0d844aa4a1a116486c967f8b309697d">rmqsStream.c</a>, <a class="el" href="rmqs_stream_8h.html#ae768346125a7b1e3657bdfacc0821929">rmqsStream.h</a></li>
-<li>rmqsStringLen&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#a3b39404751492fb91a7d5b0a91edeb16">rmqsProtocol.h</a></li>
-<li>rmqsThreadCreate()&#160;:&#160;<a class="el" href="rmqs_thread_8c.html#a34948070be257276de792773259e694a">rmqsThread.c</a>, <a class="el" href="rmqs_thread_8h.html#a34948070be257276de792773259e694a">rmqsThread.h</a></li>
+<li>rmqsStringContainsCtrlChar()&#160;:&#160;<a class="el" href="rmqs_lib_8c.html#a5c38d39f9e7c6e7c99ed1f447d105638">rmqsLib.c</a>, <a class="el" href="rmqs_lib_8h.html#a5c38d39f9e7c6e7c99ed1f447d105638">rmqsLib.h</a></li>
+<li>rmqsStringContainsSpace()&#160;:&#160;<a class="el" href="rmqs_lib_8c.html#a651f13a29fd8093c4c8e1970bffaf8ff">rmqsLib.c</a>, <a class="el" href="rmqs_lib_8h.html#a651f13a29fd8093c4c8e1970bffaf8ff">rmqsLib.h</a></li>
+<li>rmqsThreadCreate()&#160;:&#160;<a class="el" href="rmqs_thread_8c.html#a37fbcf92689a44ce0292bf5cae6cea93">rmqsThread.c</a>, <a class="el" href="rmqs_thread_8h.html#a37fbcf92689a44ce0292bf5cae6cea93">rmqsThread.h</a></li>
 <li>rmqsThreadDestroy()&#160;:&#160;<a class="el" href="rmqs_thread_8c.html#a5b6b2145fe44a137713cf7a8721ed6bd">rmqsThread.c</a>, <a class="el" href="rmqs_thread_8h.html#a5b6b2145fe44a137713cf7a8721ed6bd">rmqsThread.h</a></li>
-<li>rmqsThreadSleep()&#160;:&#160;<a class="el" href="rmqs_thread_8c.html#a2e5e5146f0073140c407a3d9eaf43309">rmqsThread.c</a>, <a class="el" href="rmqs_thread_8h.html#a2e5e5146f0073140c407a3d9eaf43309">rmqsThread.h</a></li>
-<li>rmqsThreadSleepEx()&#160;:&#160;<a class="el" href="rmqs_thread_8c.html#a74c29708bd285b7eb3695b73ad5ea72a">rmqsThread.c</a>, <a class="el" href="rmqs_thread_8h.html#a74c29708bd285b7eb3695b73ad5ea72a">rmqsThread.h</a></li>
+<li>rmqsThreadSleep()&#160;:&#160;<a class="el" href="rmqs_thread_8c.html#a347c8514398e7c55839455bd54c4068a">rmqsThread.c</a>, <a class="el" href="rmqs_thread_8h.html#a347c8514398e7c55839455bd54c4068a">rmqsThread.h</a></li>
+<li>rmqsThreadSleepEx()&#160;:&#160;<a class="el" href="rmqs_thread_8c.html#a9b155e7999a724942b4dd8327dd8a938">rmqsThread.c</a>, <a class="el" href="rmqs_thread_8h.html#a9b155e7999a724942b4dd8327dd8a938">rmqsThread.h</a></li>
 <li>rmqsThreadStart()&#160;:&#160;<a class="el" href="rmqs_thread_8c.html#ac73e94f0c92d049477ec0199137597b8">rmqsThread.c</a>, <a class="el" href="rmqs_thread_8h.html#ac73e94f0c92d049477ec0199137597b8">rmqsThread.h</a></li>
 <li>rmqsThreadStop()&#160;:&#160;<a class="el" href="rmqs_thread_8c.html#aeef82051149b45f956ba6e5ff97c38bb">rmqsThread.c</a>, <a class="el" href="rmqs_thread_8h.html#aeef82051149b45f956ba6e5ff97c38bb">rmqsThread.h</a></li>
 <li>rmqsTimerCreate()&#160;:&#160;<a class="el" href="rmqs_timer_8c.html#ad3c60956db84299847277e737c28d7e4">rmqsTimer.c</a>, <a class="el" href="rmqs_timer_8h.html#ad3c60956db84299847277e737c28d7e4">rmqsTimer.h</a></li>
@@ -211,14 +283,24 @@ $(function() {
 <li>rmqsTimerGetTime()&#160;:&#160;<a class="el" href="rmqs_timer_8c.html#a79f6b432ebcadaea28e4a91552650993">rmqsTimer.c</a>, <a class="el" href="rmqs_timer_8h.html#a79f6b432ebcadaea28e4a91552650993">rmqsTimer.h</a></li>
 <li>rmqsTimerStart()&#160;:&#160;<a class="el" href="rmqs_timer_8c.html#a5d2777aa334f0bf57c5ab9031f542f2c">rmqsTimer.c</a>, <a class="el" href="rmqs_timer_8h.html#a5d2777aa334f0bf57c5ab9031f542f2c">rmqsTimer.h</a></li>
 <li>rmqsTimerStop()&#160;:&#160;<a class="el" href="rmqs_timer_8c.html#a71fa486d04e51582c4a2f6b541b17a05">rmqsTimer.c</a>, <a class="el" href="rmqs_timer_8h.html#a71fa486d04e51582c4a2f6b541b17a05">rmqsTimer.h</a></li>
-<li>rmqsVersion&#160;:&#160;<a class="el" href="rmqs_protocol_8h.html#ad97c47c31011a75a5c74d2d4b269aa5d">rmqsProtocol.h</a></li>
-<li>rqmsProducerEvent&#160;:&#160;<a class="el" href="rmqs_producer_8h.html#a0fb553205959e40706ad61a510ff02cf">rmqsProducer.h</a></li>
+<li>rmqsWaitMessage()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#a60fb438147ff9041f48473d309f084a7">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#a60fb438147ff9041f48473d309f084a7">rmqsProtocol.h</a></li>
+<li>rmqsWaitResponse()&#160;:&#160;<a class="el" href="rmqs_protocol_8c.html#a074032f01ea072509666f88743393b37">rmqsProtocol.c</a>, <a class="el" href="rmqs_protocol_8h.html#a074032f01ea072509666f88743393b37">rmqsProtocol.h</a></li>
+<li>RQMS_BROKER_MAX_DB_SCHEMA_LENGTH&#160;:&#160;<a class="el" href="rmqs_broker_8h.html#a846f0ad1ad957c933b81ed0826feac28">rmqsBroker.h</a></li>
+<li>RQMS_BROKER_MAX_PASSWORD_LENGTH&#160;:&#160;<a class="el" href="rmqs_broker_8h.html#a4936ba248ee8ff09ee943a10955e78f7">rmqsBroker.h</a></li>
+<li>RQMS_BROKER_MAX_USERNAME_LENGTH&#160;:&#160;<a class="el" href="rmqs_broker_8h.html#a2d3d4f819e2fc6140b27742371cda23b">rmqsBroker.h</a></li>
+<li>RQMS_MAX_HOSTNAME_LENGTH&#160;:&#160;<a class="el" href="rmqs_global_8h.html#aabfd78e45dd234b37b73bd9621c8e908">rmqsGlobal.h</a></li>
+<li>rqmsClientLogin()&#160;:&#160;<a class="el" href="rmqs_client_8c.html#a14de9b4600e7daaf5c2cbdd8e82c39d9">rmqsClient.c</a>, <a class="el" href="rmqs_client_8h.html#a14de9b4600e7daaf5c2cbdd8e82c39d9">rmqsClient.h</a></li>
+<li>rqmsClientLogout()&#160;:&#160;<a class="el" href="rmqs_client_8c.html#a4faa4fad9a5ff2897f02b6ecd8e2878c">rmqsClient.c</a>, <a class="el" href="rmqs_client_8h.html#a4faa4fad9a5ff2897f02b6ecd8e2878c">rmqsClient.h</a></li>
+<li>rqmsStreamLeaderLocator_t&#160;:&#160;<a class="el" href="rmqs_client_8h.html#aaea681c43bd27ea9d7b29663c633d807">rmqsClient.h</a></li>
 <li>rqmsThreadRoutine()&#160;:&#160;<a class="el" href="rmqs_thread_8c.html#a2e9b65494b50874f0ec871b6d1d11548">rmqsThread.c</a></li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+  </ul>
+</div>
 </body>
 </html>
