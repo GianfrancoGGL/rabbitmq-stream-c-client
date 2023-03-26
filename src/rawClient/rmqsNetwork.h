@@ -26,7 +26,7 @@ SOFTWARE.
 #define rmqsNetworkH
 //---------------------------------------------------------------------------
 #include <stdint.h>
-#if ! __WIN32__
+#if ! (_WIN32 || _WIN64)
 #include <sys/socket.h>
 #endif
 //---------------------------------------------------------------------------
@@ -54,8 +54,8 @@ void rmqsSocketDestroy(rmqsSocket *Socket);
 //---------------------------------------------------------------------------
 bool_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs);
 //---------------------------------------------------------------------------
-void rmqsSetSocketReadTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeout);
-void rmqsSetSocketWriteTimeouts(const rmqsSocket Socket, const uint32_t WriteTimeout);
+void rmqsSetSocketReadTimeout(const rmqsSocket Socket, const uint32_t ReadTimeout);
+void rmqsSetSocketWriteTimeout(const rmqsSocket Socket, const uint32_t WriteTimeout);
 bool_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t TxBufferSize, const uint32_t RxBufferSize);
 bool_t rmqsSetSocketBlocking(const rmqsSocket Socket);
 bool_t rmqsSetSocketNonBlocking(const rmqsSocket Socket);

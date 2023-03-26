@@ -45,6 +45,8 @@ SOFTWARE.
 #define RMQS_NULL_STRING_LENGTH    -1
 #define RMQS_EMPTY_DATA_LENGTH     -1
 //---------------------------------------------------------------------------
+#define RMQS_RX_TIMEOUT_INFINITE    0xFFFFFFFF
+//---------------------------------------------------------------------------
 typedef enum
 {
     rmqscDeclarePublisher = 0x01,
@@ -158,8 +160,8 @@ rmqsTuneRequest_t;
 bool_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
 void rmqsSendMessage(const void *Client, const rmqsSocket Socket, const char_t *Data, const size_t DataSize);
-bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32_t RxTimeout);
-bool_t rmqsWaitResponse(const void *Client, const rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, const uint32_t RxTimeout);
+bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32_t RxTimeout, bool_t *ConnectionLost);
+bool_t rmqsWaitResponse(const void *Client, const rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, const uint32_t RxTimeout, bool_t *ConnectionLost);
 void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, const size_t MessageSize);
 char_t * rmqsGetMessageDescription(uint16_t Key);
 //---------------------------------------------------------------------------

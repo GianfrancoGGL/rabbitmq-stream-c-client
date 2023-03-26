@@ -59,6 +59,7 @@ bool_t rqmsClientLogin(rmqsClient_t *Client, const rmqsSocket Socket, const char
     rmqsBroker_t *Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Client->ClientConfiguration->BrokerList, 0);
     bool_t PlainAuthSupported;
     rmqsTuneRequest_t TuneRequest, TuneResponse;
+    bool_t ConnectionLost;
 
     //
     // Send the peer properties request
@@ -87,7 +88,7 @@ bool_t rqmsClientLogin(rmqsClient_t *Client, const rmqsSocket Socket, const char
     //
     // Wait for the tune message sent by the server after the authentication
     //
-    if (! rmqsWaitMessage(Client, Socket, 1000))
+    if (! rmqsWaitMessage(Client, Socket, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
         return false;
     }
@@ -149,8 +150,10 @@ rmqsResponseCode_t rmqsPeerProperties(rmqsClient_t *Client, const rmqsSocket Soc
 {
     uint16_t Key = rmqscPeerProperties;
     uint16_t Version = 1;
-    uint32_t i, MapSize;
+    uint32_t i;
+    size_t MapSize;
     rmqsProperty_t *Property;
+    bool_t ConnectionLost;
 
     //
     // Calculate the map size
@@ -183,7 +186,7 @@ rmqsResponseCode_t rmqsPeerProperties(rmqsClient_t *Client, const rmqsSocket Soc
     //
     // Encode the map
     //
-    rmqsAddUInt32ToBuffer(Client->TxQueue, MapSize, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)MapSize, Client->ClientConfiguration->IsLittleEndianMachine);
 
     for (i = 0; i < PropertiesCount; i++)
     {
@@ -197,11 +200,11 @@ rmqsResponseCode_t rmqsPeerProperties(rmqsClient_t *Client, const rmqsSocket Soc
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsBufferMoveTo(Client->TxQueue, 0);
-    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, 1000))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
         if (Client->Response.Header.Key != rmqscPeerProperties)
         {
@@ -225,6 +228,7 @@ rmqsResponseCode_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bo
     char_t *Data;
     uint16_t *StringLen;
     char_t *String;
+    bool_t ConnectionLost;
 
     *PlainAuthSupported = false; // By default assume that the PLAIN auth is not supported
 
@@ -239,11 +243,11 @@ rmqsResponseCode_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bo
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsBufferMoveTo(Client->TxQueue, 0);
-    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, 1000))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
         //
         // Handshake response is different from a standard response, it has to be reparsed
@@ -313,6 +317,7 @@ rmqsResponseCode_t rmqsSaslAuthenticate(rmqsClient_t *Client, const rmqsSocket S
     uint16_t Version = 1;
     char_t *OpaqueData;
     size_t UsernameLen, PasswordLen, OpaqueDataLen;
+    bool_t ConnectionLost;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -338,11 +343,11 @@ rmqsResponseCode_t rmqsSaslAuthenticate(rmqsClient_t *Client, const rmqsSocket S
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsBufferMoveTo(Client->TxQueue, 0);
-    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, 1000))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
         if (Client->Response.Header.Key != rmqscSaslAuthenticate)
         {
@@ -361,6 +366,7 @@ rmqsResponseCode_t rmqsOpen(rmqsClient_t *Client, const rmqsSocket Socket, const
 {
     uint16_t Key = rmqscOpen;
     uint16_t Version = 1;
+    bool_t ConnectionLost;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -374,11 +380,11 @@ rmqsResponseCode_t rmqsOpen(rmqsClient_t *Client, const rmqsSocket Socket, const
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsBufferMoveTo(Client->TxQueue, 0);
-    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, 1000))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
         if (Client->Response.Header.Key != rmqscOpen)
         {
@@ -397,6 +403,7 @@ rmqsResponseCode_t rmqsClose(rmqsClient_t *Client, const rmqsSocket Socket, cons
 {
     uint16_t Key = rmqscClose;
     uint16_t Version = 1;
+    bool_t ConnectionLost;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -411,11 +418,11 @@ rmqsResponseCode_t rmqsClose(rmqsClient_t *Client, const rmqsSocket Socket, cons
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsBufferMoveTo(Client->TxQueue, 0);
-    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, 1000))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
         if (Client->Response.Header.Key != rmqscClose)
         {
@@ -436,6 +443,7 @@ rmqsResponseCode_t rmqsCreate(rmqsClient_t *Client, const rmqsSocket Socket, con
     uint16_t Version = 1;
     size_t NoOfArgs = 0;
     rmqsProperty_t Property;
+    bool_t ConnectionLost;
 
     NoOfArgs += CreateStreamArgs->SetMaxLengthBytes ? 1 : 0;
     NoOfArgs += CreateStreamArgs->SetMaxAge ? 1 : 0;
@@ -450,7 +458,7 @@ rmqsResponseCode_t rmqsCreate(rmqsClient_t *Client, const rmqsSocket Socket, con
     rmqsAddUInt16ToBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
     rmqsAddStringToBuffer(Client->TxQueue, (char_t *)StreamName, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt32ToBuffer(Client->TxQueue, NoOfArgs, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)NoOfArgs, Client->ClientConfiguration->IsLittleEndianMachine);
 
     if (CreateStreamArgs->SetMaxLengthBytes)
     {
@@ -519,11 +527,11 @@ rmqsResponseCode_t rmqsCreate(rmqsClient_t *Client, const rmqsSocket Socket, con
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsBufferMoveTo(Client->TxQueue, 0);
-    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, 1000))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
         if (Client->Response.Header.Key != rmqscCreate)
         {
@@ -542,6 +550,7 @@ rmqsResponseCode_t rmqsDelete(rmqsClient_t *Client, const rmqsSocket Socket, con
 {
     uint16_t Key = rmqscDelete;
     uint16_t Version = 1;
+    bool_t ConnectionLost;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -555,11 +564,11 @@ rmqsResponseCode_t rmqsDelete(rmqsClient_t *Client, const rmqsSocket Socket, con
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsBufferMoveTo(Client->TxQueue, 0);
-    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), Client->ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, 1000))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
         if (Client->Response.Header.Key != rmqscDelete)
         {

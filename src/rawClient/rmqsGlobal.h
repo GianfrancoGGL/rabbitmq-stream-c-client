@@ -40,8 +40,8 @@ typedef double double_t;
 #define false  0
 #endif
 #endif
-#ifndef min
-#define min(x, y) (x < y ? x : y)
+#ifndef minval
+#define minval(x, y) (x < y ? x : y)
 #endif
 //---------------------------------------------------------------------------
 #define RQMS_MAX_HOSTNAME_LENGTH      256

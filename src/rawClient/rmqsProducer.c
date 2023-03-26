@@ -50,16 +50,23 @@ void rmqsProducerDestroy(rmqsProducer_t *Producer)
     rmqsFreeMemory((void *)Producer);
 }
 //---------------------------------------------------------------------------
-void rmqsProducerPoll(rmqsProducer_t *Producer, const rmqsSocket Socket, uint32_t Timeout)
+void rmqsProducerPoll(rmqsProducer_t *Producer, const rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost)
 {
     uint32_t WaitMessageTimeout = Timeout;
     uint32_t Time;
+
+    *ConnectionLost = false;
 
     rmqsTimerStart(Producer->Client->ClientConfiguration->WaitReplyTimer);
 
     while (rmqsTimerGetTime(Producer->Client->ClientConfiguration->WaitReplyTimer) < Timeout)
     {
-        rmqsWaitMessage(Producer->Client, Socket, WaitMessageTimeout);
+        rmqsWaitMessage(Producer->Client, Socket, WaitMessageTimeout, ConnectionLost);
+
+        if (*ConnectionLost)
+        {
+            return;
+        }
 
         Time = rmqsTimerGetTime(Producer->Client->ClientConfiguration->WaitReplyTimer);
 
@@ -73,6 +80,7 @@ rmqsResponseCode_t rmqsDeclarePublisher(rmqsProducer_t *Producer, const rmqsSock
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
     uint16_t Key = rmqscDeclarePublisher;
     uint16_t Version = 1;
+    bool_t ConnectionLost;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -88,11 +96,11 @@ rmqsResponseCode_t rmqsDeclarePublisher(rmqsProducer_t *Producer, const rmqsSock
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsBufferMoveTo(Client->TxQueue, 0);
-    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, 1000))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
         if (Client->Response.Header.Key != rmqscDeclarePublisher)
         {
@@ -113,6 +121,7 @@ rmqsResponseCode_t rmqsDeletePublisher(rmqsProducer_t *Producer, const rmqsSocke
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
     uint16_t Key = rmqscDeletePublisher;
     uint16_t Version = 1;
+    bool_t ConnectionLost;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -126,11 +135,11 @@ rmqsResponseCode_t rmqsDeletePublisher(rmqsProducer_t *Producer, const rmqsSocke
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsBufferMoveTo(Client->TxQueue, 0);
-    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, 1000))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
         if (Client->Response.Header.Key != rmqscDeletePublisher)
         {
@@ -159,7 +168,7 @@ void rmqsPublish(rmqsProducer_t *Producer, const rmqsSocket Socket, const uint8_
     rmqsAddUInt16ToBuffer(Client->TxQueue, Key, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt16ToBuffer(Client->TxQueue, Version, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt8ToBuffer(Client->TxQueue, PublisherId);
-    rmqsAddUInt32ToBuffer(Client->TxQueue, MessageCount, ClientConfiguration->IsLittleEndianMachine); // Message count
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)MessageCount, ClientConfiguration->IsLittleEndianMachine); // Message count
 
     for (i = 0; i < MessageCount; i++)
     {
@@ -171,7 +180,7 @@ void rmqsPublish(rmqsProducer_t *Producer, const rmqsSocket Socket, const uint8_
     // Moves to the beginning of the stream and writes the total message body size
     //
     rmqsBufferMoveTo(Client->TxQueue, 0);
-    rmqsAddUInt32ToBuffer(Client->TxQueue, Client->TxQueue->Size - sizeof(uint32_t), ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), ClientConfiguration->IsLittleEndianMachine);
 
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 }

@@ -5,3 +5,7 @@ cmake-build-*
 .idea
 .vscode
 build/
+.vs/
+x64/
+Release/
+Debug/

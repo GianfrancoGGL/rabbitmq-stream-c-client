@@ -106,7 +106,7 @@ bool_t rmqsBrokerParse(rmqsBroker_t *Broker, const char_t *BrokerString, char_t 
         return false;
     }
 
-    strncpy(Broker->DBSchema, BrokerString, min(Token - BrokerString, RQMS_BROKER_MAX_DB_SCHEMA_LENGTH));
+    strncpy(Broker->DBSchema, BrokerString, minval(Token - BrokerString, RQMS_BROKER_MAX_DB_SCHEMA_LENGTH));
     rmqsConvertToLower(Broker->DBSchema);
 
     BrokerString = Token + strlen(RMQS_BROKER_DB_SCHEMA_SEPARATOR);
@@ -130,7 +130,7 @@ bool_t rmqsBrokerParse(rmqsBroker_t *Broker, const char_t *BrokerString, char_t 
         return false;
     }
 
-    strncpy(Broker->Username, BrokerString, min(Token - BrokerString, RQMS_BROKER_MAX_USERNAME_LENGTH));
+    strncpy(Broker->Username, BrokerString, minval(Token - BrokerString, RQMS_BROKER_MAX_USERNAME_LENGTH));
     rmqsConvertToLower(Broker->Username);
 
     BrokerString = Token + strlen(RMQS_BROKER_USER_SEPARATOR);
@@ -152,7 +152,7 @@ bool_t rmqsBrokerParse(rmqsBroker_t *Broker, const char_t *BrokerString, char_t 
         return false;
     }
 
-    strncpy(Broker->Password, BrokerString, min(Token - BrokerString, RQMS_BROKER_MAX_PASSWORD_LENGTH));
+    strncpy(Broker->Password, BrokerString, minval(Token - BrokerString, RQMS_BROKER_MAX_PASSWORD_LENGTH));
     rmqsConvertToLower(Broker->Password);
 
     BrokerString = Token + strlen(RMQS_BROKER_PASSWORD_SEPARATOR);

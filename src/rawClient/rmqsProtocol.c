@@ -66,16 +66,18 @@ void rmqsSendMessage(const void *Client, const rmqsSocket Socket, const char_t *
         rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)Data, DataSize, "TX", rmqsGetMessageDescription(Key), 0);
     }
 
-    send(Socket, (const char_t *)Data, DataSize, 0);
+    send(Socket, (const char_t *)Data, (int32_t)DataSize, 0);
 }
 //---------------------------------------------------------------------------
-bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32_t RxTimeout)
+bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32_t RxTimeout, bool_t *ConnectionLost)
 {
     const rmqsClient_t *ClientObj = (const rmqsClient_t *)Client;
     int32_t RxBytes;
     uint32_t MessageSize;
     rmqsMsgHeader_t MsgHeader;
     uint16_t Key;
+
+    *ConnectionLost = false;
 
     while (true)
     {
@@ -91,12 +93,17 @@ bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32
             ClientObj->RxQueue->Tag2 = 0;
         }
 
-        rmqsSetSocketReadTimeouts(Socket, RxTimeout);
+        rmqsSetSocketReadTimeout(Socket, RxTimeout);
 
         RxBytes = recv(Socket, (char_t *)ClientObj->RxSocketBuffer, RMQS_CLIENT_RX_BUFFER_SIZE, 0);
 
         if (RxBytes <= 0)
         {
+            if (rmqsNetworkError())
+            {
+                *ConnectionLost = true;
+            }
+
             return false;
         }
 
@@ -188,17 +195,19 @@ bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32
     return true;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsWaitResponse(const void *Client, const rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, const uint32_t RxTimeout)
+bool_t rmqsWaitResponse(const void *Client, const rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, const uint32_t RxTimeout, bool_t *ConnectionLost)
 {
     const rmqsClient_t *ClientObj = (const rmqsClient_t *)Client;
     uint32_t WaitMessageTimeout = RxTimeout;
     uint32_t Time;
 
+    *ConnectionLost = false;
+
     rmqsTimerStart(ClientObj->ClientConfiguration->WaitReplyTimer);
 
     while (rmqsTimerGetTime(ClientObj->ClientConfiguration->WaitReplyTimer) < RxTimeout)
     {
-        if (rmqsWaitMessage(ClientObj, Socket, WaitMessageTimeout))
+        if (rmqsWaitMessage(ClientObj, Socket, WaitMessageTimeout, ConnectionLost))
         {
             if (ClientObj->RxQueue->Size >= sizeof(rmqsResponse_t))
             {
@@ -223,6 +232,13 @@ bool_t rmqsWaitResponse(const void *Client, const rmqsSocket Socket, uint32_t Co
             Time = rmqsTimerGetTime(ClientObj->ClientConfiguration->WaitReplyTimer);
 
             WaitMessageTimeout = RxTimeout - Time;
+        }
+        else
+        {
+            if (*ConnectionLost)
+            {
+                return false;
+            }
         }
     }
 

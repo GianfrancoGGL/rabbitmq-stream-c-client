@@ -105,7 +105,7 @@ void rmqsShutdownWinsock(void)
 //---------------------------------------------------------------------------
 rmqsSocket rmqsSocketCreate(void)
 {
-    return socket(AF_INET, SOCK_STREAM, 0);
+    return (rmqsSocket)socket(AF_INET, SOCK_STREAM, 0);
 }
 //---------------------------------------------------------------------------
 void rmqsSocketDestroy(rmqsSocket *Socket)
@@ -200,7 +200,7 @@ bool_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSock
     return Connected;
 }
 //---------------------------------------------------------------------------
-void rmqsSetSocketReadTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeout)
+void rmqsSetSocketReadTimeout(const rmqsSocket Socket, const uint32_t ReadTimeout)
 {
     #if _WIN32 || _WIN64
     DWORD dwRead;
@@ -216,7 +216,7 @@ void rmqsSetSocketReadTimeouts(const rmqsSocket Socket, const uint32_t ReadTimeo
     #endif
 }
 //--------------------------------------------------------------------------
-void rmqsSetSocketWriteTimeouts(const rmqsSocket Socket, const uint32_t WriteTimeout)
+void rmqsSetSocketWriteTimeout(const rmqsSocket Socket, const uint32_t WriteTimeout)
 {
     #if ! _WIN32 || _WIN64
     struct timeval TVWrite;
