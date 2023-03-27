@@ -379,8 +379,6 @@ char_t * rmqsGetMessageDescription(uint16_t Key)
 // Older Borland C++ compilers doesn't support  functions in C files
 //
 //---------------------------------------------------------------------------
-#ifdef __BORLANDC__
-//---------------------------------------------------------------------------
  size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
 {
     rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
@@ -520,6 +518,3 @@ char_t * rmqsGetMessageDescription(uint16_t Key)
     return BytesAdded;
 }
 //---------------------------------------------------------------------------
-#endif
-//---------------------------------------------------------------------------
-

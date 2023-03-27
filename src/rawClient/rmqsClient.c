@@ -223,7 +223,7 @@ rmqsResponseCode_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bo
 {
     uint16_t Key = rmqscSaslHandshake;
     uint16_t Version = 1;
-    rmqsResponseHandshakeRequest_t *HandshakeResponse;
+    rmqsSaslHandshakeResponse_t *SaslHandshakeResponse;
     uint16_t MechanismNo;
     char_t *Data;
     uint16_t *StringLen;
@@ -252,29 +252,29 @@ rmqsResponseCode_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bo
         //
         // Handshake response is different from a standard response, it has to be reparsed
         //
-        HandshakeResponse = (rmqsResponseHandshakeRequest_t *)Client->RxQueue->Data;
+        SaslHandshakeResponse = (rmqsSaslHandshakeResponse_t *)Client->RxQueue->Data;
 
         if (Client->ClientConfiguration->IsLittleEndianMachine)
         {
-            HandshakeResponse->Header.Size = SwapUInt32(HandshakeResponse->Header.Size);
-            HandshakeResponse->Header.Key = SwapUInt16(HandshakeResponse->Header.Key);
-            HandshakeResponse->Header.Key &= 0x7FFF;
-            HandshakeResponse->Header.Version = SwapUInt16(HandshakeResponse->Header.Version);
-            HandshakeResponse->CorrelationId = SwapUInt32(HandshakeResponse->CorrelationId);
-            HandshakeResponse->ResponseCode = SwapUInt16(HandshakeResponse->ResponseCode);
-            HandshakeResponse->NoOfMechanisms = SwapUInt16(HandshakeResponse->NoOfMechanisms);
+            SaslHandshakeResponse->Header.Size = SwapUInt32(SaslHandshakeResponse->Header.Size);
+            SaslHandshakeResponse->Header.Key = SwapUInt16(SaslHandshakeResponse->Header.Key);
+            SaslHandshakeResponse->Header.Key &= 0x7FFF;
+            SaslHandshakeResponse->Header.Version = SwapUInt16(SaslHandshakeResponse->Header.Version);
+            SaslHandshakeResponse->CorrelationId = SwapUInt32(SaslHandshakeResponse->CorrelationId);
+            SaslHandshakeResponse->ResponseCode = SwapUInt16(SaslHandshakeResponse->ResponseCode);
+            SaslHandshakeResponse->NoOfMechanisms = SwapUInt16(SaslHandshakeResponse->NoOfMechanisms);
         }
 
-        if (HandshakeResponse->Header.Key != rmqscSaslHandshake)
+        if (SaslHandshakeResponse->Header.Key != rmqscSaslHandshake)
         {
             return rmqsrWrongReply;
         }
 
-        if (HandshakeResponse->NoOfMechanisms > 0)
+        if (SaslHandshakeResponse->NoOfMechanisms > 0)
         {
-            Data = (char_t *)Client->RxQueue->Data + sizeof(rmqsResponseHandshakeRequest_t);
+            Data = (char_t *)Client->RxQueue->Data + sizeof(rmqsSaslHandshakeResponse_t);
 
-            for (MechanismNo = 1; MechanismNo <= HandshakeResponse->NoOfMechanisms; MechanismNo++)
+            for (MechanismNo = 1; MechanismNo <= SaslHandshakeResponse->NoOfMechanisms; MechanismNo++)
             {
                 StringLen = (uint16_t *)Data;
 
@@ -303,7 +303,7 @@ rmqsResponseCode_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bo
             }
         }
 
-        return HandshakeResponse->ResponseCode;
+        return SaslHandshakeResponse->ResponseCode;
     }
     else
     {

@@ -174,7 +174,7 @@ bool_t rmqsBrokerParse(rmqsBroker_t *Broker, const char_t *BrokerString, char_t 
         return false;
     }
 
-    strncpy(Broker->Hostname, BrokerString, min(Token - BrokerString, RQMS_MAX_HOSTNAME_LENGTH));
+    strncpy(Broker->Hostname, BrokerString, minval(Token - BrokerString, RQMS_MAX_HOSTNAME_LENGTH));
     rmqsConvertToLower(Broker->Hostname);
 
     BrokerString = Token + strlen(RMQS_BROKER_HOSTNAME_SEPARATOR);
@@ -201,7 +201,7 @@ bool_t rmqsBrokerParse(rmqsBroker_t *Broker, const char_t *BrokerString, char_t 
     }
     else
     {
-        strncpy(PortString, BrokerString, min((size_t)(Token - BrokerString), sizeof(PortString) - 1));
+        strncpy(PortString, BrokerString, minval((size_t)(Token - BrokerString), sizeof(PortString) - 1));
         Broker->Port = (uint16_t)atoi(PortString);
 
         BrokerString = Token + strlen(RMQS_BROKER_PORT_SEPARATOR);

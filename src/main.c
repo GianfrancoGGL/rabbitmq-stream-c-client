@@ -2,9 +2,7 @@
 #include <stdio.h>
 #include <memory.h>
 #include <string.h>
-#if _WIN32
-#include <conio.h>
-#endif
+#include <inttypes.h>
 //---------------------------------------------------------------------------
 #ifdef __cplusplus
 extern "C"
@@ -45,6 +43,7 @@ int main(int argc, char * argv[])
     rmqsProducer_t *Producer;
     const int PublisherId = 1;
     char *StreamName = "MY-STREAM";
+    uint64_t Sequence;
     rqmsCreateStreamArgs_t CreateStreamArgs = {0};
     rmqsResponseCode_t CreateStreamResponse;
     rmqsTimer_t *ElapseTimer;
@@ -198,6 +197,10 @@ int main(int argc, char * argv[])
                     rmqsFreeMemory(MessageBatch);
 
                     printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, rmqsTimerGetTime(PerformanceTimer));
+
+                    rmqsQueryPublisherSequence(Producer, Socket, StreamName, &Sequence);
+
+                    printf("Sequence number: %" PRIu64 "\r\n", Sequence);
 
                     printf("Wait for publishing %d seconds\r\n", PublishWaitingTime / 1000);
 

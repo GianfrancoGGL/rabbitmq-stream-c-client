@@ -115,6 +115,56 @@ rmqsResponseCode_t rmqsDeclarePublisher(rmqsProducer_t *Producer, const rmqsSock
     }
 }
 //---------------------------------------------------------------------------
+rmqsResponseCode_t rmqsQueryPublisherSequence(rmqsProducer_t *Producer, const rmqsSocket Socket, const char_t *StreamName, uint64_t *Sequence)
+{
+    rmqsClient_t *Client = Producer->Client;
+    rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
+    uint16_t Key = rmqscQueryPublisherSequence;
+    uint16_t Version = 1;
+    rmqsQueryPublisherResponse_t *QueryPublisherResponse;
+    bool_t ConnectionLost;
+
+    rmqsBufferClear(Client->TxQueue, false);
+
+    rmqsAddUInt32ToBuffer(Client->TxQueue, 0, ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Key, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Version, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, Producer->PublisherReference, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, StreamName, ClientConfiguration->IsLittleEndianMachine);
+
+    //
+    // Moves to the beginning of the stream and writes the total message body size
+    //
+    rmqsBufferMoveTo(Client->TxQueue, 0);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), ClientConfiguration->IsLittleEndianMachine);
+
+    rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
+
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
+    {
+        if (Client->Response.Header.Key != rmqscQueryPublisherSequence)
+        {
+            return rmqsrWrongReply;
+        }
+
+        QueryPublisherResponse = (rmqsQueryPublisherResponse_t *)Client->RxQueue->Data;
+
+        *Sequence = QueryPublisherResponse->Sequence;
+
+        if (Client->ClientConfiguration->IsLittleEndianMachine)
+        {
+            *Sequence = SwapUInt64(*Sequence);
+        }
+
+        return Client->Response.ResponseCode;
+    }
+    else
+    {
+        return rmqsrNoReply;
+    }
+}
+//---------------------------------------------------------------------------
 rmqsResponseCode_t rmqsDeletePublisher(rmqsProducer_t *Producer, const rmqsSocket Socket, const uint8_t PublisherId)
 {
     rmqsClient_t *Client = Producer->Client;

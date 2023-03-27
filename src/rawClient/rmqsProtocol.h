@@ -145,7 +145,7 @@ typedef struct
     uint16_t Unknown;
     uint16_t NoOfMechanisms;
 }
-rmqsResponseHandshakeRequest_t;
+rmqsSaslHandshakeResponse_t;
 //---------------------------------------------------------------------------
 typedef struct
 {
@@ -154,6 +154,15 @@ typedef struct
     uint32_t Heartbeat;
 }
 rmqsTuneRequest_t;
+//---------------------------------------------------------------------------
+typedef struct
+{
+    rmqsMsgHeader_t Header;
+    uint32_t CorrelationId;
+    uint16_t ResponseCode;
+    uint64_t Sequence;
+}
+rmqsQueryPublisherResponse_t;
 //---------------------------------------------------------------------------
 #pragma pack(pop)
 //---------------------------------------------------------------------------
@@ -165,10 +174,6 @@ bool_t rmqsWaitResponse(const void *Client, const rmqsSocket Socket, uint32_t Co
 void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, const size_t MessageSize);
 char_t * rmqsGetMessageDescription(uint16_t Key);
 //---------------------------------------------------------------------------
-#ifdef __BORLANDC__
-//
-// Older Borland C++ compilers doesn't support inline functions in C files
-//
 size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value);
 size_t rmqsAddUInt8ToBuffer(rmqsBuffer_t *Buffer, uint8_t Value);
 size_t rmqsAddInt16ToBuffer(rmqsBuffer_t *Buffer, int16_t Value, bool_t IsLittleEndianMachine);
@@ -179,146 +184,6 @@ size_t rmqsAddInt64ToBuffer(rmqsBuffer_t *Buffer, int64_t Value, bool_t IsLittle
 size_t rmqsAddUInt64ToBuffer(rmqsBuffer_t *Buffer, uint64_t Value, bool_t IsLittleEndianMachine);
 size_t rmqsAddStringToBuffer(rmqsBuffer_t *Buffer, const char_t *Value, bool_t IsLittleEndianMachine);
 size_t rmqsAddBytesToBuffer(rmqsBuffer_t *Buffer, void *Value, size_t ValueLength, bool_t DeclareLength, bool_t IsLittleEndianMachine);
-#else
-inline size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
-{
-    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
-    return sizeof(Value);
-}
-//---------------------------------------------------------------------------
-inline size_t rmqsAddUInt8ToBuffer(rmqsBuffer_t *Buffer, uint8_t Value)
-{
-    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
-    return sizeof(Value);
-}
-//---------------------------------------------------------------------------
-inline size_t rmqsAddInt16ToBuffer(rmqsBuffer_t *Buffer, int16_t Value, bool_t IsLittleEndianMachine)
-{
-    if (IsLittleEndianMachine)
-    {
-        Value = SwapUInt16(Value);
-    }
-
-    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
-
-    return sizeof(Value);
-}
-//---------------------------------------------------------------------------
-inline size_t rmqsAddUInt16ToBuffer(rmqsBuffer_t *Buffer, uint16_t Value, bool_t IsLittleEndianMachine)
-{
-    if (IsLittleEndianMachine)
-    {
-        Value = SwapUInt16(Value);
-    }
-
-    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
-
-    return sizeof(Value);
-}
-//---------------------------------------------------------------------------
-inline size_t rmqsAddInt32ToBuffer(rmqsBuffer_t *Buffer, int32_t Value, bool_t IsLittleEndianMachine)
-{
-    if (IsLittleEndianMachine)
-    {
-        Value = SwapUInt32(Value);
-    }
-
-    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
-
-    return sizeof(Value);
-}
-//---------------------------------------------------------------------------
-inline size_t rmqsAddUInt32ToBuffer(rmqsBuffer_t *Buffer, uint32_t Value, bool_t IsLittleEndianMachine)
-{
-    if (IsLittleEndianMachine)
-    {
-        Value = SwapUInt32(Value);
-    }
-
-    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
-
-    return sizeof(Value);
-}
-//---------------------------------------------------------------------------
-inline size_t rmqsAddInt64ToBuffer(rmqsBuffer_t *Buffer, int64_t Value, bool_t IsLittleEndianMachine)
-{
-    if (IsLittleEndianMachine)
-    {
-        Value = SwapUInt64(Value);
-    }
-
-    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
-
-    return sizeof(Value);
-}
-//---------------------------------------------------------------------------
-inline size_t rmqsAddUInt64ToBuffer(rmqsBuffer_t *Buffer, uint64_t Value, bool_t IsLittleEndianMachine)
-{
-    if (IsLittleEndianMachine)
-    {
-        Value = SwapUInt64(Value);
-    }
-
-    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
-
-    return sizeof(Value);
-}
-//---------------------------------------------------------------------------
-inline size_t rmqsAddStringToBuffer(rmqsBuffer_t *Buffer, const char_t *Value, bool_t IsLittleEndianMachine)
-{
-    int16_t StringLen;
-    size_t BytesAdded;
-
-    if (Value == 0 || *Value == 0)
-    {
-        StringLen = RMQS_NULL_STRING_LENGTH;
-    }
-    else
-    {
-        StringLen = (int16_t)strlen(Value);
-    }
-
-    rmqsAddInt16ToBuffer(Buffer, StringLen, IsLittleEndianMachine);
-    BytesAdded = sizeof(StringLen);
-
-    if (StringLen != RMQS_NULL_STRING_LENGTH)
-    {
-        rmqsBufferWrite(Buffer, (void *)Value, StringLen);
-        BytesAdded += StringLen;
-    }
-
-    return BytesAdded;
-}
-//---------------------------------------------------------------------------
-inline size_t rmqsAddBytesToBuffer(rmqsBuffer_t *Buffer, void *Value, size_t ValueLength, bool_t DeclareLength, bool_t IsLittleEndianMachine)
-{
-    int32_t DataLen;
-    size_t BytesAdded;
-
-    if (ValueLength == 0)
-    {
-        DataLen = RMQS_EMPTY_DATA_LENGTH;
-    }
-    else
-    {
-        DataLen = (int32_t)ValueLength;
-    }
-
-    if (DeclareLength)
-    {
-        rmqsAddInt32ToBuffer(Buffer, DataLen, IsLittleEndianMachine);
-        BytesAdded = sizeof(DataLen);
-    }
-
-    if (DataLen != RMQS_EMPTY_DATA_LENGTH)
-    {
-        rmqsBufferWrite(Buffer, (void *)Value, DataLen);
-        BytesAdded += DataLen;
-    }
-
-    return BytesAdded;
-}
-#endif
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------
