@@ -23,7 +23,7 @@ SOFTWARE.
 ****************************************************************************/
 //---------------------------------------------------------------------------
 #include "rmqsClient.h"
-#include "rmqsProducer.h"
+#include "rmqsPublisher.h"
 #include "rmqsMemory.h"
 #include "rmqsBuffer.h"
 #include "rmqsProtocol.h"
@@ -181,9 +181,9 @@ bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32
             //
             // These message are caught and handled by this procedure and not returned to the caller
             //
-            if (ClientObj->ClientType == rmqsctProducer)
+            if (ClientObj->ClientType == rmqsctPublisher)
             {
-                rmqsHandlePublishResult(MsgHeader.Key, (rmqsProducer_t *)ClientObj->ParentObject, ClientObj->RxQueue);
+                rmqsHandlePublishResult(MsgHeader.Key, (rmqsPublisher_t *)ClientObj->ParentObject, ClientObj->RxQueue);
             }
         }
         else

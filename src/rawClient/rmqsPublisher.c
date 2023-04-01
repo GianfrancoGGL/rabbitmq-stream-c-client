@@ -24,59 +24,57 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 #include <stdio.h>
 //---------------------------------------------------------------------------
-#include "rmqsProducer.h"
+#include "rmqsPublisher.h"
 #include "rmqsClientConfiguration.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsProducer_t * rmqsProducerCreate(rmqsClientConfiguration_t *ClientConfiguration, const char_t *PublisherReference, PublishResultCallback_t PublishResultCallback)
+rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, const char_t *PublisherReference, PublishResultCallback_t PublishResultCallback)
 {
-    rmqsProducer_t *Producer = (rmqsProducer_t *)rmqsAllocateMemory(sizeof(rmqsProducer_t));
+    rmqsPublisher_t *Publisher = (rmqsPublisher_t *)rmqsAllocateMemory(sizeof(rmqsPublisher_t));
 
-    memset(Producer, 0, sizeof(rmqsProducer_t));
+    memset(Publisher, 0, sizeof(rmqsPublisher_t));
 
-    Producer->Client = rmqsClientCreate(ClientConfiguration, rmqsctProducer, Producer);
-    strncpy(Producer->PublisherReference, PublisherReference, RMQS_MAX_PUBLISHER_REFERENCE_LENGTH);
-    Producer->PollTimer = rmqsTimerCreate();
-    Producer->PublishResultCallback = PublishResultCallback;
+    Publisher->Client = rmqsClientCreate(ClientConfiguration, rmqsctPublisher, Publisher);
+    strncpy(Publisher->PublisherReference, PublisherReference, RMQS_MAX_PUBLISHER_REFERENCE_LENGTH);
+    Publisher->PublishResultCallback = PublishResultCallback;
 
-    return Producer;
+    return Publisher;
 }
 //---------------------------------------------------------------------------
-void rmqsProducerDestroy(rmqsProducer_t *Producer)
+void rmqsPublisherDestroy(rmqsPublisher_t *Publisher)
 {
-    rmqsTimerDestroy(Producer->PollTimer);
-    rmqsClientDestroy(Producer->Client);
+    rmqsClientDestroy(Publisher->Client);
 
-    rmqsFreeMemory((void *)Producer);
+    rmqsFreeMemory((void *)Publisher);
 }
 //---------------------------------------------------------------------------
-void rmqsProducerPoll(rmqsProducer_t *Producer, const rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost)
+void rmqsPublisherPoll(rmqsPublisher_t *Publisher, const rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost)
 {
     uint32_t WaitMessageTimeout = Timeout;
     uint32_t Time;
 
     *ConnectionLost = false;
 
-    rmqsTimerStart(Producer->Client->ClientConfiguration->WaitReplyTimer);
+    rmqsTimerStart(Publisher->Client->ClientConfiguration->WaitReplyTimer);
 
-    while (rmqsTimerGetTime(Producer->Client->ClientConfiguration->WaitReplyTimer) < Timeout)
+    while (rmqsTimerGetTime(Publisher->Client->ClientConfiguration->WaitReplyTimer) < Timeout)
     {
-        rmqsWaitMessage(Producer->Client, Socket, WaitMessageTimeout, ConnectionLost);
+        rmqsWaitMessage(Publisher->Client, Socket, WaitMessageTimeout, ConnectionLost);
 
         if (*ConnectionLost)
         {
             return;
         }
 
-        Time = rmqsTimerGetTime(Producer->Client->ClientConfiguration->WaitReplyTimer);
+        Time = rmqsTimerGetTime(Publisher->Client->ClientConfiguration->WaitReplyTimer);
 
         WaitMessageTimeout = Timeout - Time;
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsDeclarePublisher(rmqsProducer_t *Producer, const rmqsSocket Socket, const uint8_t PublisherId, const char_t *StreamName)
+rmqsResponseCode_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, const rmqsSocket Socket, const uint8_t PublisherId, const char_t *StreamName)
 {
-    rmqsClient_t *Client = Producer->Client;
+    rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
     uint16_t Key = rmqscDeclarePublisher;
     uint16_t Version = 1;
@@ -89,7 +87,7 @@ rmqsResponseCode_t rmqsDeclarePublisher(rmqsProducer_t *Producer, const rmqsSock
     rmqsAddUInt16ToBuffer(Client->TxQueue, Version, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt8ToBuffer(Client->TxQueue, PublisherId);
-    rmqsAddStringToBuffer(Client->TxQueue, Producer->PublisherReference, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, Publisher->PublisherReference, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddStringToBuffer(Client->TxQueue, StreamName, ClientConfiguration->IsLittleEndianMachine);
 
     //
@@ -115,9 +113,9 @@ rmqsResponseCode_t rmqsDeclarePublisher(rmqsProducer_t *Producer, const rmqsSock
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsQueryPublisherSequence(rmqsProducer_t *Producer, const rmqsSocket Socket, const char_t *StreamName, uint64_t *Sequence)
+rmqsResponseCode_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, const rmqsSocket Socket, const char_t *StreamName, uint64_t *Sequence)
 {
-    rmqsClient_t *Client = Producer->Client;
+    rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
     uint16_t Key = rmqscQueryPublisherSequence;
     uint16_t Version = 1;
@@ -130,7 +128,7 @@ rmqsResponseCode_t rmqsQueryPublisherSequence(rmqsProducer_t *Producer, const rm
     rmqsAddUInt16ToBuffer(Client->TxQueue, Key, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt16ToBuffer(Client->TxQueue, Version, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddStringToBuffer(Client->TxQueue, Producer->PublisherReference, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, Publisher->PublisherReference, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddStringToBuffer(Client->TxQueue, StreamName, ClientConfiguration->IsLittleEndianMachine);
 
     //
@@ -165,9 +163,9 @@ rmqsResponseCode_t rmqsQueryPublisherSequence(rmqsProducer_t *Producer, const rm
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsDeletePublisher(rmqsProducer_t *Producer, const rmqsSocket Socket, const uint8_t PublisherId)
+rmqsResponseCode_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, const rmqsSocket Socket, const uint8_t PublisherId)
 {
-    rmqsClient_t *Client = Producer->Client;
+    rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
     uint16_t Key = rmqscDeletePublisher;
     uint16_t Version = 1;
@@ -204,9 +202,9 @@ rmqsResponseCode_t rmqsDeletePublisher(rmqsProducer_t *Producer, const rmqsSocke
     }
 }
 //---------------------------------------------------------------------------
-void rmqsPublish(rmqsProducer_t *Producer, const rmqsSocket Socket, const uint8_t PublisherId, rmqsMessage_t *Messages, const size_t MessageCount)
+void rmqsPublish(rmqsPublisher_t *Publisher, const rmqsSocket Socket, const uint8_t PublisherId, rmqsMessage_t *Messages, const size_t MessageCount)
 {
-    rmqsClient_t *Client = Producer->Client;
+    rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
     uint16_t Key = rmqscPublish;
     uint16_t Version = 1;
@@ -235,7 +233,7 @@ void rmqsPublish(rmqsProducer_t *Producer, const rmqsSocket Socket, const uint8_
     rmqsSendMessage(Client, Socket, (const char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 }
 //---------------------------------------------------------------------------
-void rmqsHandlePublishResult(uint16_t Key, rmqsProducer_t *Producer, rmqsBuffer_t *Buffer)
+void rmqsHandlePublishResult(uint16_t Key, rmqsPublisher_t *Publisher, rmqsBuffer_t *Buffer)
 {
     char_t *MessagePayload = (char_t *)Buffer->Data + sizeof(rmqsMsgHeader_t);
     uint8_t *PublisherId;
@@ -249,7 +247,7 @@ void rmqsHandlePublishResult(uint16_t Key, rmqsProducer_t *Producer, rmqsBuffer_
     NoOfRecords = (uint32_t *)MessagePayload;
     MessagePayload += sizeof(uint32_t);
 
-    if (Producer->Client->ClientConfiguration->IsLittleEndianMachine)
+    if (Publisher->Client->ClientConfiguration->IsLittleEndianMachine)
     {
         *NoOfRecords = SwapUInt32(*NoOfRecords);
     }
@@ -260,16 +258,16 @@ void rmqsHandlePublishResult(uint16_t Key, rmqsProducer_t *Producer, rmqsBuffer_
         {
             PublishingId = (uint64_t *)MessagePayload;
 
-            if (Producer->Client->ClientConfiguration->IsLittleEndianMachine)
+            if (Publisher->Client->ClientConfiguration->IsLittleEndianMachine)
             {
                 *PublishingId = SwapUInt64(*PublishingId);
             }
 
-            Producer->PublishingIdResultArray[PublishIdCount++] = *PublishingId;
+            Publisher->PublishingIdResultArray[PublishIdCount++] = *PublishingId;
 
             if (PublishIdCount == RMQS_PUBLISHING_ID_RESULT_ARRAY_SIZE || i == *NoOfRecords - 1)
             {
-                Producer->PublishResultCallback(*PublisherId, Producer->PublishingIdResultArray, PublishIdCount, true, 0);
+                Publisher->PublishResultCallback(*PublisherId, Publisher->PublishingIdResultArray, PublishIdCount, true, 0);
                 PublishIdCount = 0; // Reset the index of the array containing the list of the publish result
             }
 

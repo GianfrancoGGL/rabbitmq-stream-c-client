@@ -35,6 +35,8 @@ typedef struct
 {
     bool_t IsLittleEndianMachine;
     rmqsList_t *BrokerList;
+    uint32_t MaxFrameSize;
+    uint32_t HearbeatFrequency;
     bool_t UseTLS;
     rmqsTimer_t *WaitReplyTimer;
     rmqsLogger_t *Logger;
@@ -42,6 +44,8 @@ typedef struct
 rmqsClientConfiguration_t;
 //---------------------------------------------------------------------------
 rmqsClientConfiguration_t * rmqsClientConfigurationCreate(const char_t *BrokersString,
+                                                          const uint32_t MaxFrameSize,
+                                                          const uint32_t HearbeatFrequency,
                                                           const bool_t EnableLogging,
                                                           const char_t *LogFileName,
                                                           char_t *ErrorString,

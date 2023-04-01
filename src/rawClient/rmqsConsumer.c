@@ -22,60 +22,52 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************/
 //---------------------------------------------------------------------------
-#include <ctype.h>
-#include <stdint.h>
+#include <stdio.h>
 //---------------------------------------------------------------------------
-#include "rmqsMessage.h"
+#include "rmqsConsumer.h"
+#include "rmqsClientConfiguration.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsMessage_t * rmqsMessageCreate(const uint64_t PublishingId, void *Data, const uint32_t Size, const bool_t CopyData)
+rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, DeliverResultCallback_t DeliverResultCallback)
 {
-    rmqsMessage_t *Message = (rmqsMessage_t *)rmqsAllocateMemory(sizeof(rmqsMessage_t));
+    rmqsConsumer_t *Consumer = (rmqsConsumer_t *)rmqsAllocateMemory(sizeof(rmqsConsumer_t));
 
-    Message->PublishingId = PublishingId;
+    memset(Consumer, 0, sizeof(rmqsConsumer_t));
 
-    if (! CopyData)
-    {
-        Message->Data = Data;
-    }
-    else
-    {
-        Message->Data = rmqsAllocateMemory(Size);
-        memcpy(Message->Data, Data, Size);
-    }
+    Consumer->Client = rmqsClientCreate(ClientConfiguration, rmqsctConsumer, Consumer);
+    Consumer->DeliverResultCallback = DeliverResultCallback;
 
-    Message->Size = Size;
-    Message->DeleteData = CopyData;
-
-    return Message;
+    return Consumer;
 }
 //---------------------------------------------------------------------------
-void rmqsMessageDestroy(const rmqsMessage_t *Message)
+void rmqsConsumerDestroy(rmqsConsumer_t *Consumer)
 {
-    if (Message->DeleteData)
-    {
-        rmqsFreeMemory((void *)Message->Data);
-    }
+    rmqsClientDestroy(Consumer->Client);
 
-    rmqsFreeMemory((void *)Message);
+    rmqsFreeMemory((void *)Consumer);
 }
 //---------------------------------------------------------------------------
-void rmqsBatchDestroy(rmqsMessage_t *MessageBatch, const size_t Count)
+void rmqsConsumerPoll(rmqsConsumer_t *Consumer, const rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost)
 {
-    rmqsMessage_t *Message = MessageBatch;
-    size_t i;
+    uint32_t WaitMessageTimeout = Timeout;
+    uint32_t Time;
 
-    for (i = 0; i < Count; i++)
+    *ConnectionLost = false;
+
+    rmqsTimerStart(Consumer->Client->ClientConfiguration->WaitReplyTimer);
+
+    while (rmqsTimerGetTime(Consumer->Client->ClientConfiguration->WaitReplyTimer) < Timeout)
     {
-        if (Message->DeleteData)
+        rmqsWaitMessage(Consumer->Client, Socket, WaitMessageTimeout, ConnectionLost);
+
+        if (*ConnectionLost)
         {
-            rmqsFreeMemory((void *)Message->Data);
+            return;
         }
 
-        Message++;
-    }
+        Time = rmqsTimerGetTime(Consumer->Client->ClientConfiguration->WaitReplyTimer);
 
-    rmqsFreeMemory((void *)MessageBatch);
+        WaitMessageTimeout = Timeout - Time;
+    }
 }
 //---------------------------------------------------------------------------
-

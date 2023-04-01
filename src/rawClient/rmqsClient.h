@@ -38,7 +38,7 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 typedef enum
 {
-    rmqsctProducer,
+    rmqsctPublisher,
     rmqsctConsumer
 }
 rmqsClientType_t;
@@ -49,7 +49,7 @@ typedef struct
     uint32_t ClientMaxFrameSize;
     uint32_t ClientHeartbeat;
     rmqsClientType_t ClientType;
-    void *ParentObject; // Producer or consumer
+    void *ParentObject; // Publisher or consumer
     uint32_t CorrelationId;
     rmqsResponse_t Response;
     rmqsBuffer_t *TxQueue;

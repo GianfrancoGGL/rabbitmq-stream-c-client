@@ -118,6 +118,15 @@ bool_t rqmsClientLogin(rmqsClient_t *Client, const rmqsSocket Socket, const char
         return false;
     }
 
+    TuneResponse.FrameMax = Client->ClientConfiguration->MaxFrameSize;
+    TuneResponse.Heartbeat = Client->ClientConfiguration->HearbeatFrequency;
+
+    if (Client->ClientConfiguration->IsLittleEndianMachine)
+    {
+        TuneResponse.FrameMax = SwapUInt32(TuneResponse.FrameMax);
+        TuneResponse.Heartbeat = SwapUInt32(TuneResponse.Heartbeat);
+    }
+
     //
     // Confirm the tune sending the response
     //

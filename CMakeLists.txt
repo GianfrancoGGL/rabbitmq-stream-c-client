@@ -14,6 +14,8 @@ add_executable(rabbitmq_stream_c_client_main
         src/rawClient/rmqsClient.h
         src/rawClient/rmqsClientConfiguration.c
         src/rawClient/rmqsClientConfiguration.h
+        src/rawClient/rmqsConsumer.c
+        src/rawClient/rmqsConsumer.h
         src/rawClient/rmqsError.c
         src/rawClient/rmqsError.h
         src/rawClient/rmqsGlobal.h
@@ -31,8 +33,8 @@ add_executable(rabbitmq_stream_c_client_main
         src/rawClient/rmqsMutex.h
         src/rawClient/rmqsNetwork.c
         src/rawClient/rmqsNetwork.h
-        src/rawClient/rmqsProducer.c
-        src/rawClient/rmqsProducer.h
+        src/rawClient/rmqsPublisher.c
+        src/rawClient/rmqsPublisher.h
         src/rawClient/rmqsProtocol.c
         src/rawClient/rmqsProtocol.h
         src/rawClient/rmqsThread.c

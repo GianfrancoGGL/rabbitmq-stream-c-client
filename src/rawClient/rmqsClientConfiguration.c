@@ -33,6 +33,8 @@ SOFTWARE.
 #include "rmqsError.h"
 //---------------------------------------------------------------------------
 rmqsClientConfiguration_t * rmqsClientConfigurationCreate(const char_t *BrokersString,
+                                                          const uint32_t MaxFrameSize,
+                                                          const uint32_t HearbeatFrequency,
                                                           const bool_t EnableLogging,
                                                           const char_t *LogFileName,
                                                           char_t *ErrorString,
@@ -77,6 +79,9 @@ rmqsClientConfiguration_t * rmqsClientConfigurationCreate(const char_t *BrokersS
     // Create the brokers list
     //
     ClientConfiguration->BrokerList = rmqsListGenericCreate();
+
+    ClientConfiguration->MaxFrameSize = MaxFrameSize;
+    ClientConfiguration->HearbeatFrequency = HearbeatFrequency;
 
     ClientConfiguration->WaitReplyTimer = rmqsTimerCreate();
 

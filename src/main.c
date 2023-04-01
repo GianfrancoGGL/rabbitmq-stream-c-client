@@ -10,7 +10,7 @@ extern "C"
 #endif
 #include "rawClient/rmqsClientConfiguration.h"
 #include "rawClient/rmqsBroker.h"
-#include "rawClient/rmqsProducer.h"
+#include "rawClient/rmqsPublisher.h"
 #include "rawClient/rmqsMemory.h"
 #include "rawClient/rmqsThread.h"
 #include "rawClient/rmqsError.h"
@@ -36,11 +36,11 @@ size_t MessagesNotConfirmed = 0;
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char *BrokerList = "rabbitmq-stream://gian:ggi@192.168.56.1:5552";
+    char *BrokerList = "rabbitmq-stream://gian:ggi@127.0.0.1:5552";
     rmqsClientConfiguration_t *ClientConfiguration;
     char Error[RMQS_ERR_MAX_STRING_LENGTH];
     rmqsBroker_t *Broker;
-    rmqsProducer_t *Producer;
+    rmqsPublisher_t *Publisher;
     const int PublisherId = 1;
     char *StreamName = "MY-STREAM";
     uint64_t Sequence;
@@ -82,7 +82,7 @@ int main(int argc, char * argv[])
     strncpy(Properties[5].Key, "platform", RMQS_MAX_KEY_SIZE);
     strncpy(Properties[5].Value, "C", RMQS_MAX_VALUE_SIZE);
 
-    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, false, 0, Error, sizeof(Error));
+    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, 0, 0, false, 0, Error, sizeof(Error));
 
     if (ClientConfiguration == 0)
     {
@@ -102,8 +102,8 @@ int main(int argc, char * argv[])
     }
 
     printf("Creating client...\r\n");
-    Producer = rmqsProducerCreate(ClientConfiguration, "Publisher", PublishResultCallback);
-    printf("Producer created\r\n");
+    Publisher = rmqsPublisherCreate(ClientConfiguration, "Publisher", PublishResultCallback);
+    printf("Publisher created\r\n");
 
     Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(ClientConfiguration->BrokerList, 0);
 
@@ -121,20 +121,15 @@ int main(int argc, char * argv[])
 
     Socket = rmqsSocketCreate();
 
-    /*
-    rmqsSetTcpNoDelay(Socket);
-    rmqsSetSocketTxRxBuffers(Socket, 1024 * 3000, 1024 * 3000);
-    */
-
     if (rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
     {
         printf("Connected to %s\r\n", Broker->Hostname);
 
-        if (rqmsClientLogin(Producer->Client, Socket, Broker->VirtualHost, Properties, 6) == rmqsrOK)
+        if (rqmsClientLogin(Publisher->Client, Socket, Broker->VirtualHost, Properties, 6) == rmqsrOK)
         {
             printf("Logged in to %s\r\n", Broker->Hostname);
 
-            if (rmqsDelete(Producer->Client, Socket, StreamName))
+            if (rmqsDelete(Publisher->Client, Socket, StreamName))
             {
                 printf("Deleted stream %s\r\n", StreamName);
             }
@@ -158,7 +153,7 @@ int main(int argc, char * argv[])
             CreateStreamArgs.SetQueueLeaderLocator = true;
             CreateStreamArgs.LeaderLocator = rmqssllClientLocal;
 
-            CreateStreamResponse = rmqsCreate(Producer->Client, Socket, StreamName, &CreateStreamArgs);
+            CreateStreamResponse = rmqsCreate(Publisher->Client, Socket, StreamName, &CreateStreamArgs);
 
             if (CreateStreamResponse == rmqsrOK || CreateStreamResponse == rmqsrStreamAlreadyExists)
             {
@@ -171,7 +166,7 @@ int main(int argc, char * argv[])
                     printf("Stream opened %s\r\n", StreamName);
                 }
 
-                if (rmqsDeclarePublisher(Producer, Socket, PublisherId, StreamName) == rmqsrOK)
+                if (rmqsDeclarePublisher(Publisher, Socket, PublisherId, StreamName) == rmqsrOK)
                 {
                     MessageBatch = (rmqsMessage_t *)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MESSAGE_COUNT);
 
@@ -191,14 +186,14 @@ int main(int argc, char * argv[])
                             MessageBatch[j].PublishingId = ++PublishingId;
                         }
 
-                        rmqsPublish(Producer, Socket, PublisherId, MessageBatch, MESSAGE_COUNT);
+                        rmqsPublish(Publisher, Socket, PublisherId, MessageBatch, MESSAGE_COUNT);
                     }
 
-                    rmqsFreeMemory(MessageBatch);
+                    rmqsBatchDestroy(MessageBatch, MESSAGE_COUNT);
 
                     printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, rmqsTimerGetTime(PerformanceTimer));
 
-                    rmqsQueryPublisherSequence(Producer, Socket, StreamName, &Sequence);
+                    rmqsQueryPublisherSequence(Publisher, Socket, StreamName, &Sequence);
 
                     printf("Sequence number: %" PRIu64 "\r\n", Sequence);
 
@@ -210,12 +205,12 @@ int main(int argc, char * argv[])
 
                     rmqsTimerStart(PerformanceTimer);
 
-                    rmqsProducerPoll(Producer, Socket, PublishWaitingTime, &ConnectionLost);
+                    rmqsPublisherPoll(Publisher, Socket, PublishWaitingTime, &ConnectionLost);
 
                     printf("Timer end: %u\r\n", rmqsTimerGetTime(ElapseTimer));
                     rmqsTimerDestroy(ElapseTimer);
 
-                    if (rmqsDeletePublisher(Producer, Socket, PublisherId) != rmqsrOK)
+                    if (rmqsDeletePublisher(Publisher, Socket, PublisherId) != rmqsrOK)
                     {
                         printf("Cannot delete the publisher\r\n");
                     }
@@ -229,7 +224,7 @@ int main(int argc, char * argv[])
                     printf("Cannot declare the publisher\r\n");
                 }
 
-                if (rqmsClientLogout(Producer->Client, Socket, 0, "Regular shutdown"))
+                if (rqmsClientLogout(Publisher->Client, Socket, 0, "Regular shutdown"))
                 {
                     printf("Logged out\r\n");
                 }
@@ -254,7 +249,7 @@ int main(int argc, char * argv[])
     }
 
     rmqsSocketDestroy(&Socket);
-    rmqsProducerDestroy(Producer);
+    rmqsPublisherDestroy(Publisher);
     rmqsClientConfigurationDestroy(ClientConfiguration);
 
     printf("Messages confirmed: %u/%u\r\n", (uint32_t)MessagesConfirmed, MESSAGE_COUNT * NO_OF_ITERATION);
