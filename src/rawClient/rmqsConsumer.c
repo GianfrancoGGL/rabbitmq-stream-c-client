@@ -28,13 +28,15 @@ SOFTWARE.
 #include "rmqsClientConfiguration.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, DeliverResultCallback_t DeliverResultCallback)
+rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, uint32_t FrameMax, uint32_t Heartbeat, DeliverResultCallback_t DeliverResultCallback)
 {
     rmqsConsumer_t *Consumer = (rmqsConsumer_t *)rmqsAllocateMemory(sizeof(rmqsConsumer_t));
 
     memset(Consumer, 0, sizeof(rmqsConsumer_t));
 
     Consumer->Client = rmqsClientCreate(ClientConfiguration, rmqsctConsumer, Consumer);
+    Consumer->FrameMax = FrameMax;
+    Consumer->Heartbeat = Heartbeat; 
     Consumer->DeliverResultCallback = DeliverResultCallback;
 
     return Consumer;

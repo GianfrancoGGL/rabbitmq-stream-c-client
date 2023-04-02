@@ -25,6 +25,8 @@ SOFTWARE.
 #include <stdio.h>
 //---------------------------------------------------------------------------
 #include "rmqsClient.h"
+#include "rmqsPublisher.h"
+#include "rmqsConsumer.h"
 #include "rmqsBroker.h"
 #include "rmqsClientConfiguration.h"
 #include "rmqsProtocol.h"
@@ -118,13 +120,25 @@ bool_t rqmsClientLogin(rmqsClient_t *Client, const rmqsSocket Socket, const char
         return false;
     }
 
-    TuneResponse.FrameMax = Client->ClientConfiguration->MaxFrameSize;
-    TuneResponse.Heartbeat = Client->ClientConfiguration->HearbeatFrequency;
-
-    if (Client->ClientConfiguration->IsLittleEndianMachine)
+    if (Client->ClientType == rmqsctPublisher)
     {
-        TuneResponse.FrameMax = SwapUInt32(TuneResponse.FrameMax);
-        TuneResponse.Heartbeat = SwapUInt32(TuneResponse.Heartbeat);
+        TuneResponse.Heartbeat = ((rmqsPublisher_t *)Client->ParentObject)->Heartbeat;
+
+        if (Client->ClientConfiguration->IsLittleEndianMachine)
+        {
+            TuneResponse.Heartbeat = SwapUInt32(TuneResponse.Heartbeat);
+        }
+    }
+    else
+    {
+        TuneResponse.FrameMax = ((rmqsConsumer_t *)Client->ParentObject)->FrameMax;
+        TuneResponse.Heartbeat = ((rmqsConsumer_t *)Client->ParentObject)->Heartbeat;
+
+        if (Client->ClientConfiguration->IsLittleEndianMachine)
+        {
+            TuneResponse.FrameMax = SwapUInt32(TuneResponse.FrameMax);
+            TuneResponse.Heartbeat = SwapUInt32(TuneResponse.Heartbeat);
+        }
     }
 
     //

@@ -41,12 +41,13 @@ typedef struct
 {
     rmqsClient_t *Client;
     char_t PublisherReference[RMQS_MAX_PUBLISHER_REFERENCE_LENGTH + 1];
+    uint32_t Heartbeat; 
     uint64_t PublishingIdResultArray[RMQS_PUBLISHING_ID_RESULT_ARRAY_SIZE]; // This array allows to buffer multiple ids and then call once the publish result callback
     PublishResultCallback_t PublishResultCallback;
 }
 rmqsPublisher_t;
 //---------------------------------------------------------------------------
-rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, const char_t *PublisherReference, PublishResultCallback_t PublishResultCallback);
+rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, const char_t *PublisherReference, uint32_t Heartbeat, PublishResultCallback_t PublishResultCallback);
 void rmqsPublisherDestroy(rmqsPublisher_t *Publisher);
 void rmqsPublisherPoll(rmqsPublisher_t *Publisher, const rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost);
 rmqsResponseCode_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, const rmqsSocket Socket, const uint8_t PublisherId, const char_t *StreamName);

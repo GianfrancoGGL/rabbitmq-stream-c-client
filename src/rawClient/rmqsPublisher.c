@@ -28,7 +28,7 @@ SOFTWARE.
 #include "rmqsClientConfiguration.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, const char_t *PublisherReference, PublishResultCallback_t PublishResultCallback)
+rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, const char_t *PublisherReference, uint32_t Heartbeat, PublishResultCallback_t PublishResultCallback)
 {
     rmqsPublisher_t *Publisher = (rmqsPublisher_t *)rmqsAllocateMemory(sizeof(rmqsPublisher_t));
 
@@ -36,6 +36,7 @@ rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfigura
 
     Publisher->Client = rmqsClientCreate(ClientConfiguration, rmqsctPublisher, Publisher);
     strncpy(Publisher->PublisherReference, PublisherReference, RMQS_MAX_PUBLISHER_REFERENCE_LENGTH);
+    Publisher->Heartbeat = Heartbeat;
     Publisher->PublishResultCallback = PublishResultCallback;
 
     return Publisher;

@@ -37,11 +37,13 @@ typedef void (*DeliverResultCallback_t)();
 typedef struct
 {
     rmqsClient_t *Client;
+    uint32_t FrameMax;
+    uint32_t Heartbeat;
     DeliverResultCallback_t DeliverResultCallback;
 }
 rmqsConsumer_t;
 //---------------------------------------------------------------------------
-rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, DeliverResultCallback_t DeliverResultCallback);
+rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, uint32_t FrameMax, uint32_t Heartbeat, DeliverResultCallback_t DeliverResultCallback);
 void rmqsConsumerDestroy(rmqsConsumer_t *Consumer);
 void rmqsConsumerPoll(rmqsConsumer_t *Consumer, const rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost);
 #endif

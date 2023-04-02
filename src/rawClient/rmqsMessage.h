@@ -25,6 +25,7 @@ SOFTWARE.
 #ifndef rmqsMessageH
 #define rmqsMessageH
 //---------------------------------------------------------------------------
+#include <stdlib.h>
 #include <stdint.h>
 //---------------------------------------------------------------------------
 #include "rmqsGlobal.h"

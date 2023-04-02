@@ -13,6 +13,7 @@ extern "C"
 #include "rawClient/rmqsPublisher.h"
 #include "rawClient/rmqsMemory.h"
 #include "rawClient/rmqsThread.h"
+#include "rawClient/rmqsLib.h"
 #include "rawClient/rmqsError.h"
 #ifdef __cplusplus
 }
@@ -82,7 +83,7 @@ int main(int argc, char * argv[])
     strncpy(Properties[5].Key, "platform", RMQS_MAX_KEY_SIZE);
     strncpy(Properties[5].Value, "C", RMQS_MAX_VALUE_SIZE);
 
-    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, 0, 0, false, 0, Error, sizeof(Error));
+    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, false, 0, Error, sizeof(Error));
 
     if (ClientConfiguration == 0)
     {
@@ -102,7 +103,7 @@ int main(int argc, char * argv[])
     }
 
     printf("Creating client...\r\n");
-    Publisher = rmqsPublisherCreate(ClientConfiguration, "Publisher", PublishResultCallback);
+    Publisher = rmqsPublisherCreate(ClientConfiguration, "Publisher", 0, PublishResultCallback);
     printf("Publisher created\r\n");
 
     Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(ClientConfiguration->BrokerList, 0);
