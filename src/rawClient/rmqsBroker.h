@@ -63,18 +63,18 @@ typedef struct
 }
 rmqsBroker_t;
 //---------------------------------------------------------------------------
-rmqsBroker_t * rmqsBrokerCreate(const char_t *Hostname,
-                                const uint16_t Port,
-                                const char_t *Username,
-                                const char_t *Password,
-                                const char_t *DBSchema,
-                                const char_t *VirtualHost,
+rmqsBroker_t * rmqsBrokerCreate(char_t *Hostname,
+                                uint16_t Port,
+                                char_t *Username,
+                                char_t *Password,
+                                char_t *DBSchema,
+                                char_t *VirtualHost,
                                 char_t *ErrorString,
-                                const size_t ErrorStringLength);
+                                size_t ErrorStringLength);
 
 void rmqsBrokerDestroy(rmqsBroker_t *Broker);
 void rmqsBrokerSetDefault(rmqsBroker_t *Broker);
-bool_t rmqsBrokerParse(rmqsBroker_t *Broker, const char_t *BrokerString, char_t *ErrorString, const size_t ErrorStringLength);
+bool_t rmqsBrokerParse(rmqsBroker_t *Broker, char_t *BrokerString, char_t *ErrorString, size_t ErrorStringLength);
 //---------------------------------------------------------------------------
 #endif
 //---------------------------------------------------------------------------

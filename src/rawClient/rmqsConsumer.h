@@ -32,17 +32,33 @@ SOFTWARE.
 #include "rmqsMessage.h"
 #include "rmqsTimer.h"
 //---------------------------------------------------------------------------
-typedef void (*DeliverResultCallback_t)();
+typedef void (*DeliverResultCallback_t)(uint8_t SubscriptionId, size_t DataSize, void *Data);
 //---------------------------------------------------------------------------
 typedef struct
 {
     rmqsClient_t *Client;
+    uint32_t FrameMax;
+    uint32_t Heartbeat;
+    uint16_t DefaultCredit;
     DeliverResultCallback_t DeliverResultCallback;
 }
 rmqsConsumer_t;
 //---------------------------------------------------------------------------
-rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, DeliverResultCallback_t DeliverResultCallback);
+typedef enum
+{
+    rmqsotFirst = 1, 
+    rmqsotLast, 
+    rmqsotNext, 
+    rmqsotOffset, 
+    rmqsotTimestamp
+}
+rmqsOffsetType;
+//---------------------------------------------------------------------------
+rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, uint32_t FrameMax, uint32_t Heartbeat, uint16_t DefaultCredit, DeliverResultCallback_t DeliverResultCallback);
 void rmqsConsumerDestroy(rmqsConsumer_t *Consumer);
-void rmqsConsumerPoll(rmqsConsumer_t *Consumer, const rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost);
+void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost);
+rmqsResponseCode_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, char_t *StreamName, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertiesCount);
+void rmqsCredit(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, uint16_t Credit);
+void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket Socket, rmqsBuffer_t *Buffer);
 #endif
 //---------------------------------------------------------------------------

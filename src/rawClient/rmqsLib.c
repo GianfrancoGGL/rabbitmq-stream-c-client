@@ -25,12 +25,42 @@ SOFTWARE.
 #include <time.h>
 #include <stdio.h>
 #include <limits.h>
-//---------------------------------------------------------------------------
 #include <ctype.h>
+#include <sys/timeb.h>
+//---------------------------------------------------------------------------
+#if _WIN32 || _WIN64
+#include <windows.h>
+#else
+#include <sys/time.h>
+#endif
 //---------------------------------------------------------------------------
 #include "rmqsLib.h"
 //---------------------------------------------------------------------------
-bool_t rmqsStringContainsSpace(const char_t *String)
+int64_t rmqsGetTimeStamp()
+{
+    #if _WIN32 || _WIN64
+    struct _timeb TimeBuffer;
+    #else
+    struct timeval TV;
+    struct timezone TZ;
+    #endif
+    int64_t Result;
+
+    #if _WIN32 || _WIN64
+    _ftime(&TimeBuffer);
+    Result = (int64_t)((TimeBuffer.time * 1000) + TimeBuffer.millitm);
+    Result -= ((int64_t)TimeBuffer.timezone - (60LL * TimeBuffer.dstflag)) * 60 * 1000; // UTC to local time
+    #else
+    gettimeofday(&TV, &TZ);
+
+    Result = (int64_t)((uint64_t)TV.tv_sec * 1000 + (uint64_t)(TV.tv_usec) / 1000);
+	Result -= (TZ.tz_minuteswest * 60) * 1000;
+    #endif
+
+    return Result;
+}
+//---------------------------------------------------------------------------
+bool_t rmqsStringContainsSpace(char_t *String)
 {
     while (*String)
     {
@@ -45,7 +75,7 @@ bool_t rmqsStringContainsSpace(const char_t *String)
     return false;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsStringContainsCtrlChar(const char_t *String)
+bool_t rmqsStringContainsCtrlChar(char_t *String)
 {
     while (*String)
     {

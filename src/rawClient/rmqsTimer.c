@@ -119,7 +119,7 @@ void rmqsGetCurrentDateTime(uint16_t *Year, uint8_t *Month, uint8_t *Day, uint8_
     struct tm TM;
 
     time(&Time);
-    gmtime_r((const time_t *)&time, &TM);
+    gmtime_r((time_t *)&time, &TM);
 
     *Year = (uint16_t)(TM.tm_year + 1900);
     *Month = (uint8_t)(TM.tm_mon + 1);
@@ -130,7 +130,7 @@ void rmqsGetCurrentDateTime(uint16_t *Year, uint8_t *Month, uint8_t *Day, uint8_
     #endif
 }
 //---------------------------------------------------------------------------
-void rmqsGetCurrentDateTimeString(char_t *String, const size_t Size)
+void rmqsGetCurrentDateTimeString(char_t *String, size_t Size)
 {
     uint16_t Year;
     uint8_t Month, Day, Hour, Minute, Second;

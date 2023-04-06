@@ -121,7 +121,7 @@ void rmqsSocketDestroy(rmqsSocket *Socket)
     *Socket = rmqsInvalidSocket;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSocket Socket, const uint32_t TimeoutMs)
+bool_t rmqsSocketConnect(char_t *Host, uint16_t Port, rmqsSocket Socket, uint32_t TimeoutMs)
 {
     bool_t Connected = false;
     struct hostent *pHost;
@@ -200,23 +200,23 @@ bool_t rmqsSocketConnect(const char_t *Host, const uint16_t Port, const rmqsSock
     return Connected;
 }
 //---------------------------------------------------------------------------
-void rmqsSetSocketReadTimeout(const rmqsSocket Socket, const uint32_t ReadTimeout)
+void rmqsSetSocketReadTimeout(rmqsSocket Socket, uint32_t ReadTimeout)
 {
     #if _WIN32 || _WIN64
     DWORD dwRead;
     dwRead = ReadTimeout;
 
-    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (const char_t *)&dwRead, sizeof(dwRead));
+    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (char_t *)&dwRead, sizeof(dwRead));
     #else
     struct timeval TVRead;
     TVRead.tv_sec = 0;
     TVRead.tv_usec = ReadTimeout * 1000;
 
-    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (const int8_t *)&TVRead, sizeof(TVRead));
+    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (int8_t *)&TVRead, sizeof(TVRead));
     #endif
 }
 //--------------------------------------------------------------------------
-void rmqsSetSocketWriteTimeout(const rmqsSocket Socket, const uint32_t WriteTimeout)
+void rmqsSetSocketWriteTimeout(rmqsSocket Socket, uint32_t WriteTimeout)
 {
     #if ! _WIN32 || _WIN64
     struct timeval TVWrite;
@@ -224,22 +224,22 @@ void rmqsSetSocketWriteTimeout(const rmqsSocket Socket, const uint32_t WriteTime
     TVWrite.tv_sec = 0;
     TVWrite.tv_usec = WriteTimeout * 1000;
 
-    setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (const char_t *)&TVWrite, (int32_t)sizeof(TVWrite));
+    setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (char_t *)&TVWrite, (int32_t)sizeof(TVWrite));
     #else
     DWORD dwWrite;
     dwWrite = WriteTimeout;
 
-    setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (const char_t *)&dwWrite, sizeof(dwWrite));
+    setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (char_t *)&dwWrite, sizeof(dwWrite));
     #endif
 }
 //--------------------------------------------------------------------------
-bool_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t ulTxBufferSize, const uint32_t ulRxBufferSize)
+bool_t rmqsSetSocketTxRxBuffers(rmqsSocket Socket, uint32_t ulTxBufferSize, uint32_t ulRxBufferSize)
 {
     bool_t Result = true;
 
     if (ulTxBufferSize != 0) // 0 = default
     {
-        if (setsockopt(Socket, SOL_SOCKET, SO_SNDBUF, (const char_t *)&ulTxBufferSize, sizeof(uint32_t)) == -1)
+        if (setsockopt(Socket, SOL_SOCKET, SO_SNDBUF, (char_t *)&ulTxBufferSize, sizeof(uint32_t)) == -1)
         {
             Result = false;
         }
@@ -247,7 +247,7 @@ bool_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t ulTxBuff
 
     if (ulRxBufferSize != 0) // 0 = default
     {
-        if (setsockopt(Socket, SOL_SOCKET, SO_RCVBUF, (const char_t *)&ulRxBufferSize, sizeof(uint32_t)) == -1)
+        if (setsockopt(Socket, SOL_SOCKET, SO_RCVBUF, (char_t *)&ulRxBufferSize, sizeof(uint32_t)) == -1)
         {
             Result = false;
         }
@@ -256,7 +256,7 @@ bool_t rmqsSetSocketTxRxBuffers(const rmqsSocket Socket, const uint32_t ulTxBuff
     return Result;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSetSocketBlocking(const rmqsSocket Socket)
+bool_t rmqsSetSocketBlocking(rmqsSocket Socket)
 {
     #if _WIN32 || _WIN64
     unsigned long ulNonBlocking = 0;
@@ -279,7 +279,7 @@ bool_t rmqsSetSocketBlocking(const rmqsSocket Socket)
     return 1;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSetSocketNonBlocking(const rmqsSocket Socket)
+bool_t rmqsSetSocketNonBlocking(rmqsSocket Socket)
 {
     #if _WIN32 || _WIN64
     unsigned long ulNonBlocking = 1;
@@ -302,7 +302,7 @@ bool_t rmqsSetSocketNonBlocking(const rmqsSocket Socket)
     return 1;
 }
 //--------------------------------------------------------------------------
-bool_t rmqsSetKeepAlive(const rmqsSocket Socket)
+bool_t rmqsSetKeepAlive(rmqsSocket Socket)
 {
     #if _WIN32 || _WIN64
     TcpKeepAlive Alive;
@@ -356,11 +356,11 @@ bool_t rmqsSetKeepAlive(const rmqsSocket Socket)
     #endif
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSetTcpNoDelay(const rmqsSocket Socket)
+bool_t rmqsSetTcpNoDelay(rmqsSocket Socket)
 {
     int32_t iNoTcpDelayOptVal = 1, iNoTcpDelayOptValLen = sizeof(iNoTcpDelayOptVal);
 
-    if (setsockopt(Socket, IPPROTO_TCP, TCP_NODELAY, (const char_t *)&iNoTcpDelayOptVal, (rmqsSocketLen)iNoTcpDelayOptValLen) == -1)
+    if (setsockopt(Socket, IPPROTO_TCP, TCP_NODELAY, (char_t *)&iNoTcpDelayOptVal, (rmqsSocketLen)iNoTcpDelayOptValLen) == -1)
     {
         return 0;
     }

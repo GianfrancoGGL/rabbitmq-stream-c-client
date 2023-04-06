@@ -39,7 +39,7 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 #define RMQS_ERR_MAX_STRING_LENGTH               256
 //---------------------------------------------------------------------------
-void rmqsSetError(size_t ErrorIndex, char_t *ErrorString, const size_t ErrorStringLength);
+void rmqsSetError(size_t ErrorIndex, char_t *ErrorString, size_t ErrorStringLength);
 //---------------------------------------------------------------------------
 #endif
 //---------------------------------------------------------------------------

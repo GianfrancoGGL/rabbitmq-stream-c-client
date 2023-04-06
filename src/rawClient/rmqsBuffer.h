@@ -51,12 +51,12 @@ rmqsBuffer_t;
 //---------------------------------------------------------------------------
 rmqsBuffer_t * rmqsBufferCreate(void);
 void rmqsBufferDestroy(rmqsBuffer_t *Buffer);
-void rmqsBufferClear(rmqsBuffer_t *Buffer, const bool_t ResetMemoryBuffer);
+void rmqsBufferClear(rmqsBuffer_t *Buffer, bool_t ResetMemoryBuffer);
 void rmqsBufferClearTags(rmqsBuffer_t *Buffer);
 size_t rmqsBufferRead(rmqsBuffer_t *Buffer, void *ReadBuffer, size_t NoOfBytes);
 size_t rmqsBufferWrite(rmqsBuffer_t *Buffer, void *WriteBuffer, size_t NoOfBytes);
 void rmqsBufferDelete(rmqsBuffer_t *Buffer, size_t NoOfBytes);
 void rmqsBufferMoveTo(rmqsBuffer_t *Buffer, size_t Position);
-void rmqsBufferSetMemorySize(rmqsBuffer_t *Buffer, const size_t RequiredMemorySize);
+void rmqsBufferSetMemorySize(rmqsBuffer_t *Buffer, size_t RequiredMemorySize);
 #endif
 //--------------------------------------------------------------------------

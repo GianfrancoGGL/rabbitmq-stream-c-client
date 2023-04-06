@@ -32,7 +32,7 @@ SOFTWARE.
 #define BYTES_TO_DUMP_PER_ROW  16
 #define LOG_SEPARATOR          "============================================================================"
 //---------------------------------------------------------------------------
-rmqsLogger_t * rmqsLoggerCreate(const char_t *FileName, bool_t AppendToFile)
+rmqsLogger_t * rmqsLoggerCreate(char_t *FileName, bool_t AppendToFile)
 {
     rmqsLogger_t *Logger = (rmqsLogger_t *)rmqsAllocateMemory(sizeof(rmqsLogger_t));
 
@@ -66,7 +66,7 @@ void rmqsLoggerDestroy(rmqsLogger_t *Logger)
     rmqsFreeMemory((void *)Logger);
 }
 //---------------------------------------------------------------------------
-void rmqsLoggerRegisterLog(rmqsLogger_t *Logger, const char_t *Message, const char_t *Comment)
+void rmqsLoggerRegisterLog(rmqsLogger_t *Logger, char_t *Message, char_t *Comment)
 {
     char_t DateTimeString[20], TimeSinceLastLog[10];
     size_t i;
@@ -107,7 +107,7 @@ void rmqsLoggerRegisterLog(rmqsLogger_t *Logger, const char_t *Message, const ch
     rmqsMutexUnlock(Logger->Mutex);
 }
 //---------------------------------------------------------------------------
-void rmqsLoggerRegisterDump(rmqsLogger_t *Logger, void *Data, size_t DataLen, const char_t *Comment1, const char_t *Comment2, const char_t *Comment3)
+void rmqsLoggerRegisterDump(rmqsLogger_t *Logger, void *Data, size_t DataLen, char_t *Comment1, char_t *Comment2, char_t *Comment3)
 {
     char_t DateTimeString[20], TimeSinceLastLog[10];
     uchar_t *Pointer = (uchar_t *)Data;

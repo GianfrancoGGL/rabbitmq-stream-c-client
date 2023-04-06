@@ -55,7 +55,7 @@ void rmqsBufferDestroy(rmqsBuffer_t *Buffer)
     rmqsFreeMemory((void *)Buffer);
 }
 //---------------------------------------------------------------------------
-void rmqsBufferClear(rmqsBuffer_t *Buffer, const bool_t ResetMemoryBuffer)
+void rmqsBufferClear(rmqsBuffer_t *Buffer, bool_t ResetMemoryBuffer)
 {
     Buffer->Size = 0;
     Buffer->Position = 0;
@@ -99,7 +99,7 @@ size_t rmqsBufferRead(rmqsBuffer_t *Buffer, void *ReadBuffer, size_t NoOfBytes)
     return NoOfBytes;
 }
 //---------------------------------------------------------------------------
-size_t rmqsBufferWrite(rmqsBuffer_t *Buffer, void *WriteBuffer, const size_t NoOfBytes)
+size_t rmqsBufferWrite(rmqsBuffer_t *Buffer, void *WriteBuffer, size_t NoOfBytes)
 {
     char_t *p;
 
@@ -155,7 +155,7 @@ void rmqsBufferMoveTo(rmqsBuffer_t *Buffer, size_t Position)
     Buffer->Position = Position;
 }
 //---------------------------------------------------------------------------
-void rmqsBufferSetMemorySize(rmqsBuffer_t *Buffer, const size_t RequiredMemorySize)
+void rmqsBufferSetMemorySize(rmqsBuffer_t *Buffer, size_t RequiredMemorySize)
 {
     size_t MemoryToAllocateSize;
 

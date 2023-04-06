@@ -11,8 +11,10 @@ extern "C"
 #include "rawClient/rmqsClientConfiguration.h"
 #include "rawClient/rmqsBroker.h"
 #include "rawClient/rmqsPublisher.h"
+#include "rawClient/rmqsConsumer.h"
 #include "rawClient/rmqsMemory.h"
 #include "rawClient/rmqsThread.h"
+#include "rawClient/rmqsLib.h"
 #include "rawClient/rmqsError.h"
 #ifdef __cplusplus
 }
@@ -25,14 +27,20 @@ extern "C"
 #pragma comment(lib, "ws2_32.lib")
 #endif
 //---------------------------------------------------------------------------
-#define ROW_SEPARATOR     "============================================================================"
-#define NO_OF_ITERATION   1
-#define MESSAGE_COUNT     1000000
+#define ROW_SEPARATOR              "============================================================================"
+#define NO_OF_ITERATION             1
+#define MESSAGE_COUNT         1000000
+#define CONSUMER_CREDIT_SIZE     1000
 //---------------------------------------------------------------------------
-void PublishResultCallback(const uint8_t PublisherId, uint64_t *PublishingIdList, const size_t PublishingIdCount, const bool_t Confirmed, const uint16_t Code);
+void PublishResultCallback(uint8_t PublisherId, uint64_t *PublishingIdList, size_t PublishingIdCount, bool_t Confirmed, uint16_t Code);
+void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data);
+//---------------------------------------------------------------------------
 rmqsTimer_t *PerformanceTimer;
+rmqsTimer_t *ElapseTimer;
+//---------------------------------------------------------------------------
 size_t MessagesConfirmed = 0;
 size_t MessagesNotConfirmed = 0;
+size_t MessagesReceived = 0;
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
@@ -41,7 +49,9 @@ int main(int argc, char * argv[])
     char Error[RMQS_ERR_MAX_STRING_LENGTH];
     rmqsBroker_t *Broker;
     rmqsPublisher_t *Publisher;
-    const int PublisherId = 1;
+    int PublisherId = 1;
+    rmqsConsumer_t *Consumer;
+    int SubscriptionId = 1;
     char *StreamName = "MY-STREAM";
     uint64_t Sequence;
     rqmsCreateStreamArgs_t CreateStreamArgs = {0};
@@ -52,6 +62,7 @@ int main(int argc, char * argv[])
     rmqsProperty_t Properties[6];
     rmqsMessage_t *MessageBatch;
     uint32_t PublishWaitingTime = 5000;
+    uint32_t ConsumeWaitingTime = 10000;
     uint64_t PublishingId = 0;
     size_t i, j;
     size_t UsedMemory;
@@ -59,9 +70,11 @@ int main(int argc, char * argv[])
     (void)argc;
     (void)argv;
 
+    //---------------------------------------------------------------------------
     //
     // Fill the client properties
     //
+    //---------------------------------------------------------------------------
     memset(Properties, 0, sizeof(Properties));
 
     strncpy(Properties[0].Key, "connection_name", RMQS_MAX_KEY_SIZE);
@@ -82,7 +95,7 @@ int main(int argc, char * argv[])
     strncpy(Properties[5].Key, "platform", RMQS_MAX_KEY_SIZE);
     strncpy(Properties[5].Value, "C", RMQS_MAX_VALUE_SIZE);
 
-    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, 0, 0, false, 0, Error, sizeof(Error));
+    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, false, 0, Error, sizeof(Error));
 
     if (ClientConfiguration == 0)
     {
@@ -101,10 +114,6 @@ int main(int argc, char * argv[])
                Broker->DBSchema, Broker->VirtualHost, Broker->UseTLS ? 1 : 0, ROW_SEPARATOR);
     }
 
-    printf("Creating client...\r\n");
-    Publisher = rmqsPublisherCreate(ClientConfiguration, "Publisher", PublishResultCallback);
-    printf("Publisher created\r\n");
-
     Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(ClientConfiguration->BrokerList, 0);
 
     if (! Broker)
@@ -114,10 +123,22 @@ int main(int argc, char * argv[])
     }
 
     PerformanceTimer = rmqsTimerCreate();
+    ElapseTimer = rmqsTimerCreate();
 
     #if _WIN32 || _WIN64
     rmqsInitWinsock();
     #endif
+
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    //
+    // Publisher example
+    //
+    //---------------------------------------------------------------------------
+    printf("Creating publisher...\r\n");
+    Publisher = rmqsPublisherCreate(ClientConfiguration, "Publisher", 0, PublishResultCallback);
+    printf("Publisher created\r\n");
 
     Socket = rmqsSocketCreate();
 
@@ -199,16 +220,14 @@ int main(int argc, char * argv[])
 
                     printf("Wait for publishing %d seconds\r\n", PublishWaitingTime / 1000);
 
-                    ElapseTimer = rmqsTimerCreate();
-                    rmqsTimerStart(ElapseTimer);
-                    printf("Timer begin: %u\r\n", rmqsTimerGetTime(ElapseTimer));
+                    printf("Publisher - Timer begin\r\n");
 
                     rmqsTimerStart(PerformanceTimer);
+                    rmqsTimerStart(ElapseTimer);
 
                     rmqsPublisherPoll(Publisher, Socket, PublishWaitingTime, &ConnectionLost);
 
-                    printf("Timer end: %u\r\n", rmqsTimerGetTime(ElapseTimer));
-                    rmqsTimerDestroy(ElapseTimer);
+                    printf("Publisher - Timer end: %u\r\n", rmqsTimerGetTime(ElapseTimer));
 
                     if (rmqsDeletePublisher(Publisher, Socket, PublisherId) != rmqsrOK)
                     {
@@ -248,14 +267,87 @@ int main(int argc, char * argv[])
         printf("Cannot connect to %s\r\n", Broker->Hostname);
     }
 
-    rmqsSocketDestroy(&Socket);
-    rmqsPublisherDestroy(Publisher);
-    rmqsClientConfigurationDestroy(ClientConfiguration);
-
     printf("Messages confirmed: %u/%u\r\n", (uint32_t)MessagesConfirmed, MESSAGE_COUNT * NO_OF_ITERATION);
     printf("Messages not confirmed: %u/%u\r\n", (uint32_t)MessagesNotConfirmed, MESSAGE_COUNT * NO_OF_ITERATION);
 
+    rmqsSocketDestroy(&Socket);
+
+    rmqsPublisherDestroy(Publisher);
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+
+    printf("%s\r\n", ROW_SEPARATOR);
+
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    //
+    // Consumer example
+    //
+    //---------------------------------------------------------------------------
+    printf("Creating consumer...\r\n");
+    Consumer = rmqsConsumerCreate(ClientConfiguration, 0, 0, CONSUMER_CREDIT_SIZE, DeliverResultCallback);
+    printf("Consumer created - credit size: %d\r\n", CONSUMER_CREDIT_SIZE);
+
+    Socket = rmqsSocketCreate();
+
+    if (rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
+    {
+        printf("Connected to %s\r\n", Broker->Hostname);
+
+        if (rqmsClientLogin(Consumer->Client, Socket, Broker->VirtualHost, Properties, 6) == rmqsrOK)
+        {
+            printf("Logged in to %s\r\n", Broker->Hostname);
+        }
+        else
+        {
+            printf("Cannot login to %s\r\n", Broker->Hostname);
+        }
+
+        if (rmqsSubscribe(Consumer, Socket, SubscriptionId, StreamName, rmqsotOffset, 0, Consumer->DefaultCredit, 0, 0) == rmqsrOK)
+        {
+            printf("Subscribed to stream %s\r\n", StreamName);
+        }
+        else
+        {
+            printf("Cannot subscribe to stream %s\r\n", StreamName);
+        }
+
+        printf("Consumer - Timer begin\r\n");
+
+        rmqsTimerStart(PerformanceTimer);
+        rmqsTimerStart(ElapseTimer);
+
+        rmqsConsumerPoll(Consumer, Socket, ConsumeWaitingTime, &ConnectionLost);
+
+        printf("Consumer - Timer end: %u\r\n", rmqsTimerGetTime(ElapseTimer));
+
+        if (rqmsClientLogout(Consumer->Client, Socket, 0, "Regular shutdown"))
+        {
+            printf("Logged out\r\n");
+        }
+        else
+        {
+            printf("Cannot logout\r\n");
+        }
+    }
+    else
+    {
+        printf("Cannot connect to %s\r\n", Broker->Hostname);
+    }
+
+    rmqsSocketDestroy(&Socket);
+
+    rmqsConsumerDestroy(Consumer);
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+
+    rmqsClientConfigurationDestroy(ClientConfiguration);
+
     rmqsTimerDestroy(PerformanceTimer);
+    rmqsTimerDestroy(ElapseTimer);
 
     UsedMemory = rmqsGetUsedMemory();
 
@@ -270,7 +362,7 @@ int main(int argc, char * argv[])
     return 0;
 }
 //---------------------------------------------------------------------------
-void PublishResultCallback(const uint8_t PublisherId, uint64_t *PublishingIdList, const size_t PublishingIdCount, const bool_t Confirmed, const uint16_t Code)
+void PublishResultCallback(uint8_t PublisherId, uint64_t *PublishingIdList, size_t PublishingIdCount, bool_t Confirmed, uint16_t Code)
 {
     size_t i;
 
@@ -291,6 +383,14 @@ void PublishResultCallback(const uint8_t PublisherId, uint64_t *PublishingIdList
     else
     {
         MessagesNotConfirmed++;
+    }
+}
+//---------------------------------------------------------------------------
+void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data)
+{
+    if (++MessagesReceived == MESSAGE_COUNT * NO_OF_ITERATION)
+    {
+        printf("%d Messages - Receive time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, rmqsTimerGetTime(PerformanceTimer));
     }
 }
 //---------------------------------------------------------------------------

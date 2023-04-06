@@ -25,6 +25,7 @@ SOFTWARE.
 #ifndef rmqsMessageH
 #define rmqsMessageH
 //---------------------------------------------------------------------------
+#include <stdlib.h>
 #include <stdint.h>
 //---------------------------------------------------------------------------
 #include "rmqsGlobal.h"
@@ -38,9 +39,9 @@ typedef struct
 }
 rmqsMessage_t;
 //---------------------------------------------------------------------------
-rmqsMessage_t * rmqsMessageCreate(const uint64_t PublishingId, void *Data, const uint32_t Size, const bool_t CopyData);
-void rmqsMessageDestroy(const rmqsMessage_t *Message);
-void rmqsBatchDestroy(rmqsMessage_t *MessageBatch, const size_t Count);
+rmqsMessage_t * rmqsMessageCreate(uint64_t PublishingId, void *Data, uint32_t Size, bool_t CopyData);
+void rmqsMessageDestroy(rmqsMessage_t *Message);
+void rmqsBatchDestroy(rmqsMessage_t *MessageBatch, size_t Count);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

@@ -35,7 +35,7 @@ static char_t *rmqsError[] =
 "Wrong broker syntax, examples: 'rabbitmq-stream://user:pass@host:5522/a-vhost"
 };
 //---------------------------------------------------------------------------
-void rmqsSetError(size_t ErrorIndex, char_t *ErrorString, const size_t ErrorStringLength)
+void rmqsSetError(size_t ErrorIndex, char_t *ErrorString, size_t ErrorStringLength)
 {
     memset(ErrorString, 0, ErrorIndex);
 

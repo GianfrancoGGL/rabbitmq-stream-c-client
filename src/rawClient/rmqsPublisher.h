@@ -35,24 +35,25 @@ SOFTWARE.
 #define RMQS_MAX_PUBLISHER_REFERENCE_LENGTH         256
 #define RMQS_PUBLISHING_ID_RESULT_ARRAY_SIZE       1024
 //---------------------------------------------------------------------------
-typedef void (*PublishResultCallback_t)(const uint8_t PublisherId, uint64_t *PublishingIdList, const size_t PublishingIdCount, const bool_t Confirmed, const uint16_t Code);
+typedef void (*PublishResultCallback_t)(uint8_t PublisherId, uint64_t *PublishingIdList, size_t PublishingIdCount, bool_t Confirmed, uint16_t Code);
 //---------------------------------------------------------------------------
 typedef struct
 {
     rmqsClient_t *Client;
     char_t PublisherReference[RMQS_MAX_PUBLISHER_REFERENCE_LENGTH + 1];
+    uint32_t Heartbeat; 
     uint64_t PublishingIdResultArray[RMQS_PUBLISHING_ID_RESULT_ARRAY_SIZE]; // This array allows to buffer multiple ids and then call once the publish result callback
     PublishResultCallback_t PublishResultCallback;
 }
 rmqsPublisher_t;
 //---------------------------------------------------------------------------
-rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, const char_t *PublisherReference, PublishResultCallback_t PublishResultCallback);
+rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *PublisherReference, uint32_t Heartbeat, PublishResultCallback_t PublishResultCallback);
 void rmqsPublisherDestroy(rmqsPublisher_t *Publisher);
-void rmqsPublisherPoll(rmqsPublisher_t *Publisher, const rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost);
-rmqsResponseCode_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, const rmqsSocket Socket, const uint8_t PublisherId, const char_t *StreamName);
-rmqsResponseCode_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, const rmqsSocket Socket, const char_t *StreamName, uint64_t *Sequence);
-rmqsResponseCode_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, const rmqsSocket Socket, const uint8_t PublisherId);
-void rmqsPublish(rmqsPublisher_t *Publisher, const rmqsSocket Socket, const uint8_t PublisherId, rmqsMessage_t *Messages, const size_t MessageCount);
+void rmqsPublisherPoll(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost);
+rmqsResponseCode_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_t PublisherId, char_t *StreamName);
+rmqsResponseCode_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket Socket, char_t *StreamName, uint64_t *Sequence);
+rmqsResponseCode_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_t PublisherId);
+void rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_t PublisherId, rmqsMessage_t *Messages, size_t MessageCount);
 void rmqsHandlePublishResult(uint16_t Key, rmqsPublisher_t *Publisher, rmqsBuffer_t *Buffer);
 #endif
 //---------------------------------------------------------------------------

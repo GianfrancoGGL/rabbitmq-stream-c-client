@@ -24,6 +24,7 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 #include "rmqsClient.h"
 #include "rmqsPublisher.h"
+#include "rmqsConsumer.h"
 #include "rmqsMemory.h"
 #include "rmqsBuffer.h"
 #include "rmqsProtocol.h"
@@ -39,17 +40,17 @@ bool_t rmqsIsLittleEndianMachine(void)
 
     if (bint.c[0] == 1)
     {
-       return 0;
+       return false;
     }
     else
     {
-       return 1;
+       return true;
     }
 }
 //---------------------------------------------------------------------------
-void rmqsSendMessage(const void *Client, const rmqsSocket Socket, const char_t *Data, size_t DataSize)
+void rmqsSendMessage(void *Client, rmqsSocket Socket, char_t *Data, size_t DataSize)
 {
-    const rmqsClient_t *ClientObj = (const rmqsClient_t *)Client;
+    rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
     uint16_t Key;
 
     if (ClientObj->ClientConfiguration->Logger)
@@ -66,12 +67,12 @@ void rmqsSendMessage(const void *Client, const rmqsSocket Socket, const char_t *
         rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)Data, DataSize, "TX", rmqsGetMessageDescription(Key), 0);
     }
 
-    send(Socket, (const char_t *)Data, (int32_t)DataSize, 0);
+    send(Socket, (char_t *)Data, (int32_t)DataSize, 0);
 }
 //---------------------------------------------------------------------------
-bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32_t RxTimeout, bool_t *ConnectionLost)
+bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool_t *ConnectionLost)
 {
-    const rmqsClient_t *ClientObj = (const rmqsClient_t *)Client;
+    rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
     int32_t RxBytes;
     uint32_t MessageSize;
     rmqsMsgHeader_t MsgHeader;
@@ -186,6 +187,16 @@ bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32
                 rmqsHandlePublishResult(MsgHeader.Key, (rmqsPublisher_t *)ClientObj->ParentObject, ClientObj->RxQueue);
             }
         }
+        else if (MsgHeader.Key == rmqscDeliver)
+        {
+            //
+            // This message is caught and handled by this procedure and not returned to the caller
+            //
+            if (ClientObj->ClientType == rmqsctConsumer)
+            {
+                rmqsHandleDeliver((rmqsConsumer_t *)ClientObj->ParentObject, Socket, ClientObj->RxQueue);
+            }
+        }
         else
         {
             break;
@@ -195,9 +206,9 @@ bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32
     return true;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsWaitResponse(const void *Client, const rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, const uint32_t RxTimeout, bool_t *ConnectionLost)
+bool_t rmqsWaitResponse(void *Client, rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionLost)
 {
-    const rmqsClient_t *ClientObj = (const rmqsClient_t *)Client;
+    rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
     uint32_t WaitMessageTimeout = RxTimeout;
     uint32_t Time;
 
@@ -245,7 +256,7 @@ bool_t rmqsWaitResponse(const void *Client, const rmqsSocket Socket, uint32_t Co
     return false;
 }
 //---------------------------------------------------------------------------
-void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, const size_t MessageSize)
+void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, size_t MessageSize)
 {
     //
     // Remove the message from the stream, shifting eventual extra bytes to the beginning
@@ -463,7 +474,7 @@ char_t * rmqsGetMessageDescription(uint16_t Key)
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
- size_t rmqsAddStringToBuffer(rmqsBuffer_t *Buffer, const char_t *Value, bool_t IsLittleEndianMachine)
+ size_t rmqsAddStringToBuffer(rmqsBuffer_t *Buffer, char_t *Value, bool_t IsLittleEndianMachine)
 {
     int16_t StringLen;
     size_t BytesAdded;

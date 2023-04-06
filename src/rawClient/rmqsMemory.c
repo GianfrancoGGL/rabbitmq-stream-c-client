@@ -27,7 +27,7 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 size_t TotalUsedMemory = 0;
 //---------------------------------------------------------------------------
-void * rmqsAllocateMemory(const size_t Size)
+void * rmqsAllocateMemory(size_t Size)
 {
     char_t *Memory = (char_t *)malloc(Size + sizeof(size_t)); // Allocate 4 extra bytes to store the block size
 
@@ -51,7 +51,7 @@ void rmqsFreeMemory(void *Memory)
     free((void *)MemoryToFree);
 }
 //---------------------------------------------------------------------------
-void * rmqsRellocateMemory(void *Memory, const size_t Size)
+void * rmqsRellocateMemory(void *Memory, size_t Size)
 {
     char_t *OldMemory = (char_t *)Memory, *NewMemory;
 

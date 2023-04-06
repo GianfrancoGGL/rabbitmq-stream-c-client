@@ -168,10 +168,10 @@ rmqsQueryPublisherResponse_t;
 //---------------------------------------------------------------------------
 bool_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
-void rmqsSendMessage(const void *Client, const rmqsSocket Socket, const char_t *Data, const size_t DataSize);
-bool_t rmqsWaitMessage(const void *Client, const rmqsSocket Socket, const uint32_t RxTimeout, bool_t *ConnectionLost);
-bool_t rmqsWaitResponse(const void *Client, const rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, const uint32_t RxTimeout, bool_t *ConnectionLost);
-void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, const size_t MessageSize);
+void rmqsSendMessage(void *Client, rmqsSocket Socket, char_t *Data, size_t DataSize);
+bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool_t *ConnectionLost);
+bool_t rmqsWaitResponse(void *Client, rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionLost);
+void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, size_t MessageSize);
 char_t * rmqsGetMessageDescription(uint16_t Key);
 //---------------------------------------------------------------------------
 size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value);
@@ -182,7 +182,7 @@ size_t rmqsAddInt32ToBuffer(rmqsBuffer_t *Buffer, int32_t Value, bool_t IsLittle
 size_t rmqsAddUInt32ToBuffer(rmqsBuffer_t *Buffer, uint32_t Value, bool_t IsLittleEndianMachine);
 size_t rmqsAddInt64ToBuffer(rmqsBuffer_t *Buffer, int64_t Value, bool_t IsLittleEndianMachine);
 size_t rmqsAddUInt64ToBuffer(rmqsBuffer_t *Buffer, uint64_t Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddStringToBuffer(rmqsBuffer_t *Buffer, const char_t *Value, bool_t IsLittleEndianMachine);
+size_t rmqsAddStringToBuffer(rmqsBuffer_t *Buffer, char_t *Value, bool_t IsLittleEndianMachine);
 size_t rmqsAddBytesToBuffer(rmqsBuffer_t *Buffer, void *Value, size_t ValueLength, bool_t DeclareLength, bool_t IsLittleEndianMachine);
 //---------------------------------------------------------------------------
 #endif

@@ -29,14 +29,14 @@ SOFTWARE.
 #include "rmqsError.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsBroker_t * rmqsBrokerCreate(const char_t *Hostname,
-                                const uint16_t Port,
-                                const char_t *Username,
-                                const char_t *Password,
-                                const char_t *DBSchema,
-                                const char_t *VirtualHost,
+rmqsBroker_t * rmqsBrokerCreate(char_t *Hostname,
+                                uint16_t Port,
+                                char_t *Username,
+                                char_t *Password,
+                                char_t *DBSchema,
+                                char_t *VirtualHost,
                                 char_t *ErrorString,
-                                const size_t ErrorStringLength)
+                                size_t ErrorStringLength)
 {
     rmqsBroker_t *Broker;
 
@@ -88,7 +88,7 @@ void rmqsBrokerSetDefault(rmqsBroker_t *Broker)
     strncpy(Broker->VirtualHost, RMQS_BROKER_DEFAULT_VHOST, RQMS_MAX_HOSTNAME_LENGTH);
 }
 //---------------------------------------------------------------------------
-bool_t rmqsBrokerParse(rmqsBroker_t *Broker, const char_t *BrokerString, char_t *ErrorString, const size_t ErrorStringLength)
+bool_t rmqsBrokerParse(rmqsBroker_t *Broker, char_t *BrokerString, char_t *ErrorString, size_t ErrorStringLength)
 {
     char_t PortString[5 + 1]; // Must contain from 0 to 65535
     char_t *Token, *BrokerStringEnd = (char_t *)BrokerString + strlen(BrokerString);

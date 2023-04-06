@@ -29,8 +29,9 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 #include "rmqsGlobal.h"
 //---------------------------------------------------------------------------
-bool_t rmqsStringContainsSpace(const char_t *String);
-bool_t rmqsStringContainsCtrlChar(const char_t *String);
+int64_t rmqsGetTimeStamp();
+bool_t rmqsStringContainsSpace(char_t *String);
+bool_t rmqsStringContainsCtrlChar(char_t *String);
 void rmqsConvertToLower(char_t *String);
 //---------------------------------------------------------------------------
 #endif
