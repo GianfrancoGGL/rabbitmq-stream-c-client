@@ -182,7 +182,6 @@ void rmqsCredit(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscriptio
     rmqsAddUInt32ToBuffer(Client->TxQueue, 0, ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
     rmqsAddUInt16ToBuffer(Client->TxQueue, Key, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt16ToBuffer(Client->TxQueue, Version, ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt8ToBuffer(Client->TxQueue, SubscriptionId);
     rmqsAddUInt16ToBuffer(Client->TxQueue, Credit, ClientConfiguration->IsLittleEndianMachine);
 
