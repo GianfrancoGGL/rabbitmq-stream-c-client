@@ -20,10 +20,12 @@ extern "C"
 }
 #endif
 //---------------------------------------------------------------------------
-#define ROW_SEPARATOR               "============================================================================"
+#define ROW_SEPARATOR             "============================================================================"
 #define NO_OF_ITERATION            100
 #define MESSAGE_COUNT              100
 #define CONSUMER_CREDIT_SIZE      1000
+#define PUBLISHER_REFERENCE       "Publisher"
+#define CONSUMER_REFERENCE        "Consumer"
 //---------------------------------------------------------------------------
 void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultList, size_t PublishingIdCount, bool_t Confirmed);
 void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset);
@@ -56,6 +58,7 @@ int main(int argc, char * argv[])
     uint32_t PublishWaitingTime = 5000;
     uint32_t ConsumeWaitingTime = 10000;
     uint64_t PublishingId = 0;
+    uint64_t Offset;
     size_t i, j;
     size_t UsedMemory;
 
@@ -126,7 +129,7 @@ int main(int argc, char * argv[])
     //
     //---------------------------------------------------------------------------
     printf("Creating publisher...\r\n");
-    Publisher = rmqsPublisherCreate(ClientConfiguration, "Publisher", 0, PublishResultCallback);
+    Publisher = rmqsPublisherCreate(ClientConfiguration, PUBLISHER_REFERENCE, 0, PublishResultCallback);
     printf("Publisher created\r\n");
 
     Socket = rmqsSocketCreate();
@@ -269,7 +272,7 @@ int main(int argc, char * argv[])
     //
     //---------------------------------------------------------------------------
     printf("Creating consumer...\r\n");
-    Consumer = rmqsConsumerCreate(ClientConfiguration, "Consumer", 0, 0, CONSUMER_CREDIT_SIZE, DeliverResultCallback);
+    Consumer = rmqsConsumerCreate(ClientConfiguration, CONSUMER_REFERENCE, 0, 0, CONSUMER_CREDIT_SIZE, DeliverResultCallback);
     printf("Consumer created - credit size: %d\r\n", CONSUMER_CREDIT_SIZE);
 
     Socket = rmqsSocketCreate();
@@ -307,6 +310,15 @@ int main(int argc, char * argv[])
     rmqsConsumerPoll(Consumer, Socket, ConsumeWaitingTime, &ConnectionLost);
 
     printf("Consumer - Timer end: %u\r\n", rmqsTimerGetTime(ElapseTimer));
+
+    if (rmqsQueryOffset(Consumer, Socket, CONSUMER_REFERENCE, Stream, &Offset))
+    {
+        printf("QueryOffset - Offset: %llu\r\n", Offset);
+    }
+    else
+    {
+        printf("QueryOffset error\r\n");
+    }
 
     if (rqmsClientLogout(Consumer->Client, Socket, 0, "Regular shutdown"))
     {

@@ -163,6 +163,15 @@ typedef struct
 }
 rmqsQueryPublisherResponse_t;
 //---------------------------------------------------------------------------
+typedef struct
+{
+    rmqsMsgHeader_t Header;
+    uint32_t CorrelationId;
+    uint16_t ResponseCode;
+    uint64_t Offset;
+}
+rmqsQueryOffsetResponse_t;
+//---------------------------------------------------------------------------
 #pragma pack(pop)
 //---------------------------------------------------------------------------
 bool_t rmqsIsLittleEndianMachine(void);

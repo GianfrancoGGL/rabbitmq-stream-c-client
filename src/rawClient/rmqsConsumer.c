@@ -198,6 +198,67 @@ void rmqsCredit(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscriptio
     rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 }
 //---------------------------------------------------------------------------
+bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Reference, char_t *Stream, uint64_t *Offset)
+{
+    rmqsClient_t *Client = Consumer->Client;
+    rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
+    uint16_t Key = rmqscQueryOffset;
+    uint16_t Version = 1;
+    rmqsQueryOffsetResponse_t *QueryOffsetResponse;
+    bool_t ConnectionLost;
+
+    *Offset = 0;
+
+    rmqsBufferClear(Client->TxQueue, false);
+
+    rmqsAddUInt32ToBuffer(Client->TxQueue, 0, ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Key, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Version, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, Reference, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, Stream, ClientConfiguration->IsLittleEndianMachine);
+
+    //
+    // Moves to the beginning of the stream and writes the total message body size
+    //
+    rmqsBufferMoveTo(Client->TxQueue, 0);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), ClientConfiguration->IsLittleEndianMachine);
+
+    rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
+
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
+    {
+        //
+        // Handshake response is different from a standard response, it has to be reparsed
+        //
+        QueryOffsetResponse = (rmqsQueryOffsetResponse_t *)Client->RxQueue->Data;
+
+        if (Client->ClientConfiguration->IsLittleEndianMachine)
+        {
+            QueryOffsetResponse->Header.Size = SwapUInt32(QueryOffsetResponse->Header.Size);
+            QueryOffsetResponse->Header.Key = SwapUInt16(QueryOffsetResponse->Header.Key);
+            QueryOffsetResponse->Header.Key &= 0x7FFF;
+            QueryOffsetResponse->Header.Version = SwapUInt16(QueryOffsetResponse->Header.Version);
+            QueryOffsetResponse->CorrelationId = SwapUInt32(QueryOffsetResponse->CorrelationId);
+            QueryOffsetResponse->ResponseCode = SwapUInt16(QueryOffsetResponse->ResponseCode);
+            QueryOffsetResponse->Offset = SwapUInt64(QueryOffsetResponse->Offset);
+        }
+
+        if (QueryOffsetResponse->Header.Key != rmqscQueryOffset)
+        {
+            return false;
+        }
+
+        *Offset = QueryOffsetResponse->Offset;
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+//---------------------------------------------------------------------------
 void rmqsStoreOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Reference, char_t *Stream, uint64_t Offset)
 {
     rmqsClient_t *Client = Consumer->Client;
