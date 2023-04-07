@@ -19,13 +19,6 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-#ifdef __BORLANDC__
-#include "madExcept.h"
-#endif
-//---------------------------------------------------------------------------
-#ifdef __BORLANDC__
-#pragma comment(lib, "ws2_32.lib")
-#endif
 //---------------------------------------------------------------------------
 #define ROW_SEPARATOR               "============================================================================"
 #define NO_OF_ITERATION            100
@@ -33,7 +26,7 @@ extern "C"
 #define CONSUMER_CREDIT_SIZE      1000
 //---------------------------------------------------------------------------
 void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultList, size_t PublishingIdCount, bool_t Confirmed);
-void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, bool_t *StoreOffset);
+void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset);
 //---------------------------------------------------------------------------
 rmqsTimer_t *PerformanceTimer = 0;
 rmqsTimer_t *ElapseTimer = 0;
@@ -391,13 +384,11 @@ void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultLi
     }
 }
 //---------------------------------------------------------------------------
-void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, bool_t *StoreOffset)
+void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset)
 {
     MessagesReceived++;
 
-    /*
     *StoreOffset = MessagesReceived % 100 == 0;
-    */
 
     if (MessagesReceived == MESSAGE_COUNT * NO_OF_ITERATION)
     {

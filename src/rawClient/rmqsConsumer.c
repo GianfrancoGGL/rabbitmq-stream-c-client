@@ -229,7 +229,7 @@ void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket Socket, rmqsBuffer_t
     uint8_t *SubscriptionId;
     uint32_t *EntryTypeAndSize;
     void *Data;
-    uint64_t ChunkOffset;
+    uint64_t MessageOffset;
     bool_t StoreOffset;
     size_t i;
 
@@ -282,7 +282,7 @@ void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket Socket, rmqsBuffer_t
         *Consumer->DeliverInfo.Reserved = SwapUInt32(*Consumer->DeliverInfo.Reserved);
     }
 
-    ChunkOffset = *Consumer->DeliverInfo.ChunkFirstOffset; 
+    MessageOffset = *Consumer->DeliverInfo.ChunkFirstOffset; 
 
     for (i = 0; i < *Consumer->DeliverInfo.NumEntries; i++)
     {
@@ -299,14 +299,14 @@ void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket Socket, rmqsBuffer_t
 
         StoreOffset = false;
 
-        Consumer->DeliverResultCallback(*SubscriptionId, (size_t)*EntryTypeAndSize, Data, &Consumer->DeliverInfo, &StoreOffset);
+        Consumer->DeliverResultCallback(*SubscriptionId, (size_t)*EntryTypeAndSize, Data, &Consumer->DeliverInfo, MessageOffset, &StoreOffset);
 
         if (StoreOffset)
         {
-            rmqsStoreOffset(Consumer, Socket, Consumer->ConsumerReference, Consumer->SubscriptionStreamTable[*SubscriptionId - 1], ChunkOffset);
+            rmqsStoreOffset(Consumer, Socket, Consumer->ConsumerReference, Consumer->SubscriptionStreamTable[*SubscriptionId - 1], MessageOffset);
         }
 
-        ChunkOffset++;
+        MessageOffset++;
     }
 
     rmqsCredit(Consumer, Socket, *SubscriptionId, Consumer->DefaultCredit);
