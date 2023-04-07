@@ -73,7 +73,7 @@ void rmqsPublisherPoll(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint32_t T
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_t PublisherId, char_t *StreamName)
+bool_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_t PublisherId, char_t *Stream)
 {
     rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -89,7 +89,7 @@ rmqsResponseCode_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket S
     rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt8ToBuffer(Client->TxQueue, PublisherId);
     rmqsAddStringToBuffer(Client->TxQueue, Publisher->PublisherReference, ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddStringToBuffer(Client->TxQueue, StreamName, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, Stream, ClientConfiguration->IsLittleEndianMachine);
 
     //
     // Moves to the beginning of the stream and writes the total message body size
@@ -103,18 +103,18 @@ rmqsResponseCode_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket S
     {
         if (Client->Response.Header.Key != rmqscDeclarePublisher)
         {
-            return rmqsrWrongReply;
+            return false;
         }
 
-        return Client->Response.ResponseCode;
+        return true;
     }
     else
     {
-        return rmqsrNoReply;
+        return false;
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket Socket, char_t *StreamName, uint64_t *Sequence)
+bool_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket Socket, char_t *Stream, uint64_t *Sequence)
 {
     rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -130,7 +130,7 @@ rmqsResponseCode_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSo
     rmqsAddUInt16ToBuffer(Client->TxQueue, Version, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddStringToBuffer(Client->TxQueue, Publisher->PublisherReference, ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddStringToBuffer(Client->TxQueue, StreamName, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, Stream, ClientConfiguration->IsLittleEndianMachine);
 
     //
     // Moves to the beginning of the stream and writes the total message body size
@@ -144,7 +144,7 @@ rmqsResponseCode_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSo
     {
         if (Client->Response.Header.Key != rmqscQueryPublisherSequence)
         {
-            return rmqsrWrongReply;
+            return false;
         }
 
         QueryPublisherResponse = (rmqsQueryPublisherResponse_t *)Client->RxQueue->Data;
@@ -156,15 +156,15 @@ rmqsResponseCode_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSo
             *Sequence = SwapUInt64(*Sequence);
         }
 
-        return Client->Response.ResponseCode;
+        return true;
     }
     else
     {
-        return rmqsrNoReply;
+        return false;
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_t PublisherId)
+bool_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_t PublisherId)
 {
     rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -192,14 +192,14 @@ rmqsResponseCode_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket So
     {
         if (Client->Response.Header.Key != rmqscDeletePublisher)
         {
-            return rmqsrWrongReply;
+            return false;
         }
 
-        return Client->Response.ResponseCode;
+        return true;
     }
     else
     {
-        return rmqsrNoReply;
+        return false;
     }
 }
 //---------------------------------------------------------------------------
@@ -240,11 +240,13 @@ void rmqsHandlePublishResult(uint16_t Key, rmqsPublisher_t *Publisher, rmqsBuffe
     uint8_t *PublisherId;
     uint32_t *NoOfRecords;
     uint64_t *PublishingId;
-    uint32_t i;
+    uint16_t *Code;
     size_t PublishIdCount = 0;
+    uint32_t i;
 
     PublisherId = (uint8_t *)MessagePayload;
     MessagePayload += sizeof(uint8_t);
+ 
     NoOfRecords = (uint32_t *)MessagePayload;
     MessagePayload += sizeof(uint32_t);
 
@@ -253,31 +255,40 @@ void rmqsHandlePublishResult(uint16_t Key, rmqsPublisher_t *Publisher, rmqsBuffe
         *NoOfRecords = SwapUInt32(*NoOfRecords);
     }
 
-    if (Key == rmqscPublishConfirm)
+    for (i = 0; i < *NoOfRecords; i++)
     {
-        for (i = 0; i < *NoOfRecords; i++)
+        PublishingId = (uint64_t *)MessagePayload;
+
+        if (Publisher->Client->ClientConfiguration->IsLittleEndianMachine)
         {
-            PublishingId = (uint64_t *)MessagePayload;
+            *PublishingId = SwapUInt64(*PublishingId);
+        }
+
+        Publisher->PublishResultArray[PublishIdCount].PublishingId = *PublishingId;
+        MessagePayload += sizeof(uint64_t);
+
+        if (Key == rmqscPublishError)
+        {
+            Code = (uint16_t *)MessagePayload;
+            MessagePayload += sizeof(uint16_t);
 
             if (Publisher->Client->ClientConfiguration->IsLittleEndianMachine)
             {
-                *PublishingId = SwapUInt64(*PublishingId);
+                *Code = SwapUInt16(*Code);
             }
 
-            Publisher->PublishingIdResultArray[PublishIdCount++] = *PublishingId;
-
-            if (PublishIdCount == RMQS_PUBLISHING_ID_RESULT_ARRAY_SIZE || i == *NoOfRecords - 1)
-            {
-                Publisher->PublishResultCallback(*PublisherId, Publisher->PublishingIdResultArray, PublishIdCount, true, 0);
-                PublishIdCount = 0; // Reset the index of the array containing the list of the publish result
-            }
-
-            MessagePayload += sizeof(uint64_t);
+            Publisher->PublishResultArray[PublishIdCount].Code = *Code;
         }
-    }
-    else if (Key == rmqscPublishError)
-    {
-        Key = Key;
+        else
+        {
+            Publisher->PublishResultArray[PublishIdCount].Code = 0;
+        }
+
+        if (++PublishIdCount == RMQS_PUBLISH_RESULT_ARRAY_SIZE || i == *NoOfRecords - 1)
+        {
+            Publisher->PublishResultCallback(*PublisherId, Publisher->PublishResultArray, PublishIdCount, Key == rmqscPublishConfirm);
+            PublishIdCount = 0; // Reset the index of the array containing the list of the publish result
+        }
     }
 }
 //---------------------------------------------------------------------------

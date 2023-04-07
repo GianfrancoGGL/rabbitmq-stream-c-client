@@ -159,17 +159,10 @@ bool_t rqmsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualH
 //---------------------------------------------------------------------------
 bool_t rqmsClientLogout(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason)
 {
-    if (rmqsClose(Client, Socket, ClosingCode, ClosingReason) == rmqsrOK)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return rmqsClose(Client, Socket, ClosingCode, ClosingReason);
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, rmqsProperty_t *Properties, size_t PropertiesCount)
+bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, rmqsProperty_t *Properties, size_t PropertiesCount)
 {
     uint16_t Key = rmqscPeerProperties;
     uint16_t Version = 1;
@@ -239,18 +232,18 @@ rmqsResponseCode_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, r
     {
         if (Client->Response.Header.Key != rmqscPeerProperties)
         {
-            return rmqsrWrongReply;
+            return false;
         }
 
-        return Client->Response.ResponseCode;
+        return true;
     }
     else
     {
-        return rmqsrNoReply;
+        return false;
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainAuthSupported)
+bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainAuthSupported)
 {
     uint16_t Key = rmqscSaslHandshake;
     uint16_t Version = 1;
@@ -298,7 +291,7 @@ rmqsResponseCode_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bo
 
         if (SaslHandshakeResponse->Header.Key != rmqscSaslHandshake)
         {
-            return rmqsrWrongReply;
+            return false;
         }
 
         if (SaslHandshakeResponse->NoOfMechanisms > 0)
@@ -334,15 +327,15 @@ rmqsResponseCode_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bo
             }
         }
 
-        return SaslHandshakeResponse->ResponseCode;
+        return true;
     }
     else
     {
-        return rmqsrNoReply;
+        return false;
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Mechanism, char_t *Username, char_t *Password)
+bool_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Mechanism, char_t *Username, char_t *Password)
 {
     uint16_t Key = rmqscSaslAuthenticate;
     uint16_t Version = 1;
@@ -382,18 +375,18 @@ rmqsResponseCode_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket Socket,
     {
         if (Client->Response.Header.Key != rmqscSaslAuthenticate)
         {
-            return rmqsrWrongReply;
+            return false;
         }
 
-        return Client->Response.ResponseCode;
+        return true;
     }
     else
     {
-        return rmqsrNoReply;
+        return false;
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost)
+bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost)
 {
     uint16_t Key = rmqscOpen;
     uint16_t Version = 1;
@@ -419,18 +412,18 @@ rmqsResponseCode_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *Vir
     {
         if (Client->Response.Header.Key != rmqscOpen)
         {
-            return rmqsrWrongReply;
+            return false;
         }
 
-        return Client->Response.ResponseCode;
+        return true;
     }
     else
     {
-        return rmqsrNoReply;
+        return false;
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason)
+bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason)
 {
     uint16_t Key = rmqscClose;
     uint16_t Version = 1;
@@ -457,24 +450,26 @@ rmqsResponseCode_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t C
     {
         if (Client->Response.Header.Key != rmqscClose)
         {
-            return rmqsrWrongReply;
+            return false;
         }
 
-        return Client->Response.ResponseCode;
+        return true;
     }
     else
     {
-        return rmqsrNoReply;
+        return false;
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *StreamName, rqmsCreateStreamArgs_t *CreateStreamArgs)
+bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rqmsCreateStreamArgs_t *CreateStreamArgs, bool_t *StreamAlreadyExists)
 {
     uint16_t Key = rmqscCreate;
     uint16_t Version = 1;
     size_t NoOfArgs = 0;
     rmqsProperty_t Property;
     bool_t ConnectionLost;
+
+    *StreamAlreadyExists = false;
 
     NoOfArgs += CreateStreamArgs->SetMaxLengthBytes ? 1 : 0;
     NoOfArgs += CreateStreamArgs->SetMaxAge ? 1 : 0;
@@ -488,7 +483,7 @@ rmqsResponseCode_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *S
     rmqsAddUInt16ToBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt16ToBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddStringToBuffer(Client->TxQueue, (char_t *)StreamName, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, (char_t *)Stream, Client->ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)NoOfArgs, Client->ClientConfiguration->IsLittleEndianMachine);
 
     if (CreateStreamArgs->SetMaxLengthBytes)
@@ -566,18 +561,25 @@ rmqsResponseCode_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *S
     {
         if (Client->Response.Header.Key != rmqscCreate)
         {
-            return rmqsrWrongReply;
+            return false;
         }
 
-        return Client->Response.ResponseCode;
+        *StreamAlreadyExists = Client->Response.ResponseCode == rmqsrStreamAlreadyExists;
+        
+        if (*StreamAlreadyExists)
+        {
+            return false;
+        }
+
+        return true;
     }
     else
     {
-        return rmqsrNoReply;
+        return false;
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *StreamName)
+bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream)
 {
     uint16_t Key = rmqscDelete;
     uint16_t Version = 1;
@@ -589,7 +591,7 @@ rmqsResponseCode_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *S
     rmqsAddUInt16ToBuffer(Client->TxQueue, Key, Client->ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt16ToBuffer(Client->TxQueue, Version, Client->ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, Client->ClientConfiguration->IsLittleEndianMachine);
-    rmqsAddStringToBuffer(Client->TxQueue, (char_t *)StreamName, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, (char_t *)Stream, Client->ClientConfiguration->IsLittleEndianMachine);
 
     //
     // Moves to the beginning of the stream and writes the total message body size
@@ -603,14 +605,14 @@ rmqsResponseCode_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *S
     {
         if (Client->Response.Header.Key != rmqscDelete)
         {
-            return rmqsrWrongReply;
+            return false;
         }
 
-        return Client->Response.ResponseCode;
+        return true;
     }
     else
     {
-        return rmqsrNoReply;
+        return false;
     }
 }
 //---------------------------------------------------------------------------

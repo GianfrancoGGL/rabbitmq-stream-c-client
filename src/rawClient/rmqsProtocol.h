@@ -103,8 +103,7 @@ typedef enum
     rmqsrAccessRefused = 0x10,
     rmqsrPreconditionFailed = 0x11,
     rmqsrPublisherDoesNotExist = 0x12,
-    rmqsrNoOffset = 0x13,
-    rmqsrWrongReply = 0xFF
+    rmqsrNoOffset = 0x13
 }
 rmqsResponseCode_t;
 //---------------------------------------------------------------------------

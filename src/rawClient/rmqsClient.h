@@ -33,8 +33,8 @@ SOFTWARE.
 #include "rmqsProtocol.h"
 #include "rmqsBuffer.h"
 //---------------------------------------------------------------------------
-#define RMQS_CLIENT_HOSTNAME_MAX_SIZE    256
-#define RMQS_CLIENT_RX_BUFFER_SIZE      1024
+#define RMQS_CLIENT_RX_BUFFER_SIZE       1024
+#define RMQS_STREAM_MAX_LENGTH            256
 //---------------------------------------------------------------------------
 typedef enum
 {
@@ -108,13 +108,13 @@ void rmqsClientDestroy(rmqsClient_t *Client);
 bool_t rqmsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost, rmqsProperty_t *Properties, size_t PropertiesCount);
 bool_t rqmsClientLogout(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason);
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, rmqsProperty_t *Properties, size_t PropertiesCount);
-rmqsResponseCode_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainAuthSupported);
-rmqsResponseCode_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Mechanism, char_t *Username, char_t *Password);
-rmqsResponseCode_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost);
-rmqsResponseCode_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason);
-rmqsResponseCode_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *StreamName, rqmsCreateStreamArgs_t *CreateStreamArgs);
-rmqsResponseCode_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *StreamName);
+bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, rmqsProperty_t *Properties, size_t PropertiesCount);
+bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainAuthSupported);
+bool_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Mechanism, char_t *Username, char_t *Password);
+bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost);
+bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason);
+bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rqmsCreateStreamArgs_t *CreateStreamArgs, bool_t *StreamAlreadyExists);
+bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream);
 //---------------------------------------------------------------------------
 #endif
 //---------------------------------------------------------------------------

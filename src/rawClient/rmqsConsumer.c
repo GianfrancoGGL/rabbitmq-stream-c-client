@@ -28,13 +28,14 @@ SOFTWARE.
 #include "rmqsClientConfiguration.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, uint32_t FrameMax, uint32_t Heartbeat, uint16_t DefaultCredit, DeliverResultCallback_t DeliverResultCallback)
+rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *ConsumerReference, uint32_t FrameMax, uint32_t Heartbeat, uint16_t DefaultCredit, DeliverResultCallback_t DeliverResultCallback)
 {
     rmqsConsumer_t *Consumer = (rmqsConsumer_t *)rmqsAllocateMemory(sizeof(rmqsConsumer_t));
 
     memset(Consumer, 0, sizeof(rmqsConsumer_t));
 
     Consumer->Client = rmqsClientCreate(ClientConfiguration, rmqsctConsumer, Consumer);
+    strncpy(Consumer->ConsumerReference, ConsumerReference, RMQS_MAX_CONSUMER_REFERENCE_LENGTH);
     Consumer->FrameMax = FrameMax;
     Consumer->Heartbeat = Heartbeat;
     Consumer->DefaultCredit = DefaultCredit; 
@@ -69,12 +70,12 @@ void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint32_t Time
         }
 
         Time = rmqsTimerGetTime(Consumer->Client->ClientConfiguration->WaitReplyTimer);
-
+            
         WaitMessageTimeout = Timeout - Time;
     }
 }
 //---------------------------------------------------------------------------
-rmqsResponseCode_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, char_t *StreamName, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertiesCount)
+bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertiesCount)
 {
     rmqsClient_t *Client = Consumer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -120,7 +121,7 @@ rmqsResponseCode_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, ui
     rmqsAddUInt16ToBuffer(Client->TxQueue, Version, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt8ToBuffer(Client->TxQueue, SubscriptionId);
-    rmqsAddStringToBuffer(Client->TxQueue, StreamName, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, Stream, ClientConfiguration->IsLittleEndianMachine);
     rmqsAddUInt16ToBuffer(Client->TxQueue, (uint16_t)OffsetType, ClientConfiguration->IsLittleEndianMachine);
 
     if (OffsetType == rmqsotTimestamp)
@@ -159,14 +160,17 @@ rmqsResponseCode_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, ui
     {
         if (Client->Response.Header.Key != rmqscSubscribe)
         {
-            return rmqsrWrongReply;
+            return false;
         }
 
-        return Client->Response.ResponseCode;
+        memset(Consumer->SubscriptionStreamTable[SubscriptionId - 1], 0, RMQS_STREAM_MAX_LENGTH + 1);
+        strncpy(Consumer->SubscriptionStreamTable[SubscriptionId - 1], Stream, RMQS_STREAM_MAX_LENGTH);
+
+        return true;
     }
     else
     {
-        return rmqsrNoReply;
+        return false;
     }
 }
 //---------------------------------------------------------------------------
@@ -194,75 +198,93 @@ void rmqsCredit(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscriptio
     rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 }
 //---------------------------------------------------------------------------
+void rmqsStoreOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Reference, char_t *Stream, uint64_t Offset)
+{
+    rmqsClient_t *Client = Consumer->Client;
+    rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
+    uint16_t Key = rmqscStoreOffset;
+    uint16_t Version = 1;
+
+    rmqsBufferClear(Client->TxQueue, false);
+
+    rmqsAddUInt32ToBuffer(Client->TxQueue, 0, ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Key, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Version, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, Reference, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddStringToBuffer(Client->TxQueue, Stream, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt64ToBuffer(Client->TxQueue, Offset, ClientConfiguration->IsLittleEndianMachine);
+
+    //
+    // Moves to the beginning of the stream and writes the total message body size
+    //
+    rmqsBufferMoveTo(Client->TxQueue, 0);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), ClientConfiguration->IsLittleEndianMachine);
+
+    rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
+}
+//---------------------------------------------------------------------------
 void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket Socket, rmqsBuffer_t *Buffer)
 {
     char_t *MessagePayload = (char_t *)Buffer->Data + sizeof(rmqsMsgHeader_t);
     uint8_t *SubscriptionId;
-    int8_t *MagicVersion;
-    int8_t *ChunkType;
-    uint16_t *NumEntries;
-    uint32_t *NumRecords;
-    int64_t *Timestamp;
-    uint64_t *Epoch;
-    uint64_t *ChunkFirstOffset;
-    int32_t *ChunkCrc;
-    uint32_t *DataLength;
-    uint32_t *TrailerLength;
-    uint32_t *Reserved;
     uint32_t *EntryTypeAndSize;
     void *Data;
+    uint64_t ChunkOffset;
+    bool_t StoreOffset;
     size_t i;
 
     SubscriptionId = (uint8_t *)MessagePayload;
     MessagePayload += sizeof(uint8_t);
 
-    MagicVersion = (uint8_t *)MessagePayload;
+    Consumer->DeliverInfo.MagicVersion = (uint8_t *)MessagePayload;
     MessagePayload += sizeof(uint8_t);
 
-    ChunkType = (uint8_t *)MessagePayload;
+    Consumer->DeliverInfo.ChunkType = (uint8_t *)MessagePayload;
     MessagePayload += sizeof(uint8_t);
 
-    NumEntries = (uint16_t *)MessagePayload;
+    Consumer->DeliverInfo.NumEntries = (uint16_t *)MessagePayload;
     MessagePayload += sizeof(uint16_t);
     
-    NumRecords = (uint32_t *)MessagePayload;
+    Consumer->DeliverInfo.NumRecords = (uint32_t *)MessagePayload;
     MessagePayload += sizeof(uint32_t);
 
-    Timestamp = (int64_t *)MessagePayload;
+    Consumer->DeliverInfo.Timestamp = (int64_t *)MessagePayload;
     MessagePayload += sizeof(int64_t);
 
-    Epoch = (uint64_t *)MessagePayload;
+    Consumer->DeliverInfo.Epoch = (uint64_t *)MessagePayload;
     MessagePayload += sizeof(uint64_t);
 
-    ChunkFirstOffset = (uint64_t *)MessagePayload;
+    Consumer->DeliverInfo.ChunkFirstOffset = (uint64_t *)MessagePayload;
     MessagePayload += sizeof(uint64_t);
 
-    ChunkCrc = (int32_t *)MessagePayload;
+    Consumer->DeliverInfo.ChunkCrc = (int32_t *)MessagePayload;
     MessagePayload += sizeof(int32_t);
 
-    DataLength = (uint32_t *)MessagePayload;
+    Consumer->DeliverInfo.DataLength = (uint32_t *)MessagePayload;
     MessagePayload += sizeof(uint32_t);
 
-    TrailerLength = (uint32_t *)MessagePayload;
+    Consumer->DeliverInfo.TrailerLength = (uint32_t *)MessagePayload;
     MessagePayload += sizeof(uint32_t);
 
-    Reserved = (uint32_t *)MessagePayload;
+    Consumer->DeliverInfo.Reserved = (uint32_t *)MessagePayload;
     MessagePayload += sizeof(uint32_t);
 
     if (Consumer->Client->ClientConfiguration->IsLittleEndianMachine)
     {
-        *NumEntries = SwapUInt16(*NumEntries);
-        *NumRecords = SwapUInt32(*NumRecords);
-        *Timestamp = SwapUInt64(*Timestamp);
-        *Epoch += SwapUInt64(*Epoch);
-        *ChunkFirstOffset += SwapUInt64(*ChunkFirstOffset);
-        *ChunkCrc = SwapUInt32(*ChunkCrc);
-        *DataLength = SwapUInt32(*DataLength);
-        *TrailerLength = SwapUInt32(*TrailerLength);
-        *Reserved = SwapUInt32(*Reserved);
+        *Consumer->DeliverInfo.NumEntries = SwapUInt16(*Consumer->DeliverInfo.NumEntries);
+        *Consumer->DeliverInfo.NumRecords = SwapUInt32(*Consumer->DeliverInfo.NumRecords);
+        *Consumer->DeliverInfo.Timestamp = SwapUInt64(*Consumer->DeliverInfo.Timestamp);
+        *Consumer->DeliverInfo.Epoch += SwapUInt64(*Consumer->DeliverInfo.Epoch);
+        *Consumer->DeliverInfo.ChunkFirstOffset += SwapUInt64(*Consumer->DeliverInfo.ChunkFirstOffset);
+        *Consumer->DeliverInfo.ChunkCrc = SwapUInt32(*Consumer->DeliverInfo.ChunkCrc);
+        *Consumer->DeliverInfo.DataLength = SwapUInt32(*Consumer->DeliverInfo.DataLength);
+        *Consumer->DeliverInfo.TrailerLength = SwapUInt32(*Consumer->DeliverInfo.TrailerLength);
+        *Consumer->DeliverInfo.Reserved = SwapUInt32(*Consumer->DeliverInfo.Reserved);
     }
 
-    for (i = 0; i < *NumEntries; i++)
+    ChunkOffset = *Consumer->DeliverInfo.ChunkFirstOffset; 
+
+    for (i = 0; i < *Consumer->DeliverInfo.NumEntries; i++)
     {
         EntryTypeAndSize = (uint32_t *)MessagePayload;
         MessagePayload += sizeof(uint32_t);
@@ -275,7 +297,16 @@ void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket Socket, rmqsBuffer_t
         Data = (uint8_t *)MessagePayload;
         MessagePayload += *EntryTypeAndSize;
 
-        Consumer->DeliverResultCallback(*SubscriptionId, (size_t)*EntryTypeAndSize, Data);
+        StoreOffset = false;
+
+        Consumer->DeliverResultCallback(*SubscriptionId, (size_t)*EntryTypeAndSize, Data, &Consumer->DeliverInfo, &StoreOffset);
+
+        if (StoreOffset)
+        {
+            rmqsStoreOffset(Consumer, Socket, Consumer->ConsumerReference, Consumer->SubscriptionStreamTable[*SubscriptionId - 1], ChunkOffset);
+        }
+
+        ChunkOffset++;
     }
 
     rmqsCredit(Consumer, Socket, *SubscriptionId, Consumer->DefaultCredit);

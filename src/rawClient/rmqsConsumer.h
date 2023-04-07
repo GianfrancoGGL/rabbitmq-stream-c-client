@@ -32,14 +32,35 @@ SOFTWARE.
 #include "rmqsMessage.h"
 #include "rmqsTimer.h"
 //---------------------------------------------------------------------------
-typedef void (*DeliverResultCallback_t)(uint8_t SubscriptionId, size_t DataSize, void *Data);
+#define RMQS_MAX_CONSUMER_REFERENCE_LENGTH         256
+//---------------------------------------------------------------------------
+typedef struct
+{
+    int8_t *MagicVersion;
+    int8_t *ChunkType;
+    uint16_t *NumEntries;
+    uint32_t *NumRecords;
+    int64_t *Timestamp;
+    uint64_t *Epoch;
+    uint64_t *ChunkFirstOffset;
+    int32_t *ChunkCrc;
+    uint32_t *DataLength;
+    uint32_t *TrailerLength;
+    uint32_t *Reserved;
+}
+rmqsDeliverInfo_t;
+//---------------------------------------------------------------------------
+typedef void (*DeliverResultCallback_t)(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, bool_t *StoreOffset);
 //---------------------------------------------------------------------------
 typedef struct
 {
     rmqsClient_t *Client;
+    char_t ConsumerReference[RMQS_MAX_CONSUMER_REFERENCE_LENGTH + 1];
     uint32_t FrameMax;
     uint32_t Heartbeat;
     uint16_t DefaultCredit;
+    char_t SubscriptionStreamTable[256][RMQS_STREAM_MAX_LENGTH + 1];
+    rmqsDeliverInfo_t DeliverInfo;
     DeliverResultCallback_t DeliverResultCallback;
 }
 rmqsConsumer_t;
@@ -54,11 +75,12 @@ typedef enum
 }
 rmqsOffsetType;
 //---------------------------------------------------------------------------
-rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, uint32_t FrameMax, uint32_t Heartbeat, uint16_t DefaultCredit, DeliverResultCallback_t DeliverResultCallback);
+rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *ConsumerReference, uint32_t FrameMax, uint32_t Heartbeat, uint16_t DefaultCredit, DeliverResultCallback_t DeliverResultCallback);
 void rmqsConsumerDestroy(rmqsConsumer_t *Consumer);
 void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost);
-rmqsResponseCode_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, char_t *StreamName, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertiesCount);
+bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertiesCount);
 void rmqsCredit(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, uint16_t Credit);
+void rmqsStoreOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Reference, char_t *Stream, uint64_t Offset);
 void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket Socket, rmqsBuffer_t *Buffer);
 #endif
 //---------------------------------------------------------------------------
