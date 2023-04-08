@@ -37,6 +37,8 @@ size_t MessagesConfirmed = 0;
 size_t MessagesNotConfirmed = 0;
 size_t MessagesReceived = 0;
 //---------------------------------------------------------------------------
+uint32_t TimerResult;
+//---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
     char *BrokerList = "rabbitmq-stream://rabbit:rabbit@192.168.56.1:5552";
@@ -216,9 +218,10 @@ int main(int argc, char * argv[])
         rmqsPublish(Publisher, Socket, PublisherId, MessageBatch, MESSAGE_COUNT);
     }
 
-    rmqsBatchDestroy(MessageBatch, MESSAGE_COUNT);
+    TimerResult = rmqsTimerGetTime(PerformanceTimer);
+    printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, TimerResult);
 
-    printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, rmqsTimerGetTime(PerformanceTimer));
+    rmqsBatchDestroy(MessageBatch, MESSAGE_COUNT);
 
     rmqsQueryPublisherSequence(Publisher, Socket, Stream, &Sequence);
 
@@ -233,16 +236,19 @@ int main(int argc, char * argv[])
 
     rmqsPublisherPoll(Publisher, Socket, PublishWaitingTime, &ConnectionLost);
 
-    printf("Publisher - Timer end: %u\r\n", rmqsTimerGetTime(ElapseTimer));
+    TimerResult = rmqsTimerGetTime(ElapseTimer);
+    printf("Publisher - Timer end: %u\r\n", TimerResult);
 
     if (rmqsDeletePublisher(Publisher, Socket, PublisherId))
     {
-        printf("Cannot delete the publisher\r\n");
+        printf("Publisher deleted\r\n");
     }
     else
     {
-        printf("Publisher deleted\r\n");
+        printf("Cannot delete the publisher\r\n");
     }
+
+    rmqsHeartbeat(Publisher->Client, Socket);
 
     if (rqmsClientLogout(Publisher->Client, Socket, 0, "Regular shutdown"))
     {
@@ -293,13 +299,24 @@ int main(int argc, char * argv[])
 
     printf("Logged in to %s\r\n", Broker->Hostname);
 
-    if (rmqsSubscribe(Consumer, Socket, SubscriptionId, Stream, rmqsotOffset, 0, Consumer->DefaultCredit, 0, 0) == rmqsrOK)
+    if (rmqsMetadata(Publisher->Client, Socket, &Stream, 1))
+    {
+        printf("Metadata retrieved for stream %s\r\n", Stream);
+    }
+    else
+    {
+        printf("Cannot retrieve the metadata for stream %s\r\n", Stream);
+        goto CLEAN_UP;
+    }
+
+    if (rmqsSubscribe(Consumer, Socket, SubscriptionId, Stream, rmqsotOffset, 0, Consumer->DefaultCredit, 0, 0))
     {
         printf("Subscribed to stream %s\r\n", Stream);
     }
     else
     {
         printf("Cannot subscribe to stream %s\r\n", Stream);
+        goto CLEAN_UP;
     }
 
     printf("Consumer - Timer begin\r\n");
@@ -309,16 +326,28 @@ int main(int argc, char * argv[])
 
     rmqsConsumerPoll(Consumer, Socket, ConsumeWaitingTime, &ConnectionLost);
 
-    printf("Consumer - Timer end: %u\r\n", rmqsTimerGetTime(ElapseTimer));
+    TimerResult = rmqsTimerGetTime(ElapseTimer);
+    printf("Consumer - Timer end: %u\r\n", TimerResult);
+
+    if (rmqsUnsubscribe(Consumer, Socket, SubscriptionId))
+    {
+        printf("Unsubscribed from stream %s\r\n", Stream);
+    }
+    else
+    {
+        printf("Cannot unsubcribe from stream %s\r\n", Stream);
+    }
 
     if (rmqsQueryOffset(Consumer, Socket, CONSUMER_REFERENCE, Stream, &Offset))
     {
-        printf("QueryOffset - Offset: %llu\r\n", Offset);
+        printf("QueryOffset - Offset: %" PRIu64 "\r\n", Offset);
     }
     else
     {
         printf("QueryOffset error\r\n");
     }
+
+    rmqsHeartbeat(Publisher->Client, Socket);
 
     if (rqmsClientLogout(Consumer->Client, Socket, 0, "Regular shutdown"))
     {
@@ -391,7 +420,8 @@ void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultLi
 
         if (MessagesConfirmed == MESSAGE_COUNT * NO_OF_ITERATION)
         {
-            printf("%d Messages - Confirm time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, rmqsTimerGetTime(PerformanceTimer));
+            TimerResult = rmqsTimerGetTime(PerformanceTimer);
+            printf("%d Messages - Confirm time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, TimerResult);
         }
     }
 }
@@ -404,7 +434,8 @@ void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, 
 
     if (MessagesReceived == MESSAGE_COUNT * NO_OF_ITERATION)
     {
-        printf("%d Messages - Receive time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, rmqsTimerGetTime(PerformanceTimer));
+        TimerResult = rmqsTimerGetTime(PerformanceTimer);
+        printf("%d Messages - Receive time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, TimerResult);
     }
 }
 //---------------------------------------------------------------------------

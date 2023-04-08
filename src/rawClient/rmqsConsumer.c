@@ -75,7 +75,7 @@ void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint32_t Time
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertiesCount)
+bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertyCount)
 {
     rmqsClient_t *Client = Consumer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -86,14 +86,14 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
     rmqsProperty_t *Property;
     bool_t ConnectionLost;
 
-    if (PropertiesCount > 0)
+    if (PropertyCount > 0)
     {
         //
         // Calculate the map size
         //
         MapSize = sizeof(MapSize); // The map size field
 
-        for (i = 0; i < PropertiesCount; i++)
+        for (i = 0; i < PropertyCount; i++)
         {
             //
             // For every key/value
@@ -140,7 +140,7 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
     //
     rmqsAddUInt32ToBuffer(Client->TxQueue, MapSize, Client->ClientConfiguration->IsLittleEndianMachine);
 
-    for (i = 0; i < PropertiesCount; i++)
+    for (i = 0; i < PropertyCount; i++)
     {
         Property = &Properties[i];
 
@@ -165,6 +165,47 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
 
         memset(Consumer->SubscriptionStreamTable[SubscriptionId - 1], 0, RMQS_STREAM_MAX_LENGTH + 1);
         strncpy(Consumer->SubscriptionStreamTable[SubscriptionId - 1], Stream, RMQS_STREAM_MAX_LENGTH);
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+//---------------------------------------------------------------------------
+bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId)
+{
+    rmqsClient_t *Client = Consumer->Client;
+    rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
+    uint16_t Key = rmqscUnsubscribe;
+    uint16_t Version = 1;
+    bool_t ConnectionLost;
+
+    rmqsBufferClear(Client->TxQueue, false);
+
+    rmqsAddUInt32ToBuffer(Client->TxQueue, 0, ClientConfiguration->IsLittleEndianMachine); // Size is zero for now
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Key, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt16ToBuffer(Client->TxQueue, Version, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, ++Client->CorrelationId, ClientConfiguration->IsLittleEndianMachine);
+    rmqsAddUInt8ToBuffer(Client->TxQueue, SubscriptionId);
+
+    //
+    // Moves to the beginning of the stream and writes the total message body size
+    //
+    rmqsBufferMoveTo(Client->TxQueue, 0);
+    rmqsAddUInt32ToBuffer(Client->TxQueue, (uint32_t)(Client->TxQueue->Size - sizeof(uint32_t)), ClientConfiguration->IsLittleEndianMachine);
+
+    rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
+
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
+    {
+        if (Client->Response.Header.Key != rmqscUnsubscribe)
+        {
+            return false;
+        }
+
+        memset(Consumer->SubscriptionStreamTable[SubscriptionId - 1], 0, RMQS_STREAM_MAX_LENGTH + 1);
 
         return true;
     }
