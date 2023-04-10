@@ -41,17 +41,18 @@ uint32_t TimerResult;
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char *BrokerList = "rabbitmq-stream://rabbit:rabbit@192.168.56.1:5552";
-    char Error[RMQS_ERR_MAX_STRING_LENGTH] = {0};
+    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@192.168.56.1:5552";
+    char_t Error[RMQS_ERR_MAX_STRING_LENGTH] = {0};
     rmqsClientConfiguration_t *ClientConfiguration = 0;
     rmqsBroker_t *Broker = 0;
     rmqsPublisher_t *Publisher = 0;
     rmqsConsumer_t *Consumer = 0;
-    int PublisherId = 1;
-    int SubscriptionId = 1;
-    char *Stream = "MY-STREAM";
+    uint8_t PublisherId = 1;
+    uint8_t SubscriptionId = 1;
+    char_t *Stream = "MY-STREAM";
+    rmqsMetadata_t *Metadata = 0;
     uint64_t Sequence;
-    rqmsCreateStreamArgs_t CreateStreamArgs = {0};
+    rmqsCreateStreamArgs_t CreateStreamArgs = {0};
     bool_t StreamAlredyExists;
     rmqsSocket Socket;
     bool_t ConnectionLost;
@@ -63,6 +64,9 @@ int main(int argc, char * argv[])
     uint64_t Offset;
     size_t i, j;
     size_t UsedMemory;
+
+    (void)argc;
+    (void)argv;
 
     PerformanceTimer = rmqsTimerCreate();
     ElapseTimer = rmqsTimerCreate();
@@ -96,7 +100,7 @@ int main(int argc, char * argv[])
     strncpy(Properties[5].Key, "platform", RMQS_MAX_KEY_SIZE);
     strncpy(Properties[5].Value, "C", RMQS_MAX_VALUE_SIZE);
 
-    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, false, 0, Error, sizeof(Error));
+    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, true, "C:\\TEMP\\RMQS.TXT", Error, sizeof(Error));
 
     if (! ClientConfiguration)
     {
@@ -144,7 +148,7 @@ int main(int argc, char * argv[])
 
     printf("Connected to %s\r\n", Broker->Hostname);
 
-    if (! rqmsClientLogin(Publisher->Client, Socket, Broker->VirtualHost, Properties, 6))
+    if (! rmqsClientLogin(Publisher->Client, Socket, Broker->VirtualHost, Properties, 6))
     {
         printf("Cannot login to %s\r\n", Broker->Hostname);
         goto CLEAN_UP;
@@ -250,7 +254,7 @@ int main(int argc, char * argv[])
 
     rmqsHeartbeat(Publisher->Client, Socket);
 
-    if (rqmsClientLogout(Publisher->Client, Socket, 0, "Regular shutdown"))
+    if (rmqsClientLogout(Publisher->Client, Socket, 0, "Regular shutdown"))
     {
         printf("Logged out\r\n");
     }
@@ -291,7 +295,7 @@ int main(int argc, char * argv[])
 
     printf("Connected to %s\r\n", Broker->Hostname);
 
-    if (! rqmsClientLogin(Consumer->Client, Socket, Broker->VirtualHost, Properties, 6))
+    if (! rmqsClientLogin(Consumer->Client, Socket, Broker->VirtualHost, Properties, 6))
     {
         printf("Cannot login to %s\r\n", Broker->Hostname);
         goto CLEAN_UP;
@@ -299,9 +303,11 @@ int main(int argc, char * argv[])
 
     printf("Logged in to %s\r\n", Broker->Hostname);
 
-    if (rmqsMetadata(Publisher->Client, Socket, &Stream, 1))
+    if (rmqsMetadata(Publisher->Client, Socket, &Stream, 1, &Metadata))
     {
         printf("Metadata retrieved for stream %s\r\n", Stream);
+
+        rmqsMetadataDestroy(Metadata);
     }
     else
     {
@@ -349,7 +355,7 @@ int main(int argc, char * argv[])
 
     rmqsHeartbeat(Publisher->Client, Socket);
 
-    if (rqmsClientLogout(Consumer->Client, Socket, 0, "Regular shutdown"))
+    if (rmqsClientLogout(Consumer->Client, Socket, 0, "Regular shutdown"))
     {
         printf("Logged out\r\n");
     }
@@ -407,6 +413,9 @@ void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultLi
 {
     size_t i;
 
+    (void)PublisherId;
+    (void)PublishResultList;
+
     for (i = 0; i < PublishingIdCount; i++)
     {
         if (Confirmed)
@@ -428,6 +437,12 @@ void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultLi
 //---------------------------------------------------------------------------
 void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset)
 {
+    (void)SubscriptionId;
+    (void)DataSize;
+    (void)Data;
+    (void)DeliverInfo;
+    (void)MessageOffset;
+
     MessagesReceived++;
 
     *StoreOffset = MessagesReceived % 100 == 0;

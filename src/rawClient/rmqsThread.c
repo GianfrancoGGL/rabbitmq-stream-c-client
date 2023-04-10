@@ -33,7 +33,7 @@ SOFTWARE.
 #if _WIN32 || _WIN64
 uint32_t rmqsThreadRoutine(uint32_t *ThreadData);
 #else
-void * rqmsThreadRoutine(void *ThreadData);
+void * rmqsThreadRoutine(void *ThreadData);
 #endif
 //--------------------------------------------------------------------------
 rmqsThread_t * rmqsThreadCreate(ThreadRoutineCallback_t ThreadRoutineCallback, CancelIORoutineCallback_t CancelIORoutineCallback, void *Parameters)
@@ -71,7 +71,7 @@ void rmqsThreadStart(rmqsThread_t *Thread)
     #if _WIN32 || _WIN64
     Thread->ThreadHandle = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)rmqsThreadRoutine, (uint32_t *)Thread, 0, &ThreadId);
     #else
-    pthread_create(&Thread->ThreadHandle, 0, rqmsThreadRoutine, Thread);
+    pthread_create(&Thread->ThreadHandle, 0, rmqsThreadRoutine, Thread);
     #endif
 }
 //--------------------------------------------------------------------------
@@ -130,7 +130,7 @@ void rmqsThreadSleepEx(uint32_t Milliseconds, size_t HowManyTimes, bool_t *Abort
 #if _WIN32 || _WIN64
 uint32_t rmqsThreadRoutine(uint32_t *ThreadPointer)
 #else
-void * rqmsThreadRoutine(void *ThreadPointer)
+void * rmqsThreadRoutine(void *ThreadPointer)
 #endif
 {
     rmqsThread_t *Thread = (rmqsThread_t *)ThreadPointer;

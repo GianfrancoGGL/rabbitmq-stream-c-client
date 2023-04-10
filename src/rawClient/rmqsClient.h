@@ -34,7 +34,7 @@ SOFTWARE.
 #include "rmqsBuffer.h"
 //---------------------------------------------------------------------------
 #define RMQS_CLIENT_RX_BUFFER_SIZE       1024
-#define RMQS_STREAM_MAX_LENGTH            256
+#define RMQS_MAX_STREAM_NAME_LENGTH       256
 //---------------------------------------------------------------------------
 typedef enum
 {
@@ -65,7 +65,7 @@ typedef enum
     rmqssllRandom,
     rmqssllLeasrLeaders
 }
-rqmsStreamLeaderLocator_t;
+rmqsStreamLeaderLocator_t;
 //---------------------------------------------------------------------------
 typedef struct
 {
@@ -92,7 +92,7 @@ typedef struct
     // Other values - to clarify: 'random' - 'least-leaders'
     //
     bool_t SetQueueLeaderLocator;
-    rqmsStreamLeaderLocator_t LeaderLocator;
+    rmqsStreamLeaderLocator_t LeaderLocator;
 
     //
     // Set the queue initial cluster size.
@@ -100,23 +100,53 @@ typedef struct
     bool_t SetInitialClusterSize;
     size_t InitialClusterSize;
 }
-rqmsCreateStreamArgs_t;
+rmqsCreateStreamArgs_t;
+//---------------------------------------------------------------------------
+typedef struct
+{
+    uint16_t Reference;
+    char_t Host[RQMS_MAX_HOSTNAME_LENGTH + 1];
+    uint32_t Port;
+}
+rmqsBrokerMetadata_t;
+//---------------------------------------------------------------------------
+typedef struct
+{
+    char_t Stream[RMQS_MAX_STREAM_NAME_LENGTH + 1];
+    uint16_t Code;
+    uint16_t LeaderReference;
+    uint32_t ReplicasReferenceCount;
+    uint16_t *ReplicasReferences;
+}
+rmqsStreamMetadata_t;
+//---------------------------------------------------------------------------
+typedef struct
+{
+    uint32_t BrokerMetadataCount;
+    rmqsBrokerMetadata_t *BrokerMetadataList;
+    uint32_t StreamMetadataCount;
+    rmqsStreamMetadata_t *StreamMetadataList;
+}
+rmqsMetadata_t;
 //---------------------------------------------------------------------------
 rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, rmqsClientType_t ClientType, void *ParentObject);
 void rmqsClientDestroy(rmqsClient_t *Client);
 //---------------------------------------------------------------------------
-bool_t rqmsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost, rmqsProperty_t *Properties, size_t PropertyCount);
-bool_t rqmsClientLogout(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason);
+bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost, rmqsProperty_t *Properties, size_t PropertyCount);
+bool_t rmqsClientLogout(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason);
 //---------------------------------------------------------------------------
 bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, rmqsProperty_t *Properties, size_t PropertyCount);
 bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainAuthSupported);
 bool_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Mechanism, char_t *Username, char_t *Password);
 bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost);
 bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason);
-bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rqmsCreateStreamArgs_t *CreateStreamArgs, bool_t *StreamAlreadyExists);
+bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rmqsCreateStreamArgs_t *CreateStreamArgs, bool_t *StreamAlreadyExists);
 bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream);
-bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, size_t StreamCount);
+bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, size_t StreamCount, rmqsMetadata_t **Metadata);
 void rmqsHeartbeat(rmqsClient_t *Client, rmqsSocket Socket);
+//---------------------------------------------------------------------------
+rmqsMetadata_t *rmqsMetadataCreate(void);
+void rmqsMetadataDestroy(rmqsMetadata_t *Metadata);
 //---------------------------------------------------------------------------
 #endif
 //---------------------------------------------------------------------------

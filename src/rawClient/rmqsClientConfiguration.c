@@ -79,7 +79,7 @@ rmqsClientConfiguration_t * rmqsClientConfigurationCreate(char_t *BrokersString,
     ClientConfiguration->BrokerList = rmqsListGenericCreate();
     ClientConfiguration->WaitReplyTimer = rmqsTimerCreate();
 
-    if (EnableLogging)
+    if (EnableLogging && LogFileName && *LogFileName != 0)
     {
         ClientConfiguration->Logger = rmqsLoggerCreate(LogFileName, 0);
     }
@@ -106,8 +106,8 @@ rmqsClientConfiguration_t * rmqsClientConfigurationCreate(char_t *BrokersString,
     {
         if (! pNewString)
         {
-            pNewString = pNewStringVal = rmqsAllocateMemory(BrokersStringLen + 1);
-            memset(pNewStringVal, 0, BrokersStringLen + 1);
+            pNewString = pNewStringVal = rmqsAllocateMemory((size_t)BrokersStringLen + 1);
+            memset(pNewStringVal, 0, (size_t)BrokersStringLen + 1);
         }
 
         if (*(pBrokersString + 1) == 0)

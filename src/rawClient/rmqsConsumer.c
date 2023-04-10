@@ -163,8 +163,8 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
             return false;
         }
 
-        memset(Consumer->SubscriptionStreamTable[SubscriptionId - 1], 0, RMQS_STREAM_MAX_LENGTH + 1);
-        strncpy(Consumer->SubscriptionStreamTable[SubscriptionId - 1], Stream, RMQS_STREAM_MAX_LENGTH);
+        memset(Consumer->SubscriptionStreamTable[SubscriptionId - 1], 0, RMQS_MAX_STREAM_NAME_LENGTH + 1);
+        strncpy(Consumer->SubscriptionStreamTable[SubscriptionId - 1], Stream, RMQS_MAX_STREAM_NAME_LENGTH);
 
         return true;
     }
@@ -205,7 +205,7 @@ bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subs
             return false;
         }
 
-        memset(Consumer->SubscriptionStreamTable[SubscriptionId - 1], 0, RMQS_STREAM_MAX_LENGTH + 1);
+        memset(Consumer->SubscriptionStreamTable[SubscriptionId - 1], 0, RMQS_MAX_STREAM_NAME_LENGTH + 1);
 
         return true;
     }
@@ -338,10 +338,10 @@ void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket Socket, rmqsBuffer_t
     SubscriptionId = (uint8_t *)MessagePayload;
     MessagePayload += sizeof(uint8_t);
 
-    Consumer->DeliverInfo.MagicVersion = (uint8_t *)MessagePayload;
+    Consumer->DeliverInfo.MagicVersion = (int8_t *)MessagePayload;
     MessagePayload += sizeof(uint8_t);
 
-    Consumer->DeliverInfo.ChunkType = (uint8_t *)MessagePayload;
+    Consumer->DeliverInfo.ChunkType = (int8_t *)MessagePayload;
     MessagePayload += sizeof(uint8_t);
 
     Consumer->DeliverInfo.NumEntries = (uint16_t *)MessagePayload;

@@ -36,7 +36,7 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 #include "rmqsLib.h"
 //---------------------------------------------------------------------------
-int64_t rmqsGetTimeStamp()
+int64_t rmqsGetTimeStamp(void)
 {
     #if _WIN32 || _WIN64
     struct _timeb TimeBuffer;

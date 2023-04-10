@@ -503,7 +503,7 @@ char_t * rmqsGetMessageDescription(uint16_t Key)
  size_t rmqsAddBytesToBuffer(rmqsBuffer_t *Buffer, void *Value, size_t ValueLength, bool_t DeclareLength, bool_t IsLittleEndianMachine)
 {
     int32_t DataLen;
-    size_t BytesAdded;
+    size_t BytesAdded = 0;
 
     if (ValueLength == 0)
     {

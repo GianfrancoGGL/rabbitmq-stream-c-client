@@ -59,7 +59,7 @@ typedef struct
     uint32_t FrameMax;
     uint32_t Heartbeat;
     uint16_t DefaultCredit;
-    char_t SubscriptionStreamTable[256][RMQS_STREAM_MAX_LENGTH + 1];
+    char_t SubscriptionStreamTable[256][RMQS_MAX_STREAM_NAME_LENGTH + 1];
     rmqsDeliverInfo_t DeliverInfo;
     DeliverResultCallback_t DeliverResultCallback;
 }
