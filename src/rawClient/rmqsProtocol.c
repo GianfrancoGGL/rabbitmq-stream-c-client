@@ -197,6 +197,19 @@ bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool
                 rmqsHandleDeliver((rmqsConsumer_t *)ClientObj->ParentObject, Socket, ClientObj->RxQueue);
             }
         }
+        else if (MsgHeader.Key == rmqscMetadataUpdate)
+        {
+            //
+            // This message is caught and handled by this procedure and not returned to the caller
+            //
+            if (ClientObj->ClientType == rmqsctConsumer)
+            {
+                //
+                // Temororay solution to inspect the message
+                //
+                ((rmqsConsumer_t *)ClientObj->ParentObject)->MetadataUpdateCallback(0, "");
+            }
+        }
         else
         {
             break;
@@ -527,5 +540,106 @@ char_t * rmqsGetMessageDescription(uint16_t Key)
     }
 
     return BytesAdded;
+}
+//---------------------------------------------------------------------------
+void rmqsGetInt8FromMemory(char_t **Pointer, int8_t *Value)
+{
+    *Value = *(int8_t *)*Pointer;
+    *Pointer += sizeof(int8_t);
+}
+//---------------------------------------------------------------------------
+void rmqsGetUInt8FromMemory(char_t **Pointer, uint8_t *Value)
+{
+    *Value = *(uint8_t *)*Pointer;
+    *Pointer += sizeof(uint8_t);
+}
+//---------------------------------------------------------------------------
+void rmqsGetInt16FromMemory(char_t **Pointer, int16_t *Value, bool_t IsLittleEndianMachine)
+{
+    *Value = *(int16_t *)*Pointer;
+
+    if (IsLittleEndianMachine)
+    {
+        *Value = SwapUInt16(*Value);
+    }
+
+    *Pointer += sizeof(int16_t);
+}
+//---------------------------------------------------------------------------
+void rmqsGetUInt16FromMemory(char_t **Pointer, uint16_t *Value, bool_t IsLittleEndianMachine)
+{
+    *Value = *(uint16_t *)*Pointer;
+
+    if (IsLittleEndianMachine)
+    {
+        *Value = SwapUInt16(*Value);
+    }
+
+    *Pointer += sizeof(uint16_t);
+}
+//---------------------------------------------------------------------------
+void rmqsGetInt32FromMemory(char_t **Pointer, int32_t *Value, bool_t IsLittleEndianMachine)
+{
+    *Value = *(int32_t *)*Pointer;
+
+    if (IsLittleEndianMachine)
+    {
+        *Value = SwapUInt32(*Value);
+    }
+
+    *Pointer += sizeof(int32_t);
+}
+//---------------------------------------------------------------------------
+void rmqsGetUInt32FromMemory(char_t **Pointer, uint32_t *Value, bool_t IsLittleEndianMachine)
+{
+    *Value = *(uint32_t *)*Pointer;
+
+    if (IsLittleEndianMachine)
+    {
+        *Value = SwapUInt32(*Value);
+    }
+
+    *Pointer += sizeof(uint32_t);
+}
+//---------------------------------------------------------------------------
+void rmqsGetInt64FromMemory(char_t **Pointer, int64_t *Value, bool_t IsLittleEndianMachine)
+{
+    *Value = *(int64_t *)*Pointer;
+
+    if (IsLittleEndianMachine)
+    {
+        *Value = SwapUInt64(*Value);
+    }
+
+    *Pointer += sizeof(int64_t);
+}
+//---------------------------------------------------------------------------
+void rmqsGetUInt64FromMemory(char_t **Pointer, uint64_t *Value, bool_t IsLittleEndianMachine)
+{
+    *Value = *(uint64_t *)*Pointer;
+
+    if (IsLittleEndianMachine)
+    {
+        *Value = SwapUInt64(*Value);
+    }
+
+    *Pointer += sizeof(uint64_t);
+}
+//---------------------------------------------------------------------------
+void rmqsGetStringFromMemory(char_t **Pointer, char_t *Value, size_t MaxValueLength, bool_t IsLittleEndianMachine)
+{
+    uint16_t StringLength = *(uint16_t *)*Pointer;
+
+    if (IsLittleEndianMachine)
+    {
+        StringLength = SwapUInt16(StringLength);
+    }
+
+    *Pointer += sizeof(uint16_t);
+
+    strncpy(Value, *Pointer, MaxValueLength);
+    Value[StringLength] = 0;
+
+    *Pointer += StringLength;
 }
 //---------------------------------------------------------------------------

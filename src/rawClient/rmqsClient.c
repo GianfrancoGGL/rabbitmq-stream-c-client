@@ -249,8 +249,7 @@ bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainA
     rmqsSaslHandshakeResponse_t *SaslHandshakeResponse;
     uint16_t MechanismNo;
     char_t *Data;
-    uint16_t *StringLen;
-    char_t *String;
+    uint16_t StringLen;
     bool_t ConnectionLost;
 
     *PlainAuthSupported = false; // By default assume that the PLAIN auth is not supported
@@ -299,30 +298,14 @@ bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainA
 
             for (MechanismNo = 1; MechanismNo <= SaslHandshakeResponse->NoOfMechanisms; MechanismNo++)
             {
-                StringLen = (uint16_t *)Data;
+                rmqsGetUInt16FromMemory(&Data, &StringLen, Client->ClientConfiguration->IsLittleEndianMachine);
 
-                if (Client->ClientConfiguration->IsLittleEndianMachine)
+                if (StringLen > 0 && ! memcmp(Data, RMQS_PLAIN_PROTOCOL, strlen(RMQS_PLAIN_PROTOCOL)))
                 {
-                    *StringLen = SwapUInt16(*StringLen);
+                    *PlainAuthSupported = true;
                 }
 
-                Data += sizeof(uint16_t);
-
-                if (*StringLen > 0)
-                {
-                    String = rmqsAllocateMemory((size_t)*StringLen + 1);
-                    memset(String, 0, (size_t)*StringLen + 1);
-                    strncpy(String, (char_t *)Data, *StringLen);
-
-                    if (! strcmp(String, RMQS_PLAIN_PROTOCOL))
-                    {
-                        *PlainAuthSupported = true;
-                    }
-
-                    rmqsFreeMemory(String);
-
-                    Data += *StringLen;
-                }
+                Data += StringLen;
             }
         }
 
@@ -622,7 +605,8 @@ bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, s
     uint32_t i, j;
     char_t *Data;
     rmqsMetadata_t *MetadataStruct;
-    uint16_t *StringLen;
+    rmqsBrokerMetadata_t *BrokerMetadata;
+    rmqsStreamMetadata_t *StreamMetadata;
     bool_t ConnectionLost;
 
     *Metadata = 0;
@@ -665,14 +649,7 @@ bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, s
 
         MetadataStruct = *Metadata = rmqsMetadataCreate();
 
-        MetadataStruct->BrokerMetadataCount = *(uint32_t *)Data;
-
-        if (Client->ClientConfiguration->IsLittleEndianMachine)
-        {
-            MetadataStruct->BrokerMetadataCount = SwapUInt32(MetadataStruct->BrokerMetadataCount);
-        }
-
-        Data += sizeof(uint32_t);
+        rmqsGetUInt32FromMemory(&Data, &MetadataStruct->BrokerMetadataCount, Client->ClientConfiguration->IsLittleEndianMachine);
 
         if (MetadataStruct->BrokerMetadataCount > 0)
         {
@@ -681,109 +658,44 @@ bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, s
 
             for (i = 0; i < MetadataStruct->BrokerMetadataCount; i++)
             {
-                MetadataStruct->BrokerMetadataList[i].Reference = *(uint16_t *)Data;
+                BrokerMetadata = &MetadataStruct->BrokerMetadataList[i];
 
-                if (Client->ClientConfiguration->IsLittleEndianMachine)
-                {
-                    MetadataStruct->BrokerMetadataList[i].Reference = SwapUInt16(MetadataStruct->BrokerMetadataList[i].Reference);
-                }
-
-                Data += sizeof(uint16_t);
-
-                StringLen = (uint16_t *)Data;
-
-                if (Client->ClientConfiguration->IsLittleEndianMachine)
-                {
-                    *StringLen = SwapUInt16(*StringLen);
-                }
-
-                Data += sizeof(uint16_t);
-
-                if (*StringLen > 0)
-                {
-                    strncpy(MetadataStruct->BrokerMetadataList[i].Host, (char_t *)Data, RQMS_MAX_HOSTNAME_LENGTH);
-                }
-
-                Data += *StringLen;
-
-                MetadataStruct->BrokerMetadataList[i].Port = *(uint32_t *)Data;
-
-                if (Client->ClientConfiguration->IsLittleEndianMachine)
-                {
-                    MetadataStruct->BrokerMetadataList[i].Port = SwapUInt32(MetadataStruct->BrokerMetadataList[i].Port);
-                }
-
-                Data += sizeof(uint32_t);
+                rmqsGetUInt16FromMemory(&Data, &BrokerMetadata->Reference, Client->ClientConfiguration->IsLittleEndianMachine);
+                rmqsGetStringFromMemory(&Data, BrokerMetadata->Host, RQMS_MAX_HOSTNAME_LENGTH, Client->ClientConfiguration->IsLittleEndianMachine);
+                rmqsGetUInt32FromMemory(&Data, &BrokerMetadata->Port, Client->ClientConfiguration->IsLittleEndianMachine);
             }
         }
 
-        MetadataStruct->StreamMetadataCount = *(uint32_t *)Data;
+        rmqsGetUInt32FromMemory(&Data, &MetadataStruct->StreamMetadataCount, Client->ClientConfiguration->IsLittleEndianMachine);
 
-        if (Client->ClientConfiguration->IsLittleEndianMachine)
+        if (MetadataStruct->StreamMetadataCount == 0)
         {
-            MetadataStruct->StreamMetadataCount = SwapUInt32(MetadataStruct->StreamMetadataCount);
+            return true;
         }
 
-        Data += sizeof(uint32_t);
+        MetadataStruct->StreamMetadataList = rmqsAllocateMemory(sizeof(rmqsStreamMetadata_t) * MetadataStruct->StreamMetadataCount);
+        memset(MetadataStruct->StreamMetadataList, 0, sizeof(rmqsStreamMetadata_t) * MetadataStruct->StreamMetadataCount);
 
-        if (MetadataStruct->StreamMetadataCount > 0)
+        for (i = 0; i < MetadataStruct->StreamMetadataCount; i++)
         {
-            MetadataStruct->StreamMetadataList = rmqsAllocateMemory(sizeof(rmqsStreamMetadata_t) * MetadataStruct->StreamMetadataCount);
-            memset(MetadataStruct->StreamMetadataList, 0, sizeof(rmqsStreamMetadata_t) * MetadataStruct->StreamMetadataCount);
+            StreamMetadata = &MetadataStruct->StreamMetadataList[i];
 
-            for (i = 0; i < MetadataStruct->StreamMetadataCount; i++)
+            rmqsGetStringFromMemory(&Data, StreamMetadata->Stream, RMQS_MAX_STREAM_NAME_LENGTH, Client->ClientConfiguration->IsLittleEndianMachine);
+            rmqsGetUInt16FromMemory(&Data, &StreamMetadata->Code, Client->ClientConfiguration->IsLittleEndianMachine);
+            rmqsGetUInt16FromMemory(&Data, &StreamMetadata->LeaderReference, Client->ClientConfiguration->IsLittleEndianMachine);
+            rmqsGetUInt32FromMemory(&Data, &StreamMetadata->ReplicasReferenceCount, Client->ClientConfiguration->IsLittleEndianMachine);
+
+            if (StreamMetadata->ReplicasReferenceCount > 0)
             {
-                StringLen = (uint16_t *)Data;
-
-                if (Client->ClientConfiguration->IsLittleEndianMachine)
-                {
-                    *StringLen = SwapUInt16(*StringLen);
-                }
-
-                Data += sizeof(uint16_t);
-
-                if (*StringLen > 0)
-                {
-                    strncpy(MetadataStruct->StreamMetadataList[i].Stream, (char_t *)Data, RMQS_MAX_STREAM_NAME_LENGTH);
-                }
-
-                Data += *StringLen;
-
-                MetadataStruct->StreamMetadataList[i].Code = *(uint16_t *)Data;
-                Data += sizeof(uint16_t);
-
-                MetadataStruct->StreamMetadataList[i].LeaderReference = *(uint16_t *)Data;
-                Data += sizeof(uint16_t);
-
-                MetadataStruct->StreamMetadataList[i].ReplicasReferenceCount = *(uint16_t *)Data;
-                Data += sizeof(uint16_t);
-
-                if (Client->ClientConfiguration->IsLittleEndianMachine)
-                {
-                    MetadataStruct->StreamMetadataList[i].Code = SwapUInt16(MetadataStruct->StreamMetadataList[i].Code);
-                    MetadataStruct->StreamMetadataList[i].LeaderReference = SwapUInt16(MetadataStruct->StreamMetadataList[i].LeaderReference);
-                    MetadataStruct->StreamMetadataList[i].ReplicasReferenceCount = SwapUInt16(MetadataStruct->StreamMetadataList[i].ReplicasReferenceCount);
-                }
-
-                if (MetadataStruct->StreamMetadataList[i].ReplicasReferenceCount > 0)
-                {
-                    MetadataStruct->StreamMetadataList[i].ReplicasReferences = rmqsAllocateMemory(sizeof(uint16_t) * MetadataStruct->StreamMetadataList[i].ReplicasReferenceCount);
-                    memset(MetadataStruct->StreamMetadataList[i].ReplicasReferences, 0, sizeof(uint16_t) * MetadataStruct->StreamMetadataList[i].ReplicasReferenceCount);
+                StreamMetadata->ReplicasReferences = rmqsAllocateMemory(sizeof(uint16_t) * MetadataStruct->StreamMetadataList[i].ReplicasReferenceCount);
+                memset(StreamMetadata->ReplicasReferences, 0, sizeof(uint16_t) * MetadataStruct->StreamMetadataList[i].ReplicasReferenceCount);
     
-                    for (j = 0; j < MetadataStruct->StreamMetadataList[i].ReplicasReferenceCount; j++)
-                    {
-                        MetadataStruct->StreamMetadataList[i].ReplicasReferences[j] = *(uint16_t *)Data; 
-
-                        if (Client->ClientConfiguration->IsLittleEndianMachine)
-                        {
-                            MetadataStruct->StreamMetadataList[i].ReplicasReferences[j] = SwapUInt16(MetadataStruct->StreamMetadataList[i].ReplicasReferences[j]);
-                        }
-
-                        Data += sizeof(uint16_t);
-                    }
+                for (j = 0; j < StreamMetadata->ReplicasReferenceCount; j++)
+                {
+                    rmqsGetUInt16FromMemory(&Data, &StreamMetadata->ReplicasReferences[j], Client->ClientConfiguration->IsLittleEndianMachine);
                 }
-            }            
-        }
+            }
+        }            
 
         return true;
     }

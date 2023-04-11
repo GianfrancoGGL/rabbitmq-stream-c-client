@@ -36,21 +36,22 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 typedef struct
 {
-    int8_t *MagicVersion;
-    int8_t *ChunkType;
-    uint16_t *NumEntries;
-    uint32_t *NumRecords;
-    int64_t *Timestamp;
-    uint64_t *Epoch;
-    uint64_t *ChunkFirstOffset;
-    int32_t *ChunkCrc;
-    uint32_t *DataLength;
-    uint32_t *TrailerLength;
-    uint32_t *Reserved;
+    int8_t MagicVersion;
+    int8_t ChunkType;
+    uint16_t NumEntries;
+    uint32_t NumRecords;
+    int64_t Timestamp;
+    uint64_t Epoch;
+    uint64_t ChunkFirstOffset;
+    int32_t ChunkCrc;
+    uint32_t DataLength;
+    uint32_t TrailerLength;
+    uint32_t Reserved;
 }
 rmqsDeliverInfo_t;
 //---------------------------------------------------------------------------
 typedef void (*DeliverResultCallback_t)(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset);
+typedef void (*MetadataUpdateCallback_t)(uint16_t Code, char_t *Stream);
 //---------------------------------------------------------------------------
 typedef struct
 {
@@ -62,6 +63,7 @@ typedef struct
     char_t SubscriptionStreamTable[256][RMQS_MAX_STREAM_NAME_LENGTH + 1];
     rmqsDeliverInfo_t DeliverInfo;
     DeliverResultCallback_t DeliverResultCallback;
+    MetadataUpdateCallback_t MetadataUpdateCallback;
 }
 rmqsConsumer_t;
 //---------------------------------------------------------------------------
@@ -75,7 +77,7 @@ typedef enum
 }
 rmqsOffsetType;
 //---------------------------------------------------------------------------
-rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *ConsumerReference, uint32_t FrameMax, uint32_t Heartbeat, uint16_t DefaultCredit, DeliverResultCallback_t DeliverResultCallback);
+rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *ConsumerReference, uint32_t FrameMax, uint32_t Heartbeat, uint16_t DefaultCredit, DeliverResultCallback_t DeliverResultCallback, MetadataUpdateCallback_t MetadataUpdateCallback);
 void rmqsConsumerDestroy(rmqsConsumer_t *Consumer);
 void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost);
 bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertyCount);

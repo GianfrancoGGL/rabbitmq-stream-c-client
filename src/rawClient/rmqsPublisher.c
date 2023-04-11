@@ -237,56 +237,33 @@ void rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_t Publishe
 void rmqsHandlePublishResult(uint16_t Key, rmqsPublisher_t *Publisher, rmqsBuffer_t *Buffer)
 {
     char_t *MessagePayload = (char_t *)Buffer->Data + sizeof(rmqsMsgHeader_t);
-    uint8_t *PublisherId;
-    uint32_t *NoOfRecords;
-    uint64_t *PublishingId;
-    uint16_t *Code;
+    uint8_t PublisherId;
+    uint32_t NoOfRecords;
     size_t PublishIdCount = 0;
+    PublishResult_t *PublishResult;
     uint32_t i;
 
-    PublisherId = (uint8_t *)MessagePayload;
-    MessagePayload += sizeof(uint8_t);
- 
-    NoOfRecords = (uint32_t *)MessagePayload;
-    MessagePayload += sizeof(uint32_t);
+    rmqsGetUInt8FromMemory(&MessagePayload, &PublisherId);
+    rmqsGetUInt32FromMemory(&MessagePayload, &NoOfRecords, Publisher->Client->ClientConfiguration->IsLittleEndianMachine);
 
-    if (Publisher->Client->ClientConfiguration->IsLittleEndianMachine)
+    for (i = 0; i < NoOfRecords; i++)
     {
-        *NoOfRecords = SwapUInt32(*NoOfRecords);
-    }
+        PublishResult = &Publisher->PublishResultArray[PublishIdCount];
 
-    for (i = 0; i < *NoOfRecords; i++)
-    {
-        PublishingId = (uint64_t *)MessagePayload;
-
-        if (Publisher->Client->ClientConfiguration->IsLittleEndianMachine)
-        {
-            *PublishingId = SwapUInt64(*PublishingId);
-        }
-
-        Publisher->PublishResultArray[PublishIdCount].PublishingId = *PublishingId;
-        MessagePayload += sizeof(uint64_t);
+        rmqsGetUInt64FromMemory(&MessagePayload, &PublishResult->PublishingId, Publisher->Client->ClientConfiguration->IsLittleEndianMachine);
 
         if (Key == rmqscPublishError)
         {
-            Code = (uint16_t *)MessagePayload;
-            MessagePayload += sizeof(uint16_t);
-
-            if (Publisher->Client->ClientConfiguration->IsLittleEndianMachine)
-            {
-                *Code = SwapUInt16(*Code);
-            }
-
-            Publisher->PublishResultArray[PublishIdCount].Code = *Code;
+            rmqsGetUInt16FromMemory(&MessagePayload, &PublishResult->Code, Publisher->Client->ClientConfiguration->IsLittleEndianMachine);
         }
         else
         {
-            Publisher->PublishResultArray[PublishIdCount].Code = 0;
+            PublishResult->Code = 0;
         }
 
-        if (++PublishIdCount == RMQS_PUBLISH_RESULT_ARRAY_SIZE || i == *NoOfRecords - 1)
+        if (++PublishIdCount == RMQS_PUBLISH_RESULT_ARRAY_SIZE || i == NoOfRecords - 1)
         {
-            Publisher->PublishResultCallback(*PublisherId, Publisher->PublishResultArray, PublishIdCount, Key == rmqscPublishConfirm);
+            Publisher->PublishResultCallback(PublisherId, Publisher->PublishResultArray, PublishIdCount, Key == rmqscPublishConfirm);
             PublishIdCount = 0; // Reset the index of the array containing the list of the publish result
         }
     }

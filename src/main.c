@@ -29,6 +29,7 @@ extern "C"
 //---------------------------------------------------------------------------
 void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultList, size_t PublishingIdCount, bool_t Confirmed);
 void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset);
+void MetadataUpdateCallback(uint16_t Code, char_t *Stream);
 //---------------------------------------------------------------------------
 rmqsTimer_t *PerformanceTimer = 0;
 rmqsTimer_t *ElapseTimer = 0;
@@ -100,7 +101,7 @@ int main(int argc, char * argv[])
     strncpy(Properties[5].Key, "platform", RMQS_MAX_KEY_SIZE);
     strncpy(Properties[5].Value, "C", RMQS_MAX_VALUE_SIZE);
 
-    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, true, "C:\\TEMP\\RMQS.TXT", Error, sizeof(Error));
+    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, false, 0, Error, sizeof(Error));
 
     if (! ClientConfiguration)
     {
@@ -282,7 +283,7 @@ int main(int argc, char * argv[])
     //
     //---------------------------------------------------------------------------
     printf("Creating consumer...\r\n");
-    Consumer = rmqsConsumerCreate(ClientConfiguration, CONSUMER_REFERENCE, 0, 0, CONSUMER_CREDIT_SIZE, DeliverResultCallback);
+    Consumer = rmqsConsumerCreate(ClientConfiguration, CONSUMER_REFERENCE, 0, 0, CONSUMER_CREDIT_SIZE, DeliverResultCallback, MetadataUpdateCallback);
     printf("Consumer created - credit size: %d\r\n", CONSUMER_CREDIT_SIZE);
 
     Socket = rmqsSocketCreate();
@@ -452,5 +453,12 @@ void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, 
         TimerResult = rmqsTimerGetTime(PerformanceTimer);
         printf("%d Messages - Receive time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, TimerResult);
     }
+}
+//---------------------------------------------------------------------------
+void MetadataUpdateCallback(uint16_t Code, char_t *Stream)
+{
+    (void)Stream;
+
+    Code = Code;
 }
 //---------------------------------------------------------------------------
