@@ -38,11 +38,14 @@ size_t MessagesConfirmed = 0;
 size_t MessagesNotConfirmed = 0;
 size_t MessagesReceived = 0;
 //---------------------------------------------------------------------------
+bool_t EnableLogging = false;
+bool_t TestPublishError = false;
+//---------------------------------------------------------------------------
 uint32_t TimerResult;
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@192.168.56.1:5552";
+    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@127.0.0.1:5552";
     char_t Error[RMQS_ERR_MAX_STRING_LENGTH] = {0};
     rmqsClientConfiguration_t *ClientConfiguration = 0;
     rmqsBroker_t *Broker = 0;
@@ -59,8 +62,8 @@ int main(int argc, char * argv[])
     bool_t ConnectionLost;
     rmqsProperty_t Properties[6];
     rmqsMessage_t *MessageBatch = 0;
-    uint32_t PublishWaitingTime = 5000;
-    uint32_t ConsumeWaitingTime = 10000;
+    uint32_t PublishWaitingTime = 5 * 1000; // 5 seconds
+    uint32_t ConsumeWaitingTime = 10 * 1000; // 10 seconds
     uint64_t PublishingId = 0;
     uint64_t Offset;
     size_t i, j;
@@ -101,7 +104,7 @@ int main(int argc, char * argv[])
     strncpy(Properties[5].Key, "platform", RMQS_MAX_KEY_SIZE);
     strncpy(Properties[5].Value, "C", RMQS_MAX_VALUE_SIZE);
 
-    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, false, 0, Error, sizeof(Error));
+    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, EnableLogging, "/tmp/rmqs-log.txt", Error, sizeof(Error));
 
     if (! ClientConfiguration)
     {
@@ -136,7 +139,7 @@ int main(int argc, char * argv[])
     //
     //---------------------------------------------------------------------------
     printf("Creating publisher...\r\n");
-    Publisher = rmqsPublisherCreate(ClientConfiguration, PUBLISHER_REFERENCE, 0, PublishResultCallback);
+    Publisher = rmqsPublisherCreate(ClientConfiguration, PUBLISHER_REFERENCE, 0, PublishResultCallback, MetadataUpdateCallback);
     printf("Publisher created\r\n");
 
     Socket = rmqsSocketCreate();
@@ -196,10 +199,20 @@ int main(int argc, char * argv[])
         printf("Stream opened %s\r\n", Stream);
     }
 
-    if (! rmqsDeclarePublisher(Publisher, Socket, PublisherId, Stream))
+    if (! TestPublishError)
     {
-        printf("Cannot declare the publisher\r\n");
-        goto CLEAN_UP;
+        if (! rmqsDeclarePublisher(Publisher, Socket, PublisherId, Stream))
+        {
+            printf("Cannot declare the publisher\r\n");
+            goto CLEAN_UP;
+        }
+    }
+    else
+    {
+        //
+        // Test publish error declaring a publisher for a non-existing stream
+        //
+        rmqsDeclarePublisher(Publisher, Socket, PublisherId, "XYZ");
     }
 
     MessageBatch = (rmqsMessage_t *)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MESSAGE_COUNT);
@@ -304,15 +317,17 @@ int main(int argc, char * argv[])
 
     printf("Logged in to %s\r\n", Broker->Hostname);
 
-    if (rmqsMetadata(Publisher->Client, Socket, &Stream, 1, &Metadata))
+    Metadata = rmqsMetadataCreate();
+
+    if (rmqsMetadata(Publisher->Client, Socket, &Stream, 1, Metadata))
     {
         printf("Metadata retrieved for stream %s\r\n", Stream);
-
         rmqsMetadataDestroy(Metadata);
     }
     else
     {
         printf("Cannot retrieve the metadata for stream %s\r\n", Stream);
+        rmqsMetadataDestroy(Metadata);
         goto CLEAN_UP;
     }
 
@@ -457,8 +472,7 @@ void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, 
 //---------------------------------------------------------------------------
 void MetadataUpdateCallback(uint16_t Code, char_t *Stream)
 {
+    (void)Code;
     (void)Stream;
-
-    Code = Code;
 }
 //---------------------------------------------------------------------------

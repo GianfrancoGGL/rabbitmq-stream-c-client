@@ -32,7 +32,7 @@ SOFTWARE.
 #include "rmqsProtocol.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, rmqsClientType_t ClientType, void *ParentObject)
+rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, rmqsClientType_t ClientType, void *ParentObject, MetadataUpdateCallback_t MetadataUpdateCallback)
 {
     rmqsClient_t *Client = (rmqsClient_t *)rmqsAllocateMemory(sizeof(rmqsClient_t));
 
@@ -44,6 +44,7 @@ rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, 
     Client->CorrelationId = 0;
     Client->TxQueue = rmqsBufferCreate();
     Client->RxQueue = rmqsBufferCreate();
+    Client->MetadataUpdateCallback = MetadataUpdateCallback;
 
     return Client;
 }
@@ -229,7 +230,7 @@ bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, rmqsProperty_
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
-        if (Client->Response.Header.Key != rmqscPeerProperties)
+        if (Client->Response.Header.Key != rmqscPeerProperties || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
         }
@@ -287,7 +288,7 @@ bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainA
             SaslHandshakeResponse->NoOfMechanisms = SwapUInt16(SaslHandshakeResponse->NoOfMechanisms);
         }
 
-        if (SaslHandshakeResponse->Header.Key != rmqscSaslHandshake)
+        if (SaslHandshakeResponse->Header.Key != rmqscSaslHandshake || SaslHandshakeResponse->ResponseCode != rmqsrOK)
         {
             return false;
         }
@@ -355,7 +356,7 @@ bool_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Mec
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
-        if (Client->Response.Header.Key != rmqscSaslAuthenticate)
+        if (Client->Response.Header.Key != rmqscSaslAuthenticate || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
         }
@@ -392,7 +393,7 @@ bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost)
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
-        if (Client->Response.Header.Key != rmqscOpen)
+        if (Client->Response.Header.Key != rmqscOpen || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
         }
@@ -430,7 +431,7 @@ bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, 
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
-        if (Client->Response.Header.Key != rmqscClose)
+        if (Client->Response.Header.Key != rmqscClose || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
         }
@@ -541,7 +542,7 @@ bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rmqsC
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
-        if (Client->Response.Header.Key != rmqscCreate)
+        if (Client->Response.Header.Key != rmqscCreate || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
         }
@@ -585,7 +586,7 @@ bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream)
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
-        if (Client->Response.Header.Key != rmqscDelete)
+        if (Client->Response.Header.Key != rmqscDelete || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
         }
@@ -598,18 +599,22 @@ bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream)
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, size_t StreamCount, rmqsMetadata_t **Metadata)
+bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, size_t StreamCount, rmqsMetadata_t *Metadata)
 {
     uint16_t Key = rmqscMetadata;
     uint16_t Version = 1;
     uint32_t i, j;
     char_t *Data;
-    rmqsMetadata_t *MetadataStruct;
     rmqsBrokerMetadata_t *BrokerMetadata;
     rmqsStreamMetadata_t *StreamMetadata;
     bool_t ConnectionLost;
 
-    *Metadata = 0;
+    //
+    // The metadata structure is cleared to be sure that it doesn't give problems within this function,
+    // even if it's supposed to be already cleared, otherwise ther could be memory leaks since
+    // the structure pointers are going to be lost
+    //
+    rmqsMetadataClear(Metadata);
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -647,18 +652,16 @@ bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, s
         Data = (char_t *)Client->RxQueue->Data;
         Data += sizeof(rmqsMsgHeader_t) + sizeof(uint32_t); // Moves the pointer to data over the header and correlation id
 
-        MetadataStruct = *Metadata = rmqsMetadataCreate();
+        rmqsGetUInt32FromMemory(&Data, &Metadata->BrokerMetadataCount, Client->ClientConfiguration->IsLittleEndianMachine);
 
-        rmqsGetUInt32FromMemory(&Data, &MetadataStruct->BrokerMetadataCount, Client->ClientConfiguration->IsLittleEndianMachine);
-
-        if (MetadataStruct->BrokerMetadataCount > 0)
+        if (Metadata->BrokerMetadataCount > 0)
         {
-            MetadataStruct->BrokerMetadataList = rmqsAllocateMemory(sizeof(rmqsBrokerMetadata_t) * MetadataStruct->BrokerMetadataCount);
-            memset(MetadataStruct->BrokerMetadataList, 0, sizeof(rmqsBrokerMetadata_t) * MetadataStruct->BrokerMetadataCount);
+            Metadata->BrokerMetadataList = rmqsAllocateMemory(sizeof(rmqsBrokerMetadata_t) * Metadata->BrokerMetadataCount);
+            memset(Metadata->BrokerMetadataList, 0, sizeof(rmqsBrokerMetadata_t) * Metadata->BrokerMetadataCount);
 
-            for (i = 0; i < MetadataStruct->BrokerMetadataCount; i++)
+            for (i = 0; i < Metadata->BrokerMetadataCount; i++)
             {
-                BrokerMetadata = &MetadataStruct->BrokerMetadataList[i];
+                BrokerMetadata = &Metadata->BrokerMetadataList[i];
 
                 rmqsGetUInt16FromMemory(&Data, &BrokerMetadata->Reference, Client->ClientConfiguration->IsLittleEndianMachine);
                 rmqsGetStringFromMemory(&Data, BrokerMetadata->Host, RQMS_MAX_HOSTNAME_LENGTH, Client->ClientConfiguration->IsLittleEndianMachine);
@@ -666,19 +669,19 @@ bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, s
             }
         }
 
-        rmqsGetUInt32FromMemory(&Data, &MetadataStruct->StreamMetadataCount, Client->ClientConfiguration->IsLittleEndianMachine);
+        rmqsGetUInt32FromMemory(&Data, &Metadata->StreamMetadataCount, Client->ClientConfiguration->IsLittleEndianMachine);
 
-        if (MetadataStruct->StreamMetadataCount == 0)
+        if (Metadata->StreamMetadataCount == 0)
         {
             return true;
         }
 
-        MetadataStruct->StreamMetadataList = rmqsAllocateMemory(sizeof(rmqsStreamMetadata_t) * MetadataStruct->StreamMetadataCount);
-        memset(MetadataStruct->StreamMetadataList, 0, sizeof(rmqsStreamMetadata_t) * MetadataStruct->StreamMetadataCount);
+        Metadata->StreamMetadataList = rmqsAllocateMemory(sizeof(rmqsStreamMetadata_t) * Metadata->StreamMetadataCount);
+        memset(Metadata->StreamMetadataList, 0, sizeof(rmqsStreamMetadata_t) * Metadata->StreamMetadataCount);
 
-        for (i = 0; i < MetadataStruct->StreamMetadataCount; i++)
+        for (i = 0; i < Metadata->StreamMetadataCount; i++)
         {
-            StreamMetadata = &MetadataStruct->StreamMetadataList[i];
+            StreamMetadata = &Metadata->StreamMetadataList[i];
 
             rmqsGetStringFromMemory(&Data, StreamMetadata->Stream, RMQS_MAX_STREAM_NAME_LENGTH, Client->ClientConfiguration->IsLittleEndianMachine);
             rmqsGetUInt16FromMemory(&Data, &StreamMetadata->Code, Client->ClientConfiguration->IsLittleEndianMachine);
@@ -687,8 +690,8 @@ bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, s
 
             if (StreamMetadata->ReplicasReferenceCount > 0)
             {
-                StreamMetadata->ReplicasReferences = rmqsAllocateMemory(sizeof(uint16_t) * MetadataStruct->StreamMetadataList[i].ReplicasReferenceCount);
-                memset(StreamMetadata->ReplicasReferences, 0, sizeof(uint16_t) * MetadataStruct->StreamMetadataList[i].ReplicasReferenceCount);
+                StreamMetadata->ReplicasReferences = rmqsAllocateMemory(sizeof(uint16_t) * Metadata->StreamMetadataList[i].ReplicasReferenceCount);
+                memset(StreamMetadata->ReplicasReferences, 0, sizeof(uint16_t) * Metadata->StreamMetadataList[i].ReplicasReferenceCount);
     
                 for (j = 0; j < StreamMetadata->ReplicasReferenceCount; j++)
                 {
@@ -726,13 +729,30 @@ void rmqsHeartbeat(rmqsClient_t *Client, rmqsSocket Socket)
     rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 }
 //---------------------------------------------------------------------------
+void rmqsHandleMetadataUpdate(rmqsClient_t *Client, rmqsBuffer_t *Buffer)
+{
+    char_t *MessagePayload = (char_t *)Buffer->Data + sizeof(rmqsMsgHeader_t);
+    uint16_t Code;
+    char_t Stream[RMQS_MAX_STREAM_NAME_LENGTH + 1];
+
+    rmqsGetUInt16FromMemory(&MessagePayload, &Code, Client->ClientConfiguration->IsLittleEndianMachine);
+    rmqsGetStringFromMemory(&MessagePayload, Stream, RMQS_MAX_STREAM_NAME_LENGTH, Client->ClientConfiguration->IsLittleEndianMachine);
+
+    Client->MetadataUpdateCallback(Code, Stream);
+}
+//---------------------------------------------------------------------------
 rmqsMetadata_t *rmqsMetadataCreate(void)
 {
     rmqsMetadata_t *Metadata = (rmqsMetadata_t *)rmqsAllocateMemory(sizeof(rmqsMetadata_t));
 
-    memset(Metadata, 0, sizeof(rmqsMetadata_t));
+    rmqsMetadataClear(Metadata);
 
     return(Metadata);
+}
+//---------------------------------------------------------------------------
+void rmqsMetadataClear(rmqsMetadata_t *Metadata)
+{
+    memset(Metadata, 0, sizeof(rmqsMetadata_t));
 }
 //---------------------------------------------------------------------------
 void rmqsMetadataDestroy(rmqsMetadata_t *Metadata)

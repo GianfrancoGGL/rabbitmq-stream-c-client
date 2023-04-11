@@ -28,13 +28,13 @@ SOFTWARE.
 #include "rmqsClientConfiguration.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *PublisherReference, uint32_t Heartbeat, PublishResultCallback_t PublishResultCallback)
+rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *PublisherReference, uint32_t Heartbeat, PublishResultCallback_t PublishResultCallback, MetadataUpdateCallback_t MetadataUpdateCallback)
 {
     rmqsPublisher_t *Publisher = (rmqsPublisher_t *)rmqsAllocateMemory(sizeof(rmqsPublisher_t));
 
     memset(Publisher, 0, sizeof(rmqsPublisher_t));
 
-    Publisher->Client = rmqsClientCreate(ClientConfiguration, rmqsctPublisher, Publisher);
+    Publisher->Client = rmqsClientCreate(ClientConfiguration, rmqsctPublisher, Publisher, MetadataUpdateCallback);
     strncpy(Publisher->PublisherReference, PublisherReference, RMQS_MAX_PUBLISHER_REFERENCE_LENGTH);
     Publisher->Heartbeat = Heartbeat;
     Publisher->PublishResultCallback = PublishResultCallback;
@@ -101,7 +101,7 @@ bool_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
-        if (Client->Response.Header.Key != rmqscDeclarePublisher)
+        if (Client->Response.Header.Key != rmqscDeclarePublisher || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
         }
@@ -142,7 +142,7 @@ bool_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket Socket,
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
-        if (Client->Response.Header.Key != rmqscQueryPublisherSequence)
+        if (Client->Response.Header.Key != rmqscQueryPublisherSequence || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
         }
@@ -190,7 +190,7 @@ bool_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
-        if (Client->Response.Header.Key != rmqscDeletePublisher)
+        if (Client->Response.Header.Key != rmqscDeletePublisher || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
         }

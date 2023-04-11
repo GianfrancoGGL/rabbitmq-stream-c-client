@@ -199,16 +199,7 @@ bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool
         }
         else if (MsgHeader.Key == rmqscMetadataUpdate)
         {
-            //
-            // This message is caught and handled by this procedure and not returned to the caller
-            //
-            if (ClientObj->ClientType == rmqsctConsumer)
-            {
-                //
-                // Temororay solution to inspect the message
-                //
-                ((rmqsConsumer_t *)ClientObj->ParentObject)->MetadataUpdateCallback(0, "");
-            }
+            rmqsHandleMetadataUpdate(ClientObj, ClientObj->RxQueue);
         }
         else
         {

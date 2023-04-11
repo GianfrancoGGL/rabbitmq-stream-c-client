@@ -51,7 +51,6 @@ typedef struct
 rmqsDeliverInfo_t;
 //---------------------------------------------------------------------------
 typedef void (*DeliverResultCallback_t)(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset);
-typedef void (*MetadataUpdateCallback_t)(uint16_t Code, char_t *Stream);
 //---------------------------------------------------------------------------
 typedef struct
 {
@@ -63,7 +62,6 @@ typedef struct
     char_t SubscriptionStreamTable[256][RMQS_MAX_STREAM_NAME_LENGTH + 1];
     rmqsDeliverInfo_t DeliverInfo;
     DeliverResultCallback_t DeliverResultCallback;
-    MetadataUpdateCallback_t MetadataUpdateCallback;
 }
 rmqsConsumer_t;
 //---------------------------------------------------------------------------

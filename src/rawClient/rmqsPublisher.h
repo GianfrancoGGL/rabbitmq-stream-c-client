@@ -54,7 +54,7 @@ typedef struct
 }
 rmqsPublisher_t;
 //---------------------------------------------------------------------------
-rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *PublisherReference, uint32_t Heartbeat, PublishResultCallback_t PublishResultCallback);
+rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *PublisherReference, uint32_t Heartbeat, PublishResultCallback_t PublishResultCallback, MetadataUpdateCallback_t MetadataUpdateCallback);
 void rmqsPublisherDestroy(rmqsPublisher_t *Publisher);
 void rmqsPublisherPoll(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost);
 bool_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_t PublisherId, char_t *Stream);

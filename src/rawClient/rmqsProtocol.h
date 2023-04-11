@@ -84,7 +84,6 @@ rmqsCommand_t;
 //---------------------------------------------------------------------------
 typedef enum
 {
-    rmqsrNoReply = 0x00,
     rmqsrOK = 0x01,
     rmqsrStreamDoesNotExist = 0x02,
     rmqsrSubscriptionIDAlreadyExists = 0x03,

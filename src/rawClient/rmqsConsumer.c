@@ -34,13 +34,12 @@ rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfigurati
 
     memset(Consumer, 0, sizeof(rmqsConsumer_t));
 
-    Consumer->Client = rmqsClientCreate(ClientConfiguration, rmqsctConsumer, Consumer);
+    Consumer->Client = rmqsClientCreate(ClientConfiguration, rmqsctConsumer, Consumer, MetadataUpdateCallback);
     strncpy(Consumer->ConsumerReference, ConsumerReference, RMQS_MAX_CONSUMER_REFERENCE_LENGTH);
     Consumer->FrameMax = FrameMax;
     Consumer->Heartbeat = Heartbeat;
     Consumer->DefaultCredit = DefaultCredit; 
     Consumer->DeliverResultCallback = DeliverResultCallback;
-    Consumer->MetadataUpdateCallback = MetadataUpdateCallback;
 
     return Consumer;
 }
@@ -159,7 +158,7 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
-        if (Client->Response.Header.Key != rmqscSubscribe)
+        if (Client->Response.Header.Key != rmqscSubscribe || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
         }
@@ -201,7 +200,7 @@ bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subs
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
-        if (Client->Response.Header.Key != rmqscUnsubscribe)
+        if (Client->Response.Header.Key != rmqscUnsubscribe || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
         }
@@ -286,7 +285,7 @@ bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Refe
             QueryOffsetResponse->Offset = SwapUInt64(QueryOffsetResponse->Offset);
         }
 
-        if (QueryOffsetResponse->Header.Key != rmqscQueryOffset)
+        if (QueryOffsetResponse->Header.Key != rmqscQueryOffset || QueryOffsetResponse->ResponseCode != rmqsrOK)
         {
             return false;
         }

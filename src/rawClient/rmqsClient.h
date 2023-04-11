@@ -43,21 +43,6 @@ typedef enum
 }
 rmqsClientType_t;
 //---------------------------------------------------------------------------
-typedef struct
-{
-    rmqsClientConfiguration_t *ClientConfiguration;
-    uint32_t ClientMaxFrameSize;
-    uint32_t ClientHeartbeat;
-    rmqsClientType_t ClientType;
-    void *ParentObject; // Publisher or consumer
-    uint32_t CorrelationId;
-    rmqsResponse_t Response;
-    rmqsBuffer_t *TxQueue;
-    rmqsBuffer_t *RxQueue;
-    char_t RxSocketBuffer[RMQS_CLIENT_RX_BUFFER_SIZE];
-}
-rmqsClient_t;
-//---------------------------------------------------------------------------
 typedef enum
 {
     rmqssllClientLocal,
@@ -129,7 +114,25 @@ typedef struct
 }
 rmqsMetadata_t;
 //---------------------------------------------------------------------------
-rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, rmqsClientType_t ClientType, void *ParentObject);
+typedef void (*MetadataUpdateCallback_t)(uint16_t Code, char_t *Stream);
+//---------------------------------------------------------------------------
+typedef struct
+{
+    rmqsClientConfiguration_t *ClientConfiguration;
+    uint32_t ClientMaxFrameSize;
+    uint32_t ClientHeartbeat;
+    rmqsClientType_t ClientType;
+    void *ParentObject; // Publisher or consumer
+    uint32_t CorrelationId;
+    rmqsResponse_t Response;
+    rmqsBuffer_t *TxQueue;
+    rmqsBuffer_t *RxQueue;
+    char_t RxSocketBuffer[RMQS_CLIENT_RX_BUFFER_SIZE];
+    MetadataUpdateCallback_t MetadataUpdateCallback;
+}
+rmqsClient_t;
+//---------------------------------------------------------------------------
+rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, rmqsClientType_t ClientType, void *ParentObject, MetadataUpdateCallback_t MetadataUpdateCallback);
 void rmqsClientDestroy(rmqsClient_t *Client);
 //---------------------------------------------------------------------------
 bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost, rmqsProperty_t *Properties, size_t PropertyCount);
@@ -142,10 +145,12 @@ bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost);
 bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason);
 bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rmqsCreateStreamArgs_t *CreateStreamArgs, bool_t *StreamAlreadyExists);
 bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream);
-bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, size_t StreamCount, rmqsMetadata_t **Metadata);
+bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, size_t StreamCount, rmqsMetadata_t *Metadata);
 void rmqsHeartbeat(rmqsClient_t *Client, rmqsSocket Socket);
+void rmqsHandleMetadataUpdate(rmqsClient_t *Client, rmqsBuffer_t *Buffer);
 //---------------------------------------------------------------------------
 rmqsMetadata_t *rmqsMetadataCreate(void);
+void rmqsMetadataClear(rmqsMetadata_t *Metadata);
 void rmqsMetadataDestroy(rmqsMetadata_t *Metadata);
 //---------------------------------------------------------------------------
 #endif
