@@ -102,7 +102,8 @@ typedef enum
     rmqsrAccessRefused = 0x10,
     rmqsrPreconditionFailed = 0x11,
     rmqsrPublisherDoesNotExist = 0x12,
-    rmqsrNoOffset = 0x13
+    rmqsrNoOffset = 0x13,
+    rmqsrConnectionLost = 0xFF
 }
 rmqsResponseCode_t;
 //---------------------------------------------------------------------------
@@ -179,7 +180,8 @@ void rmqsSendMessage(void *Client, rmqsSocket Socket, char_t *Data, size_t DataS
 bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool_t *ConnectionLost);
 bool_t rmqsWaitResponse(void *Client, rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionLost);
 void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, size_t MessageSize);
-char_t * rmqsGetMessageDescription(uint16_t Key);
+char_t * rmqsGetCommandDescription(uint16_t Key);
+char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode);
 //---------------------------------------------------------------------------
 size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value);
 size_t rmqsAddUInt8ToBuffer(rmqsBuffer_t *Buffer, uint8_t Value);

@@ -45,8 +45,9 @@ uint32_t TimerResult;
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@127.0.0.1:5552";
+    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@192.168.56.1:5552";
     char_t Error[RMQS_ERR_MAX_STRING_LENGTH] = {0};
+    rmqsResponseCode_t ResponseCode = rmqsrOK;
     rmqsClientConfiguration_t *ClientConfiguration = 0;
     rmqsBroker_t *Broker = 0;
     rmqsPublisher_t *Publisher = 0;
@@ -59,11 +60,11 @@ int main(int argc, char * argv[])
     rmqsCreateStreamArgs_t CreateStreamArgs = {0};
     bool_t StreamAlredyExists;
     rmqsSocket Socket;
-    bool_t ConnectionLost;
+    bool_t ConnectionLost = false;
     rmqsProperty_t Properties[6];
     rmqsMessage_t *MessageBatch = 0;
-    uint32_t PublishWaitingTime = 5 * 1000; // 5 seconds
-    uint32_t ConsumeWaitingTime = 10 * 1000; // 10 seconds
+    uint32_t PublishWaitingTime = 5 * 1000; // seconds
+    uint32_t ConsumeWaitingTime = 5 * 1000; // seconds
     uint64_t PublishingId = 0;
     uint64_t Offset;
     size_t i, j;
@@ -152,7 +153,7 @@ int main(int argc, char * argv[])
 
     printf("Connected to %s\r\n", Broker->Hostname);
 
-    if (! rmqsClientLogin(Publisher->Client, Socket, Broker->VirtualHost, Properties, 6))
+    if (! rmqsClientLogin(Publisher->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode))
     {
         printf("Cannot login to %s\r\n", Broker->Hostname);
         goto CLEAN_UP;
@@ -160,7 +161,7 @@ int main(int argc, char * argv[])
 
     printf("Logged in to %s\r\n", Broker->Hostname);
 
-    if (rmqsDelete(Publisher->Client, Socket, Stream))
+    if (rmqsDelete(Publisher->Client, Socket, Stream, &ResponseCode))
     {
         printf("Deleted stream %s\r\n", Stream);
     }
@@ -184,7 +185,7 @@ int main(int argc, char * argv[])
     CreateStreamArgs.SetQueueLeaderLocator = true;
     CreateStreamArgs.LeaderLocator = rmqssllClientLocal;
 
-    if (! rmqsCreate(Publisher->Client, Socket, Stream, &CreateStreamArgs, &StreamAlredyExists) && ! StreamAlredyExists)
+    if (! rmqsCreate(Publisher->Client, Socket, Stream, &CreateStreamArgs, &StreamAlredyExists, &ResponseCode) && ! StreamAlredyExists)
     {
         printf("Cannot create stream %s\r\n", Stream);
         goto CLEAN_UP;
@@ -201,7 +202,7 @@ int main(int argc, char * argv[])
 
     if (! TestPublishError)
     {
-        if (! rmqsDeclarePublisher(Publisher, Socket, PublisherId, Stream))
+        if (! rmqsDeclarePublisher(Publisher, Socket, PublisherId, Stream, &ResponseCode))
         {
             printf("Cannot declare the publisher\r\n");
             goto CLEAN_UP;
@@ -212,7 +213,7 @@ int main(int argc, char * argv[])
         //
         // Test publish error declaring a publisher for a non-existing stream
         //
-        rmqsDeclarePublisher(Publisher, Socket, PublisherId, "XYZ");
+        rmqsDeclarePublisher(Publisher, Socket, PublisherId, "XYZ", &ResponseCode);
     }
 
     MessageBatch = (rmqsMessage_t *)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MESSAGE_COUNT);
@@ -241,7 +242,7 @@ int main(int argc, char * argv[])
 
     rmqsBatchDestroy(MessageBatch, MESSAGE_COUNT);
 
-    rmqsQueryPublisherSequence(Publisher, Socket, Stream, &Sequence);
+    rmqsQueryPublisherSequence(Publisher, Socket, Stream, &Sequence, &ResponseCode);
 
     printf("Sequence number: %" PRIu64 "\r\n", Sequence);
 
@@ -254,10 +255,15 @@ int main(int argc, char * argv[])
 
     rmqsPublisherPoll(Publisher, Socket, PublishWaitingTime, &ConnectionLost);
 
+    if (ConnectionLost)
+    {
+        goto CLEAN_UP;
+    }
+
     TimerResult = rmqsTimerGetTime(ElapseTimer);
     printf("Publisher - Timer end: %u\r\n", TimerResult);
 
-    if (rmqsDeletePublisher(Publisher, Socket, PublisherId))
+    if (rmqsDeletePublisher(Publisher, Socket, PublisherId, &ResponseCode))
     {
         printf("Publisher deleted\r\n");
     }
@@ -268,7 +274,7 @@ int main(int argc, char * argv[])
 
     rmqsHeartbeat(Publisher->Client, Socket);
 
-    if (rmqsClientLogout(Publisher->Client, Socket, 0, "Regular shutdown"))
+    if (rmqsClientLogout(Publisher->Client, Socket, 0, "Regular shutdown", &ResponseCode))
     {
         printf("Logged out\r\n");
     }
@@ -309,7 +315,7 @@ int main(int argc, char * argv[])
 
     printf("Connected to %s\r\n", Broker->Hostname);
 
-    if (! rmqsClientLogin(Consumer->Client, Socket, Broker->VirtualHost, Properties, 6))
+    if (! rmqsClientLogin(Consumer->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode))
     {
         printf("Cannot login to %s\r\n", Broker->Hostname);
         goto CLEAN_UP;
@@ -319,7 +325,7 @@ int main(int argc, char * argv[])
 
     Metadata = rmqsMetadataCreate();
 
-    if (rmqsMetadata(Publisher->Client, Socket, &Stream, 1, Metadata))
+    if (rmqsMetadata(Publisher->Client, Socket, &Stream, 1, Metadata, &ResponseCode))
     {
         printf("Metadata retrieved for stream %s\r\n", Stream);
         rmqsMetadataDestroy(Metadata);
@@ -331,7 +337,7 @@ int main(int argc, char * argv[])
         goto CLEAN_UP;
     }
 
-    if (rmqsSubscribe(Consumer, Socket, SubscriptionId, Stream, rmqsotOffset, 0, Consumer->DefaultCredit, 0, 0))
+    if (rmqsSubscribe(Consumer, Socket, SubscriptionId, Stream, rmqsotOffset, 0, Consumer->DefaultCredit, 0, 0, &ResponseCode))
     {
         printf("Subscribed to stream %s\r\n", Stream);
     }
@@ -348,10 +354,15 @@ int main(int argc, char * argv[])
 
     rmqsConsumerPoll(Consumer, Socket, ConsumeWaitingTime, &ConnectionLost);
 
+    if (ConnectionLost)
+    {
+        goto CLEAN_UP;
+    }
+
     TimerResult = rmqsTimerGetTime(ElapseTimer);
     printf("Consumer - Timer end: %u\r\n", TimerResult);
 
-    if (rmqsUnsubscribe(Consumer, Socket, SubscriptionId))
+    if (rmqsUnsubscribe(Consumer, Socket, SubscriptionId, &ResponseCode))
     {
         printf("Unsubscribed from stream %s\r\n", Stream);
     }
@@ -360,7 +371,7 @@ int main(int argc, char * argv[])
         printf("Cannot unsubcribe from stream %s\r\n", Stream);
     }
 
-    if (rmqsQueryOffset(Consumer, Socket, CONSUMER_REFERENCE, Stream, &Offset))
+    if (rmqsQueryOffset(Consumer, Socket, CONSUMER_REFERENCE, Stream, &Offset, &ResponseCode))
     {
         printf("QueryOffset - Offset: %" PRIu64 "\r\n", Offset);
     }
@@ -371,7 +382,7 @@ int main(int argc, char * argv[])
 
     rmqsHeartbeat(Publisher->Client, Socket);
 
-    if (rmqsClientLogout(Consumer->Client, Socket, 0, "Regular shutdown"))
+    if (rmqsClientLogout(Consumer->Client, Socket, 0, "Regular shutdown", &ResponseCode))
     {
         printf("Logged out\r\n");
     }
@@ -386,6 +397,15 @@ int main(int argc, char * argv[])
     //---------------------------------------------------------------------------
 
 CLEAN_UP:
+    if (ConnectionLost)
+    {
+        printf("Connection lost\r\n");
+    }
+
+    if (ResponseCode != rmqsrOK)
+    {
+        printf("Response code :%s\r\n", rmqsGetResponseCodeDescription(ResponseCode));
+    }
 
     if (Publisher)
     {

@@ -73,13 +73,15 @@ void rmqsPublisherPoll(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint32_t T
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_t PublisherId, char_t *Stream)
+bool_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_t PublisherId, char_t *Stream, rmqsResponseCode_t *ResponseCode)
 {
     rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
     uint16_t Key = rmqscDeclarePublisher;
     uint16_t Version = 1;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -101,6 +103,8 @@ bool_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
+        *ResponseCode = Client->Response.ResponseCode;
+
         if (Client->Response.Header.Key != rmqscDeclarePublisher || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
@@ -110,11 +114,16 @@ bool_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket Socket, char_t *Stream, uint64_t *Sequence)
+bool_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket Socket, char_t *Stream, uint64_t *Sequence, rmqsResponseCode_t *ResponseCode)
 {
     rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -122,6 +131,8 @@ bool_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket Socket,
     uint16_t Version = 1;
     rmqsQueryPublisherResponse_t *QueryPublisherResponse;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -142,6 +153,8 @@ bool_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket Socket,
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
+        *ResponseCode = Client->Response.ResponseCode;
+
         if (Client->Response.Header.Key != rmqscQueryPublisherSequence || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
@@ -160,17 +173,24 @@ bool_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket Socket,
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_t PublisherId)
+bool_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_t PublisherId, rmqsResponseCode_t *ResponseCode)
 {
     rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
     uint16_t Key = rmqscDeletePublisher;
     uint16_t Version = 1;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -190,6 +210,8 @@ bool_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
+        *ResponseCode = Client->Response.ResponseCode;
+
         if (Client->Response.Header.Key != rmqscDeletePublisher || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
@@ -199,6 +221,11 @@ bool_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket Socket, uint8_
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }

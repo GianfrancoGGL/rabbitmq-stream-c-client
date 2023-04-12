@@ -135,18 +135,19 @@ rmqsClient_t;
 rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, rmqsClientType_t ClientType, void *ParentObject, MetadataUpdateCallback_t MetadataUpdateCallback);
 void rmqsClientDestroy(rmqsClient_t *Client);
 //---------------------------------------------------------------------------
-bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost, rmqsProperty_t *Properties, size_t PropertyCount);
-bool_t rmqsClientLogout(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason);
+bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode);
+bool_t rmqsClientLogout(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason, rmqsResponseCode_t *ResponseCode);
 //---------------------------------------------------------------------------
-bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, rmqsProperty_t *Properties, size_t PropertyCount);
-bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainAuthSupported);
-bool_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Mechanism, char_t *Username, char_t *Password);
-bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost);
-bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason);
-bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rmqsCreateStreamArgs_t *CreateStreamArgs, bool_t *StreamAlreadyExists);
-bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream);
-bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, size_t StreamCount, rmqsMetadata_t *Metadata);
+bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode);
+bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainAuthSupported, rmqsResponseCode_t *ResponseCode);
+bool_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Mechanism, char_t *Username, char_t *Password, rmqsResponseCode_t *ResponseCode);
+bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost, rmqsResponseCode_t *ResponseCode);
+bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason, rmqsResponseCode_t *ResponseCode);
+bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rmqsCreateStreamArgs_t *CreateStreamArgs, bool_t *StreamAlreadyExists, rmqsResponseCode_t *ResponseCode);
+bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rmqsResponseCode_t *ResponseCode);
+bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, size_t StreamCount, rmqsMetadata_t *Metadata, rmqsResponseCode_t *ResponseCode);
 void rmqsHeartbeat(rmqsClient_t *Client, rmqsSocket Socket);
+//---------------------------------------------------------------------------
 void rmqsHandleMetadataUpdate(rmqsClient_t *Client, rmqsBuffer_t *Buffer);
 //---------------------------------------------------------------------------
 rmqsMetadata_t *rmqsMetadataCreate(void);

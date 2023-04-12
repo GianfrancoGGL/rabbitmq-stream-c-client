@@ -57,17 +57,19 @@ void rmqsClientDestroy(rmqsClient_t *Client)
     rmqsFreeMemory((void *)Client);
 }
 //---------------------------------------------------------------------------
-bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost, rmqsProperty_t *Properties, size_t PropertyCount)
+bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
 {
     rmqsBroker_t *Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Client->ClientConfiguration->BrokerList, 0);
     bool_t PlainAuthSupported;
     rmqsTuneRequest_t TuneRequest, TuneResponse;
     bool_t ConnectionLost;
 
+    *ResponseCode = rmqsrOK;
+
     //
     // Send the peer properties request
     //
-    if (! rmqsPeerProperties(Client, Socket, Properties, PropertyCount))
+    if (! rmqsPeerProperties(Client, Socket, Properties, PropertyCount, ResponseCode))
     {
         return false;
     }
@@ -75,7 +77,7 @@ bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualH
     //
     // Then the SASL handshake request
     //
-    if (! rmqsSaslHandshake(Client, Socket, &PlainAuthSupported))
+    if (! rmqsSaslHandshake(Client, Socket, &PlainAuthSupported, ResponseCode))
     {
         return false;
     }
@@ -83,7 +85,7 @@ bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualH
     //
     // Next, the authenticate request, based on the supported mechanism
     //
-    if (! PlainAuthSupported || ! rmqsSaslAuthenticate(Client, Socket, RMQS_PLAIN_PROTOCOL, (char_t *)Broker->Username, (char_t *)Broker->Password))
+    if (! PlainAuthSupported || ! rmqsSaslAuthenticate(Client, Socket, RMQS_PLAIN_PROTOCOL, (char_t *)Broker->Username, (char_t *)Broker->Password, ResponseCode))
     {
         return false;
     }
@@ -91,8 +93,15 @@ bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualH
     //
     // Wait for the tune message sent by the server after the authentication
     //
+    *ResponseCode = rmqsrOK;
+
     if (! rmqsWaitMessage(Client, Socket, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 
@@ -150,7 +159,7 @@ bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualH
     //
     // Finally, issue the open request
     //
-    if (! rmqsOpen(Client, Socket, VirtualHost))
+    if (! rmqsOpen(Client, Socket, VirtualHost, ResponseCode))
     {
         return false;
     }
@@ -158,12 +167,14 @@ bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualH
     return true;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsClientLogout(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason)
+bool_t rmqsClientLogout(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason, rmqsResponseCode_t *ResponseCode)
 {
-    return rmqsClose(Client, Socket, ClosingCode, ClosingReason);
+    *ResponseCode = rmqsrOK;
+
+    return rmqsClose(Client, Socket, ClosingCode, ClosingReason, ResponseCode);
 }
 //---------------------------------------------------------------------------
-bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, rmqsProperty_t *Properties, size_t PropertyCount)
+bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscPeerProperties;
     uint16_t Version = 1;
@@ -171,6 +182,8 @@ bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, rmqsProperty_
     uint32_t MapSize;
     rmqsProperty_t *Property;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     if (PropertyCount > 0)
     {
@@ -230,6 +243,8 @@ bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, rmqsProperty_
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
+        *ResponseCode = Client->Response.ResponseCode;
+
         if (Client->Response.Header.Key != rmqscPeerProperties || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
@@ -239,11 +254,16 @@ bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket Socket, rmqsProperty_
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainAuthSupported)
+bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainAuthSupported, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscSaslHandshake;
     uint16_t Version = 1;
@@ -252,6 +272,8 @@ bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainA
     char_t *Data;
     uint16_t StringLen;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     *PlainAuthSupported = false; // By default assume that the PLAIN auth is not supported
 
@@ -288,6 +310,8 @@ bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainA
             SaslHandshakeResponse->NoOfMechanisms = SwapUInt16(SaslHandshakeResponse->NoOfMechanisms);
         }
 
+        *ResponseCode = SaslHandshakeResponse->ResponseCode;
+
         if (SaslHandshakeResponse->Header.Key != rmqscSaslHandshake || SaslHandshakeResponse->ResponseCode != rmqsrOK)
         {
             return false;
@@ -314,17 +338,24 @@ bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket Socket, bool_t *PlainA
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Mechanism, char_t *Username, char_t *Password)
+bool_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Mechanism, char_t *Username, char_t *Password, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscSaslAuthenticate;
     uint16_t Version = 1;
     char_t *OpaqueData;
     size_t UsernameLen, PasswordLen, OpaqueDataLen;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -356,6 +387,8 @@ bool_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Mec
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
+        *ResponseCode = Client->Response.ResponseCode;
+
         if (Client->Response.Header.Key != rmqscSaslAuthenticate || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
@@ -365,15 +398,22 @@ bool_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Mec
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost)
+bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscOpen;
     uint16_t Version = 1;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -393,6 +433,8 @@ bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost)
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
+        *ResponseCode = Client->Response.ResponseCode;
+
         if (Client->Response.Header.Key != rmqscOpen || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
@@ -402,15 +444,22 @@ bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket Socket, char_t *VirtualHost)
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason)
+bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, char_t *ClosingReason, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscClose;
     uint16_t Version = 1;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -431,6 +480,8 @@ bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, 
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
+        *ResponseCode = Client->Response.ResponseCode;
+
         if (Client->Response.Header.Key != rmqscClose || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
@@ -440,17 +491,24 @@ bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket Socket, uint16_t ClosingCode, 
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rmqsCreateStreamArgs_t *CreateStreamArgs, bool_t *StreamAlreadyExists)
+bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rmqsCreateStreamArgs_t *CreateStreamArgs, bool_t *StreamAlreadyExists, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscCreate;
     uint16_t Version = 1;
     size_t NoOfArgs = 0;
     rmqsProperty_t Property;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     *StreamAlreadyExists = false;
 
@@ -542,6 +600,8 @@ bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rmqsC
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
+        *ResponseCode = Client->Response.ResponseCode;
+
         if (Client->Response.Header.Key != rmqscCreate || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
@@ -558,15 +618,22 @@ bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rmqsC
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream)
+bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscDelete;
     uint16_t Version = 1;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -586,6 +653,8 @@ bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream)
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
+        *ResponseCode = Client->Response.ResponseCode;
+
         if (Client->Response.Header.Key != rmqscDelete || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
@@ -595,11 +664,16 @@ bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket Socket, char_t *Stream)
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, size_t StreamCount, rmqsMetadata_t *Metadata)
+bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, size_t StreamCount, rmqsMetadata_t *Metadata, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscMetadata;
     uint16_t Version = 1;
@@ -608,6 +682,8 @@ bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, s
     rmqsBrokerMetadata_t *BrokerMetadata;
     rmqsStreamMetadata_t *StreamMetadata;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     //
     // The metadata structure is cleared to be sure that it doesn't give problems within this function,
@@ -644,6 +720,8 @@ bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, s
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
+        *ResponseCode = Client->Response.ResponseCode;
+
         if (Client->Response.Header.Key != rmqscMetadata)
         {
             return false;
@@ -704,6 +782,11 @@ bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket Socket, char_t **Streams, s
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }
@@ -747,7 +830,7 @@ rmqsMetadata_t *rmqsMetadataCreate(void)
 
     rmqsMetadataClear(Metadata);
 
-    return(Metadata);
+    return Metadata;
 }
 //---------------------------------------------------------------------------
 void rmqsMetadataClear(rmqsMetadata_t *Metadata)

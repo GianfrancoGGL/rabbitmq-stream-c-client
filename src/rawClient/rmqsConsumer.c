@@ -75,7 +75,7 @@ void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint32_t Time
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertyCount)
+bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
 {
     rmqsClient_t *Client = Consumer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -85,6 +85,8 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
     uint32_t MapSize;
     rmqsProperty_t *Property;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     if (PropertyCount > 0)
     {
@@ -158,6 +160,8 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
+        *ResponseCode = Client->Response.ResponseCode;
+
         if (Client->Response.Header.Key != rmqscSubscribe || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
@@ -170,17 +174,24 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId)
+bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, rmqsResponseCode_t *ResponseCode)
 {
     rmqsClient_t *Client = Consumer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
     uint16_t Key = rmqscUnsubscribe;
     uint16_t Version = 1;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     rmqsBufferClear(Client->TxQueue, false);
 
@@ -200,6 +211,8 @@ bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subs
 
     if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
     {
+        *ResponseCode = Client->Response.ResponseCode;
+
         if (Client->Response.Header.Key != rmqscUnsubscribe || Client->Response.ResponseCode != rmqsrOK)
         {
             return false;
@@ -211,6 +224,11 @@ bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subs
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }
@@ -239,7 +257,7 @@ void rmqsCredit(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscriptio
     rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 }
 //---------------------------------------------------------------------------
-bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Reference, char_t *Stream, uint64_t *Offset)
+bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Reference, char_t *Stream, uint64_t *Offset, rmqsResponseCode_t *ResponseCode)
 {
     rmqsClient_t *Client = Consumer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -247,6 +265,8 @@ bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Refe
     uint16_t Version = 1;
     rmqsQueryOffsetResponse_t *QueryOffsetResponse;
     bool_t ConnectionLost;
+
+    *ResponseCode = rmqsrOK;
 
     *Offset = 0;
 
@@ -285,6 +305,8 @@ bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Refe
             QueryOffsetResponse->Offset = SwapUInt64(QueryOffsetResponse->Offset);
         }
 
+        *ResponseCode = QueryOffsetResponse->ResponseCode;
+
         if (QueryOffsetResponse->Header.Key != rmqscQueryOffset || QueryOffsetResponse->ResponseCode != rmqsrOK)
         {
             return false;
@@ -296,6 +318,11 @@ bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Refe
     }
     else
     {
+        if (ConnectionLost)
+        {
+            *ResponseCode = rmqsrConnectionLost;
+        }
+
         return false;
     }
 }

@@ -64,7 +64,7 @@ void rmqsSendMessage(void *Client, rmqsSocket Socket, char_t *Data, size_t DataS
 
         Key &= 0x7FFF;
 
-        rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)Data, DataSize, "TX", rmqsGetMessageDescription(Key), 0);
+        rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)Data, DataSize, "TX", rmqsGetCommandDescription(Key), 0);
     }
 
     send(Socket, (char_t *)Data, (int32_t)DataSize, 0);
@@ -158,7 +158,7 @@ bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool
 
             Key &= 0x7FFF;
 
-            rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)ClientObj->RxQueue->Data, ClientObj->RxQueue->Tag2, "RX", rmqsGetMessageDescription(Key), 0);
+            rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)ClientObj->RxQueue->Data, ClientObj->RxQueue->Tag2, "RX", rmqsGetCommandDescription(Key), 0);
         }
 
         //
@@ -268,7 +268,7 @@ void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, size_t MessageSize)
     rmqsBufferDelete(Buffer, MessageSize);
 }
 //---------------------------------------------------------------------------
-char_t * rmqsGetMessageDescription(uint16_t Key)
+char_t * rmqsGetCommandDescription(uint16_t Key)
 {
     char_t *Description = "Unknown message";
 
@@ -390,11 +390,93 @@ char_t * rmqsGetMessageDescription(uint16_t Key)
     return Description;
 }
 //---------------------------------------------------------------------------
-//
-// Older Borland C++ compilers doesn't support  functions in C files
-//
+char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode)
+{
+    char_t *Description = "None";
+
+    switch (ResponseCode)
+    {
+        case rmqsrOK:
+            Description = "OK";
+            break;
+
+        case rmqsrStreamDoesNotExist:
+            Description = "Stream does not exist"; 
+            break;
+
+        case rmqsrSubscriptionIDAlreadyExists:
+            Description = "Subscription ID already exists"; 
+            break;
+
+        case rmqsrSubscriptionIDDoesNotExist:
+            Description = "Subscription ID does not exist"; 
+            break;
+
+        case rmqsrStreamAlreadyExists:
+            Description = "Stream already exists"; 
+            break;
+
+        case rmqsrStreamNotAvailable:
+            Description = "Stream not available"; 
+            break;
+
+        case rmqsrSASLMechanismNotSupported:
+            Description = "SASL mechanism not supported"; 
+            break;
+
+        case rmqsrAuthenticationFailure:
+            Description = "Authentication failure";
+            break;
+
+        case rmqsrSASLError:
+            Description = "SASL error"; 
+            break;
+
+        case rmqsrSASLChallenge:
+            Description = "SASL challenge"; 
+            break;
+
+        case rmqsrSASLAuthenticationFailureLoopback:
+            Description = "SASL authentication failure loopback";
+            break;
+
+        case rmqsrVirtualHostAccessFailure:
+            Description = "Virtual host access failure"; 
+            break;
+
+        case rmqsrUnknownFrame:
+            Description = "Unknown frame"; 
+            break;
+
+        case rmqsrFrameTooLarge:
+            Description = "Frame too large"; 
+            break;
+
+        case rmqsrInternalError:
+            Description = "Internal error";
+            break;
+
+        case rmqsrAccessRefused:
+            Description = "Access refused"; 
+            break;
+
+        case rmqsrPreconditionFailed:
+            Description = "Precondition failed"; 
+            break;
+
+        case rmqsrPublisherDoesNotExist:
+            Description = "Publisher does not exist"; 
+            break;
+
+        case rmqsrNoOffset:
+            Description = "No offset";
+            break;
+    }
+
+    return Description;
+}
 //---------------------------------------------------------------------------
- size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
+size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
 {
     rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
     return sizeof(Value);
