@@ -33,7 +33,7 @@ SOFTWARE.
 #include "rmqsProtocol.h"
 #include "rmqsBuffer.h"
 //---------------------------------------------------------------------------
-#define RMQS_CLIENT_RX_BUFFER_SIZE       1024
+#define RMQS_CLIENT_RX_BUFFER_SIZE      (1024 * 10)
 #define RMQS_MAX_STREAM_NAME_LENGTH       256
 //---------------------------------------------------------------------------
 typedef enum

@@ -51,20 +51,20 @@ void rmqsConsumerDestroy(rmqsConsumer_t *Consumer)
     rmqsFreeMemory((void *)Consumer);
 }
 //---------------------------------------------------------------------------
-void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionLost)
+void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionError)
 {
     uint32_t WaitMessageTimeout = Timeout;
     uint32_t Time;
 
-    *ConnectionLost = false;
+    *ConnectionError = false;
 
     rmqsTimerStart(Consumer->Client->ClientConfiguration->WaitReplyTimer);
 
     while (rmqsTimerGetTime(Consumer->Client->ClientConfiguration->WaitReplyTimer) < Timeout)
     {
-        rmqsWaitMessage(Consumer->Client, Socket, WaitMessageTimeout, ConnectionLost);
+        rmqsWaitMessage(Consumer->Client, Socket, WaitMessageTimeout, ConnectionError);
 
-        if (*ConnectionLost)
+        if (*ConnectionError)
         {
             return;
         }
@@ -84,7 +84,7 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
     uint32_t i;
     uint32_t MapSize;
     rmqsProperty_t *Property;
-    bool_t ConnectionLost;
+    bool_t ConnectionError;
 
     *ResponseCode = rmqsrOK;
 
@@ -158,7 +158,7 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
 
     rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionError))
     {
         *ResponseCode = Client->Response.ResponseCode;
 
@@ -174,9 +174,9 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
     }
     else
     {
-        if (ConnectionLost)
+        if (ConnectionError)
         {
-            *ResponseCode = rmqsrConnectionLost;
+            *ResponseCode = rmqsrConnectionError;
         }
 
         return false;
@@ -189,7 +189,7 @@ bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subs
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
     uint16_t Key = rmqscUnsubscribe;
     uint16_t Version = 1;
-    bool_t ConnectionLost;
+    bool_t ConnectionError;
 
     *ResponseCode = rmqsrOK;
 
@@ -209,7 +209,7 @@ bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subs
 
     rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionError))
     {
         *ResponseCode = Client->Response.ResponseCode;
 
@@ -224,9 +224,9 @@ bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subs
     }
     else
     {
-        if (ConnectionLost)
+        if (ConnectionError)
         {
-            *ResponseCode = rmqsrConnectionLost;
+            *ResponseCode = rmqsrConnectionError;
         }
 
         return false;
@@ -264,7 +264,7 @@ bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Refe
     uint16_t Key = rmqscQueryOffset;
     uint16_t Version = 1;
     rmqsQueryOffsetResponse_t *QueryOffsetResponse;
-    bool_t ConnectionLost;
+    bool_t ConnectionError;
 
     *ResponseCode = rmqsrOK;
 
@@ -287,7 +287,7 @@ bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Refe
 
     rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionLost))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionError))
     {
         //
         // Handshake response is different from a standard response, it has to be reparsed
@@ -318,9 +318,9 @@ bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Refe
     }
     else
     {
-        if (ConnectionLost)
+        if (ConnectionError)
         {
-            *ResponseCode = rmqsrConnectionLost;
+            *ResponseCode = rmqsrConnectionError;
         }
 
         return false;

@@ -45,8 +45,6 @@ SOFTWARE.
 #define RMQS_NULL_STRING_LENGTH    -1
 #define RMQS_EMPTY_DATA_LENGTH     -1
 //---------------------------------------------------------------------------
-#define RMQS_RX_TIMEOUT_INFINITE    0xFFFFFFFF
-//---------------------------------------------------------------------------
 typedef enum
 {
     rmqscDeclarePublisher = 0x01,
@@ -103,7 +101,7 @@ typedef enum
     rmqsrPreconditionFailed = 0x11,
     rmqsrPublisherDoesNotExist = 0x12,
     rmqsrNoOffset = 0x13,
-    rmqsrConnectionLost = 0xFF
+    rmqsrConnectionError = 0xFF
 }
 rmqsResponseCode_t;
 //---------------------------------------------------------------------------
@@ -177,8 +175,8 @@ rmqsQueryOffsetResponse_t;
 bool_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
 void rmqsSendMessage(void *Client, rmqsSocket Socket, char_t *Data, size_t DataSize);
-bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool_t *ConnectionLost);
-bool_t rmqsWaitResponse(void *Client, rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionLost);
+bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool_t *ConnectionError);
+bool_t rmqsWaitResponse(void *Client, rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionError);
 void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, size_t MessageSize);
 char_t * rmqsGetCommandDescription(uint16_t Key);
 char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode);

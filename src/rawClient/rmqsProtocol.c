@@ -70,7 +70,7 @@ void rmqsSendMessage(void *Client, rmqsSocket Socket, char_t *Data, size_t DataS
     send(Socket, (char_t *)Data, (int32_t)DataSize, 0);
 }
 //---------------------------------------------------------------------------
-bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool_t *ConnectionLost)
+bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool_t *ConnectionError)
 {
     rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
     int32_t RxBytes;
@@ -78,7 +78,7 @@ bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool
     rmqsMsgHeader_t MsgHeader;
     uint16_t Key;
 
-    *ConnectionLost = false;
+    *ConnectionError = false;
 
     while (true)
     {
@@ -100,9 +100,9 @@ bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool
 
         if (RxBytes <= 0)
         {
-            if (rmqsNetworkError())
+            if (rmqsConnectionError())
             {
-                *ConnectionLost = true;
+                *ConnectionError = true;
             }
 
             return false;
@@ -210,19 +210,19 @@ bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool
     return true;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsWaitResponse(void *Client, rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionLost)
+bool_t rmqsWaitResponse(void *Client, rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionError)
 {
     rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
     uint32_t WaitMessageTimeout = RxTimeout;
     uint32_t Time;
 
-    *ConnectionLost = false;
+    *ConnectionError = false;
 
     rmqsTimerStart(ClientObj->ClientConfiguration->WaitReplyTimer);
 
     while (rmqsTimerGetTime(ClientObj->ClientConfiguration->WaitReplyTimer) < RxTimeout)
     {
-        if (rmqsWaitMessage(ClientObj, Socket, WaitMessageTimeout, ConnectionLost))
+        if (rmqsWaitMessage(ClientObj, Socket, WaitMessageTimeout, ConnectionError))
         {
             if (ClientObj->RxQueue->Size >= sizeof(rmqsResponse_t))
             {
@@ -250,7 +250,7 @@ bool_t rmqsWaitResponse(void *Client, rmqsSocket Socket, uint32_t CorrelationId,
         }
         else
         {
-            if (*ConnectionLost)
+            if (*ConnectionError)
             {
                 return false;
             }
@@ -401,27 +401,27 @@ char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode)
             break;
 
         case rmqsrStreamDoesNotExist:
-            Description = "Stream does not exist"; 
+            Description = "Stream does not exist";
             break;
 
         case rmqsrSubscriptionIDAlreadyExists:
-            Description = "Subscription ID already exists"; 
+            Description = "Subscription ID already exists";
             break;
 
         case rmqsrSubscriptionIDDoesNotExist:
-            Description = "Subscription ID does not exist"; 
+            Description = "Subscription ID does not exist";
             break;
 
         case rmqsrStreamAlreadyExists:
-            Description = "Stream already exists"; 
+            Description = "Stream already exists";
             break;
 
         case rmqsrStreamNotAvailable:
-            Description = "Stream not available"; 
+            Description = "Stream not available";
             break;
 
         case rmqsrSASLMechanismNotSupported:
-            Description = "SASL mechanism not supported"; 
+            Description = "SASL mechanism not supported";
             break;
 
         case rmqsrAuthenticationFailure:
@@ -429,11 +429,11 @@ char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode)
             break;
 
         case rmqsrSASLError:
-            Description = "SASL error"; 
+            Description = "SASL error";
             break;
 
         case rmqsrSASLChallenge:
-            Description = "SASL challenge"; 
+            Description = "SASL challenge";
             break;
 
         case rmqsrSASLAuthenticationFailureLoopback:
@@ -441,15 +441,15 @@ char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode)
             break;
 
         case rmqsrVirtualHostAccessFailure:
-            Description = "Virtual host access failure"; 
+            Description = "Virtual host access failure";
             break;
 
         case rmqsrUnknownFrame:
-            Description = "Unknown frame"; 
+            Description = "Unknown frame";
             break;
 
         case rmqsrFrameTooLarge:
-            Description = "Frame too large"; 
+            Description = "Frame too large";
             break;
 
         case rmqsrInternalError:
@@ -457,19 +457,23 @@ char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode)
             break;
 
         case rmqsrAccessRefused:
-            Description = "Access refused"; 
+            Description = "Access refused";
             break;
 
         case rmqsrPreconditionFailed:
-            Description = "Precondition failed"; 
+            Description = "Precondition failed";
             break;
 
         case rmqsrPublisherDoesNotExist:
-            Description = "Publisher does not exist"; 
+            Description = "Publisher does not exist";
             break;
 
         case rmqsrNoOffset:
             Description = "No offset";
+            break;
+
+        case rmqsrConnectionError:
+            Description = "Connection error";
             break;
     }
 

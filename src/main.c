@@ -21,8 +21,8 @@ extern "C"
 #endif
 //---------------------------------------------------------------------------
 #define ROW_SEPARATOR             "============================================================================"
-#define NO_OF_ITERATION            100
-#define MESSAGE_COUNT              100
+#define NO_OF_ITERATION              2
+#define MESSAGE_COUNT                5
 #define CONSUMER_CREDIT_SIZE      1000
 #define PUBLISHER_REFERENCE       "Publisher"
 #define CONSUMER_REFERENCE        "Consumer"
@@ -38,14 +38,14 @@ size_t MessagesConfirmed = 0;
 size_t MessagesNotConfirmed = 0;
 size_t MessagesReceived = 0;
 //---------------------------------------------------------------------------
-bool_t EnableLogging = false;
+bool_t EnableLogging = true;
 bool_t TestPublishError = false;
 //---------------------------------------------------------------------------
 uint32_t TimerResult;
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@192.168.56.1:5552";
+    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@192.168.1.37:5552";
     char_t Error[RMQS_ERR_MAX_STRING_LENGTH] = {0};
     rmqsResponseCode_t ResponseCode = rmqsrOK;
     rmqsClientConfiguration_t *ClientConfiguration = 0;
@@ -60,11 +60,11 @@ int main(int argc, char * argv[])
     rmqsCreateStreamArgs_t CreateStreamArgs = {0};
     bool_t StreamAlredyExists;
     rmqsSocket Socket;
-    bool_t ConnectionLost = false;
+    bool_t ConnectionError = false;
     rmqsProperty_t Properties[6];
     rmqsMessage_t *MessageBatch = 0;
     uint32_t PublishWaitingTime = 5 * 1000; // seconds
-    uint32_t ConsumeWaitingTime = 5 * 1000; // seconds
+    uint32_t ConsumeWaitingTime = 60 * 1000; // seconds
     uint64_t PublishingId = 0;
     uint64_t Offset;
     size_t i, j;
@@ -153,6 +153,8 @@ int main(int argc, char * argv[])
 
     printf("Connected to %s\r\n", Broker->Hostname);
 
+    rmqsSetKeepAlive(Socket);
+
     if (! rmqsClientLogin(Publisher->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode))
     {
         printf("Cannot login to %s\r\n", Broker->Hostname);
@@ -168,6 +170,11 @@ int main(int argc, char * argv[])
     else
     {
         printf("Cannot delete stream %s\r\n", Stream);
+
+        if (ResponseCode == rmqsrConnectionError)
+        {
+            goto CLEAN_UP;
+        }
     }
 
     CreateStreamArgs.SetMaxLengthBytes = true;
@@ -244,6 +251,11 @@ int main(int argc, char * argv[])
 
     rmqsQueryPublisherSequence(Publisher, Socket, Stream, &Sequence, &ResponseCode);
 
+    if (ResponseCode == rmqsrConnectionError)
+    {
+        goto CLEAN_UP;
+    }
+
     printf("Sequence number: %" PRIu64 "\r\n", Sequence);
 
     printf("Wait for publishing %d seconds\r\n", PublishWaitingTime / 1000);
@@ -253,9 +265,9 @@ int main(int argc, char * argv[])
     rmqsTimerStart(PerformanceTimer);
     rmqsTimerStart(ElapseTimer);
 
-    rmqsPublisherPoll(Publisher, Socket, PublishWaitingTime, &ConnectionLost);
+    rmqsPublisherPoll(Publisher, Socket, PublishWaitingTime, &ConnectionError);
 
-    if (ConnectionLost)
+    if (ConnectionError)
     {
         goto CLEAN_UP;
     }
@@ -270,6 +282,11 @@ int main(int argc, char * argv[])
     else
     {
         printf("Cannot delete the publisher\r\n");
+
+        if (ResponseCode == rmqsrConnectionError)
+        {
+            goto CLEAN_UP;
+        }
     }
 
     rmqsHeartbeat(Publisher->Client, Socket);
@@ -281,6 +298,11 @@ int main(int argc, char * argv[])
     else
     {
         printf("Cannot logout\r\n");
+
+        if (ResponseCode == rmqsrConnectionError)
+        {
+            goto CLEAN_UP;
+        }
     }
 
     printf("Messages confirmed: %u/%u\r\n", (uint32_t)MessagesConfirmed, MESSAGE_COUNT * NO_OF_ITERATION);
@@ -314,6 +336,8 @@ int main(int argc, char * argv[])
     }
 
     printf("Connected to %s\r\n", Broker->Hostname);
+
+    rmqsSetKeepAlive(Socket);
 
     if (! rmqsClientLogin(Consumer->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode))
     {
@@ -352,9 +376,9 @@ int main(int argc, char * argv[])
     rmqsTimerStart(PerformanceTimer);
     rmqsTimerStart(ElapseTimer);
 
-    rmqsConsumerPoll(Consumer, Socket, ConsumeWaitingTime, &ConnectionLost);
+    rmqsConsumerPoll(Consumer, Socket, ConsumeWaitingTime, &ConnectionError);
 
-    if (ConnectionLost)
+    if (ConnectionError)
     {
         goto CLEAN_UP;
     }
@@ -369,6 +393,11 @@ int main(int argc, char * argv[])
     else
     {
         printf("Cannot unsubcribe from stream %s\r\n", Stream);
+
+        if (ResponseCode == rmqsrConnectionError)
+        {
+            goto CLEAN_UP;
+        }
     }
 
     if (rmqsQueryOffset(Consumer, Socket, CONSUMER_REFERENCE, Stream, &Offset, &ResponseCode))
@@ -378,6 +407,11 @@ int main(int argc, char * argv[])
     else
     {
         printf("QueryOffset error\r\n");
+
+        if (ResponseCode == rmqsrConnectionError)
+        {
+            goto CLEAN_UP;
+        }
     }
 
     rmqsHeartbeat(Publisher->Client, Socket);
@@ -389,6 +423,11 @@ int main(int argc, char * argv[])
     else
     {
         printf("Cannot logout\r\n");
+
+        if (ResponseCode == rmqsrConnectionError)
+        {
+            goto CLEAN_UP;
+        }
     }
 
     rmqsSocketDestroy(&Socket);
@@ -397,21 +436,21 @@ int main(int argc, char * argv[])
     //---------------------------------------------------------------------------
 
 CLEAN_UP:
-    if (ConnectionLost)
+    if (ConnectionError)
     {
         printf("Connection lost\r\n");
     }
 
     if (ResponseCode != rmqsrOK)
     {
-        printf("Response code :%s\r\n", rmqsGetResponseCodeDescription(ResponseCode));
+        printf("Response code: %s\r\n", rmqsGetResponseCodeDescription(ResponseCode));
     }
 
     if (Publisher)
     {
         rmqsPublisherDestroy(Publisher);
     }
-    
+
     if (Consumer)
     {
         rmqsConsumerDestroy(Consumer);
@@ -426,7 +465,7 @@ CLEAN_UP:
     {
         rmqsTimerDestroy(PerformanceTimer);
     }
-    
+
     if (ElapseTimer)
     {
         rmqsTimerDestroy(ElapseTimer);

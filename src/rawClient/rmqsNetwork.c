@@ -200,36 +200,46 @@ bool_t rmqsSocketConnect(char_t *Host, uint16_t Port, rmqsSocket Socket, uint32_
     return Connected;
 }
 //---------------------------------------------------------------------------
-void rmqsSetSocketReadTimeout(rmqsSocket Socket, uint32_t ReadTimeout)
+bool_t rmqsSetSocketReadTimeout(rmqsSocket Socket, uint32_t ReadTimeout)
 {
     #if _WIN32 || _WIN64
     DWORD dwRead;
     dwRead = ReadTimeout;
 
-    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (char_t *)&dwRead, sizeof(dwRead));
+    return setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (char_t *)&dwRead, sizeof(dwRead)) == 0;
     #else
     struct timeval TVRead;
-    TVRead.tv_sec = 0;
-    TVRead.tv_usec = ReadTimeout * 1000;
 
-    setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (int8_t *)&TVRead, sizeof(TVRead));
+    if (ReadTimeout != RMQS_RX_TIMEOUT_INFINITE)
+    {
+        TVRead.tv_sec = ReadTimeout / 1000;
+        ReadTimeout -= TVRead.tv_sec * 1000;
+        TVRead.tv_usec = ReadTimeout * 1000;
+    }
+    else
+    {
+        TVRead.tv_sec = 0;
+        TVRead.tv_usec = 0;
+    }
+
+    return setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (struct timeval *)&TVRead, sizeof(TVRead)) == 0;
     #endif
 }
 //--------------------------------------------------------------------------
-void rmqsSetSocketWriteTimeout(rmqsSocket Socket, uint32_t WriteTimeout)
+bool_t rmqsSetSocketWriteTimeout(rmqsSocket Socket, uint32_t WriteTimeout)
 {
-    #if ! _WIN32 || _WIN64
+    #if _WIN32 || _WIN64
+    DWORD dwWrite;
+    dwWrite = WriteTimeout;
+
+    return setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (char_t *)&dwWrite, sizeof(dwWrite)) == 0;
+    #else
     struct timeval TVWrite;
 
     TVWrite.tv_sec = 0;
     TVWrite.tv_usec = WriteTimeout * 1000;
 
-    setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (char_t *)&TVWrite, (int32_t)sizeof(TVWrite));
-    #else
-    DWORD dwWrite;
-    dwWrite = WriteTimeout;
-
-    setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (char_t *)&dwWrite, sizeof(dwWrite));
+    return setsockopt(Socket, SOL_SOCKET, SO_SNDTIMEO, (char_t *)&TVWrite, (int32_t)sizeof(TVWrite)) == 0;
     #endif
 }
 //--------------------------------------------------------------------------
@@ -368,14 +378,14 @@ bool_t rmqsSetTcpNoDelay(rmqsSocket Socket)
     return 1;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsNetworkError(void)
+bool_t rmqsConnectionError(void)
 {
     bool_t Result;
 
     #if _WIN32 || _WIN64
     unsigned long Error = GetLastError();
 
-    if (Error == WSAECONNRESET || Error == WSAENETDOWN || Error == WSAENETUNREACH || Error == WSAENETRESET)
+    if (Error == WSAECONNABORTED || Error == WSAECONNRESET || Error == WSAENETDOWN || Error == WSAENETUNREACH || Error == WSAENETRESET)
     {
         Result = true;
     }
@@ -384,7 +394,7 @@ bool_t rmqsNetworkError(void)
         Result = false;
     }
     #else
-    if (errno == ECONNRESET)
+    if (errno == ECONNABORTED || errno == ECONNRESET)
     {
         Result = true;
     }

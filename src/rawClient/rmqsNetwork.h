@@ -34,6 +34,8 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 #define RMQS_MAX_HOSTNAME_LENGTH     255
 //---------------------------------------------------------------------------
+#define RMQS_RX_TIMEOUT_INFINITE       0xFFFFFFFF
+//---------------------------------------------------------------------------
 #if _WIN32 || _WIN64
 typedef uint32_t rmqsSocket;
 typedef int32_t rmqsSocketLen;
@@ -54,15 +56,15 @@ void rmqsSocketDestroy(rmqsSocket *Socket);
 //---------------------------------------------------------------------------
 bool_t rmqsSocketConnect(char_t *Host, uint16_t Port, rmqsSocket Socket, uint32_t TimeoutMs);
 //---------------------------------------------------------------------------
-void rmqsSetSocketReadTimeout(rmqsSocket Socket, uint32_t ReadTimeout);
-void rmqsSetSocketWriteTimeout(rmqsSocket Socket, uint32_t WriteTimeout);
+bool_t rmqsSetSocketReadTimeout(rmqsSocket Socket, uint32_t ReadTimeout);
+bool_t rmqsSetSocketWriteTimeout(rmqsSocket Socket, uint32_t WriteTimeout);
 bool_t rmqsSetSocketTxRxBuffers(rmqsSocket Socket, uint32_t TxBufferSize, uint32_t RxBufferSize);
 bool_t rmqsSetSocketBlocking(rmqsSocket Socket);
 bool_t rmqsSetSocketNonBlocking(rmqsSocket Socket);
 bool_t rmqsSetKeepAlive(rmqsSocket Socket);
 bool_t rmqsSetTcpNoDelay(rmqsSocket Socket);
 //---------------------------------------------------------------------------
-bool_t rmqsNetworkError(void);
+bool_t rmqsConnectionError(void);
 //---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------
