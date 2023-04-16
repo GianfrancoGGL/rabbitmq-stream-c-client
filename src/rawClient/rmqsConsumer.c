@@ -38,7 +38,7 @@ rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfigurati
     strncpy(Consumer->ConsumerReference, ConsumerReference, RMQS_MAX_CONSUMER_REFERENCE_LENGTH);
     Consumer->FrameMax = FrameMax;
     Consumer->Heartbeat = Heartbeat;
-    Consumer->DefaultCredit = DefaultCredit; 
+    Consumer->DefaultCredit = DefaultCredit;
     Consumer->DeliverResultCallback = DeliverResultCallback;
 
     return Consumer;
@@ -51,7 +51,7 @@ void rmqsConsumerDestroy(rmqsConsumer_t *Consumer)
     rmqsFreeMemory((void *)Consumer);
 }
 //---------------------------------------------------------------------------
-void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionError)
+void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint32_t Timeout, bool_t *ConnectionError)
 {
     uint32_t WaitMessageTimeout = Timeout;
     uint32_t Time;
@@ -70,12 +70,12 @@ void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint32_t Time
         }
 
         Time = rmqsTimerGetTime(Consumer->Client->ClientConfiguration->WaitReplyTimer);
-            
+
         WaitMessageTimeout = Timeout - Time;
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
+bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
 {
     rmqsClient_t *Client = Consumer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -127,7 +127,7 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
     rmqsAddUInt16ToBuffer(Client->TxQueue, (uint16_t)OffsetType, ClientConfiguration->IsLittleEndianMachine);
 
     if (OffsetType == rmqsotTimestamp)
-    {    
+    {
         rmqsAddInt64ToBuffer(Client->TxQueue, (int64_t)Offset, ClientConfiguration->IsLittleEndianMachine);
     }
     else
@@ -158,7 +158,7 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
 
     rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionError))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_DEFAULT_TIMEOUT, &ConnectionError))
     {
         *ResponseCode = Client->Response.ResponseCode;
 
@@ -183,7 +183,7 @@ bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscr
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, rmqsResponseCode_t *ResponseCode)
+bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint8_t SubscriptionId, rmqsResponseCode_t *ResponseCode)
 {
     rmqsClient_t *Client = Consumer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -209,7 +209,7 @@ bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subs
 
     rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionError))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_DEFAULT_TIMEOUT, &ConnectionError))
     {
         *ResponseCode = Client->Response.ResponseCode;
 
@@ -233,7 +233,7 @@ bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subs
     }
 }
 //---------------------------------------------------------------------------
-void rmqsCredit(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, uint16_t Credit)
+void rmqsCredit(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint8_t SubscriptionId, uint16_t Credit)
 {
     rmqsClient_t *Client = Consumer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -257,7 +257,7 @@ void rmqsCredit(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t Subscriptio
     rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 }
 //---------------------------------------------------------------------------
-bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Reference, char_t *Stream, uint64_t *Offset, rmqsResponseCode_t *ResponseCode)
+bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, char_t *Reference, char_t *Stream, bool_t *ValidOffset, uint64_t *Offset, rmqsResponseCode_t *ResponseCode)
 {
     rmqsClient_t *Client = Consumer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -268,6 +268,7 @@ bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Refe
 
     *ResponseCode = rmqsrOK;
 
+    *ValidOffset = false;
     *Offset = 0;
 
     rmqsBufferClear(Client->TxQueue, false);
@@ -287,7 +288,7 @@ bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Refe
 
     rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 
-    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_TIMEOUT_INFINITE, &ConnectionError))
+    if (rmqsWaitResponse(Client, Socket, Client->CorrelationId, &Client->Response, RMQS_RX_DEFAULT_TIMEOUT, &ConnectionError))
     {
         //
         // Handshake response is different from a standard response, it has to be reparsed
@@ -307,11 +308,20 @@ bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Refe
 
         *ResponseCode = QueryOffsetResponse->ResponseCode;
 
-        if (QueryOffsetResponse->Header.Key != rmqscQueryOffset || QueryOffsetResponse->ResponseCode != rmqsrOK)
+        if (QueryOffsetResponse->Header.Key != rmqscQueryOffset)
+        {
+            return false;
+        }
+        else if (QueryOffsetResponse->ResponseCode == rmqsrNoOffset)
+        {
+            return true; // The offset query got a reply, but there isn't an offset, then a true is returned with a non valid offset flag
+        }
+        else if (QueryOffsetResponse->ResponseCode != rmqsrOK)
         {
             return false;
         }
 
+        *ValidOffset = true;
         *Offset = QueryOffsetResponse->Offset;
 
         return true;
@@ -327,7 +337,7 @@ bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Refe
     }
 }
 //---------------------------------------------------------------------------
-void rmqsStoreOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Reference, char_t *Stream, uint64_t Offset)
+void rmqsStoreOffset(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, char_t *Reference, char_t *Stream, uint64_t Offset)
 {
     rmqsClient_t *Client = Consumer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -352,7 +362,7 @@ void rmqsStoreOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Refere
     rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 }
 //---------------------------------------------------------------------------
-void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket Socket, rmqsBuffer_t *Buffer)
+void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, rmqsBuffer_t *Buffer)
 {
     char_t *MessagePayload = (char_t *)Buffer->Data + sizeof(rmqsMsgHeader_t);
     uint8_t SubscriptionId;
@@ -374,7 +384,7 @@ void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket Socket, rmqsBuffer_t
     rmqsGetUInt32FromMemory(&MessagePayload, &Consumer->DeliverInfo.TrailerLength, Consumer->Client->ClientConfiguration->IsLittleEndianMachine);
     rmqsGetUInt32FromMemory(&MessagePayload, &Consumer->DeliverInfo.Reserved, Consumer->Client->ClientConfiguration->IsLittleEndianMachine);
 
-    MessageOffset = Consumer->DeliverInfo.ChunkFirstOffset; 
+    MessageOffset = Consumer->DeliverInfo.ChunkFirstOffset;
 
     for (i = 0; i < Consumer->DeliverInfo.NumEntries; i++)
     {

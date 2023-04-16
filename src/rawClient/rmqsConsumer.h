@@ -67,24 +67,24 @@ rmqsConsumer_t;
 //---------------------------------------------------------------------------
 typedef enum
 {
-    rmqsotFirst = 1, 
-    rmqsotLast, 
-    rmqsotNext, 
-    rmqsotOffset, 
+    rmqsotFirst = 1,
+    rmqsotLast,
+    rmqsotNext,
+    rmqsotOffset,
     rmqsotTimestamp
 }
 rmqsOffsetType;
 //---------------------------------------------------------------------------
 rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *ConsumerReference, uint32_t FrameMax, uint32_t Heartbeat, uint16_t DefaultCredit, DeliverResultCallback_t DeliverResultCallback, MetadataUpdateCallback_t MetadataUpdateCallback);
 void rmqsConsumerDestroy(rmqsConsumer_t *Consumer);
-void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint32_t Timeout, bool_t *ConnectionError);
+void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint32_t Timeout, bool_t *ConnectionError);
 //---------------------------------------------------------------------------
-bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode);
-bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, rmqsResponseCode_t *ResponseCode);
-void rmqsCredit(rmqsConsumer_t *Consumer, rmqsSocket Socket, uint8_t SubscriptionId, uint16_t Credit);
-bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Reference, char_t *Stream, uint64_t *Offset, rmqsResponseCode_t *ResponseCode);
-void rmqsStoreOffset(rmqsConsumer_t *Consumer, rmqsSocket Socket, char_t *Reference, char_t *Stream, uint64_t Offset);
+bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode);
+bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint8_t SubscriptionId, rmqsResponseCode_t *ResponseCode);
+void rmqsCredit(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint8_t SubscriptionId, uint16_t Credit);
+bool_t rmqsQueryOffset(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, char_t *Reference, char_t *Stream, bool_t *ValidOffset, uint64_t *Offset, rmqsResponseCode_t *ResponseCode);
+void rmqsStoreOffset(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, char_t *Reference, char_t *Stream, uint64_t Offset);
 //---------------------------------------------------------------------------
-void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket Socket, rmqsBuffer_t *Buffer);
+void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, rmqsBuffer_t *Buffer);
 #endif
 //---------------------------------------------------------------------------

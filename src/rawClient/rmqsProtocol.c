@@ -25,9 +25,10 @@ SOFTWARE.
 #include "rmqsClient.h"
 #include "rmqsPublisher.h"
 #include "rmqsConsumer.h"
+#include "rmqsProtocol.h"
 #include "rmqsMemory.h"
 #include "rmqsBuffer.h"
-#include "rmqsProtocol.h"
+#include "rmqsLib.h"
 //---------------------------------------------------------------------------
 bool_t rmqsIsLittleEndianMachine(void)
 {
@@ -48,7 +49,7 @@ bool_t rmqsIsLittleEndianMachine(void)
     }
 }
 //---------------------------------------------------------------------------
-void rmqsSendMessage(void *Client, rmqsSocket Socket, char_t *Data, size_t DataSize)
+void rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *Data, size_t DataSize)
 {
     rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
     uint16_t Key;
@@ -70,9 +71,10 @@ void rmqsSendMessage(void *Client, rmqsSocket Socket, char_t *Data, size_t DataS
     send(Socket, (char_t *)Data, (int32_t)DataSize, 0);
 }
 //---------------------------------------------------------------------------
-bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool_t *ConnectionError)
+bool_t rmqsWaitMessage(void *Client, rmqsSocket_t Socket, uint32_t RxTimeout, bool_t *ConnectionError)
 {
     rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
+    bool_t RxPendingBytes;
     int32_t RxBytes;
     uint32_t MessageSize;
     rmqsMsgHeader_t MsgHeader;
@@ -92,23 +94,51 @@ bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool
             rmqsDequeueMessageFromBuffer(ClientObj->RxQueue, ClientObj->RxQueue->Tag2);
             ClientObj->RxQueue->Tag1 = false;
             ClientObj->RxQueue->Tag2 = 0;
+
+            RxPendingBytes = ClientObj->RxQueue->Size > 0;
+        }
+        else
+        {
+            RxPendingBytes = false;
         }
 
-        rmqsSetSocketReadTimeout(Socket, RxTimeout);
-
-        RxBytes = recv(Socket, (char_t *)ClientObj->RxSocketBuffer, RMQS_CLIENT_RX_BUFFER_SIZE, 0);
-
-        if (RxBytes <= 0)
+        //
+        // If there are still bytes in the stream, first process them, else
+        // read from the socket
+        //
+        if (! RxPendingBytes)
         {
-            if (rmqsConnectionError())
+            rmqsSetSocketReadTimeout(Socket, RxTimeout);
+
+            rmqsResetLastError();
+
+            RxBytes = recv(Socket, (char_t *)ClientObj->RxSocketBuffer, RMQS_CLIENT_RX_BUFFER_SIZE, 0);
+
+            if (RxBytes <= 0)
             {
-                *ConnectionError = true;
+                if (rmqsConnectionError())
+                {
+                    *ConnectionError = true;
+                }
+
+                return false;
+            }
+            else
+            {
+                /*
+                ** Uncomment to log the raw data received
+                **
+                if (ClientObj->ClientConfiguration->Logger)
+                {
+                    rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)ClientObj->RxSocketBuffer, RxBytes, "RAW RX", 0, 0);
+                }
+                **
+                **
+                */
             }
 
-            return false;
+            rmqsBufferWrite(ClientObj->RxQueue, (void *)ClientObj->RxSocketBuffer, RxBytes);
         }
-
-        rmqsBufferWrite(ClientObj->RxQueue, (void *)ClientObj->RxSocketBuffer, RxBytes);
 
         //
         // Is the message length (4 bytes) arrived?
@@ -210,7 +240,7 @@ bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool
     return true;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsWaitResponse(void *Client, rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionError)
+bool_t rmqsWaitResponse(void *Client, rmqsSocket_t Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionError)
 {
     rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
     uint32_t WaitMessageTimeout = RxTimeout;

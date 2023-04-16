@@ -32,9 +32,19 @@ SOFTWARE.
 #include <windows.h>
 #else
 #include <sys/time.h>
+#include <errno.h>
 #endif
 //---------------------------------------------------------------------------
 #include "rmqsLib.h"
+//---------------------------------------------------------------------------
+void rmqsResetLastError()
+{
+    #if _WIN32 || _WIN64
+    SetLastError(0);
+    #else
+    errno = 0;
+    #endif
+}
 //---------------------------------------------------------------------------
 int64_t rmqsGetTimeStamp(void)
 {
@@ -99,5 +109,3 @@ void rmqsConvertToLower(char_t *String)
     }
 }
 //---------------------------------------------------------------------------
-
-

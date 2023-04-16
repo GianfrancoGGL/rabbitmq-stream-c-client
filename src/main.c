@@ -20,16 +20,17 @@ extern "C"
 }
 #endif
 //---------------------------------------------------------------------------
-#define ROW_SEPARATOR             "============================================================================"
-#define NO_OF_ITERATION              2
-#define MESSAGE_COUNT                5
-#define CONSUMER_CREDIT_SIZE      1000
-#define PUBLISHER_REFERENCE       "Publisher"
-#define CONSUMER_REFERENCE        "Consumer"
+#define ROW_SEPARATOR               "============================================================================"
+#define PUBLISHER_REFERENCE         "Publisher"
+#define CONSUMER_REFERENCE          "Consumer"
 //---------------------------------------------------------------------------
 void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultList, size_t PublishingIdCount, bool_t Confirmed);
 void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset);
 void MetadataUpdateCallback(uint16_t Code, char_t *Stream);
+//---------------------------------------------------------------------------
+size_t NoOfIteration = 1000;
+size_t MessageCount = 100;
+size_t ConsumerCreditSize = 1000;
 //---------------------------------------------------------------------------
 rmqsTimer_t *PerformanceTimer = 0;
 rmqsTimer_t *ElapseTimer = 0;
@@ -38,7 +39,7 @@ size_t MessagesConfirmed = 0;
 size_t MessagesNotConfirmed = 0;
 size_t MessagesReceived = 0;
 //---------------------------------------------------------------------------
-bool_t EnableLogging = true;
+bool_t EnableLogging = false;
 bool_t TestPublishError = false;
 //---------------------------------------------------------------------------
 uint32_t TimerResult;
@@ -59,13 +60,14 @@ int main(int argc, char * argv[])
     uint64_t Sequence;
     rmqsCreateStreamArgs_t CreateStreamArgs = {0};
     bool_t StreamAlredyExists;
-    rmqsSocket Socket;
+    rmqsSocket_t Socket;
     bool_t ConnectionError = false;
     rmqsProperty_t Properties[6];
     rmqsMessage_t *MessageBatch = 0;
     uint32_t PublishWaitingTime = 5 * 1000; // seconds
-    uint32_t ConsumeWaitingTime = 60 * 1000; // seconds
+    uint32_t ConsumeWaitingTime = 5 * 1000; // seconds
     uint64_t PublishingId = 0;
+    bool_t ValidOffset;
     uint64_t Offset;
     size_t i, j;
     size_t UsedMemory;
@@ -145,6 +147,8 @@ int main(int argc, char * argv[])
 
     Socket = rmqsSocketCreate();
 
+    rmqsSetSocketTxRxBufferSize(Socket, 1024 * 100000, 1024 * 100000);
+
     if (! rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
     {
         printf("Cannot connect to %s\r\n", Broker->Hostname);
@@ -152,8 +156,6 @@ int main(int argc, char * argv[])
     }
 
     printf("Connected to %s\r\n", Broker->Hostname);
-
-    rmqsSetKeepAlive(Socket);
 
     if (! rmqsClientLogin(Publisher->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode))
     {
@@ -223,9 +225,9 @@ int main(int argc, char * argv[])
         rmqsDeclarePublisher(Publisher, Socket, PublisherId, "XYZ", &ResponseCode);
     }
 
-    MessageBatch = (rmqsMessage_t *)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MESSAGE_COUNT);
+    MessageBatch = (rmqsMessage_t *)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MessageCount);
 
-    for (i = 0; i < MESSAGE_COUNT; i++)
+    for (i = 0; i < MessageCount; i++)
     {
         MessageBatch[i].Data = "Hello world!";
         MessageBatch[i].Size = 12;
@@ -234,20 +236,20 @@ int main(int argc, char * argv[])
 
     rmqsTimerStart(PerformanceTimer);
 
-    for (i = 0; i < NO_OF_ITERATION; i++)
+    for (i = 0; i < NoOfIteration; i++)
     {
-        for (j = 0; j < MESSAGE_COUNT; j++)
+        for (j = 0; j < MessageCount; j++)
         {
             MessageBatch[j].PublishingId = ++PublishingId;
         }
 
-        rmqsPublish(Publisher, Socket, PublisherId, MessageBatch, MESSAGE_COUNT);
+        rmqsPublish(Publisher, Socket, PublisherId, MessageBatch, MessageCount);
     }
 
     TimerResult = rmqsTimerGetTime(PerformanceTimer);
-    printf("%d Messages - Elapsed time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, TimerResult);
+    printf("%d Messages - Elapsed time: %ums\r\n", (int)(MessageCount * NoOfIteration), TimerResult);
 
-    rmqsBatchDestroy(MessageBatch, MESSAGE_COUNT);
+    rmqsBatchDestroy(MessageBatch, MessageCount);
 
     rmqsQueryPublisherSequence(Publisher, Socket, Stream, &Sequence, &ResponseCode);
 
@@ -305,8 +307,8 @@ int main(int argc, char * argv[])
         }
     }
 
-    printf("Messages confirmed: %u/%u\r\n", (uint32_t)MessagesConfirmed, MESSAGE_COUNT * NO_OF_ITERATION);
-    printf("Messages not confirmed: %u/%u\r\n", (uint32_t)MessagesNotConfirmed, MESSAGE_COUNT * NO_OF_ITERATION);
+    printf("Messages confirmed: %u/%u\r\n", (uint32_t)MessagesConfirmed, (uint32_t)(MessageCount * NoOfIteration));
+    printf("Messages not confirmed: %u/%u\r\n", (uint32_t)MessagesNotConfirmed, (uint32_t)(MessageCount * NoOfIteration));
 
     rmqsSocketDestroy(&Socket);
 
@@ -324,8 +326,8 @@ int main(int argc, char * argv[])
     //
     //---------------------------------------------------------------------------
     printf("Creating consumer...\r\n");
-    Consumer = rmqsConsumerCreate(ClientConfiguration, CONSUMER_REFERENCE, 0, 0, CONSUMER_CREDIT_SIZE, DeliverResultCallback, MetadataUpdateCallback);
-    printf("Consumer created - credit size: %d\r\n", CONSUMER_CREDIT_SIZE);
+    Consumer = rmqsConsumerCreate(ClientConfiguration, CONSUMER_REFERENCE, 0, 0, (uint16_t)ConsumerCreditSize, DeliverResultCallback, MetadataUpdateCallback);
+    printf("Consumer created - credit size: %u\r\n", (uint32_t)ConsumerCreditSize);
 
     Socket = rmqsSocketCreate();
 
@@ -336,8 +338,6 @@ int main(int argc, char * argv[])
     }
 
     printf("Connected to %s\r\n", Broker->Hostname);
-
-    rmqsSetKeepAlive(Socket);
 
     if (! rmqsClientLogin(Consumer->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode))
     {
@@ -386,13 +386,13 @@ int main(int argc, char * argv[])
     TimerResult = rmqsTimerGetTime(ElapseTimer);
     printf("Consumer - Timer end: %u\r\n", TimerResult);
 
-    if (rmqsUnsubscribe(Consumer, Socket, SubscriptionId, &ResponseCode))
+    if (rmqsQueryOffset(Consumer, Socket, CONSUMER_REFERENCE, Stream, &ValidOffset, &Offset, &ResponseCode))
     {
-        printf("Unsubscribed from stream %s\r\n", Stream);
+        printf("QueryOffset - Offset: %" PRIu64 " - Is valid: %d\r\n", Offset, (int)ValidOffset);
     }
     else
     {
-        printf("Cannot unsubcribe from stream %s\r\n", Stream);
+        printf("QueryOffset error\r\n");
 
         if (ResponseCode == rmqsrConnectionError)
         {
@@ -400,13 +400,13 @@ int main(int argc, char * argv[])
         }
     }
 
-    if (rmqsQueryOffset(Consumer, Socket, CONSUMER_REFERENCE, Stream, &Offset, &ResponseCode))
+    if (rmqsUnsubscribe(Consumer, Socket, SubscriptionId, &ResponseCode))
     {
-        printf("QueryOffset - Offset: %" PRIu64 "\r\n", Offset);
+        printf("Unsubscribed from stream %s\r\n", Stream);
     }
     else
     {
-        printf("QueryOffset error\r\n");
+        printf("Cannot unsubcribe from stream %s\r\n", Stream);
 
         if (ResponseCode == rmqsrConnectionError)
         {
@@ -502,10 +502,10 @@ void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultLi
             MessagesNotConfirmed++;
         }
 
-        if (MessagesConfirmed == MESSAGE_COUNT * NO_OF_ITERATION)
+        if (MessagesConfirmed == MessageCount * NoOfIteration)
         {
             TimerResult = rmqsTimerGetTime(PerformanceTimer);
-            printf("%d Messages - Confirm time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, TimerResult);
+            printf("%u Messages - Confirm time: %ums\r\n", (uint32_t)(MessageCount * NoOfIteration), TimerResult);
         }
     }
 }
@@ -520,12 +520,12 @@ void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, 
 
     MessagesReceived++;
 
-    *StoreOffset = MessagesReceived % 100 == 0;
+    *StoreOffset = MessagesReceived == 1 || MessagesReceived == MessageCount * NoOfIteration || MessagesReceived % 100 == 0;
 
-    if (MessagesReceived == MESSAGE_COUNT * NO_OF_ITERATION)
+    if (MessagesReceived == MessageCount * NoOfIteration)
     {
         TimerResult = rmqsTimerGetTime(PerformanceTimer);
-        printf("%d Messages - Receive time: %ums\r\n", MESSAGE_COUNT * NO_OF_ITERATION, TimerResult);
+        printf("%u Messages - Receive time: %ums\r\n", (uint32_t)(MessageCount * NoOfIteration), TimerResult);
     }
 }
 //---------------------------------------------------------------------------

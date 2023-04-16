@@ -103,12 +103,12 @@ void rmqsShutdownWinsock(void)
 }
 #endif
 //---------------------------------------------------------------------------
-rmqsSocket rmqsSocketCreate(void)
+rmqsSocket_t rmqsSocketCreate(void)
 {
-    return (rmqsSocket)socket(AF_INET, SOCK_STREAM, 0);
+    return (rmqsSocket_t)socket(AF_INET, SOCK_STREAM, 0);
 }
 //---------------------------------------------------------------------------
-void rmqsSocketDestroy(rmqsSocket *Socket)
+void rmqsSocketDestroy(rmqsSocket_t *Socket)
 {
     #if _WIN32 || _WIN64
     shutdown(*Socket, SD_BOTH);
@@ -121,7 +121,7 @@ void rmqsSocketDestroy(rmqsSocket *Socket)
     *Socket = rmqsInvalidSocket;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSocketConnect(char_t *Host, uint16_t Port, rmqsSocket Socket, uint32_t TimeoutMs)
+bool_t rmqsSocketConnect(char_t *Host, uint16_t Port, rmqsSocket_t Socket, uint32_t TimeoutMs)
 {
     bool_t Connected = false;
     struct hostent *pHost;
@@ -172,13 +172,13 @@ bool_t rmqsSocketConnect(char_t *Host, uint16_t Port, rmqsSocket Socket, uint32_
 
             if (select(0, 0, &FDS, 0, &Timeout) > 0)
             {
-                Connected = 1;
+                Connected = true;
             }
         }
     }
     else
     {
-        Connected = 1;
+        Connected = true;
     }
 
     rmqsSetSocketBlocking(Socket);
@@ -193,14 +193,14 @@ bool_t rmqsSocketConnect(char_t *Host, uint16_t Port, rmqsSocket Socket, uint32_
 
     if (connect(Socket, (struct sockaddr *)&ServerAddress, sizeof(struct sockaddr)) == 0)
     {
-        Connected = 1;
+        Connected = true;
     }
     #endif
 
     return Connected;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSetSocketReadTimeout(rmqsSocket Socket, uint32_t ReadTimeout)
+bool_t rmqsSetSocketReadTimeout(rmqsSocket_t Socket, uint32_t ReadTimeout)
 {
     #if _WIN32 || _WIN64
     DWORD dwRead;
@@ -210,23 +210,15 @@ bool_t rmqsSetSocketReadTimeout(rmqsSocket Socket, uint32_t ReadTimeout)
     #else
     struct timeval TVRead;
 
-    if (ReadTimeout != RMQS_RX_TIMEOUT_INFINITE)
-    {
-        TVRead.tv_sec = ReadTimeout / 1000;
-        ReadTimeout -= TVRead.tv_sec * 1000;
-        TVRead.tv_usec = ReadTimeout * 1000;
-    }
-    else
-    {
-        TVRead.tv_sec = 0;
-        TVRead.tv_usec = 0;
-    }
+    TVRead.tv_sec = ReadTimeout / 1000;
+    ReadTimeout -= TVRead.tv_sec * 1000;
+    TVRead.tv_usec = ReadTimeout * 1000;
 
     return setsockopt(Socket, SOL_SOCKET, SO_RCVTIMEO, (struct timeval *)&TVRead, sizeof(TVRead)) == 0;
     #endif
 }
 //--------------------------------------------------------------------------
-bool_t rmqsSetSocketWriteTimeout(rmqsSocket Socket, uint32_t WriteTimeout)
+bool_t rmqsSetSocketWriteTimeout(rmqsSocket_t Socket, uint32_t WriteTimeout)
 {
     #if _WIN32 || _WIN64
     DWORD dwWrite;
@@ -243,7 +235,7 @@ bool_t rmqsSetSocketWriteTimeout(rmqsSocket Socket, uint32_t WriteTimeout)
     #endif
 }
 //--------------------------------------------------------------------------
-bool_t rmqsSetSocketTxRxBuffers(rmqsSocket Socket, uint32_t ulTxBufferSize, uint32_t ulRxBufferSize)
+bool_t rmqsSetSocketTxRxBufferSize(rmqsSocket_t Socket, uint32_t ulTxBufferSize, uint32_t ulRxBufferSize)
 {
     bool_t Result = true;
 
@@ -266,14 +258,14 @@ bool_t rmqsSetSocketTxRxBuffers(rmqsSocket Socket, uint32_t ulTxBufferSize, uint
     return Result;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSetSocketBlocking(rmqsSocket Socket)
+bool_t rmqsSetSocketBlocking(rmqsSocket_t Socket)
 {
     #if _WIN32 || _WIN64
     unsigned long ulNonBlocking = 0;
 
     if (ioctlsocket(Socket, FIONBIO, &ulNonBlocking) == -1)
     {
-        return 0;
+        return false;
     }
     #else
     int32_t Flags;
@@ -282,21 +274,21 @@ bool_t rmqsSetSocketBlocking(rmqsSocket Socket)
 
     if (fcntl(Socket, F_SETFL, Flags & (~O_NONBLOCK)) == -1)
     {
-        return 0;
+        return false;
     }
     #endif
 
-    return 1;
+    return true;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSetSocketNonBlocking(rmqsSocket Socket)
+bool_t rmqsSetSocketNonBlocking(rmqsSocket_t Socket)
 {
     #if _WIN32 || _WIN64
     unsigned long ulNonBlocking = 1;
 
     if (ioctlsocket(Socket, FIONBIO, &ulNonBlocking) == -1)
     {
-        return 0;
+        return false;
     }
     #else
     int32_t Flags;
@@ -305,14 +297,14 @@ bool_t rmqsSetSocketNonBlocking(rmqsSocket Socket)
 
     if (fcntl(Socket, F_SETFL, Flags | O_NONBLOCK) == -1)
     {
-        return 0;
+        return false;
     }
     #endif
 
-    return 1;
+    return true;
 }
 //--------------------------------------------------------------------------
-bool_t rmqsSetKeepAlive(rmqsSocket Socket)
+bool_t rmqsSetKeepAlive(rmqsSocket_t Socket)
 {
     #if _WIN32 || _WIN64
     TcpKeepAlive Alive;
@@ -324,11 +316,11 @@ bool_t rmqsSetKeepAlive(rmqsSocket Socket)
 
     if (WSAIoctl(Socket, SIO_KEEPALIVE_VALS, &Alive, sizeof(Alive), 0, 0, &dwBytesReturned, 0, 0) == 0)
     {
-        return 1;
+        return true;
     }
     else
     {
-        return 0;
+        return false;
     }
     #else
     int32_t OptVal;
@@ -338,44 +330,44 @@ bool_t rmqsSetKeepAlive(rmqsSocket Socket)
 
     if (setsockopt(Socket, SOL_SOCKET, SO_KEEPALIVE, &OptVal, OptValLen) == -1)
     {
-        return 0;
+        return false;
     }
 
     OptVal = 1;
 
     if (setsockopt(Socket, SOL_TCP, TCP_KEEPIDLE, &OptVal, OptValLen) == -1)
     {
-        return 0;
+        return false;
     }
 
     OptVal = 3;
 
     if (setsockopt(Socket, SOL_TCP, TCP_KEEPCNT, &OptVal, OptValLen) == -1)
     {
-        return 0;
+        return false;
     }
 
     OptVal = 2;
 
     if (setsockopt(Socket, SOL_TCP, TCP_KEEPINTVL, &OptVal, OptValLen) == -1)
     {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
     #endif
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSetTcpNoDelay(rmqsSocket Socket)
+bool_t rmqsSetTcpNoDelay(rmqsSocket_t Socket)
 {
     int32_t iNoTcpDelayOptVal = 1, iNoTcpDelayOptValLen = sizeof(iNoTcpDelayOptVal);
 
     if (setsockopt(Socket, IPPROTO_TCP, TCP_NODELAY, (char_t *)&iNoTcpDelayOptVal, (rmqsSocketLen)iNoTcpDelayOptValLen) == -1)
     {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 //---------------------------------------------------------------------------
 bool_t rmqsConnectionError(void)

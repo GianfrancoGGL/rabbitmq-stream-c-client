@@ -119,7 +119,7 @@ void rmqsGetCurrentDateTime(uint16_t *Year, uint8_t *Month, uint8_t *Day, uint8_
     struct tm TM;
 
     time(&Time);
-    gmtime_r((time_t *)&time, &TM);
+    localtime_r((time_t *)&Time, &TM);
 
     *Year = (uint16_t)(TM.tm_year + 1900);
     *Month = (uint8_t)(TM.tm_mon + 1);

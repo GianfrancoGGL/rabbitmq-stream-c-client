@@ -28,20 +28,19 @@ SOFTWARE.
 #include <stdint.h>
 #if ! (_WIN32 || _WIN64)
 #include <sys/socket.h>
+#include <errno.h>
 #endif
 //---------------------------------------------------------------------------
 #include "rmqsGlobal.h"
 //---------------------------------------------------------------------------
 #define RMQS_MAX_HOSTNAME_LENGTH     255
 //---------------------------------------------------------------------------
-#define RMQS_RX_TIMEOUT_INFINITE       0xFFFFFFFF
-//---------------------------------------------------------------------------
 #if _WIN32 || _WIN64
-typedef uint32_t rmqsSocket;
+typedef uint32_t rmqsSocket_t;
 typedef int32_t rmqsSocketLen;
 #define rmqsInvalidSocket 0
 #else
-typedef int32_t rmqsSocket;
+typedef int32_t rmqsSocket_t;
 typedef socklen_t rmqsSocketLen;
 #define rmqsInvalidSocket -1
 #endif
@@ -51,18 +50,18 @@ int32_t rmqsInitWinsock(void);
 void rmqsShutdownWinsock(void);
 #endif
 //---------------------------------------------------------------------------
-rmqsSocket rmqsSocketCreate(void);
-void rmqsSocketDestroy(rmqsSocket *Socket);
+rmqsSocket_t rmqsSocketCreate(void);
+void rmqsSocketDestroy(rmqsSocket_t *Socket);
 //---------------------------------------------------------------------------
-bool_t rmqsSocketConnect(char_t *Host, uint16_t Port, rmqsSocket Socket, uint32_t TimeoutMs);
+bool_t rmqsSocketConnect(char_t *Host, uint16_t Port, rmqsSocket_t Socket, uint32_t TimeoutMs);
 //---------------------------------------------------------------------------
-bool_t rmqsSetSocketReadTimeout(rmqsSocket Socket, uint32_t ReadTimeout);
-bool_t rmqsSetSocketWriteTimeout(rmqsSocket Socket, uint32_t WriteTimeout);
-bool_t rmqsSetSocketTxRxBuffers(rmqsSocket Socket, uint32_t TxBufferSize, uint32_t RxBufferSize);
-bool_t rmqsSetSocketBlocking(rmqsSocket Socket);
-bool_t rmqsSetSocketNonBlocking(rmqsSocket Socket);
-bool_t rmqsSetKeepAlive(rmqsSocket Socket);
-bool_t rmqsSetTcpNoDelay(rmqsSocket Socket);
+bool_t rmqsSetSocketReadTimeout(rmqsSocket_t Socket, uint32_t ReadTimeout);
+bool_t rmqsSetSocketWriteTimeout(rmqsSocket_t Socket, uint32_t WriteTimeout);
+bool_t rmqsSetSocketTxRxBufferSize(rmqsSocket_t Socket, uint32_t TxBufferSize, uint32_t RxBufferSize);
+bool_t rmqsSetSocketBlocking(rmqsSocket_t Socket);
+bool_t rmqsSetSocketNonBlocking(rmqsSocket_t Socket);
+bool_t rmqsSetKeepAlive(rmqsSocket_t Socket);
+bool_t rmqsSetTcpNoDelay(rmqsSocket_t Socket);
 //---------------------------------------------------------------------------
 bool_t rmqsConnectionError(void);
 //---------------------------------------------------------------------------

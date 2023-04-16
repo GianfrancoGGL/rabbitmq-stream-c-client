@@ -29,6 +29,7 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 #include "rmqsGlobal.h"
 //---------------------------------------------------------------------------
+void rmqsResetLastError();
 int64_t rmqsGetTimeStamp(void);
 bool_t rmqsStringContainsSpace(char_t *String);
 bool_t rmqsStringContainsCtrlChar(char_t *String);

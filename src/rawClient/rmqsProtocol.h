@@ -174,9 +174,9 @@ rmqsQueryOffsetResponse_t;
 //---------------------------------------------------------------------------
 bool_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
-void rmqsSendMessage(void *Client, rmqsSocket Socket, char_t *Data, size_t DataSize);
-bool_t rmqsWaitMessage(void *Client, rmqsSocket Socket, uint32_t RxTimeout, bool_t *ConnectionError);
-bool_t rmqsWaitResponse(void *Client, rmqsSocket Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionError);
+void rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *Data, size_t DataSize);
+bool_t rmqsWaitMessage(void *Client, rmqsSocket_t Socket, uint32_t RxTimeout, bool_t *ConnectionError);
+bool_t rmqsWaitResponse(void *Client, rmqsSocket_t Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionError);
 void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, size_t MessageSize);
 char_t * rmqsGetCommandDescription(uint16_t Key);
 char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode);
