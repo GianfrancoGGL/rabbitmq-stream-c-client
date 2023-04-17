@@ -24,6 +24,9 @@ extern "C"
 #define PUBLISHER_REFERENCE         "Publisher"
 #define CONSUMER_REFERENCE          "Consumer"
 //---------------------------------------------------------------------------
+#if ! (_WIN32 || _WIN64)
+#define _strcmpi strcasecmp
+#endif
 void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultList, size_t PublishingIdCount, bool_t Confirmed);
 void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset);
 void MetadataUpdateCallback(uint16_t Code, char_t *Stream);
@@ -75,7 +78,7 @@ int main(int argc, char * argv[])
     //
     // First argument is the application path, skipped
     //
-    for (i = 1; i < argc; i++)
+    for (i = 1; i < (size_t)argc; i++)
     {
         if (! _strcmpi(argv[i], "--brokers") && i < (size_t)(argc - 1))
         {
