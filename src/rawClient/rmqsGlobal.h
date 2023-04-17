@@ -27,6 +27,7 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 typedef char char_t;
 typedef unsigned char uchar_t;
+typedef unsigned char byte_t;
 typedef long long_t;
 typedef unsigned long ulong_t;
 typedef unsigned char bool_t;

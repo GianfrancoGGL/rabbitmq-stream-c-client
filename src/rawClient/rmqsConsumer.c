@@ -392,7 +392,9 @@ void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, rmqsBuffer
 
         StoreOffset = false;
 
-        Consumer->DeliverResultCallback(SubscriptionId, (size_t)EntryTypeAndSize, (void *)MessagePayload, &Consumer->DeliverInfo, MessageOffset, &StoreOffset);
+        Consumer->DeliverResultCallback(SubscriptionId, (byte_t *)MessagePayload, (size_t)EntryTypeAndSize, &Consumer->DeliverInfo, MessageOffset, &StoreOffset);
+
+        MessagePayload += EntryTypeAndSize;
 
         if (StoreOffset)
         {

@@ -50,7 +50,7 @@ typedef struct
 }
 rmqsDeliverInfo_t;
 //---------------------------------------------------------------------------
-typedef void (*DeliverResultCallback_t)(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset);
+typedef void (*DeliverResultCallback_t)(uint8_t SubscriptionId, byte_t *Data, size_t DataSize, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset);
 //---------------------------------------------------------------------------
 typedef struct
 {

@@ -33,7 +33,7 @@ SOFTWARE.
 #include "rmqsProtocol.h"
 #include "rmqsBuffer.h"
 //---------------------------------------------------------------------------
-#define RMQS_CLIENT_RX_BUFFER_SIZE      (1024 * 10)
+#define RMQS_CLIENT_RX_BUFFER_SIZE      (1024 * 1000)
 #define RMQS_MAX_STREAM_NAME_LENGTH       256
 //---------------------------------------------------------------------------
 #define RMQS_RX_DEFAULT_TIMEOUT         10000

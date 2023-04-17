@@ -25,11 +25,11 @@ extern "C"
 #define CONSUMER_REFERENCE          "Consumer"
 //---------------------------------------------------------------------------
 void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultList, size_t PublishingIdCount, bool_t Confirmed);
-void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset);
+void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset);
 void MetadataUpdateCallback(uint16_t Code, char_t *Stream);
 //---------------------------------------------------------------------------
-size_t NoOfIteration = 1000;
-size_t MessageCount = 100;
+size_t NoOfIteration = 10;
+size_t MessageCount = 10;
 size_t ConsumerCreditSize = 1000;
 //---------------------------------------------------------------------------
 rmqsTimer_t *PerformanceTimer = 0;
@@ -39,7 +39,7 @@ size_t MessagesConfirmed = 0;
 size_t MessagesNotConfirmed = 0;
 size_t MessagesReceived = 0;
 //---------------------------------------------------------------------------
-bool_t EnableLogging = false;
+bool_t EnableLogging = true;
 bool_t TestPublishError = false;
 //---------------------------------------------------------------------------
 uint32_t TimerResult;
@@ -72,8 +72,27 @@ int main(int argc, char * argv[])
     size_t i, j;
     size_t UsedMemory;
 
-    (void)argc;
-    (void)argv;
+    //
+    // First argument is the application path, skipped
+    //
+    for (i = 1; i < argc; i++)
+    {
+        if (! _strcmpi(argv[i], "--brokers") && i < (size_t)(argc - 1))
+        {
+            BrokerList = argv[i + 1];
+            i++;
+        }
+        else if (! _strcmpi(argv[i], "--iterations") && (size_t)(argc - 1))
+        {
+            NoOfIteration = (size_t)atoi(argv[i + 1]);
+            i++;
+        }
+        else if (! _strcmpi(argv[i], "--messagecount") && (size_t)(argc - 1))
+        {
+            MessageCount = (size_t)atoi(argv[i + 1]);
+            i++;
+        }
+    }
 
     PerformanceTimer = rmqsTimerCreate();
     ElapseTimer = rmqsTimerCreate();
@@ -510,7 +529,7 @@ void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultLi
     }
 }
 //---------------------------------------------------------------------------
-void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset)
+void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset)
 {
     (void)SubscriptionId;
     (void)DataSize;
@@ -526,6 +545,7 @@ void DeliverResultCallback(uint8_t SubscriptionId, size_t DataSize, void *Data, 
     {
         TimerResult = rmqsTimerGetTime(PerformanceTimer);
         printf("%u Messages - Receive time: %ums\r\n", (uint32_t)(MessageCount * NoOfIteration), TimerResult);
+        printf("Last message: %.*s\r\n", (int)DataSize, (char *)Data);
     }
 }
 //---------------------------------------------------------------------------
