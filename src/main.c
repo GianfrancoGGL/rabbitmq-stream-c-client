@@ -32,7 +32,7 @@ void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize
 void MetadataUpdateCallback(uint16_t Code, char_t *Stream);
 //---------------------------------------------------------------------------
 size_t NoOfIteration = 10;
-size_t MessageCount = 10;
+size_t MessageCount = 1000;
 size_t ConsumerCreditSize = 1000;
 //---------------------------------------------------------------------------
 rmqsTimer_t *PerformanceTimer = 0;
@@ -49,7 +49,7 @@ uint32_t TimerResult;
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@192.168.1.37:5552";
+    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@127.0.0.1:5552";
     char_t Error[RMQS_ERR_MAX_STRING_LENGTH] = {0};
     rmqsResponseCode_t ResponseCode = rmqsrOK;
     rmqsClientConfiguration_t *ClientConfiguration = 0;
@@ -168,8 +168,6 @@ int main(int argc, char * argv[])
     printf("Publisher created\r\n");
 
     Socket = rmqsSocketCreate();
-
-    rmqsSetSocketTxRxBufferSize(Socket, 1024 * 100000, 1024 * 100000);
 
     if (! rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
     {

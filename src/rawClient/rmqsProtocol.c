@@ -49,10 +49,12 @@ bool_t rmqsIsLittleEndianMachine(void)
     }
 }
 //---------------------------------------------------------------------------
-void rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *Data, size_t DataSize)
+bool_t rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *Data, size_t DataSize)
 {
     rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
     uint16_t Key;
+    int32_t Flags = 0;
+    bool_t Result;
 
     if (ClientObj->ClientConfiguration->Logger)
     {
@@ -68,7 +70,13 @@ void rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *Data, size_t Dat
         rmqsLoggerRegisterDump(ClientObj->ClientConfiguration->Logger, (void *)Data, DataSize, "TX", rmqsGetCommandDescription(Key), 0);
     }
 
-    send(Socket, (char_t *)Data, (int32_t)DataSize, 0);
+    #if ! (_WIN32 || _WIN64)
+    Flags = MSG_NOSIGNAL;
+    #endif
+
+    Result = send(Socket, (char_t *)Data, (int32_t)DataSize, Flags) != -1;
+
+    return Result;
 }
 //---------------------------------------------------------------------------
 bool_t rmqsWaitMessage(void *Client, rmqsSocket_t Socket, uint32_t RxTimeout, bool_t *ConnectionError)

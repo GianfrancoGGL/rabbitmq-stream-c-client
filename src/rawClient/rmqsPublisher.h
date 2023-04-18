@@ -61,7 +61,7 @@ void rmqsPublisherPoll(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint32_t
 bool_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, char_t *Stream, rmqsResponseCode_t *ResponseCode);
 bool_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, char_t *Stream, uint64_t *Sequence, rmqsResponseCode_t *ResponseCode);
 bool_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, rmqsResponseCode_t *ResponseCode);
-void rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, rmqsMessage_t *Messages, size_t MessageCount);
+bool_t rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, rmqsMessage_t *Messages, size_t MessageCount);
 //---------------------------------------------------------------------------
 void rmqsHandlePublishResult(uint16_t Key, rmqsPublisher_t *Publisher, rmqsBuffer_t *Buffer);
 #endif
