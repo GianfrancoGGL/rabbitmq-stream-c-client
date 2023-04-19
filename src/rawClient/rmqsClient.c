@@ -32,7 +32,7 @@ SOFTWARE.
 #include "rmqsProtocol.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, rmqsClientType_t ClientType, void *ParentObject, MetadataUpdateCallback_t MetadataUpdateCallback)
+rmqsClientFunc rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, rmqsClientType_t ClientType, void *ParentObject, MetadataUpdateCallback_t MetadataUpdateCallback)
 {
     rmqsClient_t *Client = (rmqsClient_t *)rmqsAllocateMemory(sizeof(rmqsClient_t));
 
@@ -49,7 +49,7 @@ rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, 
     return Client;
 }
 //---------------------------------------------------------------------------
-void rmqsClientDestroy(rmqsClient_t *Client)
+rmqsClientFunc void rmqsClientDestroy(rmqsClient_t *Client)
 {
     rmqsBufferDestroy(Client->TxQueue);
     rmqsBufferDestroy(Client->RxQueue);
@@ -57,7 +57,7 @@ void rmqsClientDestroy(rmqsClient_t *Client)
     rmqsFreeMemory((void *)Client);
 }
 //---------------------------------------------------------------------------
-bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *VirtualHost, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *VirtualHost, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
 {
     rmqsBroker_t *Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Client->ClientConfiguration->BrokerList, 0);
     bool_t PlainAuthSupported;
@@ -167,14 +167,14 @@ bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *Virtua
     return true;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsClientLogout(rmqsClient_t *Client, rmqsSocket_t Socket, uint16_t ClosingCode, char_t *ClosingReason, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsClientLogout(rmqsClient_t *Client, rmqsSocket_t Socket, uint16_t ClosingCode, char_t *ClosingReason, rmqsResponseCode_t *ResponseCode)
 {
     *ResponseCode = rmqsrOK;
 
     return rmqsClose(Client, Socket, ClosingCode, ClosingReason, ResponseCode);
 }
 //---------------------------------------------------------------------------
-bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket_t Socket, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket_t Socket, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscPeerProperties;
     uint16_t Version = 1;
@@ -263,7 +263,7 @@ bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket_t Socket, rmqsPropert
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket_t Socket, bool_t *PlainAuthSupported, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket_t Socket, bool_t *PlainAuthSupported, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscSaslHandshake;
     uint16_t Version = 1;
@@ -347,7 +347,7 @@ bool_t rmqsSaslHandshake(rmqsClient_t *Client, rmqsSocket_t Socket, bool_t *Plai
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *Mechanism, char_t *Username, char_t *Password, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *Mechanism, char_t *Username, char_t *Password, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscSaslAuthenticate;
     uint16_t Version = 1;
@@ -407,7 +407,7 @@ bool_t rmqsSaslAuthenticate(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *M
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *VirtualHost, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *VirtualHost, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscOpen;
     uint16_t Version = 1;
@@ -453,7 +453,7 @@ bool_t rmqsOpen(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *VirtualHost, 
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket_t Socket, uint16_t ClosingCode, char_t *ClosingReason, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket_t Socket, uint16_t ClosingCode, char_t *ClosingReason, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscClose;
     uint16_t Version = 1;
@@ -500,7 +500,7 @@ bool_t rmqsClose(rmqsClient_t *Client, rmqsSocket_t Socket, uint16_t ClosingCode
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *Stream, rmqsCreateStreamArgs_t *CreateStreamArgs, bool_t *StreamAlreadyExists, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *Stream, rmqsCreateStreamArgs_t *CreateStreamArgs, bool_t *StreamAlreadyExists, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscCreate;
     uint16_t Version = 1;
@@ -627,7 +627,7 @@ bool_t rmqsCreate(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *Stream, rmq
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *Stream, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *Stream, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscDelete;
     uint16_t Version = 1;
@@ -673,7 +673,7 @@ bool_t rmqsDelete(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *Stream, rmq
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket_t Socket, char_t **Streams, size_t StreamCount, rmqsMetadata_t *Metadata, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket_t Socket, char_t **Streams, size_t StreamCount, rmqsMetadata_t *Metadata, rmqsResponseCode_t *ResponseCode)
 {
     uint16_t Key = rmqscMetadata;
     uint16_t Version = 1;
@@ -791,7 +791,7 @@ bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket_t Socket, char_t **Streams,
     }
 }
 //---------------------------------------------------------------------------
-void rmqsHeartbeat(rmqsClient_t *Client, rmqsSocket_t Socket)
+rmqsClientFunc void rmqsHeartbeat(rmqsClient_t *Client, rmqsSocket_t Socket)
 {
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
     uint16_t Key = rmqscHeartbeat;
@@ -812,7 +812,7 @@ void rmqsHeartbeat(rmqsClient_t *Client, rmqsSocket_t Socket)
     rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 }
 //---------------------------------------------------------------------------
-void rmqsHandleMetadataUpdate(rmqsClient_t *Client, rmqsBuffer_t *Buffer)
+rmqsClientFunc void rmqsHandleMetadataUpdate(rmqsClient_t *Client, rmqsBuffer_t *Buffer)
 {
     char_t *MessagePayload = (char_t *)Buffer->Data + sizeof(rmqsMsgHeader_t);
     uint16_t Code;
@@ -824,7 +824,7 @@ void rmqsHandleMetadataUpdate(rmqsClient_t *Client, rmqsBuffer_t *Buffer)
     Client->MetadataUpdateCallback(Code, Stream);
 }
 //---------------------------------------------------------------------------
-rmqsMetadata_t *rmqsMetadataCreate(void)
+rmqsClientFunc rmqsMetadata_t *rmqsMetadataCreate(void)
 {
     rmqsMetadata_t *Metadata = (rmqsMetadata_t *)rmqsAllocateMemory(sizeof(rmqsMetadata_t));
 
@@ -833,12 +833,12 @@ rmqsMetadata_t *rmqsMetadataCreate(void)
     return Metadata;
 }
 //---------------------------------------------------------------------------
-void rmqsMetadataClear(rmqsMetadata_t *Metadata)
+rmqsClientFunc void rmqsMetadataClear(rmqsMetadata_t *Metadata)
 {
     memset(Metadata, 0, sizeof(rmqsMetadata_t));
 }
 //---------------------------------------------------------------------------
-void rmqsMetadataDestroy(rmqsMetadata_t *Metadata)
+rmqsClientFunc void rmqsMetadataDestroy(rmqsMetadata_t *Metadata)
 {
     uint32_t i;
 

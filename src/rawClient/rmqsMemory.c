@@ -27,7 +27,7 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 size_t TotalUsedMemory = 0;
 //---------------------------------------------------------------------------
-void * rmqsAllocateMemory(size_t Size)
+rmqsMemoryFunc void * rmqsAllocateMemory(size_t Size)
 {
     char_t *Memory = (char_t *)malloc(Size + sizeof(size_t)); // Allocate 4 extra bytes to store the block size
 
@@ -39,7 +39,7 @@ void * rmqsAllocateMemory(size_t Size)
     return (void *)Memory; // Memory pointer to be used
 }
 //---------------------------------------------------------------------------
-void rmqsFreeMemory(void *Memory)
+rmqsMemoryFunc void rmqsFreeMemory(void *Memory)
 {
     char_t *MemoryToFree = (char_t *)Memory;
 
@@ -51,7 +51,7 @@ void rmqsFreeMemory(void *Memory)
     free((void *)MemoryToFree);
 }
 //---------------------------------------------------------------------------
-void * rmqsRellocateMemory(void *Memory, size_t Size)
+rmqsMemoryFunc void * rmqsRellocateMemory(void *Memory, size_t Size)
 {
     char_t *OldMemory = (char_t *)Memory, *NewMemory;
 
@@ -71,7 +71,7 @@ void * rmqsRellocateMemory(void *Memory, size_t Size)
     return (void *)NewMemory;
 }
 //---------------------------------------------------------------------------
-size_t rmqsGetUsedMemory(void)
+rmqsMemoryFunc size_t rmqsGetUsedMemory(void)
 {
     return TotalUsedMemory;
 }

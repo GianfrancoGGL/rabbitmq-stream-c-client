@@ -22,34 +22,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************/
 //---------------------------------------------------------------------------
-#ifndef rmqsGlobalH
-#define rmqsGlobalH
+#ifndef rmqsOptionsH
+#define rmqsOptionsH
 //---------------------------------------------------------------------------
-typedef char char_t;
-typedef unsigned char uchar_t;
-typedef unsigned char byte_t;
-typedef long long_t;
-typedef unsigned long ulong_t;
-typedef unsigned char bool_t;
-typedef double double_t;
+#define RMQS_PROTOCOL_FUNCTIONS_INLINE    1
+#define RMQS_CLIENT_FUNCTIONS_INLINE      1
+#define RMQS_BUFFERING_FUNCTIONS_INLINE   1
+#define RMQS_MEMORY_FUNCTIONS_INLINE      1
 //---------------------------------------------------------------------------
-#include "rmqsOptions.h"
+#define rmqsInLine extern inline
 //---------------------------------------------------------------------------
-#ifndef __cplusplus
-#ifndef true
-#define true   1
-#endif
-#ifndef false
-#define false  0
-#endif
-#endif
-#ifndef minval
-#define minval(x, y) (x < y ? x : y)
+#if RMQS_PROTOCOL_FUNCTIONS_INLINE
+#define rmqsProtoFunc rmqsInLine
+#else
+#define rmqsProtoFunc 
 #endif
 //---------------------------------------------------------------------------
-#define RQMS_MAX_HOSTNAME_LENGTH      256
+#if RMQS_CLIENT_FUNCTIONS_INLINE
+#define rmqsClientFunc rmqsInLine
+#else
+#define rmqsClientFunc
+#endif
 //---------------------------------------------------------------------------
-#define rmqsFieldSize(Type, Field)    sizeof(((Type *)0)->Field)
+#if RMQS_BUFFERING_FUNCTIONS_INLINE
+#define rmqsBufferingFunc rmqsInLine
+#else
+#define rmqsBufferingFunc
+#endif
+//---------------------------------------------------------------------------
+#if RMQS_MEMORY_FUNCTIONS_INLINE
+#define rmqsMemoryFunc rmqsInLine
+#else
+#define rmqsMemoryFunc
+#endif
 //---------------------------------------------------------------------------
 #endif
 //---------------------------------------------------------------------------

@@ -34,7 +34,7 @@ SOFTWARE.
  * \return rmqsBuffer_t*
  *
  */
-rmqsBuffer_t * rmqsBufferCreate(void)
+rmqsBufferingFunc rmqsBuffer_t * rmqsBufferCreate(void)
 {
     rmqsBuffer_t *Buffer = (rmqsBuffer_t *)rmqsAllocateMemory(sizeof(rmqsBuffer_t));
 
@@ -45,7 +45,7 @@ rmqsBuffer_t * rmqsBufferCreate(void)
     return Buffer;
 }
 //---------------------------------------------------------------------------
-void rmqsBufferDestroy(rmqsBuffer_t *Buffer)
+rmqsBufferingFunc void rmqsBufferDestroy(rmqsBuffer_t *Buffer)
 {
     if (Buffer->Data)
     {
@@ -55,7 +55,7 @@ void rmqsBufferDestroy(rmqsBuffer_t *Buffer)
     rmqsFreeMemory((void *)Buffer);
 }
 //---------------------------------------------------------------------------
-void rmqsBufferClear(rmqsBuffer_t *Buffer, bool_t ResetMemoryBuffer)
+rmqsBufferingFunc void rmqsBufferClear(rmqsBuffer_t *Buffer, bool_t ResetMemoryBuffer)
 {
     Buffer->Size = 0;
     Buffer->Position = 0;
@@ -69,14 +69,14 @@ void rmqsBufferClear(rmqsBuffer_t *Buffer, bool_t ResetMemoryBuffer)
     }
 }
 //---------------------------------------------------------------------------
-void rmqsBufferClearTags(rmqsBuffer_t *Buffer)
+rmqsBufferingFunc void rmqsBufferClearTags(rmqsBuffer_t *Buffer)
 {
     Buffer->Tag1 = 0;
     Buffer->Tag2 = 0;
     Buffer->Tag3 = 0;
 }
 //---------------------------------------------------------------------------
-size_t rmqsBufferRead(rmqsBuffer_t *Buffer, void *ReadBuffer, size_t NoOfBytes)
+rmqsBufferingFunc size_t rmqsBufferRead(rmqsBuffer_t *Buffer, void *ReadBuffer, size_t NoOfBytes)
 {
     char_t *p;
 
@@ -99,7 +99,7 @@ size_t rmqsBufferRead(rmqsBuffer_t *Buffer, void *ReadBuffer, size_t NoOfBytes)
     return NoOfBytes;
 }
 //---------------------------------------------------------------------------
-size_t rmqsBufferWrite(rmqsBuffer_t *Buffer, void *WriteBuffer, size_t NoOfBytes)
+rmqsBufferingFunc size_t rmqsBufferWrite(rmqsBuffer_t *Buffer, void *WriteBuffer, size_t NoOfBytes)
 {
     char_t *p;
 
@@ -124,7 +124,7 @@ size_t rmqsBufferWrite(rmqsBuffer_t *Buffer, void *WriteBuffer, size_t NoOfBytes
     return Buffer->Position;
 }
 //---------------------------------------------------------------------------
-void rmqsBufferDelete(rmqsBuffer_t *Buffer, size_t NoOfBytes)
+rmqsBufferingFunc void rmqsBufferDelete(rmqsBuffer_t *Buffer, size_t NoOfBytes)
 {
     if (NoOfBytes > Buffer->Size)
     {
@@ -145,7 +145,7 @@ void rmqsBufferDelete(rmqsBuffer_t *Buffer, size_t NoOfBytes)
     }
 }
 //---------------------------------------------------------------------------
-void rmqsBufferMoveTo(rmqsBuffer_t *Buffer, size_t Position)
+rmqsBufferingFunc void rmqsBufferMoveTo(rmqsBuffer_t *Buffer, size_t Position)
 {
     if (Position >= Buffer->Size)
     {
@@ -155,7 +155,7 @@ void rmqsBufferMoveTo(rmqsBuffer_t *Buffer, size_t Position)
     Buffer->Position = Position;
 }
 //---------------------------------------------------------------------------
-void rmqsBufferSetMemorySize(rmqsBuffer_t *Buffer, size_t RequiredMemorySize)
+rmqsBufferingFunc void rmqsBufferSetMemorySize(rmqsBuffer_t *Buffer, size_t RequiredMemorySize)
 {
     size_t MemoryToAllocateSize;
 

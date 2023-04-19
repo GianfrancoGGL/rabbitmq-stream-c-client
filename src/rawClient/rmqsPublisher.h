@@ -54,15 +54,15 @@ typedef struct
 }
 rmqsPublisher_t;
 //---------------------------------------------------------------------------
-rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *PublisherReference, uint32_t Heartbeat, PublishResultCallback_t PublishResultCallback, MetadataUpdateCallback_t MetadataUpdateCallback);
-void rmqsPublisherDestroy(rmqsPublisher_t *Publisher);
-void rmqsPublisherPoll(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint32_t Timeout, bool_t *ConnectionError);
+rmqsClientFunc rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *PublisherReference, uint32_t Heartbeat, PublishResultCallback_t PublishResultCallback, MetadataUpdateCallback_t MetadataUpdateCallback);
+rmqsClientFunc void rmqsPublisherDestroy(rmqsPublisher_t *Publisher);
+rmqsClientFunc void rmqsPublisherPoll(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint32_t Timeout, bool_t *ConnectionError);
 //---------------------------------------------------------------------------
-bool_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, char_t *Stream, rmqsResponseCode_t *ResponseCode);
-bool_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, char_t *Stream, uint64_t *Sequence, rmqsResponseCode_t *ResponseCode);
-bool_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, rmqsResponseCode_t *ResponseCode);
-bool_t rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, rmqsMessage_t *Messages, size_t MessageCount);
+rmqsClientFunc bool_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, char_t *Stream, rmqsResponseCode_t *ResponseCode);
+rmqsClientFunc bool_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, char_t *Stream, uint64_t *Sequence, rmqsResponseCode_t *ResponseCode);
+rmqsClientFunc bool_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, rmqsResponseCode_t *ResponseCode);
+rmqsClientFunc bool_t rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, rmqsMessage_t *Messages, size_t MessageCount);
 //---------------------------------------------------------------------------
-void rmqsHandlePublishResult(uint16_t Key, rmqsPublisher_t *Publisher, rmqsBuffer_t *Buffer);
+rmqsClientFunc void rmqsHandlePublishResult(uint16_t Key, rmqsPublisher_t *Publisher, rmqsBuffer_t *Buffer);
 #endif
 //---------------------------------------------------------------------------

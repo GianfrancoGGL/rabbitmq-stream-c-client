@@ -172,34 +172,34 @@ rmqsQueryOffsetResponse_t;
 //---------------------------------------------------------------------------
 #pragma pack(pop)
 //---------------------------------------------------------------------------
-bool_t rmqsIsLittleEndianMachine(void);
+rmqsProtoFunc bool_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
-bool_t rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *Data, size_t DataSize);
-bool_t rmqsWaitMessage(void *Client, rmqsSocket_t Socket, uint32_t RxTimeout, bool_t *ConnectionError);
-bool_t rmqsWaitResponse(void *Client, rmqsSocket_t Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionError);
-void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, size_t MessageSize);
-char_t * rmqsGetCommandDescription(uint16_t Key);
-char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode);
+rmqsProtoFunc bool_t rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *Data, size_t DataSize);
+rmqsProtoFunc bool_t rmqsWaitMessage(void *Client, rmqsSocket_t Socket, uint32_t RxTimeout, bool_t *ConnectionError);
+rmqsProtoFunc bool_t rmqsWaitResponse(void *Client, rmqsSocket_t Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionError);
+rmqsProtoFunc void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, size_t MessageSize);
+rmqsProtoFunc char_t * rmqsGetCommandDescription(uint16_t Key);
+rmqsProtoFunc char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode);
 //---------------------------------------------------------------------------
-size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value);
-size_t rmqsAddUInt8ToBuffer(rmqsBuffer_t *Buffer, uint8_t Value);
-size_t rmqsAddInt16ToBuffer(rmqsBuffer_t *Buffer, int16_t Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddUInt16ToBuffer(rmqsBuffer_t *Buffer, uint16_t Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddInt32ToBuffer(rmqsBuffer_t *Buffer, int32_t Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddUInt32ToBuffer(rmqsBuffer_t *Buffer, uint32_t Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddInt64ToBuffer(rmqsBuffer_t *Buffer, int64_t Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddUInt64ToBuffer(rmqsBuffer_t *Buffer, uint64_t Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddStringToBuffer(rmqsBuffer_t *Buffer, char_t *Value, bool_t IsLittleEndianMachine);
-size_t rmqsAddBytesToBuffer(rmqsBuffer_t *Buffer, void *Value, size_t ValueLength, bool_t DeclareLength, bool_t IsLittleEndianMachine);
+rmqsProtoFunc size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value);
+rmqsProtoFunc size_t rmqsAddUInt8ToBuffer(rmqsBuffer_t *Buffer, uint8_t Value);
+rmqsProtoFunc size_t rmqsAddInt16ToBuffer(rmqsBuffer_t *Buffer, int16_t Value, bool_t IsLittleEndianMachine);
+rmqsProtoFunc size_t rmqsAddUInt16ToBuffer(rmqsBuffer_t *Buffer, uint16_t Value, bool_t IsLittleEndianMachine);
+rmqsProtoFunc size_t rmqsAddInt32ToBuffer(rmqsBuffer_t *Buffer, int32_t Value, bool_t IsLittleEndianMachine);
+rmqsProtoFunc size_t rmqsAddUInt32ToBuffer(rmqsBuffer_t *Buffer, uint32_t Value, bool_t IsLittleEndianMachine);
+rmqsProtoFunc size_t rmqsAddInt64ToBuffer(rmqsBuffer_t *Buffer, int64_t Value, bool_t IsLittleEndianMachine);
+rmqsProtoFunc size_t rmqsAddUInt64ToBuffer(rmqsBuffer_t *Buffer, uint64_t Value, bool_t IsLittleEndianMachine);
+rmqsProtoFunc size_t rmqsAddStringToBuffer(rmqsBuffer_t *Buffer, char_t *Value, bool_t IsLittleEndianMachine);
+rmqsProtoFunc size_t rmqsAddBytesToBuffer(rmqsBuffer_t *Buffer, void *Value, size_t ValueLength, bool_t DeclareLength, bool_t IsLittleEndianMachine);
 //---------------------------------------------------------------------------
-void rmqsGetInt8FromMemory(char_t **Pointer, int8_t *Value);
-void rmqsGetUInt8FromMemory(char_t **Pointer, uint8_t *Value);
-void rmqsGetInt16FromMemory(char_t **Pointer, int16_t *Value, bool_t IsLittleEndianMachine);
-void rmqsGetUInt16FromMemory(char_t **Pointer, uint16_t *Value, bool_t IsLittleEndianMachine);
-void rmqsGetInt32FromMemory(char_t **Pointer, int32_t *Value, bool_t IsLittleEndianMachine);
-void rmqsGetUInt32FromMemory(char_t **Pointer, uint32_t *Value, bool_t IsLittleEndianMachine);
-void rmqsGetInt64FromMemory(char_t **Pointer, int64_t *Value, bool_t IsLittleEndianMachine);
-void rmqsGetUInt64FromMemory(char_t **Pointer, uint64_t *Value, bool_t IsLittleEndianMachine);
+rmqsProtoFunc void rmqsGetInt8FromMemory(char_t **Pointer, int8_t *Value);
+rmqsProtoFunc void rmqsGetUInt8FromMemory(char_t **Pointer, uint8_t *Value);
+rmqsProtoFunc void rmqsGetInt16FromMemory(char_t **Pointer, int16_t *Value, bool_t IsLittleEndianMachine);
+rmqsProtoFunc void rmqsGetUInt16FromMemory(char_t **Pointer, uint16_t *Value, bool_t IsLittleEndianMachine);
+rmqsProtoFunc void rmqsGetInt32FromMemory(char_t **Pointer, int32_t *Value, bool_t IsLittleEndianMachine);
+rmqsProtoFunc void rmqsGetUInt32FromMemory(char_t **Pointer, uint32_t *Value, bool_t IsLittleEndianMachine);
+rmqsProtoFunc void rmqsGetInt64FromMemory(char_t **Pointer, int64_t *Value, bool_t IsLittleEndianMachine);
+rmqsProtoFunc void rmqsGetUInt64FromMemory(char_t **Pointer, uint64_t *Value, bool_t IsLittleEndianMachine);
 void rmqsGetStringFromMemory(char_t **Pointer, char_t *Value, size_t MaxValueLength, bool_t IsLittleEndianMachine);//---------------------------------------------------------------------------
 #endif
 //--------------------------------------------------------------------------

@@ -49,14 +49,14 @@ typedef struct
 }
 rmqsBuffer_t;
 //---------------------------------------------------------------------------
-rmqsBuffer_t * rmqsBufferCreate(void);
-void rmqsBufferDestroy(rmqsBuffer_t *Buffer);
-void rmqsBufferClear(rmqsBuffer_t *Buffer, bool_t ResetMemoryBuffer);
-void rmqsBufferClearTags(rmqsBuffer_t *Buffer);
-size_t rmqsBufferRead(rmqsBuffer_t *Buffer, void *ReadBuffer, size_t NoOfBytes);
-size_t rmqsBufferWrite(rmqsBuffer_t *Buffer, void *WriteBuffer, size_t NoOfBytes);
-void rmqsBufferDelete(rmqsBuffer_t *Buffer, size_t NoOfBytes);
-void rmqsBufferMoveTo(rmqsBuffer_t *Buffer, size_t Position);
-void rmqsBufferSetMemorySize(rmqsBuffer_t *Buffer, size_t RequiredMemorySize);
+rmqsBufferingFunc rmqsBuffer_t * rmqsBufferCreate(void);
+rmqsBufferingFunc void rmqsBufferDestroy(rmqsBuffer_t *Buffer);
+rmqsBufferingFunc void rmqsBufferClear(rmqsBuffer_t *Buffer, bool_t ResetMemoryBuffer);
+rmqsBufferingFunc void rmqsBufferClearTags(rmqsBuffer_t *Buffer);
+rmqsBufferingFunc size_t rmqsBufferRead(rmqsBuffer_t *Buffer, void *ReadBuffer, size_t NoOfBytes);
+rmqsBufferingFunc size_t rmqsBufferWrite(rmqsBuffer_t *Buffer, void *WriteBuffer, size_t NoOfBytes);
+rmqsBufferingFunc void rmqsBufferDelete(rmqsBuffer_t *Buffer, size_t NoOfBytes);
+rmqsBufferingFunc void rmqsBufferMoveTo(rmqsBuffer_t *Buffer, size_t Position);
+rmqsBufferingFunc void rmqsBufferSetMemorySize(rmqsBuffer_t *Buffer, size_t RequiredMemorySize);
 #endif
 //--------------------------------------------------------------------------

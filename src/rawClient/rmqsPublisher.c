@@ -28,7 +28,7 @@ SOFTWARE.
 #include "rmqsClientConfiguration.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *PublisherReference, uint32_t Heartbeat, PublishResultCallback_t PublishResultCallback, MetadataUpdateCallback_t MetadataUpdateCallback)
+rmqsClientFunc rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *PublisherReference, uint32_t Heartbeat, PublishResultCallback_t PublishResultCallback, MetadataUpdateCallback_t MetadataUpdateCallback)
 {
     rmqsPublisher_t *Publisher = (rmqsPublisher_t *)rmqsAllocateMemory(sizeof(rmqsPublisher_t));
 
@@ -42,14 +42,14 @@ rmqsPublisher_t * rmqsPublisherCreate(rmqsClientConfiguration_t *ClientConfigura
     return Publisher;
 }
 //---------------------------------------------------------------------------
-void rmqsPublisherDestroy(rmqsPublisher_t *Publisher)
+rmqsClientFunc void rmqsPublisherDestroy(rmqsPublisher_t *Publisher)
 {
     rmqsClientDestroy(Publisher->Client);
 
     rmqsFreeMemory((void *)Publisher);
 }
 //---------------------------------------------------------------------------
-void rmqsPublisherPoll(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint32_t Timeout, bool_t *ConnectionError)
+rmqsClientFunc void rmqsPublisherPoll(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint32_t Timeout, bool_t *ConnectionError)
 {
     uint32_t WaitMessageTimeout = Timeout;
     uint32_t Time;
@@ -73,7 +73,7 @@ void rmqsPublisherPoll(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint32_t
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, char_t *Stream, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, char_t *Stream, rmqsResponseCode_t *ResponseCode)
 {
     rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -123,7 +123,7 @@ bool_t rmqsDeclarePublisher(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uin
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, char_t *Stream, uint64_t *Sequence, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, char_t *Stream, uint64_t *Sequence, rmqsResponseCode_t *ResponseCode)
 {
     rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -182,7 +182,7 @@ bool_t rmqsQueryPublisherSequence(rmqsPublisher_t *Publisher, rmqsSocket_t Socke
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, rmqsResponseCode_t *ResponseCode)
 {
     rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -230,7 +230,7 @@ bool_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, rmqsMessage_t *Messages, size_t MessageCount)
+rmqsClientFunc bool_t rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, rmqsMessage_t *Messages, size_t MessageCount)
 {
     rmqsClient_t *Client = Publisher->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;
@@ -261,7 +261,7 @@ bool_t rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t Publ
     return rmqsSendMessage(Client, Socket, (char_t *)Client->TxQueue->Data, Client->TxQueue->Size);
 }
 //---------------------------------------------------------------------------
-void rmqsHandlePublishResult(uint16_t Key, rmqsPublisher_t *Publisher, rmqsBuffer_t *Buffer)
+rmqsClientFunc void rmqsHandlePublishResult(uint16_t Key, rmqsPublisher_t *Publisher, rmqsBuffer_t *Buffer)
 {
     char_t *MessagePayload = (char_t *)Buffer->Data + sizeof(rmqsMsgHeader_t);
     uint8_t PublisherId;

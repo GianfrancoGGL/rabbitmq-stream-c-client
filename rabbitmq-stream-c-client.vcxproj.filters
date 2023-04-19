@@ -125,5 +125,23 @@
     <ClInclude Include="src\rawClient\rmqsPublisher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\uthash\utarray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\uthash\uthash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\uthash\utlist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\uthash\utringbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\uthash\utstack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\uthash\utstring.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

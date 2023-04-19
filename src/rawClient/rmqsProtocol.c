@@ -30,7 +30,7 @@ SOFTWARE.
 #include "rmqsBuffer.h"
 #include "rmqsLib.h"
 //---------------------------------------------------------------------------
-bool_t rmqsIsLittleEndianMachine(void)
+rmqsProtoFunc bool_t rmqsIsLittleEndianMachine(void)
 {
     union
     {
@@ -49,7 +49,7 @@ bool_t rmqsIsLittleEndianMachine(void)
     }
 }
 //---------------------------------------------------------------------------
-bool_t rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *Data, size_t DataSize)
+rmqsProtoFunc bool_t rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *Data, size_t DataSize)
 {
     rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
     uint16_t Key;
@@ -79,7 +79,7 @@ bool_t rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *Data, size_t D
     return Result;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsWaitMessage(void *Client, rmqsSocket_t Socket, uint32_t RxTimeout, bool_t *ConnectionError)
+rmqsProtoFunc bool_t rmqsWaitMessage(void *Client, rmqsSocket_t Socket, uint32_t RxTimeout, bool_t *ConnectionError)
 {
     rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
     bool_t RxPendingBytes;
@@ -248,7 +248,7 @@ bool_t rmqsWaitMessage(void *Client, rmqsSocket_t Socket, uint32_t RxTimeout, bo
     return true;
 }
 //---------------------------------------------------------------------------
-bool_t rmqsWaitResponse(void *Client, rmqsSocket_t Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionError)
+rmqsProtoFunc bool_t rmqsWaitResponse(void *Client, rmqsSocket_t Socket, uint32_t CorrelationId, rmqsResponse_t *Response, uint32_t RxTimeout, bool_t *ConnectionError)
 {
     rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
     uint32_t WaitMessageTimeout = RxTimeout;
@@ -298,7 +298,7 @@ bool_t rmqsWaitResponse(void *Client, rmqsSocket_t Socket, uint32_t CorrelationI
     return false;
 }
 //---------------------------------------------------------------------------
-void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, size_t MessageSize)
+rmqsProtoFunc void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, size_t MessageSize)
 {
     //
     // Remove the message from the stream, shifting eventual extra bytes to the beginning
@@ -306,7 +306,7 @@ void rmqsDequeueMessageFromBuffer(rmqsBuffer_t *Buffer, size_t MessageSize)
     rmqsBufferDelete(Buffer, MessageSize);
 }
 //---------------------------------------------------------------------------
-char_t * rmqsGetCommandDescription(uint16_t Key)
+rmqsProtoFunc char_t * rmqsGetCommandDescription(uint16_t Key)
 {
     char_t *Description = "Unknown message";
 
@@ -428,7 +428,7 @@ char_t * rmqsGetCommandDescription(uint16_t Key)
     return Description;
 }
 //---------------------------------------------------------------------------
-char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode)
+rmqsProtoFunc char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode)
 {
     char_t *Description = "None";
 
@@ -518,31 +518,19 @@ char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode)
     return Description;
 }
 //---------------------------------------------------------------------------
-size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
+rmqsProtoFunc size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
 {
     rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
- size_t rmqsAddUInt8ToBuffer(rmqsBuffer_t *Buffer, uint8_t Value)
+ rmqsProtoFunc size_t rmqsAddUInt8ToBuffer(rmqsBuffer_t *Buffer, uint8_t Value)
 {
     rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
- size_t rmqsAddInt16ToBuffer(rmqsBuffer_t *Buffer, int16_t Value, bool_t IsLittleEndianMachine)
-{
-    if (IsLittleEndianMachine)
-    {
-        Value = SwapUInt16(Value);
-    }
-
-    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
-
-    return sizeof(Value);
-}
-//---------------------------------------------------------------------------
- size_t rmqsAddUInt16ToBuffer(rmqsBuffer_t *Buffer, uint16_t Value, bool_t IsLittleEndianMachine)
+ rmqsProtoFunc size_t rmqsAddInt16ToBuffer(rmqsBuffer_t *Buffer, int16_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
@@ -554,7 +542,19 @@ size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
- size_t rmqsAddInt32ToBuffer(rmqsBuffer_t *Buffer, int32_t Value, bool_t IsLittleEndianMachine)
+ rmqsProtoFunc size_t rmqsAddUInt16ToBuffer(rmqsBuffer_t *Buffer, uint16_t Value, bool_t IsLittleEndianMachine)
+{
+    if (IsLittleEndianMachine)
+    {
+        Value = SwapUInt16(Value);
+    }
+
+    rmqsBufferWrite(Buffer, (void *)&Value, sizeof(Value));
+
+    return sizeof(Value);
+}
+//---------------------------------------------------------------------------
+ rmqsProtoFunc size_t rmqsAddInt32ToBuffer(rmqsBuffer_t *Buffer, int32_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
@@ -566,7 +566,7 @@ size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
- size_t rmqsAddUInt32ToBuffer(rmqsBuffer_t *Buffer, uint32_t Value, bool_t IsLittleEndianMachine)
+ rmqsProtoFunc size_t rmqsAddUInt32ToBuffer(rmqsBuffer_t *Buffer, uint32_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
@@ -578,7 +578,7 @@ size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
- size_t rmqsAddInt64ToBuffer(rmqsBuffer_t *Buffer, int64_t Value, bool_t IsLittleEndianMachine)
+ rmqsProtoFunc size_t rmqsAddInt64ToBuffer(rmqsBuffer_t *Buffer, int64_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
@@ -590,7 +590,7 @@ size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
- size_t rmqsAddUInt64ToBuffer(rmqsBuffer_t *Buffer, uint64_t Value, bool_t IsLittleEndianMachine)
+ rmqsProtoFunc size_t rmqsAddUInt64ToBuffer(rmqsBuffer_t *Buffer, uint64_t Value, bool_t IsLittleEndianMachine)
 {
     if (IsLittleEndianMachine)
     {
@@ -602,7 +602,7 @@ size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
     return sizeof(Value);
 }
 //---------------------------------------------------------------------------
- size_t rmqsAddStringToBuffer(rmqsBuffer_t *Buffer, char_t *Value, bool_t IsLittleEndianMachine)
+ rmqsProtoFunc size_t rmqsAddStringToBuffer(rmqsBuffer_t *Buffer, char_t *Value, bool_t IsLittleEndianMachine)
 {
     int16_t StringLen;
     size_t BytesAdded;
@@ -628,7 +628,7 @@ size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
     return BytesAdded;
 }
 //---------------------------------------------------------------------------
- size_t rmqsAddBytesToBuffer(rmqsBuffer_t *Buffer, void *Value, size_t ValueLength, bool_t DeclareLength, bool_t IsLittleEndianMachine)
+ rmqsProtoFunc size_t rmqsAddBytesToBuffer(rmqsBuffer_t *Buffer, void *Value, size_t ValueLength, bool_t DeclareLength, bool_t IsLittleEndianMachine)
 {
     int32_t DataLen;
     size_t BytesAdded = 0;
@@ -657,19 +657,19 @@ size_t rmqsAddInt8ToBuffer(rmqsBuffer_t *Buffer, int8_t Value)
     return BytesAdded;
 }
 //---------------------------------------------------------------------------
-void rmqsGetInt8FromMemory(char_t **Pointer, int8_t *Value)
+rmqsProtoFunc void rmqsGetInt8FromMemory(char_t **Pointer, int8_t *Value)
 {
     *Value = *(int8_t *)*Pointer;
     *Pointer += sizeof(int8_t);
 }
 //---------------------------------------------------------------------------
-void rmqsGetUInt8FromMemory(char_t **Pointer, uint8_t *Value)
+rmqsProtoFunc void rmqsGetUInt8FromMemory(char_t **Pointer, uint8_t *Value)
 {
     *Value = *(uint8_t *)*Pointer;
     *Pointer += sizeof(uint8_t);
 }
 //---------------------------------------------------------------------------
-void rmqsGetInt16FromMemory(char_t **Pointer, int16_t *Value, bool_t IsLittleEndianMachine)
+rmqsProtoFunc void rmqsGetInt16FromMemory(char_t **Pointer, int16_t *Value, bool_t IsLittleEndianMachine)
 {
     *Value = *(int16_t *)*Pointer;
 
@@ -681,7 +681,7 @@ void rmqsGetInt16FromMemory(char_t **Pointer, int16_t *Value, bool_t IsLittleEnd
     *Pointer += sizeof(int16_t);
 }
 //---------------------------------------------------------------------------
-void rmqsGetUInt16FromMemory(char_t **Pointer, uint16_t *Value, bool_t IsLittleEndianMachine)
+rmqsProtoFunc void rmqsGetUInt16FromMemory(char_t **Pointer, uint16_t *Value, bool_t IsLittleEndianMachine)
 {
     *Value = *(uint16_t *)*Pointer;
 
@@ -693,7 +693,7 @@ void rmqsGetUInt16FromMemory(char_t **Pointer, uint16_t *Value, bool_t IsLittleE
     *Pointer += sizeof(uint16_t);
 }
 //---------------------------------------------------------------------------
-void rmqsGetInt32FromMemory(char_t **Pointer, int32_t *Value, bool_t IsLittleEndianMachine)
+rmqsProtoFunc void rmqsGetInt32FromMemory(char_t **Pointer, int32_t *Value, bool_t IsLittleEndianMachine)
 {
     *Value = *(int32_t *)*Pointer;
 
@@ -705,7 +705,7 @@ void rmqsGetInt32FromMemory(char_t **Pointer, int32_t *Value, bool_t IsLittleEnd
     *Pointer += sizeof(int32_t);
 }
 //---------------------------------------------------------------------------
-void rmqsGetUInt32FromMemory(char_t **Pointer, uint32_t *Value, bool_t IsLittleEndianMachine)
+rmqsProtoFunc void rmqsGetUInt32FromMemory(char_t **Pointer, uint32_t *Value, bool_t IsLittleEndianMachine)
 {
     *Value = *(uint32_t *)*Pointer;
 
@@ -717,7 +717,7 @@ void rmqsGetUInt32FromMemory(char_t **Pointer, uint32_t *Value, bool_t IsLittleE
     *Pointer += sizeof(uint32_t);
 }
 //---------------------------------------------------------------------------
-void rmqsGetInt64FromMemory(char_t **Pointer, int64_t *Value, bool_t IsLittleEndianMachine)
+rmqsProtoFunc void rmqsGetInt64FromMemory(char_t **Pointer, int64_t *Value, bool_t IsLittleEndianMachine)
 {
     *Value = *(int64_t *)*Pointer;
 
@@ -729,7 +729,7 @@ void rmqsGetInt64FromMemory(char_t **Pointer, int64_t *Value, bool_t IsLittleEnd
     *Pointer += sizeof(int64_t);
 }
 //---------------------------------------------------------------------------
-void rmqsGetUInt64FromMemory(char_t **Pointer, uint64_t *Value, bool_t IsLittleEndianMachine)
+rmqsProtoFunc void rmqsGetUInt64FromMemory(char_t **Pointer, uint64_t *Value, bool_t IsLittleEndianMachine)
 {
     *Value = *(uint64_t *)*Pointer;
 
@@ -741,7 +741,7 @@ void rmqsGetUInt64FromMemory(char_t **Pointer, uint64_t *Value, bool_t IsLittleE
     *Pointer += sizeof(uint64_t);
 }
 //---------------------------------------------------------------------------
-void rmqsGetStringFromMemory(char_t **Pointer, char_t *Value, size_t MaxValueLength, bool_t IsLittleEndianMachine)
+rmqsProtoFunc void rmqsGetStringFromMemory(char_t **Pointer, char_t *Value, size_t MaxValueLength, bool_t IsLittleEndianMachine)
 {
     uint16_t StringLength = *(uint16_t *)*Pointer;
 

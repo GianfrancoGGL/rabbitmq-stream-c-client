@@ -8,6 +8,7 @@
 extern "C"
 {
 #endif
+#include "rawClient/rmqsProtocol.h"
 #include "rawClient/rmqsClientConfiguration.h"
 #include "rawClient/rmqsBroker.h"
 #include "rawClient/rmqsPublisher.h"
@@ -49,7 +50,7 @@ uint32_t TimerResult;
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@127.0.0.1:5552";
+    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@192.168.56.1:5552";
     char_t Error[RMQS_ERR_MAX_STRING_LENGTH] = {0};
     rmqsResponseCode_t ResponseCode = rmqsrOK;
     rmqsClientConfiguration_t *ClientConfiguration = 0;
@@ -67,8 +68,8 @@ int main(int argc, char * argv[])
     bool_t ConnectionError = false;
     rmqsProperty_t Properties[6];
     rmqsMessage_t *MessageBatch = 0;
-    uint32_t PublishWaitingTime = 5 * 1000; // seconds
-    uint32_t ConsumeWaitingTime = 5 * 1000; // seconds
+    uint32_t PublishWaitingTime = 30 * 1000; // seconds
+    uint32_t ConsumeWaitingTime = 30 * 1000; // seconds
     uint64_t PublishingId = 0;
     bool_t ValidOffset;
     uint64_t Offset;
@@ -118,10 +119,10 @@ int main(int argc, char * argv[])
     strncpy(Properties[1].Value, "RabbitMQ Stream", RMQS_MAX_VALUE_SIZE);
 
     strncpy(Properties[2].Key, "copyright", RMQS_MAX_KEY_SIZE);
-    strncpy(Properties[2].Value, "Copyright (c) Undefined", RMQS_MAX_VALUE_SIZE);
+    strncpy(Properties[2].Value, "Copyright (c) Gianfranco Giugliano", RMQS_MAX_VALUE_SIZE);
 
     strncpy(Properties[3].Key, "information", RMQS_MAX_KEY_SIZE);
-    strncpy(Properties[3].Value, "Licensed under the MPL 2.0. See https://www.rabbitmq.com/", RMQS_MAX_VALUE_SIZE);
+    strncpy(Properties[3].Value, "Licensed under the MIT license", RMQS_MAX_VALUE_SIZE);
 
     strncpy(Properties[4].Key, "version", RMQS_MAX_KEY_SIZE);
     strncpy(Properties[4].Value, "1.0", RMQS_MAX_VALUE_SIZE);
