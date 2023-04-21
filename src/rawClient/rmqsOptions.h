@@ -25,10 +25,10 @@ SOFTWARE.
 #ifndef rmqsOptionsH
 #define rmqsOptionsH
 //---------------------------------------------------------------------------
-#define RMQS_PROTOCOL_FUNCTIONS_INLINE    1
-#define RMQS_CLIENT_FUNCTIONS_INLINE      1
-#define RMQS_BUFFERING_FUNCTIONS_INLINE   1
-#define RMQS_MEMORY_FUNCTIONS_INLINE      1
+#define RMQS_PROTOCOL_FUNCTIONS_INLINE    0
+#define RMQS_CLIENT_FUNCTIONS_INLINE      0
+#define RMQS_BUFFERING_FUNCTIONS_INLINE   0
+#define RMQS_MEMORY_FUNCTIONS_INLINE      0
 //---------------------------------------------------------------------------
 #define rmqsInLine extern inline
 //---------------------------------------------------------------------------

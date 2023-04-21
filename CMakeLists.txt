@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.17)
-project(rabbitmq_stream_c_client_main C)
+project(rabbitmq_stream_c_client C)
 
 set(CMAKE_C_STANDARD 11)
 
 include_directories(src/rawClient)
 
-add_executable(rabbitmq_stream_c_client_main
+add_executable(rabbitmq_stream_c_client
         src/rawClient/rmqsBroker.c
         src/rawClient/rmqsBroker.h
         src/rawClient/rmqsBuffer.c
@@ -42,3 +42,8 @@ add_executable(rabbitmq_stream_c_client_main
         src/rawClient/rmqsTimer.c
         src/rawClient/rmqsTimer.h
         src/main.c)
+
+if(WIN32)
+  include_directories(/mingw/x86_64-w64-mingw32/lib)
+  target_link_libraries(rabbitmq_stream_c_client libws2_32.a)
+endif()

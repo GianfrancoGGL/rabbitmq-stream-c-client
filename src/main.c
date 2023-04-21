@@ -32,7 +32,7 @@ void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultLi
 void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset);
 void MetadataUpdateCallback(uint16_t Code, char_t *Stream);
 //---------------------------------------------------------------------------
-size_t NoOfIteration = 10;
+size_t NoOfIteration = 100;
 size_t MessageCount = 1000;
 size_t ConsumerCreditSize = 1000;
 //---------------------------------------------------------------------------
@@ -50,7 +50,7 @@ uint32_t TimerResult;
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
-    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@192.168.56.1:5552";
+    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@127.0.0.1:5552";
     char_t Error[RMQS_ERR_MAX_STRING_LENGTH] = {0};
     rmqsResponseCode_t ResponseCode = rmqsrOK;
     rmqsClientConfiguration_t *ClientConfiguration = 0;
@@ -68,8 +68,8 @@ int main(int argc, char * argv[])
     bool_t ConnectionError = false;
     rmqsProperty_t Properties[6];
     rmqsMessage_t *MessageBatch = 0;
-    uint32_t PublishWaitingTime = 30 * 1000; // seconds
-    uint32_t ConsumeWaitingTime = 30 * 1000; // seconds
+    uint32_t PublishWaitingTime = 5 * 1000; // seconds
+    uint32_t ConsumeWaitingTime = 5 * 1000; // seconds
     uint64_t PublishingId = 0;
     bool_t ValidOffset;
     uint64_t Offset;
