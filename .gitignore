@@ -17,3 +17,4 @@ compile.bat
 Testing/
 rabbitmq_stream_c_client
 rabbitmq_stream_c_client.cbp
+test
