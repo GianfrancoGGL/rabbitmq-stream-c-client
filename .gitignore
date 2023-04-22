@@ -5,6 +5,7 @@ x64/
 Release/
 Debug/
 CMakeFiles/
+Testing/
 *.exe
 *.o
 cmake-build-*
@@ -14,7 +15,8 @@ cmake_install.cmake
 CMakeCache.txt
 Makefile
 compile.bat
-Testing/
 rabbitmq_stream_c_client
 rabbitmq_stream_c_client.cbp
 test
+rabbitmq-stream-c-client.sln
+rabbitmq-stream-c-client.vcxproj.*
