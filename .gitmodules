@@ -1,3 +1,6 @@
-[submodule "external/amqp1_0"]
-	path = external/amqp1_0
-	url = https://github.com/Gsantomaggio/amqp1_0.git
+[submodule "amqp1_0"]
+	path = amqp1_0
+	url = https://github.com/Gsantomaggio/amqp1_0
+[submodule "uthash"]
+	path = uthash
+	url = https://github.com/troydhanson/uthash
