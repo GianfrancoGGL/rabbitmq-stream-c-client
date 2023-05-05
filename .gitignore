@@ -5,6 +5,7 @@ x64/
 Release/
 Debug/
 CMakeFiles/
+Testing/
 *.exe
 *.o
 cmake-build-*
