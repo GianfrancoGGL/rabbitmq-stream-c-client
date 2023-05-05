@@ -33,7 +33,7 @@ void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize
 void MetadataUpdateCallback(uint16_t Code, char_t *Stream);
 //---------------------------------------------------------------------------
 size_t NoOfIteration = 100;
-size_t MessageCount = 2000;
+size_t MessageCount = 1000;
 size_t ConsumerCreditSize = 1000;
 //---------------------------------------------------------------------------
 rmqsTimer_t *PerformanceTimer = 0;
