@@ -183,7 +183,6 @@ bool_t rmqsSocketConnect(char_t *Host, uint16_t Port, rmqsSocket_t Socket, uint3
 
     rmqsSetSocketBlocking(Socket);
     #else
-    setsockopt(Socket, IPPROTO_TCP , TCP_USER_TIMEOUT, &TimeoutMs, sizeof(TimeoutMs));
 
     #ifdef __APPLE__
     setsockopt(Socket, IPPROTO_TCP , TCP_CONNECTIONTIMEOUT, &TimeoutMs, sizeof(TimeoutMs));
