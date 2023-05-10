@@ -8,6 +8,7 @@
 extern "C"
 {
 #endif
+
 #include "rawClient/rmqsProtocol.h"
 #include "rawClient/rmqsClientConfiguration.h"
 #include "rawClient/rmqsBroker.h"
@@ -17,6 +18,8 @@ extern "C"
 #include "rawClient/rmqsThread.h"
 #include "rawClient/rmqsLib.h"
 #include "rawClient/rmqsError.h"
+#include "amqp_lib/message.h"
+
 #ifdef __cplusplus
 }
 #endif
@@ -25,15 +28,21 @@ extern "C"
 #define PUBLISHER_REFERENCE         "Publisher"
 #define CONSUMER_REFERENCE          "Consumer"
 //---------------------------------------------------------------------------
-#if ! (_WIN32 || _WIN64)
+#if !(_WIN32 || _WIN64)
 #define _strcmpi strcasecmp
 #endif
-void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultList, size_t PublishingIdCount, bool_t Confirmed);
-void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset);
+
+void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultList, size_t PublishingIdCount,
+                           bool_t Confirmed);
+
+void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize, rmqsDeliverInfo_t *DeliverInfo,
+                           uint64_t MessageOffset, bool_t *StoreOffset);
+
 void MetadataUpdateCallback(uint16_t Code, char_t *Stream);
+
 //---------------------------------------------------------------------------
-size_t NoOfIteration = 100;
-size_t MessageCount = 1000;
+size_t NoOfIteration = 200;
+size_t MessageCount = 100;
 size_t ConsumerCreditSize = 1000;
 //---------------------------------------------------------------------------
 rmqsTimer_t *PerformanceTimer = 0;
@@ -47,10 +56,10 @@ bool_t EnableLogging = true;
 bool_t TestPublishError = false;
 //---------------------------------------------------------------------------
 uint32_t TimerResult;
+
 //---------------------------------------------------------------------------
-int main(int argc, char * argv[])
-{
-    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@127.0.0.1:5552";
+int main(int argc, char *argv[]) {
+    char_t *BrokerList = "rabbitmq-stream://guest:guest@127.0.0.1:5552";
     char_t Error[RMQS_ERR_MAX_STRING_LENGTH] = {0};
     rmqsResponseCode_t ResponseCode = rmqsrOK;
     rmqsClientConfiguration_t *ClientConfiguration = 0;
@@ -79,21 +88,15 @@ int main(int argc, char * argv[])
     //
     // First argument is the application path, skipped
     //
-    for (i = 1; i < (size_t)argc; i++)
-    {
-        if (! _strcmpi(argv[i], "--brokers") && i < (size_t)(argc - 1))
-        {
+    for (i = 1; i < (size_t) argc; i++) {
+        if (!_strcmpi(argv[i], "--brokers") && i < (size_t) (argc - 1)) {
             BrokerList = argv[i + 1];
             i++;
-        }
-        else if (! _strcmpi(argv[i], "--iterations") && (size_t)(argc - 1))
-        {
-            NoOfIteration = (size_t)atoi(argv[i + 1]);
+        } else if (!_strcmpi(argv[i], "--iterations") && (size_t) (argc - 1)) {
+            NoOfIteration = (size_t) atoi(argv[i + 1]);
             i++;
-        }
-        else if (! _strcmpi(argv[i], "--messagecount") && (size_t)(argc - 1))
-        {
-            MessageCount = (size_t)atoi(argv[i + 1]);
+        } else if (!_strcmpi(argv[i], "--messagecount") && (size_t) (argc - 1)) {
+            MessageCount = (size_t) atoi(argv[i + 1]);
             i++;
         }
     }
@@ -101,9 +104,9 @@ int main(int argc, char * argv[])
     PerformanceTimer = rmqsTimerCreate();
     ElapseTimer = rmqsTimerCreate();
 
-    #if _WIN32 || _WIN64
+#if _WIN32 || _WIN64
     rmqsInitWinsock();
-    #endif
+#endif
 
     //---------------------------------------------------------------------------
     //
@@ -130,29 +133,29 @@ int main(int argc, char * argv[])
     strncpy(Properties[5].Key, "platform", RMQS_MAX_KEY_SIZE);
     strncpy(Properties[5].Value, "C", RMQS_MAX_VALUE_SIZE);
 
-    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, EnableLogging, "/tmp/rmqs-log.txt", Error, sizeof(Error));
+    ClientConfiguration = rmqsClientConfigurationCreate(BrokerList, EnableLogging, "/tmp/rmqs-log.txt", Error,
+                                                        sizeof(Error));
 
-    if (! ClientConfiguration)
-    {
+    if (!ClientConfiguration) {
         printf("rmqsClientConfigurationCreate - Error: %s\r\n\r\n", Error);
         goto CLEAN_UP;
     }
 
-    printf("%s\r\nNo of brokers defined: %d\r\n%s\r\n", ROW_SEPARATOR, (int32_t)ClientConfiguration->BrokerList->Count, ROW_SEPARATOR);
+    printf("%s\r\nNo of brokers defined: %d\r\n%s\r\n", ROW_SEPARATOR, (int32_t) ClientConfiguration->BrokerList->Count,
+           ROW_SEPARATOR);
 
-    for (i = 0; i < ClientConfiguration->BrokerList->Count; i++)
-    {
-        Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(ClientConfiguration->BrokerList, i);
+    for (i = 0; i < ClientConfiguration->BrokerList->Count; i++) {
+        Broker = (rmqsBroker_t *) rmqsListGetDataByPosition(ClientConfiguration->BrokerList, i);
 
-        printf("%d - Host: %s - Port: %d - User: %s - Pass: %s\r\nSchema: %s - VHost: %s - TLS: %d\r\n%s\r\n", (int)(i + 1),
-               Broker->Hostname, (int)Broker->Port, Broker->Username, Broker->Password,
+        printf("%d - Host: %s - Port: %d - User: %s - Pass: %s\r\nSchema: %s - VHost: %s - TLS: %d\r\n%s\r\n",
+               (int) (i + 1),
+               Broker->Hostname, (int) Broker->Port, Broker->Username, Broker->Password,
                Broker->DBSchema, Broker->VirtualHost, Broker->UseTLS ? 1 : 0, ROW_SEPARATOR);
     }
 
-    Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(ClientConfiguration->BrokerList, 0);
+    Broker = (rmqsBroker_t *) rmqsListGetDataByPosition(ClientConfiguration->BrokerList, 0);
 
-    if (! Broker)
-    {
+    if (!Broker) {
         printf("No valid brokers: %s\r\n\r\n", Error);
         goto CLEAN_UP;
     }
@@ -165,37 +168,32 @@ int main(int argc, char * argv[])
     //
     //---------------------------------------------------------------------------
     printf("Creating publisher...\r\n");
-    Publisher = rmqsPublisherCreate(ClientConfiguration, PUBLISHER_REFERENCE, 0, PublishResultCallback, MetadataUpdateCallback);
+    Publisher = rmqsPublisherCreate(ClientConfiguration, PUBLISHER_REFERENCE, 0, PublishResultCallback,
+                                    MetadataUpdateCallback);
     printf("Publisher created\r\n");
 
     Socket = rmqsSocketCreate();
 
-    if (! rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
-    {
+    if (!rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500)) {
         printf("Cannot connect to %s\r\n", Broker->Hostname);
         goto CLEAN_UP;
     }
 
     printf("Connected to %s\r\n", Broker->Hostname);
 
-    if (! rmqsClientLogin(Publisher->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode))
-    {
+    if (!rmqsClientLogin(Publisher->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode)) {
         printf("Cannot login to %s\r\n", Broker->Hostname);
         goto CLEAN_UP;
     }
 
     printf("Logged in to %s\r\n", Broker->Hostname);
 
-    if (rmqsDelete(Publisher->Client, Socket, Stream, &ResponseCode))
-    {
+    if (rmqsDelete(Publisher->Client, Socket, Stream, &ResponseCode)) {
         printf("Deleted stream %s\r\n", Stream);
-    }
-    else
-    {
+    } else {
         printf("Cannot delete stream %s\r\n", Stream);
 
-        if (ResponseCode == rmqsrConnectionError)
-        {
+        if (ResponseCode == rmqsrConnectionError) {
             goto CLEAN_UP;
         }
     }
@@ -215,52 +213,44 @@ int main(int argc, char * argv[])
     CreateStreamArgs.SetQueueLeaderLocator = true;
     CreateStreamArgs.LeaderLocator = rmqssllClientLocal;
 
-    if (! rmqsCreate(Publisher->Client, Socket, Stream, &CreateStreamArgs, &StreamAlredyExists, &ResponseCode) && ! StreamAlredyExists)
-    {
+    if (!rmqsCreate(Publisher->Client, Socket, Stream, &CreateStreamArgs, &StreamAlredyExists, &ResponseCode) &&
+        !StreamAlredyExists) {
         printf("Cannot create stream %s\r\n", Stream);
         goto CLEAN_UP;
     }
 
-    if (! StreamAlredyExists)
-    {
+    if (!StreamAlredyExists) {
         printf("Created stream %s\r\n", Stream);
-    }
-    else
-    {
+    } else {
         printf("Stream opened %s\r\n", Stream);
     }
 
-    if (! TestPublishError)
-    {
-        if (! rmqsDeclarePublisher(Publisher, Socket, PublisherId, Stream, &ResponseCode))
-        {
+    if (!TestPublishError) {
+        if (!rmqsDeclarePublisher(Publisher, Socket, PublisherId, Stream, &ResponseCode)) {
             printf("Cannot declare the publisher\r\n");
             goto CLEAN_UP;
         }
-    }
-    else
-    {
+    } else {
         //
         // Test publish error declaring a publisher for a non-existing stream
         //
         rmqsDeclarePublisher(Publisher, Socket, PublisherId, "XYZ", &ResponseCode);
     }
 
-    MessageBatch = (rmqsMessage_t *)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MessageCount);
+    MessageBatch = (rmqsMessage_t *) rmqsAllocateMemory(sizeof(rmqsMessage_t) * MessageCount);
 
-    for (i = 0; i < MessageCount; i++)
-    {
-        MessageBatch[i].Data = "Hello world!";
-        MessageBatch[i].Size = 12;
+    for (i = 0; i < MessageCount; i++) {
+        unsigned char body[] = "Hello world!";
+        MESSAGE_DATA data = marshalAMQP(body, 12);
+        MessageBatch[i].Data = data.payload;
+        MessageBatch[i].Size = data.payload_len;
         MessageBatch[i].DeleteData = false;
     }
 
     rmqsTimerStart(PerformanceTimer);
 
-    for (i = 0; i < NoOfIteration; i++)
-    {
-        for (j = 0; j < MessageCount; j++)
-        {
+    for (i = 0; i < NoOfIteration; i++) {
+        for (j = 0; j < MessageCount; j++) {
             MessageBatch[j].PublishingId = ++PublishingId;
         }
 
@@ -268,14 +258,13 @@ int main(int argc, char * argv[])
     }
 
     TimerResult = rmqsTimerGetTime(PerformanceTimer);
-    printf("%d Messages - Elapsed time: %ums\r\n", (int)(MessageCount * NoOfIteration), TimerResult);
+    printf("%d Messages - Elapsed time: %ums\r\n", (int) (MessageCount * NoOfIteration), TimerResult);
 
     rmqsBatchDestroy(MessageBatch, MessageCount);
 
     rmqsQueryPublisherSequence(Publisher, Socket, Stream, &Sequence, &ResponseCode);
 
-    if (ResponseCode == rmqsrConnectionError)
-    {
+    if (ResponseCode == rmqsrConnectionError) {
         goto CLEAN_UP;
     }
 
@@ -290,46 +279,38 @@ int main(int argc, char * argv[])
 
     rmqsPublisherPoll(Publisher, Socket, PublishWaitingTime, &ConnectionError);
 
-    if (ConnectionError)
-    {
+    if (ConnectionError) {
         goto CLEAN_UP;
     }
 
     TimerResult = rmqsTimerGetTime(ElapseTimer);
     printf("Publisher - Timer end: %u\r\n", TimerResult);
 
-    if (rmqsDeletePublisher(Publisher, Socket, PublisherId, &ResponseCode))
-    {
+    if (rmqsDeletePublisher(Publisher, Socket, PublisherId, &ResponseCode)) {
         printf("Publisher deleted\r\n");
-    }
-    else
-    {
+    } else {
         printf("Cannot delete the publisher\r\n");
 
-        if (ResponseCode == rmqsrConnectionError)
-        {
+        if (ResponseCode == rmqsrConnectionError) {
             goto CLEAN_UP;
         }
     }
 
     rmqsHeartbeat(Publisher->Client, Socket);
 
-    if (rmqsClientLogout(Publisher->Client, Socket, 0, "Regular shutdown", &ResponseCode))
-    {
+    if (rmqsClientLogout(Publisher->Client, Socket, 0, "Regular shutdown", &ResponseCode)) {
         printf("Logged out\r\n");
-    }
-    else
-    {
+    } else {
         printf("Cannot logout\r\n");
 
-        if (ResponseCode == rmqsrConnectionError)
-        {
+        if (ResponseCode == rmqsrConnectionError) {
             goto CLEAN_UP;
         }
     }
 
-    printf("Messages confirmed: %u/%u\r\n", (uint32_t)MessagesConfirmed, (uint32_t)(MessageCount * NoOfIteration));
-    printf("Messages not confirmed: %u/%u\r\n", (uint32_t)MessagesNotConfirmed, (uint32_t)(MessageCount * NoOfIteration));
+    printf("Messages confirmed: %u/%u\r\n", (uint32_t) MessagesConfirmed, (uint32_t) (MessageCount * NoOfIteration));
+    printf("Messages not confirmed: %u/%u\r\n", (uint32_t) MessagesNotConfirmed,
+           (uint32_t) (MessageCount * NoOfIteration));
 
     rmqsSocketDestroy(&Socket);
 
@@ -347,21 +328,20 @@ int main(int argc, char * argv[])
     //
     //---------------------------------------------------------------------------
     printf("Creating consumer...\r\n");
-    Consumer = rmqsConsumerCreate(ClientConfiguration, CONSUMER_REFERENCE, 0, 0, (uint16_t)ConsumerCreditSize, DeliverResultCallback, MetadataUpdateCallback);
-    printf("Consumer created - credit size: %u\r\n", (uint32_t)ConsumerCreditSize);
+    Consumer = rmqsConsumerCreate(ClientConfiguration, CONSUMER_REFERENCE, 0, 0, (uint16_t) ConsumerCreditSize,
+                                  DeliverResultCallback, MetadataUpdateCallback);
+    printf("Consumer created - credit size: %u\r\n", (uint32_t) ConsumerCreditSize);
 
     Socket = rmqsSocketCreate();
 
-    if (! rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
-    {
+    if (!rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500)) {
         printf("Cannot connect to %s\r\n", Broker->Hostname);
         goto CLEAN_UP;
     }
 
     printf("Connected to %s\r\n", Broker->Hostname);
 
-    if (! rmqsClientLogin(Consumer->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode))
-    {
+    if (!rmqsClientLogin(Consumer->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode)) {
         printf("Cannot login to %s\r\n", Broker->Hostname);
         goto CLEAN_UP;
     }
@@ -370,24 +350,19 @@ int main(int argc, char * argv[])
 
     Metadata = rmqsMetadataCreate();
 
-    if (rmqsMetadata(Publisher->Client, Socket, &Stream, 1, Metadata, &ResponseCode))
-    {
+    if (rmqsMetadata(Publisher->Client, Socket, &Stream, 1, Metadata, &ResponseCode)) {
         printf("Metadata retrieved for stream %s\r\n", Stream);
         rmqsMetadataDestroy(Metadata);
-    }
-    else
-    {
+    } else {
         printf("Cannot retrieve the metadata for stream %s\r\n", Stream);
         rmqsMetadataDestroy(Metadata);
         goto CLEAN_UP;
     }
 
-    if (rmqsSubscribe(Consumer, Socket, SubscriptionId, Stream, rmqsotOffset, 0, Consumer->DefaultCredit, 0, 0, &ResponseCode))
-    {
+    if (rmqsSubscribe(Consumer, Socket, SubscriptionId, Stream, rmqsotOffset, 0, Consumer->DefaultCredit, 0, 0,
+                      &ResponseCode)) {
         printf("Subscribed to stream %s\r\n", Stream);
-    }
-    else
-    {
+    } else {
         printf("Cannot subscribe to stream %s\r\n", Stream);
         goto CLEAN_UP;
     }
@@ -399,54 +374,41 @@ int main(int argc, char * argv[])
 
     rmqsConsumerPoll(Consumer, Socket, ConsumeWaitingTime, &ConnectionError);
 
-    if (ConnectionError)
-    {
+    if (ConnectionError) {
         goto CLEAN_UP;
     }
 
     TimerResult = rmqsTimerGetTime(ElapseTimer);
     printf("Consumer - Timer end: %u\r\n", TimerResult);
 
-    if (rmqsQueryOffset(Consumer, Socket, CONSUMER_REFERENCE, Stream, &ValidOffset, &Offset, &ResponseCode))
-    {
-        printf("QueryOffset - Offset: %" PRIu64 " - Is valid: %d\r\n", Offset, (int)ValidOffset);
-    }
-    else
-    {
+    if (rmqsQueryOffset(Consumer, Socket, CONSUMER_REFERENCE, Stream, &ValidOffset, &Offset, &ResponseCode)) {
+        printf("QueryOffset - Offset: %" PRIu64 " - Is valid: %d\r\n", Offset, (int) ValidOffset);
+    } else {
         printf("QueryOffset error\r\n");
 
-        if (ResponseCode == rmqsrConnectionError)
-        {
+        if (ResponseCode == rmqsrConnectionError) {
             goto CLEAN_UP;
         }
     }
 
-    if (rmqsUnsubscribe(Consumer, Socket, SubscriptionId, &ResponseCode))
-    {
+    if (rmqsUnsubscribe(Consumer, Socket, SubscriptionId, &ResponseCode)) {
         printf("Unsubscribed from stream %s\r\n", Stream);
-    }
-    else
-    {
+    } else {
         printf("Cannot unsubcribe from stream %s\r\n", Stream);
 
-        if (ResponseCode == rmqsrConnectionError)
-        {
+        if (ResponseCode == rmqsrConnectionError) {
             goto CLEAN_UP;
         }
     }
 
     rmqsHeartbeat(Publisher->Client, Socket);
 
-    if (rmqsClientLogout(Consumer->Client, Socket, 0, "Regular shutdown", &ResponseCode))
-    {
+    if (rmqsClientLogout(Consumer->Client, Socket, 0, "Regular shutdown", &ResponseCode)) {
         printf("Logged out\r\n");
-    }
-    else
-    {
+    } else {
         printf("Cannot logout\r\n");
 
-        if (ResponseCode == rmqsrConnectionError)
-        {
+        if (ResponseCode == rmqsrConnectionError) {
             goto CLEAN_UP;
         }
     }
@@ -456,104 +418,94 @@ int main(int argc, char * argv[])
     //---------------------------------------------------------------------------
     //---------------------------------------------------------------------------
 
-CLEAN_UP:
-    if (ConnectionError)
-    {
+    CLEAN_UP:
+    if (ConnectionError) {
         printf("Connection lost\r\n");
     }
 
-    if (ResponseCode != rmqsrOK)
-    {
+    if (ResponseCode != rmqsrOK) {
         printf("Response code: %s\r\n", rmqsGetResponseCodeDescription(ResponseCode));
     }
 
-    if (Publisher)
-    {
+    if (Publisher) {
         rmqsPublisherDestroy(Publisher);
     }
 
-    if (Consumer)
-    {
+    if (Consumer) {
         rmqsConsumerDestroy(Consumer);
     }
 
-    if (ClientConfiguration)
-    {
+    if (ClientConfiguration) {
         rmqsClientConfigurationDestroy(ClientConfiguration);
     }
 
-    if (PerformanceTimer)
-    {
+    if (PerformanceTimer) {
         rmqsTimerDestroy(PerformanceTimer);
     }
 
-    if (ElapseTimer)
-    {
+    if (ElapseTimer) {
         rmqsTimerDestroy(ElapseTimer);
     }
 
     UsedMemory = rmqsGetUsedMemory();
 
-    printf("Unfreed memory: %u bytes\r\n", (uint32_t)UsedMemory);
+    printf("Unfreed memory: %u bytes\r\n", (uint32_t) UsedMemory);
 
     rmqsThreadSleep(5000);
 
-    #if _WIN32 || _WIN64
+#if _WIN32 || _WIN64
     rmqsShutdownWinsock();
-    #endif
+#endif
 
     return 0;
 }
+
 //---------------------------------------------------------------------------
-void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultList, size_t PublishingIdCount, bool_t Confirmed)
-{
+void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultList, size_t PublishingIdCount,
+                           bool_t Confirmed) {
     size_t i;
 
-    (void)PublisherId;
-    (void)PublishResultList;
+    (void) PublisherId;
+    (void) PublishResultList;
 
-    for (i = 0; i < PublishingIdCount; i++)
-    {
-        if (Confirmed)
-        {
+    for (i = 0; i < PublishingIdCount; i++) {
+        if (Confirmed) {
             MessagesConfirmed++;
-        }
-        else
-        {
+        } else {
             MessagesNotConfirmed++;
         }
 
-        if (MessagesConfirmed == MessageCount * NoOfIteration)
-        {
+        if (MessagesConfirmed == MessageCount * NoOfIteration) {
             TimerResult = rmqsTimerGetTime(PerformanceTimer);
-            printf("%u Messages - Confirm time: %ums\r\n", (uint32_t)(MessageCount * NoOfIteration), TimerResult);
+            printf("%u Messages - Confirm time: %ums\r\n", (uint32_t) (MessageCount * NoOfIteration), TimerResult);
         }
     }
 }
+
 //---------------------------------------------------------------------------
-void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize, rmqsDeliverInfo_t *DeliverInfo, uint64_t MessageOffset, bool_t *StoreOffset)
-{
-    (void)SubscriptionId;
-    (void)DataSize;
-    (void)Data;
-    (void)DeliverInfo;
-    (void)MessageOffset;
+void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize, rmqsDeliverInfo_t *DeliverInfo,
+                           uint64_t MessageOffset, bool_t *StoreOffset) {
+    (void) SubscriptionId;
+    (void) DataSize;
+    (void) Data;
+    (void) DeliverInfo;
+    (void) MessageOffset;
 
     MessagesReceived++;
 
-    *StoreOffset = MessagesReceived == 1 || MessagesReceived == MessageCount * NoOfIteration || MessagesReceived % 100 == 0;
+    *StoreOffset =
+            MessagesReceived == 1 || MessagesReceived == MessageCount * NoOfIteration || MessagesReceived % 100 == 0;
 
-    if (MessagesReceived == MessageCount * NoOfIteration)
-    {
+    if (MessagesReceived == MessageCount * NoOfIteration) {
         TimerResult = rmqsTimerGetTime(PerformanceTimer);
-        printf("%u Messages - Receive time: %ums\r\n", (uint32_t)(MessageCount * NoOfIteration), TimerResult);
-        printf("Last message: %.*s\r\n", (int)DataSize, (char *)Data);
+        printf("%u Messages - Receive time: %ums\r\n", (uint32_t) (MessageCount * NoOfIteration), TimerResult);
+        printf("Last message: %.*s\r\n", (int) DataSize, (char *) Data);
     }
 }
+
 //---------------------------------------------------------------------------
-void MetadataUpdateCallback(uint16_t Code, char_t *Stream)
-{
-    (void)Code;
-    (void)Stream;
+void MetadataUpdateCallback(uint16_t Code, char_t *Stream) {
+    (void) Code;
+    (void) Stream;
 }
 //---------------------------------------------------------------------------

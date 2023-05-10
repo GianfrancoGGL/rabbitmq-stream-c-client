@@ -43,7 +43,10 @@ add_executable(rabbitmq_stream_c_client
         src/rawClient/rmqsTimer.h
         src/main.c)
 
+include_directories(external/amqp1_0)
 add_subdirectory(external/amqp1_0)
+target_link_libraries(rabbitmq_stream_c_client amqp_lib)
+
 
 if(WIN32)
   include_directories(/mingw/x86_64-w64-mingw32/lib)

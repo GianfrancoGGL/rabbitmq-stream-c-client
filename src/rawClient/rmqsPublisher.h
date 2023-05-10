@@ -26,6 +26,7 @@ SOFTWARE.
 #define rmqsPublisherH
 //---------------------------------------------------------------------------
 #include <stdint.h>
+#include <amqp_lib/message.h>
 //---------------------------------------------------------------------------
 #include "rmqsClient.h"
 #include "rmqsClientConfiguration.h"
@@ -64,5 +65,10 @@ rmqsClientFunc bool_t rmqsDeletePublisher(rmqsPublisher_t *Publisher, rmqsSocket
 rmqsClientFunc bool_t rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket_t Socket, uint8_t PublisherId, rmqsMessage_t *Messages, size_t MessageCount);
 //---------------------------------------------------------------------------
 rmqsClientFunc void rmqsHandlePublishResult(uint16_t Key, rmqsPublisher_t *Publisher, rmqsBuffer_t *Buffer);
+
+
+rmqsClientFunc MESSAGE_DATA marshalAMQP(unsigned char* data, size_t size);
+
+//
 #endif
 //---------------------------------------------------------------------------
