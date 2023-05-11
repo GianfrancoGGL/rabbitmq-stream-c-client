@@ -67,7 +67,7 @@ rmqsClientFunc bool_t rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket_t Socke
 rmqsClientFunc void rmqsHandlePublishResult(uint16_t Key, rmqsPublisher_t *Publisher, rmqsBuffer_t *Buffer);
 
 
-rmqsClientFunc MESSAGE_DATA marshalAMQP(unsigned char* data, size_t size);
+rmqsClientFunc MESSAGE_DATA marshalAMQP(unsigned char* data, uint32_t size);
 
 //
 #endif

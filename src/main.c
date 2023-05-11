@@ -41,7 +41,7 @@ void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize
 void MetadataUpdateCallback(uint16_t Code, char_t *Stream);
 
 //---------------------------------------------------------------------------
-size_t NoOfIteration = 200;
+size_t NoOfIteration = 3000;
 size_t MessageCount = 100;
 size_t ConsumerCreditSize = 1000;
 //---------------------------------------------------------------------------
@@ -59,7 +59,7 @@ uint32_t TimerResult;
 
 //---------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
-    char_t *BrokerList = "rabbitmq-stream://guest:guest@127.0.0.1:5552";
+    char_t *BrokerList = "rabbitmq-stream://test:test@192.168.1.141:5552";
     char_t Error[RMQS_ERR_MAX_STRING_LENGTH] = {0};
     rmqsResponseCode_t ResponseCode = rmqsrOK;
     rmqsClientConfiguration_t *ClientConfiguration = 0;
@@ -197,21 +197,20 @@ int main(int argc, char *argv[]) {
             goto CLEAN_UP;
         }
     }
+//    CreateStreamArgs.SetMaxLengthBytes = true;
+//    CreateStreamArgs.MaxLengthBytes = 10000000000;
 
-    CreateStreamArgs.SetMaxLengthBytes = true;
-    CreateStreamArgs.MaxLengthBytes = 1000000000;
-
-    CreateStreamArgs.SetMaxAge = true;
-    strcpy(CreateStreamArgs.MaxAge, "12h");
-
-    CreateStreamArgs.SetStreamMaxSegmentSizeBytes = true;
-    CreateStreamArgs.StreamMaxSegmentSizeBytes = 100000000;
-
-    CreateStreamArgs.SetInitialClusterSize = true;
-    CreateStreamArgs.InitialClusterSize = 1;
-
-    CreateStreamArgs.SetQueueLeaderLocator = true;
-    CreateStreamArgs.LeaderLocator = rmqssllClientLocal;
+//    CreateStreamArgs.SetMaxAge = true;
+//    strcpy(CreateStreamArgs.MaxAge, "12h");
+//
+//    CreateStreamArgs.SetStreamMaxSegmentSizeBytes = true;
+//    CreateStreamArgs.StreamMaxSegmentSizeBytes = 100000000;
+//
+//    CreateStreamArgs.SetInitialClusterSize = true;
+//    CreateStreamArgs.InitialClusterSize = 1;
+//
+//    CreateStreamArgs.SetQueueLeaderLocator = true;
+//    CreateStreamArgs.LeaderLocator = rmqssllClientLocal;
 
     if (!rmqsCreate(Publisher->Client, Socket, Stream, &CreateStreamArgs, &StreamAlredyExists, &ResponseCode) &&
         !StreamAlredyExists) {
@@ -237,12 +236,14 @@ int main(int argc, char *argv[]) {
         rmqsDeclarePublisher(Publisher, Socket, PublisherId, "XYZ", &ResponseCode);
     }
 
+
     MessageBatch = (rmqsMessage_t *) rmqsAllocateMemory(sizeof(rmqsMessage_t) * MessageCount);
 
     for (i = 0; i < MessageCount; i++) {
         unsigned char body[] = "Hello world!";
         MESSAGE_DATA data = marshalAMQP(body, 12);
-        MessageBatch[i].Data = data.payload;
+        MessageBatch[i].Data = malloc(12);
+        memcpy(MessageBatch[i].Data, data.payload, data.payload_len);
         MessageBatch[i].Size = data.payload_len;
         MessageBatch[i].DeleteData = false;
     }
@@ -255,6 +256,7 @@ int main(int argc, char *argv[]) {
         }
 
         rmqsPublish(Publisher, Socket, PublisherId, MessageBatch, MessageCount);
+
     }
 
     TimerResult = rmqsTimerGetTime(PerformanceTimer);

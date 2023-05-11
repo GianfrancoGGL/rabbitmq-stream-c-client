@@ -190,11 +190,17 @@ bool_t rmqsSocketConnect(char_t *Host, uint16_t Port, rmqsSocket_t Socket, uint3
     setsockopt(Socket, IPPROTO_TCP , TCP_USER_TIMEOUT, &TimeoutMs, sizeof(TimeoutMs));
     #endif
 
+
+
     if (connect(Socket, (struct sockaddr *)&ServerAddress, sizeof(struct sockaddr)) == 0)
     {
         Connected = true;
     }
     #endif
+
+    int val = 1;
+    if (setsockopt(Socket, IPPROTO_TCP, TCP_NODELAY, &val, sizeof(val)) < 0)
+        perror("setsockopt(2) error");
 
     return Connected;
 }

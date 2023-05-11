@@ -289,10 +289,8 @@ rmqsClientFunc void rmqsHandlePublishResult(uint16_t Key, rmqsPublisher_t *Publi
     }
 }
 
-rmqsClientFunc MESSAGE_DATA marshalAMQP(unsigned char *data, size_t size) {
-    Message_t amqpMessage;
-    amqpMessage.bodyAmqpData->body_len = size;
-    amqpMessage.bodyAmqpData->body = data;
+rmqsClientFunc MESSAGE_DATA marshalAMQP(unsigned char *data, uint32_t size) {
+    Message_t amqpMessage = CreateMessage_t(data, size);
     MESSAGE_DATA result = Marshal(&amqpMessage);
     return result;
 
