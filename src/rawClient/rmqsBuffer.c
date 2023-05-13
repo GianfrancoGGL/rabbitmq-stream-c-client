@@ -30,19 +30,13 @@ SOFTWARE.
 #include "rmqsGlobal.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-/** \brief Creates a new memory stream
- *
- * \param void
- * \return rmqsBuffer_t*
- *
- */
 rmqsBufferingFunc rmqsBuffer_t * rmqsBufferCreate(void)
 {
     rmqsBuffer_t *Buffer = (rmqsBuffer_t *)rmqsAllocateMemory(sizeof(rmqsBuffer_t));
 
     memset(Buffer, 0, sizeof(rmqsBuffer_t));
 
-    Buffer->ChunkSize = 10240000;
+    Buffer->ChunkSize = 1024000;
 
     return Buffer;
 }

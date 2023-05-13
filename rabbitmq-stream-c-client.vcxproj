@@ -19,7 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\amqp_lib\amqp_wire_formatting.c" />
+    <ClCompile Include="src\amqp_lib\message.c" />
     <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\rawClient\rmqsAMQP1_0.c" />
     <ClCompile Include="src\rawClient\rmqsBroker.c" />
     <ClCompile Include="src\rawClient\rmqsBuffer.c" />
     <ClCompile Include="src\rawClient\rmqsClient.c" />
@@ -39,6 +42,10 @@
     <ClCompile Include="src\rawClient\rmqsTimer.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\amqp_lib\amqp_wire_formatting.h" />
+    <ClInclude Include="src\amqp_lib\message.h" />
+    <ClInclude Include="src\amqp_lib\types.h" />
+    <ClInclude Include="src\rawClient\rmqsAMQP1_0.h" />
     <ClInclude Include="src\rawClient\rmqsBroker.h" />
     <ClInclude Include="src\rawClient\rmqsBuffer.h" />
     <ClInclude Include="src\rawClient\rmqsClient.h" />
@@ -118,15 +125,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\rabbitmq-stream-c-client-main\src\amqp_lib;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\rabbitmq-stream-c-client-main\src\amqp_lib;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\rabbitmq-stream-c-client-main\src\amqp_lib;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\rabbitmq-stream-c-client-main\src\amqp_lib;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

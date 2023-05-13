@@ -27,6 +27,7 @@ SOFTWARE.
 #include "rmqsConsumer.h"
 #include "rmqsProtocol.h"
 #include "rmqsMemory.h"
+#include "rmqsThread.h"
 #include "rmqsBuffer.h"
 #include "rmqsLib.h"
 //---------------------------------------------------------------------------
@@ -75,7 +76,7 @@ rmqsProtoFunc bool_t rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *
     #endif
 
     Result = send(Socket, (char_t *)Data, (int32_t)DataSize, Flags) != -1;
-
+	
     return Result;
 }
 //---------------------------------------------------------------------------

@@ -22,26 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************/
 //---------------------------------------------------------------------------
-#ifndef rmqsMessageH
-#define rmqsMessageH
+#include <stdio.h>
 //---------------------------------------------------------------------------
-#include <stdlib.h>
-#include <stdint.h>
+#include "rmqsAMQP1_0.h"
 //---------------------------------------------------------------------------
-#include "rmqsGlobal.h"
-//---------------------------------------------------------------------------
-typedef struct
+rmqsClientFunc MESSAGE_DATA rmqsMarshalAMQP(unsigned char *data, size_t size)
 {
-    uint64_t PublishingId;
-    void *Data;
-    size_t Size;
-    bool_t DeleteData;
+    Message_t amqpMessage = CreateMessage_t(data, size);
+    MESSAGE_DATA result = Marshal(&amqpMessage);
+    return result;
 }
-rmqsMessage_t;
 //---------------------------------------------------------------------------
-rmqsMessage_t * rmqsMessageCreate(uint64_t PublishingId, void *Data, uint32_t Size, bool_t CopyData);
-void rmqsMessageDestroy(rmqsMessage_t *Message);
-void rmqsBatchDestroy(rmqsMessage_t *MessageBatch, size_t Count);
-//---------------------------------------------------------------------------
-#endif
-//--------------------------------------------------------------------------

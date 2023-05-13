@@ -69,6 +69,15 @@
     <ClCompile Include="src\rawClient\rmqsPublisher.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\amqp_lib\amqp_wire_formatting.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\amqp_lib\message.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rawClient\rmqsAMQP1_0.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\rawClient\rmqsBroker.h">
@@ -141,6 +150,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\uthash\utstring.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\amqp_lib\amqp_wire_formatting.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\amqp_lib\message.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\amqp_lib\types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rawClient\rmqsAMQP1_0.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
