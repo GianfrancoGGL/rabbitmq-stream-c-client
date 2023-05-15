@@ -369,7 +369,7 @@ rmqsClientFunc void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket_t Soc
     uint32_t EntryTypeAndSize = 0;
     uint64_t MessageOffset;
     bool_t StoreOffset;
-    size_t i;
+    uint16_t i;
 
     rmqsGetUInt8FromMemory(&MessagePayload, &SubscriptionId);
     rmqsGetInt8FromMemory(&MessagePayload, &Consumer->DeliverInfo.MagicVersion);

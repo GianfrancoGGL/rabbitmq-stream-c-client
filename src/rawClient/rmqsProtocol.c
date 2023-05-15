@@ -29,6 +29,7 @@ SOFTWARE.
 #include "rmqsMemory.h"
 #include "rmqsThread.h"
 #include "rmqsBuffer.h"
+#include "rmqsError.h"
 #include "rmqsLib.h"
 //---------------------------------------------------------------------------
 rmqsProtoFunc bool_t rmqsIsLittleEndianMachine(void)

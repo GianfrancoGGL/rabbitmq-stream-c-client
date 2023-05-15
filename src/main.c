@@ -1,13 +1,22 @@
 //---------------------------------------------------------------------------
+#define ENABLE_CRT_MEM_LEAK_CHECK  0
+#if ENABLE_CRT_MEM_LEAK_CHECK
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#include <windows.h>
+#endif
 #include <stdio.h>
 #include <memory.h>
 #include <string.h>
+#ifndef __BORLANDC__
 #include <inttypes.h>
+#endif
 //---------------------------------------------------------------------------
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
 #include "rawClient/rmqsProtocol.h"
 #include "rawClient/rmqsClientConfiguration.h"
 #include "rawClient/rmqsBroker.h"
@@ -18,22 +27,24 @@ extern "C"
 #include "rawClient/rmqsLib.h"
 #include "rawClient/rmqsError.h"
 #include "rawClient/rmqsAMQP1_0.h"
+
 #ifdef __cplusplus
 }
+#endif
+//---------------------------------------------------------------------------
+#ifdef __BORLANDC__
+#define _strcmpi strcmpi
+#pragma comment(lib, "ws2_32.lib")
 #endif
 //---------------------------------------------------------------------------
 #define ROW_SEPARATOR               "============================================================================"
 #define PUBLISHER_REFERENCE         "Publisher"
 #define CONSUMER_REFERENCE          "Consumer"
 //---------------------------------------------------------------------------
-#if ! (_WIN32 || _WIN64)
-#define _strcmpi strcasecmp
-#endif
-//---------------------------------------------------------------------------
 typedef struct
 {
     rmqsPublisher_t *Publisher;
-    rmqsSocket_t *Socket;
+    rmqsSocket_t Socket;
 }
 PollThreadParameters_t;
 //---------------------------------------------------------------------------
@@ -43,8 +54,9 @@ void MetadataUpdateCallback(uint16_t Code, char_t *Stream);
 //---------------------------------------------------------------------------
 void PollThreadRoutineCallback(void *Parameters, bool_t *Terminate);
 //---------------------------------------------------------------------------
-size_t NoOfIteration = 1;
-size_t MessageCount = 1000000;
+bool_t AMQP1_0_Encoding = false;
+size_t NoOfIterations = 10000;
+size_t MessageCount = 100;
 size_t ConsumerCreditSize = 1000;
 //---------------------------------------------------------------------------
 rmqsTimer_t *EncodingTimer = 0;
@@ -83,7 +95,7 @@ int main(int argc, char * argv[])
     bool_t ConnectionError = false;
     rmqsProperty_t Properties[6];
     rmqsMessage_t *MessageBatch = 0;
-    uint32_t PublishWaitingMaxTime = 5 * 1000; // seconds
+    uint32_t PublishWaitingMaxTime = 10 * 1000; // seconds
     uint32_t ConsumeWaitingTime = 5 * 1000; // seconds
     uint64_t PublishingId = 0;
     bool_t ValidOffset;
@@ -93,7 +105,7 @@ int main(int argc, char * argv[])
     rmqsThread_t *PollThread;
     PollThreadParameters_t PollThreadParameters;
     uchar_t MessageBody[] = "Hello world!";
-	size_t MessageBodySize = 12;
+    size_t MessageBodySize = 12;
 
     //
     // First argument is the application path, skipped
@@ -107,7 +119,7 @@ int main(int argc, char * argv[])
         }
         else if (! _strcmpi(argv[i], "--iterations") && (size_t)(argc - 1))
         {
-            NoOfIteration = (size_t)atoi(argv[i + 1]);
+            NoOfIterations = (size_t)atoi(argv[i + 1]);
             i++;
         }
         else if (! _strcmpi(argv[i], "--messagecount") && (size_t)(argc - 1))
@@ -192,26 +204,24 @@ int main(int argc, char * argv[])
     printf("Publisher created\r\n");
 
     Socket = rmqsSocketCreate();
-	
-	rmqsSetTcpNoDelay(Socket);
-
+    
     if (! rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
     {
         printf("Cannot connect to %s\r\n", Broker->Hostname);
         goto CLEAN_UP;
     }
 
-    rmqsSetTcpNoDelay(Socket);
+    rmqsSetSocketTxRxBufferSize(Socket, 1024 * 10000, 1024 * 10000);
 
-    printf("Connected to %s\r\n", Broker->Hostname);
+    printf("Connected to server %s\r\n", Broker->Hostname);
 
     if (! rmqsClientLogin(Publisher->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode))
     {
-        printf("Cannot login to %s\r\n", Broker->Hostname);
+        printf("Cannot login to server %s\r\n", Broker->Hostname);
         goto CLEAN_UP;
     }
 
-    printf("Logged in to %s\r\n", Broker->Hostname);
+    printf("Logged in to server %s\r\n", Broker->Hostname);
 
     if (rmqsDelete(Publisher->Client, Socket, Stream, &ResponseCode))
     {
@@ -275,45 +285,49 @@ int main(int argc, char * argv[])
 
     MessageBatch = (rmqsMessage_t *)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MessageCount);
 
-    /*
-    for (i = 0; i < MessageCount; i++)
+    if (! AMQP1_0_Encoding)
     {
-        MessageBatch[i].Data = "Hello world!";
-        MessageBatch[i].Size = 12;
-        MessageBatch[i].DeleteData = false;
+        for (i = 0; i < MessageCount; i++)
+        {
+            MessageBatch[i].Data = MessageBody;
+            MessageBatch[i].Size = MessageBodySize;
+            MessageBatch[i].DeleteData = false;
+        }
     }
-    */
-
-    rmqsTimerStart(EncodingTimer);
-
-    for (i = 0; i < MessageCount; i++)
+    else
     {
-        MESSAGE_DATA Data = rmqsMarshalAMQP(MessageBody, MessageBodySize);
-        (void)Data; // Suppress warning unused variable
+        rmqsTimerStart(EncodingTimer);
+
+        for (i = 0; i < MessageCount; i++)
+        {
+            MESSAGE_DATA Data = rmqsMarshalAMQP(MessageBody, MessageBodySize);
+            free_message_data(Data);
+        }
+
+        TimerResult = rmqsTimerGetTime(EncodingTimer);
+        printf("%d Messages - Encoding time: %ums\r\n", (int)MessageCount, TimerResult);
+
+        rmqsTimerStart(EncodingTimer);
+
+        for (i = 0; i < MessageCount; i++)
+        {
+            MESSAGE_DATA Data = rmqsMarshalAMQP(MessageBody, MessageBodySize);
+            MessageBatch[i].Data = rmqsAllocateMemory(Data.payload_len);
+            memcpy(MessageBatch[i].Data, Data.payload, Data.payload_len);
+            MessageBatch[i].Size = Data.payload_len;
+            MessageBatch[i].DeleteData = true;
+            free_message_data(Data);
+        }
+
+        TimerResult = rmqsTimerGetTime(EncodingTimer);
+        printf("%d Messages - Encoding + messages composition time: %ums\r\n", (int)MessageCount, TimerResult);
     }
-
-    TimerResult = rmqsTimerGetTime(EncodingTimer);
-    printf("%d Messages - Encoding time: %ums\r\n", (int)(MessageCount * NoOfIteration), TimerResult);
-
-    rmqsTimerStart(EncodingTimer);
-
-    for (i = 0; i < MessageCount; i++)
-    {
-        MESSAGE_DATA Data = rmqsMarshalAMQP(MessageBody, MessageBodySize);
-        MessageBatch[i].Data = rmqsAllocateMemory(Data.payload_len);
-        memcpy(MessageBatch[i].Data, Data.payload, Data.payload_len);
-        MessageBatch[i].Size = Data.payload_len;
-        MessageBatch[i].DeleteData = true;
-    }
-
-    TimerResult = rmqsTimerGetTime(EncodingTimer);
-    printf("%d Messages - Encoding + messages composition time: %ums\r\n", (int)(MessageCount * NoOfIteration), TimerResult);
-
+    
     //---------------------------------------------------------------------------
     printf("Starting PollThread...\r\n");
 
     PollThreadParameters.Publisher = Publisher;
-    PollThreadParameters.Socket = &Socket;
+    PollThreadParameters.Socket = Socket;
 
     PollThread = rmqsThreadCreate(PollThreadRoutineCallback, 0, &PollThreadParameters);
 
@@ -326,7 +340,7 @@ int main(int argc, char * argv[])
 
     rmqsTimerStart(PublishTimer);
 
-    for (i = 0; i < NoOfIteration; i++)
+    for (i = 0; i < NoOfIterations; i++)
     {
         for (j = 0; j < MessageCount; j++)
         {
@@ -337,17 +351,17 @@ int main(int argc, char * argv[])
     }
 
     TimerResult = rmqsTimerGetTime(PublishTimer);
-    printf("%d Messages - Elapsed time: %ums\r\n", (int)(MessageCount * NoOfIteration), TimerResult);
+    printf("%d Messages - (CNT: %u - IT: %u) - Elapsed time: %ums\r\n", (int)(MessageCount * NoOfIterations), (uint32_t)MessageCount, (uint32_t)NoOfIterations, TimerResult);
 
     //---------------------------------------------------------------------------
-    while (rmqsTimerGetTime(PublishWaitTimer) < PublishWaitingMaxTime && MessagesConfirmed < MessageCount * NoOfIteration)
+    while (rmqsTimerGetTime(PublishWaitTimer) < PublishWaitingMaxTime && MessagesConfirmed < MessageCount * NoOfIterations)
     {
-        rmqsThreadSleep(10);
+        rmqsThreadSleep(100);
     }
 
     printf("Stopping PollThread...\r\n");
 
-	rmqsThreadStop(PollThread);
+    rmqsThreadStop(PollThread);
     rmqsThreadDestroy(PollThread);
 
     printf("PollThread stopped\r\n");
@@ -362,7 +376,11 @@ int main(int argc, char * argv[])
         goto CLEAN_UP;
     }
 
+    #ifndef __BORLANDC__
     printf("Sequence number: %" PRIu64 "\r\n", Sequence);
+    #else
+    printf("Sequence number: %lld\r\n", Sequence);
+    #endif
 
     if (rmqsDeletePublisher(Publisher, Socket, PublisherId, &ResponseCode))
     {
@@ -394,8 +412,8 @@ int main(int argc, char * argv[])
         }
     }
 
-    printf("Messages confirmed: %u/%u\r\n", (uint32_t)MessagesConfirmed, (uint32_t)(MessageCount * NoOfIteration));
-    printf("Messages not confirmed: %u/%u\r\n", (uint32_t)MessagesNotConfirmed, (uint32_t)(MessageCount * NoOfIteration));
+    printf("Messages confirmed: %u/%u\r\n", (uint32_t)MessagesConfirmed, (uint32_t)(MessageCount * NoOfIterations));
+    printf("Messages not confirmed: %u/%u\r\n", (uint32_t)MessagesNotConfirmed, (uint32_t)(MessageCount * NoOfIterations));
 
     rmqsSocketDestroy(&Socket);
 
@@ -424,15 +442,15 @@ int main(int argc, char * argv[])
         goto CLEAN_UP;
     }
 
-    printf("Connected to %s\r\n", Broker->Hostname);
+    printf("Connected to server %s\r\n", Broker->Hostname);
 
     if (! rmqsClientLogin(Consumer->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode))
     {
-        printf("Cannot login to %s\r\n", Broker->Hostname);
+        printf("Cannot login to server%s\r\n", Broker->Hostname);
         goto CLEAN_UP;
     }
 
-    printf("Logged in to %s\r\n", Broker->Hostname);
+    printf("Logged in to server %s\r\n", Broker->Hostname);
 
     Metadata = rmqsMetadataCreate();
 
@@ -474,7 +492,11 @@ int main(int argc, char * argv[])
 
     if (rmqsQueryOffset(Consumer, Socket, CONSUMER_REFERENCE, Stream, &ValidOffset, &Offset, &ResponseCode))
     {
+        #ifndef __BORLANDC__
         printf("QueryOffset - Offset: %" PRIu64 " - Is valid: %d\r\n", Offset, (int)ValidOffset);
+        #else
+        printf("QueryOffset - Offset: %lld - Is valid: %d\r\n", Offset, (int)ValidOffset);
+        #endif
     }
     else
     {
@@ -587,6 +609,21 @@ CLEAN_UP:
     rmqsShutdownWinsock();
     #endif
 
+    #if ENABLE_CRT_MEM_LEAK_CHECK
+    HANDLE hLogFile = CreateFile(L"C:/TEMP/MemoryLeaks.txt", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_WARN, hLogFile);
+    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_ERROR, hLogFile);
+    _CrtSetReportMode (_CRT_ASSERT, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile (_CRT_ASSERT, hLogFile);
+    _CrtDumpMemoryLeaks();
+
+    CloseHandle(hLogFile);
+    #endif
+
     return 0;
 }
 //---------------------------------------------------------------------------
@@ -612,10 +649,10 @@ void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultLi
         {
             rmqsTimerStart(PublishConfirmTimer);
         }
-        else if (MessagesConfirmed == MessageCount * NoOfIteration)
+        else if (MessagesConfirmed == MessageCount * NoOfIterations)
         {
             TimerResult = rmqsTimerGetTime(PublishConfirmTimer);
-            printf("%u Messages - Confirm time: %ums\r\n", (uint32_t)(MessageCount * NoOfIteration), TimerResult);
+            printf("%u Messages - Confirm time: %ums\r\n", (uint32_t)(MessageCount * NoOfIterations), TimerResult);
         }
     }
 }
@@ -630,16 +667,16 @@ void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize
 
     MessagesReceived++;
 
-    *StoreOffset = MessagesReceived == 1 || MessagesReceived == MessageCount * NoOfIteration || MessagesReceived % 1000 == 0;
+    *StoreOffset = MessagesReceived == 1 || MessagesReceived == MessageCount * NoOfIterations || MessagesReceived % 1000 == 0;
 
     if (MessagesReceived == 1)
     {
         rmqsTimerStart(DeliverTimer);
     }
-    else if (MessagesReceived == MessageCount * NoOfIteration)
+    else if (MessagesReceived == MessageCount * NoOfIterations)
     {
         TimerResult = rmqsTimerGetTime(DeliverTimer);
-        printf("%u Messages - Receive time: %ums\r\n", (uint32_t)(MessageCount * NoOfIteration), TimerResult);
+        printf("%u Messages - Receive time: %ums\r\n", (uint32_t)(MessageCount * NoOfIterations), TimerResult);
         printf("Last message: %.*s\r\n", (int)DataSize, (char *)Data);
     }
 }
@@ -657,7 +694,7 @@ void PollThreadRoutineCallback(void *Parameters, bool_t *Terminate)
 
     while (! *Terminate)
     {
-        rmqsPublisherPoll(PollThreadParameters->Publisher, *PollThreadParameters->Socket, 1000, &ConnectionError);
+        rmqsPublisherPoll(PollThreadParameters->Publisher, PollThreadParameters->Socket, 1000, &ConnectionError);
     }
 }
 //---------------------------------------------------------------------------

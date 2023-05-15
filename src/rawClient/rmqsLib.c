@@ -49,7 +49,8 @@ void rmqsResetLastError()
 int64_t rmqsGetTimeStamp(void)
 {
     #if _WIN32 || _WIN64
-    struct _timeb TimeBuffer;
+    FILETIME FileTime, LocalFileTime;
+    ULARGE_INTEGER ULI;
     #else
     struct timeval TV;
     struct timezone TZ;
@@ -57,14 +58,18 @@ int64_t rmqsGetTimeStamp(void)
     int64_t Result;
 
     #if _WIN32 || _WIN64
-    _ftime(&TimeBuffer);
-    Result = (int64_t)((TimeBuffer.time * 1000) + TimeBuffer.millitm);
-    Result -= ((int64_t)TimeBuffer.timezone - (60LL * TimeBuffer.dstflag)) * 60 * 1000; // UTC to local time
+    GetSystemTimeAsFileTime(&FileTime);
+    FileTimeToLocalFileTime(&FileTime, &LocalFileTime);
+
+    ULI.LowPart = LocalFileTime.dwLowDateTime;
+    ULI.HighPart = LocalFileTime.dwHighDateTime;
+
+    Result = (ULI.QuadPart - 116444736000000000ULL) / 10000;
     #else
     gettimeofday(&TV, &TZ);
 
     Result = (int64_t)((uint64_t)TV.tv_sec * 1000 + (uint64_t)(TV.tv_usec) / 1000);
-	Result -= (TZ.tz_minuteswest * 60) * 1000;
+    Result -= (TZ.tz_minuteswest * 60) * 1000;
     #endif
 
     return Result;
