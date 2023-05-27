@@ -1,0 +1,6 @@
+[submodule "external/amqp1_0"]
+	path = external/amqp1_0
+	url = https://github.com/Gsantomaggio/amqp1_0
+[submodule "external/unity"]
+	path = external/unity
+	url = https://github.com/ThrowTheSwitch/Unity
