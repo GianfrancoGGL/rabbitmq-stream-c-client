@@ -26,14 +26,16 @@ extern "C"
 #include "rawClient/rmqsThread.h"
 #include "rawClient/rmqsLib.h"
 #include "rawClient/rmqsError.h"
-#include "rawClient/rmqsAMQP1_0.h"
 
 #ifdef __cplusplus
 }
 #endif
 //---------------------------------------------------------------------------
+#if __linux__ || __APPLE__
+#define _strcmpi strcasecmp
+#endif
+
 #ifdef __BORLANDC__
-#define _strcmpi strcmpi
 #pragma comment(lib, "ws2_32.lib")
 #endif
 //---------------------------------------------------------------------------
@@ -54,7 +56,6 @@ void MetadataUpdateCallback(uint16_t Code, char_t *Stream);
 //---------------------------------------------------------------------------
 void PollThreadRoutineCallback(void *Parameters, bool_t *Terminate);
 //---------------------------------------------------------------------------
-bool_t AMQP1_0_Encoding = false;
 size_t NoOfIterations = 10000;
 size_t MessageCount = 100;
 size_t ConsumerCreditSize = 1000;
@@ -204,7 +205,7 @@ int main(int argc, char * argv[])
     printf("Publisher created\r\n");
 
     Socket = rmqsSocketCreate();
-    
+
     if (! rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
     {
         printf("Cannot connect to %s\r\n", Broker->Hostname);
@@ -285,44 +286,13 @@ int main(int argc, char * argv[])
 
     MessageBatch = (rmqsMessage_t *)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MessageCount);
 
-    if (! AMQP1_0_Encoding)
-    {
-        for (i = 0; i < MessageCount; i++)
-        {
-            MessageBatch[i].Data = MessageBody;
-            MessageBatch[i].Size = MessageBodySize;
-            MessageBatch[i].DeleteData = false;
-        }
-    }
-    else
-    {
-        rmqsTimerStart(EncodingTimer);
+	for (i = 0; i < MessageCount; i++)
+	{
+		MessageBatch[i].Data = MessageBody;
+		MessageBatch[i].Size = MessageBodySize;
+		MessageBatch[i].DeleteData = false;
+	}
 
-        for (i = 0; i < MessageCount; i++)
-        {
-            MESSAGE_DATA Data = rmqsMarshalAMQP(MessageBody, MessageBodySize);
-            free_message_data(Data);
-        }
-
-        TimerResult = rmqsTimerGetTime(EncodingTimer);
-        printf("%d Messages - Encoding time: %ums\r\n", (int)MessageCount, TimerResult);
-
-        rmqsTimerStart(EncodingTimer);
-
-        for (i = 0; i < MessageCount; i++)
-        {
-            MESSAGE_DATA Data = rmqsMarshalAMQP(MessageBody, MessageBodySize);
-            MessageBatch[i].Data = rmqsAllocateMemory(Data.payload_len);
-            memcpy(MessageBatch[i].Data, Data.payload, Data.payload_len);
-            MessageBatch[i].Size = Data.payload_len;
-            MessageBatch[i].DeleteData = true;
-            free_message_data(Data);
-        }
-
-        TimerResult = rmqsTimerGetTime(EncodingTimer);
-        printf("%d Messages - Encoding + messages composition time: %ums\r\n", (int)MessageCount, TimerResult);
-    }
-    
     //---------------------------------------------------------------------------
     printf("Starting PollThread...\r\n");
 

@@ -6,8 +6,6 @@ set(CMAKE_C_STANDARD 11)
 include_directories(src/rawClient)
 
 add_executable(rabbitmq_stream_c_client
-               src/rawClient/rmqsAMQP1_0.c
-               src/rawClient/rmqsAMQP1_0.h
                src/rawClient/rmqsBroker.c
                src/rawClient/rmqsBroker.h
                src/rawClient/rmqsBuffer.c
@@ -44,10 +42,6 @@ add_executable(rabbitmq_stream_c_client
                src/rawClient/rmqsTimer.c
                src/rawClient/rmqsTimer.h
                src/main.c)
-
-include_directories(external/amqp1_0)
-add_subdirectory(external/amqp1_0)
-target_link_libraries(rabbitmq_stream_c_client amqp_lib)
 
 if(WIN32)
     include_directories(/mingw/x86_64-w64-mingw32/lib)
