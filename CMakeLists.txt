@@ -4,7 +4,7 @@ project(rabbitmq_stream_c_client C)
 set(CMAKE_C_STANDARD 11)
 
 include_directories(src/rawClient)
-include_directories(test)
+include_directories(src/rawClientTest)
 include_directories(external/unity/src)
 
 add_executable(rabbitmq_stream_c_client
@@ -43,7 +43,7 @@ add_executable(rabbitmq_stream_c_client
                src/rawClient/rmqsThread.h
                src/rawClient/rmqsTimer.c
                src/rawClient/rmqsTimer.h
-               test/rawClientTest.c
+               src/rawClientTest/rawClientTest.c
 			   external/unity/src/unity.c)
 
 if(WIN32)
