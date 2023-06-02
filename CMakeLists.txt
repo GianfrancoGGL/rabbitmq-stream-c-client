@@ -4,6 +4,7 @@ project(rabbitmq_stream_c_client C)
 set(CMAKE_C_STANDARD 11)
 
 include_directories(src/rawClient)
+include_directories(external/unity/src)
 
 add_executable(rabbitmq_stream_c_client
                src/rawClient/rmqsBroker.c
@@ -41,7 +42,8 @@ add_executable(rabbitmq_stream_c_client
                src/rawClient/rmqsThread.h
                src/rawClient/rmqsTimer.c
                src/rawClient/rmqsTimer.h
-               src/main.c)
+               src/rawClientTest.c
+			   external/unity/src/unity.c)
 
 if(WIN32)
     include_directories(/mingw/x86_64-w64-mingw32/lib)

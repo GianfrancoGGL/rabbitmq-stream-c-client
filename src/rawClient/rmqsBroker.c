@@ -76,18 +76,6 @@ void rmqsBrokerDestroy(rmqsBroker_t *Broker)
     }
 }
 //---------------------------------------------------------------------------
-void rmqsBrokerSetDefault(rmqsBroker_t *Broker)
-{
-    memset(Broker, 0, sizeof(rmqsBroker_t));
-
-    strncpy(Broker->Hostname, "localhost", RQMS_MAX_HOSTNAME_LENGTH);
-    Broker->Port = 5552;
-    strncpy(Broker->Username, "guest", RQMS_BROKER_MAX_USERNAME_LENGTH);
-    strncpy(Broker->Password, "guest", RQMS_BROKER_MAX_PASSWORD_LENGTH);
-    strncpy(Broker->DBSchema, "rabbit-mq", RQMS_BROKER_MAX_DB_SCHEMA_LENGTH);
-    strncpy(Broker->VirtualHost, RMQS_BROKER_DEFAULT_VHOST, RQMS_MAX_HOSTNAME_LENGTH);
-}
-//---------------------------------------------------------------------------
 bool_t rmqsBrokerParse(rmqsBroker_t *Broker, char_t *BrokerString, char_t *ErrorString, size_t ErrorStringLength)
 {
     char_t PortString[5 + 1]; // Must contain from 0 to 65535

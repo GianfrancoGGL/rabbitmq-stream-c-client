@@ -39,18 +39,19 @@ rmqsClientConfiguration_t * rmqsClientConfigurationCreate(char_t *BrokersString,
                                                           size_t ErrorStringLength)
 {
     rmqsClientConfiguration_t *ClientConfiguration = 0;
-    size_t BrokersStringLen = strlen(BrokersString);
+    size_t BrokersStringLen;
     rmqsList_t *BrokersStringList;
     char_t *pBrokersString, *pNewString, *pNewStringVal;
     rmqsBroker_t *Broker;
     size_t i;
 
-    //
-    // Windows machine, initialize sockets
-    //
-    #if _WIN32 || _WIN64
-    rmqsInitWinsock();
-    #endif
+    if (BrokersString == 0 || *BrokersString == 0)
+    {
+        rmqsSetError(RMQS_ERR_IDX_BROKER_DEF_IS_NULL, ErrorString, ErrorStringLength);
+        return ClientConfiguration;
+    }
+
+    BrokersStringLen = strlen(BrokersString);
 
     if (rmqsStringContainsSpace(BrokersString))
     {
@@ -82,14 +83,6 @@ rmqsClientConfiguration_t * rmqsClientConfigurationCreate(char_t *BrokersString,
     if (EnableLogging && LogFileName && *LogFileName != 0)
     {
         ClientConfiguration->Logger = rmqsLoggerCreate(LogFileName, 0);
-    }
-
-    if (BrokersString == 0)
-    {
-        Broker = (rmqsBroker_t *)rmqsAllocateMemory(sizeof(rmqsBroker_t));
-        rmqsBrokerSetDefault(Broker);
-        rmqsListAddEnd(ClientConfiguration->BrokerList, Broker);
-        return ClientConfiguration;
     }
 
     //---------------------------------------------------------------------------
@@ -151,9 +144,8 @@ rmqsClientConfiguration_t * rmqsClientConfigurationCreate(char_t *BrokersString,
 
     if (ClientConfiguration->BrokerList->Count == 0)
     {
-        Broker = (rmqsBroker_t *)rmqsAllocateMemory(sizeof(rmqsBroker_t));
-        rmqsBrokerSetDefault(Broker);
-        rmqsListAddEnd(ClientConfiguration->BrokerList, Broker);
+        rmqsClientConfigurationDestroy(ClientConfiguration);
+        ClientConfiguration = 0;
     }
 
     rmqsListDestroy(BrokersStringList);
@@ -178,12 +170,5 @@ void rmqsClientConfigurationDestroy(rmqsClientConfiguration_t *ClientConfigurati
     }
 
     rmqsFreeMemory((void *)ClientConfiguration);
-
-    //
-    // Windows machine, shutdown sockets
-    //
-    #if _WIN32 || _WIN64
-    rmqsShutdownWinsock();
-    #endif
 }
 //---------------------------------------------------------------------------

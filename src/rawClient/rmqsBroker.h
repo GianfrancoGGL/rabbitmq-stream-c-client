@@ -73,7 +73,6 @@ rmqsBroker_t * rmqsBrokerCreate(char_t *Hostname,
                                 size_t ErrorStringLength);
 
 void rmqsBrokerDestroy(rmqsBroker_t *Broker);
-void rmqsBrokerSetDefault(rmqsBroker_t *Broker);
 bool_t rmqsBrokerParse(rmqsBroker_t *Broker, char_t *BrokerString, char_t *ErrorString, size_t ErrorStringLength);
 //---------------------------------------------------------------------------
 #endif

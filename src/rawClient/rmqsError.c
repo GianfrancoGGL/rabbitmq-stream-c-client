@@ -28,6 +28,7 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 static char_t *rmqsError[] =
 {
+"Brokers string is null",
 "Brokers string cannot contain spaces",
 "Brokers contains control characters",
 "Hostname cannot be empty",

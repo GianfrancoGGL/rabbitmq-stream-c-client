@@ -17,6 +17,8 @@ extern "C"
 {
 #endif
 
+#include "unity.h"
+
 #include "rawClient/rmqsProtocol.h"
 #include "rawClient/rmqsClientConfiguration.h"
 #include "rawClient/rmqsBroker.h"
@@ -36,12 +38,36 @@ extern "C"
 #endif
 
 #ifdef __BORLANDC__
+#define _strcmpi strcmpi
 #pragma comment(lib, "ws2_32.lib")
 #endif
 //---------------------------------------------------------------------------
 #define ROW_SEPARATOR               "============================================================================"
 #define PUBLISHER_REFERENCE         "Publisher"
 #define CONSUMER_REFERENCE          "Consumer"
+//---------------------------------------------------------------------------
+void RunTest(void);
+//---------------------------------------------------------------------------
+int main(int argc, char * argv[])
+{
+    UNITY_BEGIN();
+
+    RUN_TEST(RunTest);
+
+    UNITY_END();
+
+    return 0;
+}
+//---------------------------------------------------------------------------
+void setUp(void)
+{
+    ;
+}
+//---------------------------------------------------------------------------
+void tearDown(void)
+{
+    ;
+}
 //---------------------------------------------------------------------------
 typedef struct
 {
@@ -76,10 +102,11 @@ bool_t TestPublishError = false;
 //---------------------------------------------------------------------------
 uint32_t TimerResult;
 //---------------------------------------------------------------------------
-int main(int argc, char * argv[])
+void RunTest(void)
 {
     char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@192.168.56.1:5552";
     char_t Error[RMQS_ERR_MAX_STRING_LENGTH] = {0};
+    char_t OutputError[512] = {0};
     rmqsResponseCode_t ResponseCode = rmqsrOK;
     rmqsClientConfiguration_t *ClientConfiguration = 0;
     rmqsBroker_t *Broker = 0;
@@ -107,28 +134,6 @@ int main(int argc, char * argv[])
     PollThreadParameters_t PollThreadParameters;
     uchar_t MessageBody[] = "Hello world!";
     size_t MessageBodySize = 12;
-
-    //
-    // First argument is the application path, skipped
-    //
-    for (i = 1; i < (size_t)argc; i++)
-    {
-        if (! _strcmpi(argv[i], "--brokers") && i < (size_t)(argc - 1))
-        {
-            BrokerList = argv[i + 1];
-            i++;
-        }
-        else if (! _strcmpi(argv[i], "--iterations") && (size_t)(argc - 1))
-        {
-            NoOfIterations = (size_t)atoi(argv[i + 1]);
-            i++;
-        }
-        else if (! _strcmpi(argv[i], "--messagecount") && (size_t)(argc - 1))
-        {
-            MessageCount = (size_t)atoi(argv[i + 1]);
-            i++;
-        }
-    }
 
     EncodingTimer = rmqsTimerCreate();
     PublishTimer = rmqsTimerCreate();
@@ -170,11 +175,15 @@ int main(int argc, char * argv[])
 
     if (! ClientConfiguration)
     {
-        printf("rmqsClientConfigurationCreate - Error: %s\r\n\r\n", Error);
+        sprintf(OutputError, "rmqsClientConfigurationCreate - Error: %s\r\n\r\n", Error);
+        TEST_FAIL_MESSAGE(OutputError);
+        printf(OutputError);
         goto CLEAN_UP;
     }
 
     printf("%s\r\nNo of brokers defined: %d\r\n%s\r\n", ROW_SEPARATOR, (int32_t)ClientConfiguration->BrokerList->Count, ROW_SEPARATOR);
+
+    TEST_ASSERT_EQUAL_UINT32_MESSAGE(ClientConfiguration->BrokerList->Count, 1, "Wrong no of brokers");
 
     for (i = 0; i < ClientConfiguration->BrokerList->Count; i++)
     {
@@ -189,9 +198,21 @@ int main(int argc, char * argv[])
 
     if (! Broker)
     {
-        printf("No valid brokers: %s\r\n\r\n", Error);
+        sprintf(OutputError, "No valid brokers: %s\r\n\r\n", Error);
+        TEST_FAIL_MESSAGE(OutputError);
+        printf(OutputError);
         goto CLEAN_UP;
     }
+
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->Hostname, "192.168.56.1", "Unexpected broker host name");
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(Broker->Port, 5552, "Unexpected broker port");
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->Username, "rabbit", "Unexpected broker user name");
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->Password, "rabbit", "Unexpected broker password");
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->DBSchema, "rabbitmq-stream", "Unexpected broker DB schema");
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->VirtualHost, "/", "Unexpected broker virtual host");
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(Broker->UseTLS, 0, "Unexpected broker TLS usage flag");
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->AdvicedHostname, "", "Unexpected broker adviced host name");
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(Broker->AdvicedPort, 0, "Unexpected broker adviced port");
 
     //---------------------------------------------------------------------------
     //---------------------------------------------------------------------------
@@ -202,23 +223,33 @@ int main(int argc, char * argv[])
     //---------------------------------------------------------------------------
     printf("Creating publisher...\r\n");
     Publisher = rmqsPublisherCreate(ClientConfiguration, PUBLISHER_REFERENCE, 0, PublishResultCallback, MetadataUpdateCallback);
+    TEST_ASSERT_MESSAGE(Publisher != 0, "Cannot create publisher");
     printf("Publisher created\r\n");
 
     Socket = rmqsSocketCreate();
 
     if (! rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
     {
-        printf("Cannot connect to %s\r\n", Broker->Hostname);
+        sprintf(OutputError, "Cannot connect to %s\r\n", Broker->Hostname);
+        TEST_FAIL_MESSAGE(OutputError);
+        printf(OutputError);
         goto CLEAN_UP;
     }
 
-    rmqsSetSocketTxRxBufferSize(Socket, 1024 * 10000, 1024 * 10000);
+    if (! rmqsSetSocketTxRxBufferSize(Socket, 1024 * 10000, 1024 * 10000))
+    {
+        TEST_FAIL_MESSAGE("Error setting the socket tx and rx buffer size");
+        printf(OutputError);
+        goto CLEAN_UP;
+    }
 
     printf("Connected to server %s\r\n", Broker->Hostname);
 
     if (! rmqsClientLogin(Publisher->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode))
     {
-        printf("Cannot login to server %s\r\n", Broker->Hostname);
+        sprintf(OutputError, "Cannot login to server %s\r\n", Broker->Hostname);
+        TEST_FAIL_MESSAGE(OutputError);
+        printf(OutputError);
         goto CLEAN_UP;
     }
 
@@ -230,10 +261,11 @@ int main(int argc, char * argv[])
     }
     else
     {
-        printf("Cannot delete stream %s\r\n", Stream);
-
         if (ResponseCode == rmqsrConnectionError)
         {
+            sprintf(OutputError, "Cannot delete stream %s\r\n", Stream);
+            TEST_FAIL_MESSAGE(OutputError);
+            printf(OutputError);
             goto CLEAN_UP;
         }
     }
@@ -255,7 +287,9 @@ int main(int argc, char * argv[])
 
     if (! rmqsCreate(Publisher->Client, Socket, Stream, &CreateStreamArgs, &StreamAlredyExists, &ResponseCode) && ! StreamAlredyExists)
     {
-        printf("Cannot create stream %s\r\n", Stream);
+        sprintf(OutputError, "Cannot create stream %s\r\n", Stream);
+        TEST_FAIL_MESSAGE(OutputError);
+        printf(OutputError);
         goto CLEAN_UP;
     }
 
@@ -272,7 +306,9 @@ int main(int argc, char * argv[])
     {
         if (! rmqsDeclarePublisher(Publisher, Socket, PublisherId, Stream, &ResponseCode))
         {
-            printf("Cannot declare the publisher\r\n");
+            sprintf(OutputError, "Cannot declare the publisher\r\n");
+            TEST_FAIL_MESSAGE(OutputError);
+            printf(OutputError);
             goto CLEAN_UP;
         }
     }
@@ -286,12 +322,12 @@ int main(int argc, char * argv[])
 
     MessageBatch = (rmqsMessage_t *)rmqsAllocateMemory(sizeof(rmqsMessage_t) * MessageCount);
 
-	for (i = 0; i < MessageCount; i++)
-	{
-		MessageBatch[i].Data = MessageBody;
-		MessageBatch[i].Size = MessageBodySize;
-		MessageBatch[i].DeleteData = false;
-	}
+    for (i = 0; i < MessageCount; i++)
+    {
+        MessageBatch[i].Data = MessageBody;
+        MessageBatch[i].Size = MessageBodySize;
+        MessageBatch[i].DeleteData = false;
+    }
 
     //---------------------------------------------------------------------------
     printf("Starting PollThread...\r\n");
@@ -593,8 +629,6 @@ CLEAN_UP:
 
     CloseHandle(hLogFile);
     #endif
-
-    return 0;
 }
 //---------------------------------------------------------------------------
 void PublishResultCallback(uint8_t PublisherId, PublishResult_t *PublishResultList, size_t PublishingIdCount, bool_t Confirmed)
