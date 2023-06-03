@@ -57,14 +57,22 @@ rmqsClientFunc void rmqsClientDestroy(rmqsClient_t *Client)
     rmqsFreeMemory((void *)Client);
 }
 //---------------------------------------------------------------------------
-rmqsClientFunc bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *VirtualHost, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsClientLogin(rmqsClient_t *Client, uint16_t BrokerIndex, rmqsSocket_t Socket, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
 {
-    rmqsBroker_t *Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Client->ClientConfiguration->BrokerList, 0);
+    rmqsBroker_t *Broker;
     bool_t PlainAuthSupported;
     rmqsTuneRequest_t TuneRequest, TuneResponse;
     bool_t ConnectionError;
 
     *ResponseCode = rmqsrOK;
+
+    Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(Client->ClientConfiguration->BrokerList, BrokerIndex);
+
+    if (! Broker)
+    {
+        *ResponseCode = rqmsrInvalidBrokerIndex;
+        return false;
+    }
 
     //
     // Send the peer properties request
@@ -159,7 +167,7 @@ rmqsClientFunc bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket_t Socket,
     //
     // Finally, issue the open request
     //
-    if (! rmqsOpen(Client, Socket, VirtualHost, ResponseCode))
+    if (! rmqsOpen(Client, Socket, Broker->VirtualHost, ResponseCode))
     {
         return false;
     }

@@ -101,6 +101,7 @@ typedef enum
     rmqsrPreconditionFailed = 0x11,
     rmqsrPublisherDoesNotExist = 0x12,
     rmqsrNoOffset = 0x13,
+    rqmsrInvalidBrokerIndex = 0xFE,
     rmqsrConnectionError = 0xFF
 }
 rmqsResponseCode_t;

@@ -137,7 +137,7 @@ rmqsClient_t;
 rmqsClientFunc rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *ClientConfiguration, rmqsClientType_t ClientType, void *ParentObject, MetadataUpdateCallback_t MetadataUpdateCallback);
 rmqsClientFunc void rmqsClientDestroy(rmqsClient_t *Client);
 //---------------------------------------------------------------------------
-rmqsClientFunc bool_t rmqsClientLogin(rmqsClient_t *Client, rmqsSocket_t Socket, char_t *VirtualHost, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode);
+rmqsClientFunc bool_t rmqsClientLogin(rmqsClient_t *Client, uint16_t BrokerIndex, rmqsSocket_t Socket, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode);
 rmqsClientFunc bool_t rmqsClientLogout(rmqsClient_t *Client, rmqsSocket_t Socket, uint16_t ClosingCode, char_t *ClosingReason, rmqsResponseCode_t *ResponseCode);
 //---------------------------------------------------------------------------
 rmqsClientFunc bool_t rmqsPeerProperties(rmqsClient_t *Client, rmqsSocket_t Socket, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode);

@@ -512,6 +512,10 @@ rmqsProtoFunc char_t * rmqsGetResponseCodeDescription(uint16_t ResponseCode)
             Description = "No offset";
             break;
 
+        case rqmsrInvalidBrokerIndex:
+            Description = "Invalid broker index";
+            break;
+
         case rmqsrConnectionError:
             Description = "Connection error";
             break;

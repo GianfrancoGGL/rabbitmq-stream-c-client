@@ -42,17 +42,24 @@ extern "C"
 #pragma comment(lib, "ws2_32.lib")
 #endif
 //---------------------------------------------------------------------------
+#define RMQS_DB_SCHEMA              "rabbitmq-stream"
+#define RMQS_USERNAME               "rabbit"
+#define RMQS_PASSWORD               "rabbit"
+#define RMQS_SERVER                 "127.0.0.1"
+#define RQMS_PORT                   5552
+#define RQMS_VIRTUAL_HOST           "/"
+//---------------------------------------------------------------------------
 #define ROW_SEPARATOR               "============================================================================"
 #define PUBLISHER_REFERENCE         "Publisher"
 #define CONSUMER_REFERENCE          "Consumer"
 //---------------------------------------------------------------------------
-void RunTest(void);
+void TestFunction(void);
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
     UNITY_BEGIN();
 
-    RUN_TEST(RunTest);
+    RUN_TEST(TestFunction);
 
     UNITY_END();
 
@@ -102,9 +109,9 @@ bool_t TestPublishError = false;
 //---------------------------------------------------------------------------
 uint32_t TimerResult;
 //---------------------------------------------------------------------------
-void RunTest(void)
+void TestFunction(void)
 {
-    char_t *BrokerList = "rabbitmq-stream://rabbit:rabbit@192.168.56.1:5552";
+    char_t BrokerList[128] = {0};
     char_t Error[RMQS_ERR_MAX_STRING_LENGTH] = {0};
     char_t OutputError[512] = {0};
     rmqsResponseCode_t ResponseCode = rmqsrOK;
@@ -134,6 +141,18 @@ void RunTest(void)
     PollThreadParameters_t PollThreadParameters;
     uchar_t MessageBody[] = "Hello world!";
     size_t MessageBodySize = 12;
+
+    sprintf(BrokerList, "%s://%s:%s@%s:%d/;%s://%s:%s@%s:%d/",
+            "rabbitmq-stream+tls",
+            "##rabbit##",
+            "__rabbit__",
+            "192.168.1.254",
+            5553,
+            RMQS_DB_SCHEMA,
+            RMQS_USERNAME,
+            RMQS_PASSWORD,
+            RMQS_SERVER,
+            RQMS_PORT);
 
     EncodingTimer = rmqsTimerCreate();
     PublishTimer = rmqsTimerCreate();
@@ -183,7 +202,7 @@ void RunTest(void)
 
     printf("%s\r\nNo of brokers defined: %d\r\n%s\r\n", ROW_SEPARATOR, (int32_t)ClientConfiguration->BrokerList->Count, ROW_SEPARATOR);
 
-    TEST_ASSERT_EQUAL_UINT32_MESSAGE(ClientConfiguration->BrokerList->Count, 1, "Wrong no of brokers");
+    TEST_ASSERT_EQUAL_UINT32_MESSAGE(ClientConfiguration->BrokerList->Count, 2, "Wrong no of brokers");
 
     for (i = 0; i < ClientConfiguration->BrokerList->Count; i++)
     {
@@ -194,7 +213,10 @@ void RunTest(void)
                Broker->DBSchema, Broker->VirtualHost, Broker->UseTLS ? 1 : 0, ROW_SEPARATOR);
     }
 
-    Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(ClientConfiguration->BrokerList, 0);
+    //
+    // Retrieve the second broker
+    //
+    Broker = (rmqsBroker_t *)rmqsListGetDataByPosition(ClientConfiguration->BrokerList, 1);
 
     if (! Broker)
     {
@@ -204,12 +226,12 @@ void RunTest(void)
         goto CLEAN_UP;
     }
 
-    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->Hostname, "192.168.56.1", "Unexpected broker host name");
-    TEST_ASSERT_EQUAL_UINT16_MESSAGE(Broker->Port, 5552, "Unexpected broker port");
-    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->Username, "rabbit", "Unexpected broker user name");
-    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->Password, "rabbit", "Unexpected broker password");
-    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->DBSchema, "rabbitmq-stream", "Unexpected broker DB schema");
-    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->VirtualHost, "/", "Unexpected broker virtual host");
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->Hostname, RMQS_SERVER, "Unexpected broker host name");
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(Broker->Port, RQMS_PORT, "Unexpected broker port");
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->Username, RMQS_USERNAME, "Unexpected broker user name");
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->Password, RMQS_PASSWORD, "Unexpected broker password");
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->DBSchema, RMQS_DB_SCHEMA, "Unexpected broker DB schema");
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->VirtualHost, RQMS_VIRTUAL_HOST, "Unexpected broker virtual host");
     TEST_ASSERT_EQUAL_UINT8_MESSAGE(Broker->UseTLS, 0, "Unexpected broker TLS usage flag");
     TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->AdvicedHostname, "", "Unexpected broker adviced host name");
     TEST_ASSERT_EQUAL_UINT16_MESSAGE(Broker->AdvicedPort, 0, "Unexpected broker adviced port");
@@ -245,7 +267,7 @@ void RunTest(void)
 
     printf("Connected to server %s\r\n", Broker->Hostname);
 
-    if (! rmqsClientLogin(Publisher->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode))
+    if (! rmqsClientLogin(Publisher->Client, 1, Socket, Properties, 6, &ResponseCode))
     {
         sprintf(OutputError, "Cannot login to server %s\r\n", Broker->Hostname);
         TEST_FAIL_MESSAGE(OutputError);
@@ -353,7 +375,11 @@ void RunTest(void)
             MessageBatch[j].PublishingId = ++PublishingId;
         }
 
-        rmqsPublish(Publisher, Socket, PublisherId, MessageBatch, MessageCount);
+        if (! rmqsPublish(Publisher, Socket, PublisherId, MessageBatch, MessageCount))
+		{
+            sprintf(OutputError, "Error while publishing messages\r\n");
+            TEST_FAIL_MESSAGE(OutputError);
+		}
     }
 
     TimerResult = rmqsTimerGetTime(PublishTimer);
@@ -394,12 +420,9 @@ void RunTest(void)
     }
     else
     {
-        printf("Cannot delete the publisher\r\n");
-
-        if (ResponseCode == rmqsrConnectionError)
-        {
-            goto CLEAN_UP;
-        }
+		sprintf(OutputError, "Cannot delete the publisher\r\n");
+		TEST_FAIL_MESSAGE(OutputError);
+		goto CLEAN_UP;
     }
 
     rmqsHeartbeat(Publisher->Client, Socket);
@@ -410,12 +433,9 @@ void RunTest(void)
     }
     else
     {
-        printf("Cannot logout\r\n");
-
-        if (ResponseCode == rmqsrConnectionError)
-        {
-            goto CLEAN_UP;
-        }
+		sprintf(OutputError, "Cannot logout\r\n");
+		TEST_FAIL_MESSAGE(OutputError);
+		goto CLEAN_UP;
     }
 
     printf("Messages confirmed: %u/%u\r\n", (uint32_t)MessagesConfirmed, (uint32_t)(MessageCount * NoOfIterations));
@@ -450,7 +470,7 @@ void RunTest(void)
 
     printf("Connected to server %s\r\n", Broker->Hostname);
 
-    if (! rmqsClientLogin(Consumer->Client, Socket, Broker->VirtualHost, Properties, 6, &ResponseCode))
+    if (! rmqsClientLogin(Consumer->Client, 1, Socket, Properties, 6, &ResponseCode))
     {
         printf("Cannot login to server%s\r\n", Broker->Hostname);
         goto CLEAN_UP;
