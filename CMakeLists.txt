@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.17)
 project(rabbitmq_stream_c_client C)
 
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 include_directories(src/rawClient)
 include_directories(src/rawClientTest)

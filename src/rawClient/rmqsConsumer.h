@@ -77,7 +77,7 @@ rmqsOffsetType;
 //---------------------------------------------------------------------------
 rmqsClientFunc rmqsConsumer_t * rmqsConsumerCreate(rmqsClientConfiguration_t *ClientConfiguration, char_t *ConsumerReference, uint32_t FrameMax, uint32_t Heartbeat, uint16_t DefaultCredit, DeliverResultCallback_t DeliverResultCallback, MetadataUpdateCallback_t MetadataUpdateCallback);
 rmqsClientFunc void rmqsConsumerDestroy(rmqsConsumer_t *Consumer);
-rmqsClientFunc void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint32_t Timeout, bool_t *ConnectionError);
+rmqsClientFunc bool_t rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint32_t Timeout, bool_t *ConnectionError);
 //---------------------------------------------------------------------------
 rmqsClientFunc bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode);
 rmqsClientFunc bool_t rmqsUnsubscribe(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint8_t SubscriptionId, rmqsResponseCode_t *ResponseCode);

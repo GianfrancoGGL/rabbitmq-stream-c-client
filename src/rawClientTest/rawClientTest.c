@@ -52,11 +52,15 @@ extern "C"
 #define ROW_SEPARATOR               "============================================================================"
 #define PUBLISHER_REFERENCE         "Publisher"
 #define CONSUMER_REFERENCE          "Consumer"
+#define TEST_MESSAGE_DATA           "Hello world!"
 //---------------------------------------------------------------------------
 void TestFunction(void);
 //---------------------------------------------------------------------------
 int main(int argc, char * argv[])
 {
+    (void)argc;
+    (void)argv;
+
     UNITY_BEGIN();
 
     RUN_TEST(TestFunction);
@@ -113,7 +117,7 @@ void TestFunction(void)
 {
     char_t BrokerList[128] = {0};
     char_t Error[RMQS_ERR_MAX_STRING_LENGTH] = {0};
-    char_t OutputError[512] = {0};
+    char_t OutputString[512] = {0};
     rmqsResponseCode_t ResponseCode = rmqsrOK;
     rmqsClientConfiguration_t *ClientConfiguration = 0;
     rmqsBroker_t *Broker = 0;
@@ -139,13 +143,13 @@ void TestFunction(void)
     size_t UsedMemory;
     rmqsThread_t *PollThread;
     PollThreadParameters_t PollThreadParameters;
-    uchar_t MessageBody[] = "Hello world!";
-    size_t MessageBodySize = 12;
+    uchar_t MessageBody[] = TEST_MESSAGE_DATA;
+    size_t MessageBodySize = strlen(TEST_MESSAGE_DATA);
 
     sprintf(BrokerList, "%s://%s:%s@%s:%d/;%s://%s:%s@%s:%d/",
             "rabbitmq-stream+tls",
-            "##rabbit##",
-            "__rabbit__",
+            "anyuser",
+            "anypassword",
             "192.168.1.254",
             5553,
             RMQS_DB_SCHEMA,
@@ -194,10 +198,8 @@ void TestFunction(void)
 
     if (! ClientConfiguration)
     {
-        sprintf(OutputError, "rmqsClientConfigurationCreate - Error: %s\r\n\r\n", Error);
-        TEST_FAIL_MESSAGE(OutputError);
-        printf(OutputError);
-        goto CLEAN_UP;
+        sprintf(OutputString, "rmqsClientConfigurationCreate - Error: %s", Error);
+        TEST_FAIL_MESSAGE(OutputString);
     }
 
     printf("%s\r\nNo of brokers defined: %d\r\n%s\r\n", ROW_SEPARATOR, (int32_t)ClientConfiguration->BrokerList->Count, ROW_SEPARATOR);
@@ -220,10 +222,8 @@ void TestFunction(void)
 
     if (! Broker)
     {
-        sprintf(OutputError, "No valid brokers: %s\r\n\r\n", Error);
-        TEST_FAIL_MESSAGE(OutputError);
-        printf(OutputError);
-        goto CLEAN_UP;
+        sprintf(OutputString, "No valid brokers: %s", Error);
+        TEST_FAIL_MESSAGE(OutputString);
     }
 
     TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->Hostname, RMQS_SERVER, "Unexpected broker host name");
@@ -252,27 +252,21 @@ void TestFunction(void)
 
     if (! rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
     {
-        sprintf(OutputError, "Cannot connect to %s\r\n", Broker->Hostname);
-        TEST_FAIL_MESSAGE(OutputError);
-        printf(OutputError);
-        goto CLEAN_UP;
+        sprintf(OutputString, "Cannot connect to %s", Broker->Hostname);
+        TEST_FAIL_MESSAGE(OutputString);
     }
 
     if (! rmqsSetSocketTxRxBufferSize(Socket, 1024 * 10000, 1024 * 10000))
     {
         TEST_FAIL_MESSAGE("Error setting the socket tx and rx buffer size");
-        printf(OutputError);
-        goto CLEAN_UP;
     }
 
     printf("Connected to server %s\r\n", Broker->Hostname);
 
     if (! rmqsClientLogin(Publisher->Client, 1, Socket, Properties, 6, &ResponseCode))
     {
-        sprintf(OutputError, "Cannot login to server %s\r\n", Broker->Hostname);
-        TEST_FAIL_MESSAGE(OutputError);
-        printf(OutputError);
-        goto CLEAN_UP;
+        sprintf(OutputString, "Cannot login to server %s", Broker->Hostname);
+        TEST_FAIL_MESSAGE(OutputString);
     }
 
     printf("Logged in to server %s\r\n", Broker->Hostname);
@@ -283,13 +277,8 @@ void TestFunction(void)
     }
     else
     {
-        if (ResponseCode == rmqsrConnectionError)
-        {
-            sprintf(OutputError, "Cannot delete stream %s\r\n", Stream);
-            TEST_FAIL_MESSAGE(OutputError);
-            printf(OutputError);
-            goto CLEAN_UP;
-        }
+        sprintf(OutputString, "Cannot delete stream %s", Stream);
+        TEST_FAIL_MESSAGE(OutputString);
     }
 
     CreateStreamArgs.SetMaxLengthBytes = true;
@@ -309,10 +298,8 @@ void TestFunction(void)
 
     if (! rmqsCreate(Publisher->Client, Socket, Stream, &CreateStreamArgs, &StreamAlredyExists, &ResponseCode) && ! StreamAlredyExists)
     {
-        sprintf(OutputError, "Cannot create stream %s\r\n", Stream);
-        TEST_FAIL_MESSAGE(OutputError);
-        printf(OutputError);
-        goto CLEAN_UP;
+        sprintf(OutputString, "Cannot create stream %s", Stream);
+        TEST_FAIL_MESSAGE(OutputString);
     }
 
     if (! StreamAlredyExists)
@@ -328,10 +315,7 @@ void TestFunction(void)
     {
         if (! rmqsDeclarePublisher(Publisher, Socket, PublisherId, Stream, &ResponseCode))
         {
-            sprintf(OutputError, "Cannot declare the publisher\r\n");
-            TEST_FAIL_MESSAGE(OutputError);
-            printf(OutputError);
-            goto CLEAN_UP;
+            TEST_FAIL_MESSAGE("Cannot declare the publisher");
         }
     }
     else
@@ -376,14 +360,15 @@ void TestFunction(void)
         }
 
         if (! rmqsPublish(Publisher, Socket, PublisherId, MessageBatch, MessageCount))
-		{
-            sprintf(OutputError, "Error while publishing messages\r\n");
-            TEST_FAIL_MESSAGE(OutputError);
-		}
+        {
+            TEST_FAIL_MESSAGE("Error while publishing messages");
+        }
     }
 
-    TimerResult = rmqsTimerGetTime(PublishTimer);
+    TimerResult = rmqsTimerGetTime(PublishTimer);	
     printf("%d Messages - (CNT: %u - IT: %u) - Elapsed time: %ums\r\n", (int)(MessageCount * NoOfIterations), (uint32_t)MessageCount, (uint32_t)NoOfIterations, TimerResult);
+
+    TEST_ASSERT_LESS_THAN_UINT32_MESSAGE(2000, TimerResult, "Unexpected publishing time, too long");
 
     //---------------------------------------------------------------------------
     while (rmqsTimerGetTime(PublishWaitTimer) < PublishWaitingMaxTime && MessagesConfirmed < MessageCount * NoOfIterations)
@@ -401,12 +386,12 @@ void TestFunction(void)
 
     rmqsBatchDestroy(MessageBatch, MessageCount);
 
-    rmqsQueryPublisherSequence(Publisher, Socket, Stream, &Sequence, &ResponseCode);
-
-    if (ResponseCode == rmqsrConnectionError)
+    if (! rmqsQueryPublisherSequence(Publisher, Socket, Stream, &Sequence, &ResponseCode))
     {
-        goto CLEAN_UP;
+        TEST_FAIL_MESSAGE("Error retrieving the publisher sequence");
     }
+
+    TEST_ASSERT_EQUAL_UINT32_MESSAGE((uint32_t)(MessageCount * NoOfIterations), Sequence, "Unexpected publish sequence number");
 
     #ifndef __BORLANDC__
     printf("Sequence number: %" PRIu64 "\r\n", Sequence);
@@ -420,9 +405,7 @@ void TestFunction(void)
     }
     else
     {
-		sprintf(OutputError, "Cannot delete the publisher\r\n");
-		TEST_FAIL_MESSAGE(OutputError);
-		goto CLEAN_UP;
+        TEST_FAIL_MESSAGE("Cannot delete the publisher");
     }
 
     rmqsHeartbeat(Publisher->Client, Socket);
@@ -433,13 +416,14 @@ void TestFunction(void)
     }
     else
     {
-		sprintf(OutputError, "Cannot logout\r\n");
-		TEST_FAIL_MESSAGE(OutputError);
-		goto CLEAN_UP;
+        TEST_FAIL_MESSAGE("Cannot logout");
     }
 
     printf("Messages confirmed: %u/%u\r\n", (uint32_t)MessagesConfirmed, (uint32_t)(MessageCount * NoOfIterations));
     printf("Messages not confirmed: %u/%u\r\n", (uint32_t)MessagesNotConfirmed, (uint32_t)(MessageCount * NoOfIterations));
+
+    TEST_ASSERT_EQUAL_UINT32_MESSAGE((uint32_t)(MessageCount * NoOfIterations), MessagesConfirmed, "Not all messages have been confirmed");
+    TEST_ASSERT_EQUAL_UINT32_MESSAGE(0, MessagesNotConfirmed, "Some messages weren't confirmed");
 
     rmqsSocketDestroy(&Socket);
 
@@ -464,16 +448,16 @@ void TestFunction(void)
 
     if (! rmqsSocketConnect(Broker->Hostname, Broker->Port, Socket, 500))
     {
-        printf("Cannot connect to %s\r\n", Broker->Hostname);
-        goto CLEAN_UP;
+        sprintf(OutputString, "Cannot connect to %s", Broker->Hostname);
+        TEST_FAIL_MESSAGE(OutputString);
     }
 
     printf("Connected to server %s\r\n", Broker->Hostname);
 
     if (! rmqsClientLogin(Consumer->Client, 1, Socket, Properties, 6, &ResponseCode))
     {
-        printf("Cannot login to server%s\r\n", Broker->Hostname);
-        goto CLEAN_UP;
+        sprintf(OutputString, "Cannot login to server %s", Broker->Hostname);
+        TEST_FAIL_MESSAGE(OutputString);
     }
 
     printf("Logged in to server %s\r\n", Broker->Hostname);
@@ -487,9 +471,8 @@ void TestFunction(void)
     }
     else
     {
-        printf("Cannot retrieve the metadata for stream %s\r\n", Stream);
-        rmqsMetadataDestroy(Metadata);
-        goto CLEAN_UP;
+        sprintf(OutputString, "Cannot retrieve the metadata for stream %s", Stream);
+        TEST_FAIL_MESSAGE(OutputString);
     }
 
     if (rmqsSubscribe(Consumer, Socket, SubscriptionId, Stream, rmqsotOffset, 0, Consumer->DefaultCredit, 0, 0, &ResponseCode))
@@ -498,19 +481,17 @@ void TestFunction(void)
     }
     else
     {
-        printf("Cannot subscribe to stream %s\r\n", Stream);
-        goto CLEAN_UP;
+        sprintf(OutputString, "Cannot subscribe to stream %s", Stream);
+        TEST_FAIL_MESSAGE(OutputString);
     }
 
     printf("Consumer - Timer begin\r\n");
 
     rmqsTimerStart(ConsumeTimer);
 
-    rmqsConsumerPoll(Consumer, Socket, ConsumeWaitingTime, &ConnectionError);
-
-    if (ConnectionError)
+    if (! rmqsConsumerPoll(Consumer, Socket, ConsumeWaitingTime, &ConnectionError))
     {
-        goto CLEAN_UP;
+        TEST_FAIL_MESSAGE("Error while consuming messages");
     }
 
     TimerResult = rmqsTimerGetTime(ConsumeTimer);
@@ -523,15 +504,13 @@ void TestFunction(void)
         #else
         printf("QueryOffset - Offset: %lld - Is valid: %d\r\n", Offset, (int)ValidOffset);
         #endif
+
+        TEST_ASSERT_EQUAL_UINT32_MESSAGE((uint32_t)((MessageCount * NoOfIterations) - 1), Offset, "Unexpected offset");
+        TEST_ASSERT_EQUAL_UINT8_MESSAGE(true, ValidOffset, "Offset is not valid");
     }
     else
     {
-        printf("QueryOffset error\r\n");
-
-        if (ResponseCode == rmqsrConnectionError)
-        {
-            goto CLEAN_UP;
-        }
+        TEST_FAIL_MESSAGE("QueryOffset error");
     }
 
     if (rmqsUnsubscribe(Consumer, Socket, SubscriptionId, &ResponseCode))
@@ -540,12 +519,8 @@ void TestFunction(void)
     }
     else
     {
-        printf("Cannot unsubcribe from stream %s\r\n", Stream);
-
-        if (ResponseCode == rmqsrConnectionError)
-        {
-            goto CLEAN_UP;
-        }
+        sprintf(OutputString, "Cannot unsubcribe from stream %s", Stream);
+        TEST_FAIL_MESSAGE(OutputString);
     }
 
     rmqsHeartbeat(Publisher->Client, Socket);
@@ -556,29 +531,13 @@ void TestFunction(void)
     }
     else
     {
-        printf("Cannot logout\r\n");
-
-        if (ResponseCode == rmqsrConnectionError)
-        {
-            goto CLEAN_UP;
-        }
+        TEST_FAIL_MESSAGE("Cannot logout");
     }
 
     rmqsSocketDestroy(&Socket);
     //---------------------------------------------------------------------------
     //---------------------------------------------------------------------------
     //---------------------------------------------------------------------------
-
-CLEAN_UP:
-    if (ConnectionError)
-    {
-        printf("Connection lost\r\n");
-    }
-
-    if (ResponseCode != rmqsrOK)
-    {
-        printf("Response code: %s\r\n", rmqsGetResponseCodeDescription(ResponseCode));
-    }
 
     if (Publisher)
     {
@@ -627,7 +586,8 @@ CLEAN_UP:
 
     UsedMemory = rmqsGetUsedMemory();
 
-    printf("Unfreed memory: %u bytes\r\n", (uint32_t)UsedMemory);
+    sprintf(OutputString, "Unfreed memory: %u bytes\r\n", (uint32_t)UsedMemory);
+    TEST_ASSERT_EQUAL_UINT32_MESSAGE(0, (uint32_t)UsedMemory, OutputString);
 
     rmqsThreadSleep(5000);
 
@@ -700,8 +660,12 @@ void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize
     else if (MessagesReceived == MessageCount * NoOfIterations)
     {
         TimerResult = rmqsTimerGetTime(DeliverTimer);
+
         printf("%u Messages - Receive time: %ums\r\n", (uint32_t)(MessageCount * NoOfIterations), TimerResult);
         printf("Last message: %.*s\r\n", (int)DataSize, (char *)Data);
+
+        TEST_ASSERT_LESS_THAN_UINT32_MESSAGE(500, TimerResult, "Unexpected deliver time, too long");
+        TEST_ASSERT_EQUAL_STRING_MESSAGE((char *)Data, TEST_MESSAGE_DATA, "Unexpected message received");
     }
 }
 //---------------------------------------------------------------------------

@@ -51,7 +51,7 @@ rmqsClientFunc void rmqsConsumerDestroy(rmqsConsumer_t *Consumer)
     rmqsFreeMemory((void *)Consumer);
 }
 //---------------------------------------------------------------------------
-rmqsClientFunc void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint32_t Timeout, bool_t *ConnectionError)
+rmqsClientFunc bool_t rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint32_t Timeout, bool_t *ConnectionError)
 {
     uint32_t WaitMessageTimeout = Timeout;
     uint32_t Time;
@@ -66,13 +66,15 @@ rmqsClientFunc void rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket_t Sock
 
         if (*ConnectionError)
         {
-            return;
+            return false;
         }
 
         Time = rmqsTimerGetTime(Consumer->Client->ClientConfiguration->WaitReplyTimer);
 
         WaitMessageTimeout = Timeout - Time;
     }
+    
+    return true;
 }
 //---------------------------------------------------------------------------
 rmqsClientFunc bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
