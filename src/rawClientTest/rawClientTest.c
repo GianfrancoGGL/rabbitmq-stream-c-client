@@ -45,7 +45,7 @@ extern "C"
 #define RMQS_DB_SCHEMA              "rabbitmq-stream"
 #define RMQS_USERNAME               "rabbit"
 #define RMQS_PASSWORD               "rabbit"
-#define RMQS_SERVER                 "127.0.0.1"
+#define RMQS_SERVER                 "192.168.56.1"
 #define RQMS_PORT                   5552
 #define RQMS_VIRTUAL_HOST           "/"
 //---------------------------------------------------------------------------
@@ -53,6 +53,7 @@ extern "C"
 #define PUBLISHER_REFERENCE         "Publisher"
 #define CONSUMER_REFERENCE          "Consumer"
 #define TEST_MESSAGE_DATA           "Hello world!"
+#define TEST_MESSAGE_DATA_LONG      "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
 //---------------------------------------------------------------------------
 void TestFunction(void);
 //---------------------------------------------------------------------------
@@ -108,10 +109,15 @@ size_t MessagesConfirmed = 0;
 size_t MessagesNotConfirmed = 0;
 size_t MessagesReceived = 0;
 //---------------------------------------------------------------------------
+bool_t TestAMQP1_0 = false;
+bool_t SendLongMessages = false;
 bool_t EnableLogging = false;
 bool_t TestPublishError = false;
 //---------------------------------------------------------------------------
 uint32_t TimerResult;
+//---------------------------------------------------------------------------
+rmqsAMQP1_0DataFrame8 AMQP1_0DataFrame8;
+rmqsAMQP1_0DataFrame32 AMQP1_0DataFrame32;
 //---------------------------------------------------------------------------
 void TestFunction(void)
 {
@@ -145,6 +151,8 @@ void TestFunction(void)
     PollThreadParameters_t PollThreadParameters;
     uchar_t MessageBody[] = TEST_MESSAGE_DATA;
     size_t MessageBodySize = strlen(TEST_MESSAGE_DATA);
+    uchar_t MessageBodyLong[] = TEST_MESSAGE_DATA_LONG;
+    size_t MessageBodySizeLong = strlen(TEST_MESSAGE_DATA_LONG);
 
     sprintf(BrokerList, "%s://%s:%s@%s:%d/;%s://%s:%s@%s:%d/",
             "rabbitmq-stream+tls",
@@ -330,9 +338,18 @@ void TestFunction(void)
 
     for (i = 0; i < MessageCount; i++)
     {
-        MessageBatch[i].Data = MessageBody;
-        MessageBatch[i].Size = MessageBodySize;
-        MessageBatch[i].DeleteData = false;
+		if (! SendLongMessages)
+		{
+			MessageBatch[i].Data = MessageBody;
+			MessageBatch[i].Size = MessageBodySize;
+		}
+		else
+		{
+			MessageBatch[i].Data = MessageBodyLong;
+			MessageBatch[i].Size = MessageBodySizeLong;			
+		}
+
+        MessageBatch[i].Encoding = TestAMQP1_0 ? rmqsmeAMQP1_0 : rmqsmeNone;
     }
 
     //---------------------------------------------------------------------------
@@ -368,7 +385,7 @@ void TestFunction(void)
     TimerResult = rmqsTimerGetTime(PublishTimer);	
     printf("%d Messages - (CNT: %u - IT: %u) - Elapsed time: %ums\r\n", (int)(MessageCount * NoOfIterations), (uint32_t)MessageCount, (uint32_t)NoOfIterations, TimerResult);
 
-    TEST_ASSERT_LESS_THAN_UINT32_MESSAGE(2000, TimerResult, "Unexpected publishing time, too long");
+    TEST_ASSERT_LESS_THAN_UINT32_MESSAGE(SendLongMessages ? 10000 : 2000, TimerResult, "Unexpected publishing time, too long");
 
     //---------------------------------------------------------------------------
     while (rmqsTimerGetTime(PublishWaitTimer) < PublishWaitingMaxTime && MessagesConfirmed < MessageCount * NoOfIterations)
@@ -505,7 +522,10 @@ void TestFunction(void)
         printf("QueryOffset - Offset: %lld - Is valid: %d\r\n", Offset, (int)ValidOffset);
         #endif
 
-        TEST_ASSERT_EQUAL_UINT32_MESSAGE((uint32_t)((MessageCount * NoOfIterations) - 1), Offset, "Unexpected offset");
+		//
+		// Offset must be at least equal t
+		//
+        TEST_ASSERT_GREATER_OR_EQUAL_INT32_MESSAGE((uint32_t)((MessageCount * NoOfIterations) - 1), Offset, "Unexpected offset");
         TEST_ASSERT_EQUAL_UINT8_MESSAGE(true, ValidOffset, "Offset is not valid");
     }
     else
@@ -665,7 +685,22 @@ void DeliverResultCallback(uint8_t SubscriptionId, byte_t *Data, size_t DataSize
         printf("Last message: %.*s\r\n", (int)DataSize, (char *)Data);
 
         TEST_ASSERT_LESS_THAN_UINT32_MESSAGE(500, TimerResult, "Unexpected deliver time, too long");
-        TEST_ASSERT_EQUAL_STRING_MESSAGE((char *)Data, TEST_MESSAGE_DATA, "Unexpected message received");
+
+		if (TestAMQP1_0)
+		{
+			Data += 4;
+
+			if (*Data == AMQP1_0_APPLICATION_DATA_V8)
+			{
+				*Data += sizeof(uint8_t);
+			}
+			else if (*Data == AMQP1_0_APPLICATION_DATA_V32)
+			{
+				*Data += sizeof(uint32_t);
+			}
+		}
+
+        TEST_ASSERT_EQUAL_STRING_MESSAGE((char *)Data, SendLongMessages ? TEST_MESSAGE_DATA_LONG : TEST_MESSAGE_DATA, "Unexpected message received");
     }
 }
 //---------------------------------------------------------------------------

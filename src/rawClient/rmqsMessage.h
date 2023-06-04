@@ -30,16 +30,25 @@ SOFTWARE.
 //---------------------------------------------------------------------------
 #include "rmqsGlobal.h"
 //---------------------------------------------------------------------------
+typedef enum
+{
+    rmqsmeNone,
+    rmqsmeAMQP1_0,
+    rmqsmeCustom,
+}
+rqmsMessageEncoding_t;
+//---------------------------------------------------------------------------
 typedef struct
 {
     uint64_t PublishingId;
     void *Data;
     size_t Size;
     bool_t DeleteData;
+    rqmsMessageEncoding_t Encoding;
 }
 rmqsMessage_t;
 //---------------------------------------------------------------------------
-rmqsMessage_t * rmqsMessageCreate(uint64_t PublishingId, void *Data, uint32_t Size, bool_t CopyData);
+rmqsMessage_t * rmqsMessageCreate(uint64_t PublishingId, void *Data, uint32_t Size, bool_t CopyData, rqmsMessageEncoding_t Encoding);
 void rmqsMessageDestroy(rmqsMessage_t *Message);
 void rmqsBatchDestroy(rmqsMessage_t *MessageBatch, size_t Count);
 //---------------------------------------------------------------------------

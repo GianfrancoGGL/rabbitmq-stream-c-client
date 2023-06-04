@@ -28,7 +28,7 @@ SOFTWARE.
 #include "rmqsMessage.h"
 #include "rmqsMemory.h"
 //---------------------------------------------------------------------------
-rmqsMessage_t * rmqsMessageCreate(uint64_t PublishingId, void *Data, uint32_t Size, bool_t CopyData)
+rmqsMessage_t * rmqsMessageCreate(uint64_t PublishingId, void *Data, uint32_t Size, bool_t CopyData, rqmsMessageEncoding_t Encoding)
 {
     rmqsMessage_t *Message = (rmqsMessage_t *)rmqsAllocateMemory(sizeof(rmqsMessage_t));
 
@@ -46,6 +46,7 @@ rmqsMessage_t * rmqsMessageCreate(uint64_t PublishingId, void *Data, uint32_t Si
 
     Message->Size = Size;
     Message->DeleteData = CopyData;
+    Message->Encoding = Encoding;
 
     return Message;
 }

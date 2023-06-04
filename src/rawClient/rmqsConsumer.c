@@ -77,7 +77,7 @@ rmqsClientFunc bool_t rmqsConsumerPoll(rmqsConsumer_t *Consumer, rmqsSocket_t So
     return true;
 }
 //---------------------------------------------------------------------------
-rmqsClientFunc bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
+rmqsClientFunc bool_t rmqsSubscribe(rmqsConsumer_t *Consumer, rmqsSocket_t Socket, uint8_t SubscriptionId, char_t *Stream, rmqsOffsetType_t OffsetType, uint64_t Offset, uint16_t Credit, rmqsProperty_t *Properties, size_t PropertyCount, rmqsResponseCode_t *ResponseCode)
 {
     rmqsClient_t *Client = Consumer->Client;
     rmqsClientConfiguration_t *ClientConfiguration = (rmqsClientConfiguration_t *)Client->ClientConfiguration;

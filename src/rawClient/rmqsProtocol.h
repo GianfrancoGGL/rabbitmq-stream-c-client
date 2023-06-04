@@ -45,6 +45,10 @@ SOFTWARE.
 #define RMQS_NULL_STRING_LENGTH    -1
 #define RMQS_EMPTY_DATA_LENGTH     -1
 //---------------------------------------------------------------------------
+#define AMQP1_0_APPLICATION_DATA_FRAME    0x75
+#define AMQP1_0_APPLICATION_DATA_V8       0xA0
+#define AMQP1_0_APPLICATION_DATA_V32      0xA0
+//---------------------------------------------------------------------------
 typedef enum
 {
     rmqscDeclarePublisher = 0x01,
@@ -170,6 +174,26 @@ typedef struct
     uint64_t Offset;
 }
 rmqsQueryOffsetResponse_t;
+//---------------------------------------------------------------------------
+typedef struct
+{
+    uint8_t Byte0;
+    uint8_t Byte1;
+    uint8_t DataType;
+    uint8_t SizeType;
+    uint8_t Size;
+}
+rmqsAMQP1_0DataFrame8;
+//---------------------------------------------------------------------------
+typedef struct
+{
+    uint8_t Byte0;
+    uint8_t Byte1;
+    uint8_t DataType;
+    uint8_t SizeType;
+    uint32_t Size;
+}
+rmqsAMQP1_0DataFrame32;
 //---------------------------------------------------------------------------
 #pragma pack(pop)
 //---------------------------------------------------------------------------

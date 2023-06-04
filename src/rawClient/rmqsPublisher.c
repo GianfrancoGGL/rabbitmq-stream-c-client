@@ -250,7 +250,48 @@ rmqsClientFunc bool_t rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket_t Socke
     for (i = 0; i < MessageCount; i++)
     {
         rmqsAddUInt64ToBuffer(Client->TxQueue, Messages[i].PublishingId, ClientConfiguration->IsLittleEndianMachine);
-        rmqsAddBytesToBuffer(Client->TxQueue, Messages[i].Data, Messages[i].Size, true, ClientConfiguration->IsLittleEndianMachine);
+
+        if (Messages[i].Encoding == rmqsmeAMQP1_0)
+        {
+            //
+            // Insert the AMQP 1.0 header before the message body
+            //
+            if (Messages[i].Size <= 255)
+            {
+                Client->AMQP1_0DataFrame8.Size = Messages[i].Size;
+
+                //
+                // Total length of the message must be incresed by the AMQP header for messages <= 255 bytes
+                //
+                rmqsAddUInt32ToBuffer(Client->TxQueue, Messages[i].Size + sizeof(rmqsAMQP1_0DataFrame8), ClientConfiguration->IsLittleEndianMachine);
+                rmqsAddBytesToBuffer(Client->TxQueue, &Client->AMQP1_0DataFrame8, sizeof(rmqsAMQP1_0DataFrame8), false, ClientConfiguration->IsLittleEndianMachine);
+            }
+            else
+            {
+                Client->AMQP1_0DataFrame32.Size = Messages[i].Size;
+
+                //
+                // Total length of the message must be incresed by the AMQP header for messages > 255 bytes
+                //
+                rmqsAddUInt32ToBuffer(Client->TxQueue, Messages[i].Size + sizeof(rmqsAMQP1_0DataFrame32), ClientConfiguration->IsLittleEndianMachine);
+                rmqsAddBytesToBuffer(Client->TxQueue, &Client->AMQP1_0DataFrame32, sizeof(rmqsAMQP1_0DataFrame32), false, ClientConfiguration->IsLittleEndianMachine);
+            }
+
+            //
+            // After the AMQP 1.0 header, the message can be sent, without its length because it has already been declated (AMQP data frame size + body size)
+            //
+            rmqsAddBytesToBuffer(Client->TxQueue, Messages[i].Data, Messages[i].Size, false, ClientConfiguration->IsLittleEndianMachine);
+        }
+        else if (Messages[i].Encoding == rmqsmeCustom)
+        {
+            //
+            // Custom callback for the message encoding
+            //
+        }
+        else
+        {
+            rmqsAddBytesToBuffer(Client->TxQueue, Messages[i].Data, Messages[i].Size, true, ClientConfiguration->IsLittleEndianMachine);
+        }
     }
 
     //

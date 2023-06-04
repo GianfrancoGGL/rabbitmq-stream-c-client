@@ -118,7 +118,12 @@ rmqsProtoFunc bool_t rmqsWaitMessage(void *Client, rmqsSocket_t Socket, uint32_t
         //
         if (! RxPendingBytes)
         {
-            rmqsSetSocketReadTimeout(Socket, RxTimeout);
+            if (RxTimeout != ClientObj->LastRxTimeout)
+            {
+                rmqsSetSocketReadTimeout(Socket, RxTimeout);
+
+                ClientObj->LastRxTimeout = RxTimeout;
+            }
 
             rmqsResetLastError();
 

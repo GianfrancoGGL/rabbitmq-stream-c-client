@@ -129,7 +129,10 @@ typedef struct
     rmqsResponse_t Response;
     rmqsBuffer_t *TxQueue;
     rmqsBuffer_t *RxQueue;
+    uint32_t LastRxTimeout;
     char_t RxSocketBuffer[RMQS_CLIENT_RX_BUFFER_SIZE];
+    rmqsAMQP1_0DataFrame8 AMQP1_0DataFrame8;
+    rmqsAMQP1_0DataFrame32 AMQP1_0DataFrame32;
     MetadataUpdateCallback_t MetadataUpdateCallback;
 }
 rmqsClient_t;
