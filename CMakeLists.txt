@@ -6,7 +6,7 @@ set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 include_directories(src/rawClient)
-include_directories(test/rawClientTest)
+include_directories(tests/rawClientTest)
 include_directories(external/unity/src)
 
 add_executable(rabbitmq_stream_c_client
@@ -45,7 +45,7 @@ add_executable(rabbitmq_stream_c_client
                src/rawClient/rmqsThread.h
                src/rawClient/rmqsTimer.c
                src/rawClient/rmqsTimer.h
-               test/rawClientTest/rawClientTest.c
+               tests/rawClientTest/rawClientTest.c
 			   external/unity/src/unity.c)
 
 if(WIN32)
