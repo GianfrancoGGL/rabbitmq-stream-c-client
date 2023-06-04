@@ -45,9 +45,11 @@ SOFTWARE.
 #define RMQS_NULL_STRING_LENGTH    -1
 #define RMQS_EMPTY_DATA_LENGTH     -1
 //---------------------------------------------------------------------------
+#define AMQP1_0_APPLICATION_DATA_BYTE_0   0x00
+#define AMQP1_0_APPLICATION_DATA_BYTE_1   0x00
 #define AMQP1_0_APPLICATION_DATA_FRAME    0x75
-#define AMQP1_0_APPLICATION_DATA_V8       0xA0
-#define AMQP1_0_APPLICATION_DATA_V32      0xA0
+#define AMQP1_0_APPLICATION_DATA_V_8      0xA0
+#define AMQP1_0_APPLICATION_DATA_V_32     0xB0
 //---------------------------------------------------------------------------
 typedef enum
 {
@@ -198,6 +200,8 @@ rmqsAMQP1_0DataFrame32;
 #pragma pack(pop)
 //---------------------------------------------------------------------------
 rmqsProtoFunc bool_t rmqsIsLittleEndianMachine(void);
+//---------------------------------------------------------------------------
+rmqsProtoFunc bool_t rmqsIsAQMP1_0Message(void *Client, byte_t *FullMessage, size_t FullMessageDataSize, byte_t **Message, size_t *MessageDataSize);
 //---------------------------------------------------------------------------
 rmqsProtoFunc bool_t rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *Data, size_t DataSize);
 rmqsProtoFunc bool_t rmqsWaitMessage(void *Client, rmqsSocket_t Socket, uint32_t RxTimeout, bool_t *ConnectionError);

@@ -49,19 +49,19 @@ rmqsClientFunc rmqsClient_t * rmqsClientCreate(rmqsClientConfiguration_t *Client
     //
     // Initilize the AMQP 1.0 frame for messages with a max length of 255 bytes
     //                                                               
-    Client->AMQP1_0DataFrame8.Byte0 = 0;
-    Client->AMQP1_0DataFrame8.Byte1 = 0;
+    Client->AMQP1_0DataFrame8.Byte0 = AMQP1_0_APPLICATION_DATA_BYTE_0;
+    Client->AMQP1_0DataFrame8.Byte1 = AMQP1_0_APPLICATION_DATA_BYTE_1;
     Client->AMQP1_0DataFrame8.DataType = AMQP1_0_APPLICATION_DATA_FRAME;
-    Client->AMQP1_0DataFrame8.SizeType = AMQP1_0_APPLICATION_DATA_V8;
+    Client->AMQP1_0DataFrame8.SizeType = AMQP1_0_APPLICATION_DATA_V_8;
     Client->AMQP1_0DataFrame8.Size = 0;
 
     //
     // Initilize the AMQP 1.0 frame for messages with more than 255 bytes
     //
-    Client->AMQP1_0DataFrame32.Byte0 = 0;
-    Client->AMQP1_0DataFrame32.Byte1 = 0;
+    Client->AMQP1_0DataFrame32.Byte0 = AMQP1_0_APPLICATION_DATA_BYTE_0;
+    Client->AMQP1_0DataFrame32.Byte1 = AMQP1_0_APPLICATION_DATA_BYTE_1;
     Client->AMQP1_0DataFrame32.DataType = AMQP1_0_APPLICATION_DATA_FRAME;
-    Client->AMQP1_0DataFrame32.SizeType = AMQP1_0_APPLICATION_DATA_V32;
+    Client->AMQP1_0DataFrame32.SizeType = AMQP1_0_APPLICATION_DATA_V_32;
     Client->AMQP1_0DataFrame32.Size = 0;
 
     Client->MetadataUpdateCallback = MetadataUpdateCallback;

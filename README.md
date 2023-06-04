@@ -1,2 +1,2 @@
 # rabbitmq-stream-c-client-main
- RabbitMQ stream client Clang
+RabbitMQ stream client Clang

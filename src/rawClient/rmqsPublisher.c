@@ -270,6 +270,11 @@ rmqsClientFunc bool_t rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket_t Socke
             {
                 Client->AMQP1_0DataFrame32.Size = Messages[i].Size;
 
+                if (ClientConfiguration->IsLittleEndianMachine)
+                {
+                    Client->AMQP1_0DataFrame32.Size = SwapUInt32(Client->AMQP1_0DataFrame32.Size);
+                }
+
                 //
                 // Total length of the message must be incresed by the AMQP header for messages > 255 bytes
                 //

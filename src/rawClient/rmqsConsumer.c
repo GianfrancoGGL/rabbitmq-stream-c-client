@@ -394,7 +394,7 @@ rmqsClientFunc void rmqsHandleDeliver(rmqsConsumer_t *Consumer, rmqsSocket_t Soc
 
         StoreOffset = false;
 
-        Consumer->DeliverResultCallback(SubscriptionId, (byte_t *)MessagePayload, (size_t)EntryTypeAndSize, &Consumer->DeliverInfo, MessageOffset, &StoreOffset);
+        Consumer->DeliverResultCallback(Consumer, SubscriptionId, (byte_t *)MessagePayload, (size_t)EntryTypeAndSize, &Consumer->DeliverInfo, MessageOffset, &StoreOffset);
 
         MessagePayload += EntryTypeAndSize;
 

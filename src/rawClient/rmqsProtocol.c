@@ -51,6 +51,52 @@ rmqsProtoFunc bool_t rmqsIsLittleEndianMachine(void)
     }
 }
 //---------------------------------------------------------------------------
+rmqsProtoFunc bool_t rmqsIsAQMP1_0Message(void *Client, byte_t *FullMessage, size_t FullMessageDataSize, byte_t **Message, size_t *MessageDataSize)
+{
+    rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
+    rmqsAMQP1_0DataFrame8 *AMQP1_0DataFrame8 = (rmqsAMQP1_0DataFrame8 *)FullMessage;
+    rmqsAMQP1_0DataFrame32 *AMQP1_0DataFrame32 = (rmqsAMQP1_0DataFrame32 *)FullMessage;
+    
+    if (FullMessageDataSize < sizeof(rmqsAMQP1_0DataFrame8))
+    {
+        return false;
+    }
+    
+    if (AMQP1_0DataFrame8->Byte0 != AMQP1_0_APPLICATION_DATA_BYTE_0 || 
+        AMQP1_0DataFrame8->Byte1 != AMQP1_0_APPLICATION_DATA_BYTE_1 || 
+        AMQP1_0DataFrame8->DataType != AMQP1_0_APPLICATION_DATA_FRAME)
+    {
+        return false;
+    }
+    
+    if (AMQP1_0DataFrame8->Byte0 != AMQP1_0_APPLICATION_DATA_BYTE_0 || AMQP1_0DataFrame8->Byte1 != AMQP1_0_APPLICATION_DATA_BYTE_1)
+    {
+        return false;
+    }
+    
+    if (AMQP1_0DataFrame8->SizeType == AMQP1_0_APPLICATION_DATA_V_8)
+    {
+        *Message = FullMessage + sizeof(rmqsAMQP1_0DataFrame8);
+        *MessageDataSize = AMQP1_0DataFrame8->Size;
+    }
+    else if (AMQP1_0DataFrame8->SizeType == AMQP1_0_APPLICATION_DATA_V_32)
+    {
+        *Message = FullMessage + sizeof(rmqsAMQP1_0DataFrame32);
+        *MessageDataSize = AMQP1_0DataFrame32->Size;
+
+        if (ClientObj->ClientConfiguration->IsLittleEndianMachine)
+        {
+            *MessageDataSize = SwapUInt32(*MessageDataSize);
+        }
+    }
+    else
+    {
+        return false;
+    }
+
+    return true;
+}
+//---------------------------------------------------------------------------
 rmqsProtoFunc bool_t rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *Data, size_t DataSize)
 {
     rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
