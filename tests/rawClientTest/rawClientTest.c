@@ -45,7 +45,7 @@ extern "C"
 #define RMQS_DB_SCHEMA              "rabbitmq-stream"
 #define RMQS_USERNAME               "rabbit"
 #define RMQS_PASSWORD               "rabbit"
-#define RMQS_SERVER                 "192.168.56.1"
+#define RMQS_SERVER                 "127.0.0.1"
 #define RQMS_PORT                   5552
 #define RQMS_VIRTUAL_HOST           "/"
 //---------------------------------------------------------------------------
@@ -271,7 +271,7 @@ void TestFunction(void)
     }
 
     TxRxBufferSize = NoOfIterations * MessageCount * strlen(SendLongMessages ? TEST_MESSAGE_DATA_LONG : TEST_MESSAGE_DATA);
-    TxRxBufferSize += TxRxBufferSize / 2;
+    TxRxBufferSize = (size_t)((double)TxRxBufferSize * 1.5);
 
     if (! rmqsSetSocketTxRxBufferSize(Socket, TxRxBufferSize, TxRxBufferSize))
     {
@@ -697,11 +697,11 @@ void DeliverResultCallback(void *Consumer, uint8_t SubscriptionId, byte_t *Data,
 
         TEST_ASSERT_LESS_THAN_UINT32_MESSAGE(SendLongMessages ? 5000 : 500, TimerResult, "Unexpected deliver time, too long");
 
-        if (rmqsIsAQMP1_0Message(ConsumerObj->Client, Data, DataSize, &Data, &DataSize))
+        if (rmqsCheckAQMP1_0Message(ConsumerObj->Client, Data, DataSize, &Data, &DataSize))
         {
             //
             // Do any specific action for long messages here
-            // The rmqsIsAQMP1_0Message moves the pointer to the effective message and retrieves the effective size
+            // The rmqsCheckAQMP1_0Message moves the pointer to the effective message and retrieves the effective size
             // whenever the message is packed with the AMQP 1.0 format
             //
         }

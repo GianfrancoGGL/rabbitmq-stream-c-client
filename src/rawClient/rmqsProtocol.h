@@ -201,7 +201,7 @@ rmqsAMQP1_0DataFrame32;
 //---------------------------------------------------------------------------
 rmqsProtoFunc bool_t rmqsIsLittleEndianMachine(void);
 //---------------------------------------------------------------------------
-rmqsProtoFunc bool_t rmqsIsAQMP1_0Message(void *Client, byte_t *FullMessage, size_t FullMessageDataSize, byte_t **Message, size_t *MessageDataSize);
+rmqsProtoFunc bool_t rmqsCheckAQMP1_0Message(void *Client, byte_t *FullMessage, size_t FullMessageDataSize, byte_t **Message, size_t *MessageDataSize);
 //---------------------------------------------------------------------------
 rmqsProtoFunc bool_t rmqsSendMessage(void *Client, rmqsSocket_t Socket, char_t *Data, size_t DataSize);
 rmqsProtoFunc bool_t rmqsWaitMessage(void *Client, rmqsSocket_t Socket, uint32_t RxTimeout, bool_t *ConnectionError);

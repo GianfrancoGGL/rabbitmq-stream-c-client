@@ -51,7 +51,7 @@ rmqsProtoFunc bool_t rmqsIsLittleEndianMachine(void)
     }
 }
 //---------------------------------------------------------------------------
-rmqsProtoFunc bool_t rmqsIsAQMP1_0Message(void *Client, byte_t *FullMessage, size_t FullMessageDataSize, byte_t **Message, size_t *MessageDataSize)
+rmqsProtoFunc bool_t rmqsCheckAQMP1_0Message(void *Client, byte_t *FullMessage, size_t FullMessageDataSize, byte_t **Message, size_t *MessageDataSize)
 {
     rmqsClient_t *ClientObj = (rmqsClient_t *)Client;
     rmqsAMQP1_0DataFrame8 *AMQP1_0DataFrame8 = (rmqsAMQP1_0DataFrame8 *)FullMessage;
@@ -84,8 +84,11 @@ rmqsProtoFunc bool_t rmqsIsAQMP1_0Message(void *Client, byte_t *FullMessage, siz
         *Message = FullMessage + sizeof(rmqsAMQP1_0DataFrame32);
         *MessageDataSize = AMQP1_0DataFrame32->Size;
 
-        if (ClientObj->ClientConfiguration->IsLittleEndianMachine)
+        if (! ClientObj->ClientConfiguration->IsLittleEndianMachine)
         {
+            //
+            // AMQP 1.0 integers must be little endig
+            //
             *MessageDataSize = SwapUInt32(*MessageDataSize);
         }
     }

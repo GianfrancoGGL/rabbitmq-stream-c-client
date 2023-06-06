@@ -270,8 +270,11 @@ rmqsClientFunc bool_t rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket_t Socke
             {
                 Client->AMQP1_0DataFrame32.Size = Messages[i].Size;
 
-                if (ClientConfiguration->IsLittleEndianMachine)
+                if (! ClientConfiguration->IsLittleEndianMachine)
                 {
+                    //
+                    // AMQP 1.0 integers must be little endig
+                    //
                     Client->AMQP1_0DataFrame32.Size = SwapUInt32(Client->AMQP1_0DataFrame32.Size);
                 }
 
