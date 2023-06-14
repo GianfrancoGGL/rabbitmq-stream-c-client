@@ -46,8 +46,8 @@ extern "C"
 #define RMQS_USERNAME               "rabbit"
 #define RMQS_PASSWORD               "rabbit"
 #define RMQS_SERVER                 "127.0.0.1"
-#define RQMS_PORT                   5552
-#define RQMS_VIRTUAL_HOST           "/"
+#define RMQS_PORT                   5552
+#define RMQS_VIRTUAL_HOST           "/"
 //---------------------------------------------------------------------------
 #define ROW_SEPARATOR               "============================================================================"
 #define PUBLISHER_REFERENCE         "Publisher"
@@ -165,7 +165,7 @@ void TestFunction(void)
             RMQS_USERNAME,
             RMQS_PASSWORD,
             RMQS_SERVER,
-            RQMS_PORT);
+            RMQS_PORT);
 
     EncodingTimer = rmqsTimerCreate();
     PublishTimer = rmqsTimerCreate();
@@ -236,11 +236,11 @@ void TestFunction(void)
     }
 
     TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->Hostname, RMQS_SERVER, "Unexpected broker host name");
-    TEST_ASSERT_EQUAL_UINT16_MESSAGE(Broker->Port, RQMS_PORT, "Unexpected broker port");
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(Broker->Port, RMQS_PORT, "Unexpected broker port");
     TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->Username, RMQS_USERNAME, "Unexpected broker user name");
     TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->Password, RMQS_PASSWORD, "Unexpected broker password");
     TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->DBSchema, RMQS_DB_SCHEMA, "Unexpected broker DB schema");
-    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->VirtualHost, RQMS_VIRTUAL_HOST, "Unexpected broker virtual host");
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->VirtualHost, RMQS_VIRTUAL_HOST, "Unexpected broker virtual host");
     TEST_ASSERT_EQUAL_UINT8_MESSAGE(Broker->UseTLS, 0, "Unexpected broker TLS usage flag");
     TEST_ASSERT_EQUAL_STRING_MESSAGE(Broker->AdvicedHostname, "", "Unexpected broker adviced host name");
     TEST_ASSERT_EQUAL_UINT16_MESSAGE(Broker->AdvicedPort, 0, "Unexpected broker adviced port");
