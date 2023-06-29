@@ -230,7 +230,7 @@ void rmqsListDeleteData(rmqsList_t *List, void *Data)
         return;
     }
 
-    while (Node->Next != 0)
+    while (Node != 0 && Node->Next != 0)
     {
         Position++;
 

@@ -5,10 +5,12 @@ Release/
 Debug/
 CMakeFiles/
 Testing/
+rabbitmq_stream_c_client-cppcheck-build-dir/
 test
 *.exe
 *.o
 cmake-build-*
+*.cppcheck
 .idea
 .vscode
 cmake_install.cmake

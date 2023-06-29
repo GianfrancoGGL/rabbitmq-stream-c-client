@@ -258,7 +258,7 @@ rmqsClientFunc bool_t rmqsPublish(rmqsPublisher_t *Publisher, rmqsSocket_t Socke
             //
             if (Messages[i].Size <= 255)
             {
-                Client->AMQP1_0DataFrame8.Size = Messages[i].Size;
+                Client->AMQP1_0DataFrame8.Size = (uint8_t)Messages[i].Size;
 
                 //
                 // Total length of the message must be incresed by the AMQP header for messages <= 255 bytes

@@ -116,9 +116,6 @@ bool_t TestPublishError = false;
 //---------------------------------------------------------------------------
 uint32_t TimerResult;
 //---------------------------------------------------------------------------
-rmqsAMQP1_0DataFrame8 AMQP1_0DataFrame8;
-rmqsAMQP1_0DataFrame32 AMQP1_0DataFrame32;
-//---------------------------------------------------------------------------
 void TestFunction(void)
 {
     char_t BrokerList[128] = {0};
@@ -136,7 +133,7 @@ void TestFunction(void)
     rmqsMetadata_t *Metadata = 0;
     uint64_t Sequence;
     rmqsCreateStreamArgs_t CreateStreamArgs = {0};
-    bool_t StreamAlredyExists;
+    bool_t StreamAlredyExists = false;
     rmqsSocket_t Socket;
     bool_t ConnectionError = false;
     rmqsProperty_t Properties[6];
@@ -231,7 +228,7 @@ void TestFunction(void)
 
     if (! Broker)
     {
-        sprintf(OutputString, "No valid brokers: %s", Error);
+        sprintf(OutputString, "No valid brokers");
         TEST_FAIL_MESSAGE(OutputString);
     }
 
@@ -280,7 +277,7 @@ void TestFunction(void)
     
     printf("Connected to server %s\r\n", Broker->Hostname);
 
-    if (! rmqsClientLogin(Publisher->Client, 1, Socket, Properties, 6, &ResponseCode))
+    if (Publisher != 0 && ! rmqsClientLogin(Publisher->Client, 1, Socket, Properties, 6, &ResponseCode))
     {
         sprintf(OutputString, "Cannot login to server %s", Broker->Hostname);
         TEST_FAIL_MESSAGE(OutputString);
@@ -288,7 +285,7 @@ void TestFunction(void)
 
     printf("Logged in to server %s\r\n", Broker->Hostname);
 
-    if (rmqsDelete(Publisher->Client, Socket, Stream, &ResponseCode))
+    if (Publisher != 0 && rmqsDelete(Publisher->Client, Socket, Stream, &ResponseCode))
     {
         printf("Deleted stream %s\r\n", Stream);
     }
@@ -313,7 +310,7 @@ void TestFunction(void)
     CreateStreamArgs.SetQueueLeaderLocator = true;
     CreateStreamArgs.LeaderLocator = rmqssllClientLocal;
 
-    if (! rmqsCreate(Publisher->Client, Socket, Stream, &CreateStreamArgs, &StreamAlredyExists, &ResponseCode) && ! StreamAlredyExists)
+    if (Publisher != 0 && ! rmqsCreate(Publisher->Client, Socket, Stream, &CreateStreamArgs, &StreamAlredyExists, &ResponseCode) && ! StreamAlredyExists)
     {
         sprintf(OutputString, "Cannot create stream %s", Stream);
         TEST_FAIL_MESSAGE(OutputString);

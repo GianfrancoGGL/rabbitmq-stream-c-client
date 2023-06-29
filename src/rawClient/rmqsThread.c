@@ -95,7 +95,6 @@ void rmqsThreadStop(rmqsThread_t *Thread)
     }
 
     #if _WIN32 || _WIN64
-    TerminateThread(Thread->ThreadHandle, 0x00);
     CloseHandle(Thread->ThreadHandle);
     #endif //
 

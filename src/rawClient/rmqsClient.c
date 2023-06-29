@@ -709,6 +709,7 @@ rmqsClientFunc bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket_t Socket, ch
     char_t *Data;
     rmqsBrokerMetadata_t *BrokerMetadata;
     rmqsStreamMetadata_t *StreamMetadata;
+    size_t MemorySize;
     bool_t ConnectionError;
 
     *ResponseCode = rmqsrOK;
@@ -796,8 +797,9 @@ rmqsClientFunc bool_t rmqsMetadata(rmqsClient_t *Client, rmqsSocket_t Socket, ch
 
             if (StreamMetadata->ReplicasReferenceCount > 0)
             {
-                StreamMetadata->ReplicasReferences = rmqsAllocateMemory(sizeof(uint16_t) * Metadata->StreamMetadataList[i].ReplicasReferenceCount);
-                memset(StreamMetadata->ReplicasReferences, 0, sizeof(uint16_t) * Metadata->StreamMetadataList[i].ReplicasReferenceCount);
+                MemorySize = sizeof(uint16_t) * StreamMetadata->ReplicasReferenceCount;
+                StreamMetadata->ReplicasReferences = rmqsAllocateMemory(MemorySize);
+                memset(StreamMetadata->ReplicasReferences, 0, MemorySize);
 
                 for (j = 0; j < StreamMetadata->ReplicasReferenceCount; j++)
                 {
