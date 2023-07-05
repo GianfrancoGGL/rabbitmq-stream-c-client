@@ -19,3 +19,9 @@ Makefile
 compile.bat
 rabbitmq_stream_c_client
 rabbitmq_stream_c_client.cbp
+CMakeFiles/
+*.tcl
+cmake_install.cmake
+CTestTestfile.cmake
+CMakeCache.txt
+*.a
