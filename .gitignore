@@ -1,13 +1,11 @@
 build/
 .vs/
-x64/
-Release/
-Debug/
 CMakeFiles/
 Testing/
 rabbitmq_stream_c_client-cppcheck-build-dir/
 test
 *.exe
+*.a
 *.o
 cmake-build-*
 *.cppcheck
@@ -18,4 +16,3 @@ CMakeCache.txt
 Makefile
 compile.bat
 rabbitmq_stream_c_client
-rabbitmq_stream_c_client.cbp
